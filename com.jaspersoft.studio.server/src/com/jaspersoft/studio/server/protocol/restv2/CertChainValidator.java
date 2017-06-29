@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
@@ -41,10 +45,10 @@ import org.eclipse.jface.dialogs.Dialog;
 import com.jaspersoft.studio.ConfigurationManager;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.protocol.CRLVerifier;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class CertChainValidator {
 	private static String fname = System.getProperty("javax.net.ssl.trustStore"); //$NON-NLS-1$

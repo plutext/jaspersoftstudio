@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.book.editors;
 
@@ -49,8 +57,6 @@ import com.jaspersoft.studio.editor.outline.actions.CreateParameterSetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateScriptletAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateSortFieldAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.plugin.ExtensionManager;
 import com.jaspersoft.studio.repository.actions.Separator;
@@ -254,14 +260,6 @@ public class JRBookDesignEditor extends AGraphicEditor {
 		action = new CreateVariableAction(this);
 		registry.registerAction(action);
 		selectionActions.add(CreateVariableAction.ID);
-		
-		action = new SortVariablesAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortVariablesAction.ID);
-		
-		action = new SortParametersAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortParametersAction.ID);
 
 		action = new CreateScriptletAction(this);
 		registry.registerAction(action);

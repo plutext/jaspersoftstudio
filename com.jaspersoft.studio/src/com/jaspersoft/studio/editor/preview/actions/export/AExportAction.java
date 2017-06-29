@@ -1,11 +1,23 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.actions.export;
 
 import java.io.File;
 import java.text.MessageFormat;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.eclipse.viewer.IReportViewer;
+import net.sf.jasperreports.engine.JRAbstractExporter;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -20,16 +32,8 @@ import com.jaspersoft.studio.preferences.editor.pages.Pages;
 import com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage;
 import com.jaspersoft.studio.statistics.UsageStatisticsIDs;
 import com.jaspersoft.studio.utils.Callback;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.viewer.IReportViewer;
-import net.sf.jasperreports.engine.JRAbstractExporter;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 
 public abstract class AExportAction extends AReportViewerAction {
 

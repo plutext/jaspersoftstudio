@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.widgets.scalar;
 
@@ -15,14 +23,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.model.query.operand.ScalarOperand;
 
 public class DateWidget extends AScalarWidget {
 	private CDateTime date;
 
-	public DateWidget(Composite parent, ScalarOperand<?> operand, AQueryDesigner designer) {
-		super(parent, SWT.NONE, operand, designer);
+	public DateWidget(Composite parent, ScalarOperand<?> operand) {
+		super(parent, SWT.NONE, operand);
 	}
 
 	@Override

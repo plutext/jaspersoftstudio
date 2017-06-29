@@ -1,11 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.soap;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -56,9 +65,9 @@ import com.jaspersoft.studio.server.wizard.exp.ExportOptions;
 import com.jaspersoft.studio.server.wizard.imp.ImportOptions;
 import com.jaspersoft.studio.server.wizard.permission.PermissionOptions;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRQueryChunk;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 
@@ -125,11 +134,11 @@ public class SoapConnection implements IConnection {
 			if (sp.isLogging()) {
 				System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog"); //$NON-NLS-1$ //$NON-NLS-2$
 				System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "debug"); //$NON-NLS-1$ //$NON-NLS-2$
-				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.impl.conn", "debug"); //$NON-NLS-1$ //$NON-NLS-2$
-				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.impl.client", "debug"); //$NON-NLS-1$ //$NON-NLS-2$
-				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.client", "debug"); //$NON-NLS-1$ //$NON-NLS-2$
-				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "debug"); //$NON-NLS-1$ //$NON-NLS-2$
+				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.wire", "DEBUG"); //$NON-NLS-1$ //$NON-NLS-2$
+				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.impl.conn", "DEBUG"); //$NON-NLS-1$ //$NON-NLS-2$
+				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.impl.client", "DEBUG"); //$NON-NLS-1$ //$NON-NLS-2$
+				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.client", "DEBUG"); //$NON-NLS-1$ //$NON-NLS-2$
+				System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog"); //$NON-NLS-1$ //$NON-NLS-2$
 				System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true"); //$NON-NLS-1$ //$NON-NLS-2$

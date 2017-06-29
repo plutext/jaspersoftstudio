@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.java2d;
 
@@ -382,10 +390,6 @@ public class StackGraphics2D extends ACachedGraphics {
 		for(StackGraphics2D subGraphic : subGraphics){
 			subGraphic.paintCache();
 		}
-		double scaleX = realDrawer.getTransform().getScaleX();
-		double scaleY = realDrawer.getTransform().getScaleY();
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
 	}
 	
 	/**

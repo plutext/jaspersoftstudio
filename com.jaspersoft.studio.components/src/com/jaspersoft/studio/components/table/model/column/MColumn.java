@@ -1,12 +1,21 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.table.model.column;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -26,7 +35,6 @@ import com.jaspersoft.studio.components.table.model.columngroup.MColumnGroup;
 import com.jaspersoft.studio.components.table.model.columngroup.MColumnGroupCell;
 import com.jaspersoft.studio.components.table.util.TableColumnNumerator;
 import com.jaspersoft.studio.components.table.util.TableColumnSize;
-import com.jaspersoft.studio.editor.expression.ExpressionContext;
 import com.jaspersoft.studio.editor.layout.ILayout;
 import com.jaspersoft.studio.editor.layout.LayoutManager;
 import com.jaspersoft.studio.editor.layout.VerticalRowLayout;
@@ -48,12 +56,11 @@ import com.jaspersoft.studio.property.descriptor.propexpr.JPropertyExpressionsDe
 import com.jaspersoft.studio.property.descriptor.propexpr.PropertyExpressionDTO;
 import com.jaspersoft.studio.property.descriptor.propexpr.PropertyExpressionsDTO;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
-import com.jaspersoft.studio.utils.ModelUtils;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.components.table.DesignCell;
 import net.sf.jasperreports.components.table.StandardBaseColumn;
 import net.sf.jasperreports.components.table.util.TableUtil;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
@@ -65,41 +72,36 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.design.events.JRChangeEventsSupport;
 import net.sf.jasperreports.engine.design.events.JRPropertyChangeSupport;
 
-public class MColumn extends APropertyNode
-		implements IPastable, IContainer, IContainerLayout, IGraphicElement, IContainerEditPart {
-
+public class MColumn extends APropertyNode implements IPastable, IContainer,IContainerLayout, IGraphicElement, IContainerEditPart {
+	
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 
 	private static IIconDescriptor iconDescriptor;
 
 	public static String PROPERTY_NAME = "NAME";
-
+	
 	public static String COLUMN_NAME = "com.jaspersoft.studio.components.table.model.column.name";
 
-	private static IPropertyDescriptor[] descriptors;
-
 	private JRDesignGroup jrGroup;
-
+	
 	/**
-	 * Last valid value for the table containing this node, this reference
-	 * because it could be need for some undo operations (SetValueCommand) even
-	 * after this node was detached from the table
+	 * Last valid value for the table containing this node, this reference because it could be 
+	 * need for some undo operations (SetValueCommand) even after this node was detached from the table
 	 */
 	private MTable containerTable;
-
+	
 	/**
-	 * Last valid value for the section containing this node, this reference
-	 * because it could be need for some undo operations (SetValueCommand) even
-	 * after this node was detached from the table
+	 * Last valid value for the section containing this node, this reference because it could be 
+	 * need for some undo operations (SetValueCommand) even after this node was detached from the table
 	 */
 	protected AMCollection containerSection;
-
+	
 	private List<ANode> list;
 
 	private String name;
-
+	
 	private String grName;
-
+	
 	private int type = TableUtil.TABLE_HEADER;
 
 	/**
@@ -119,7 +121,7 @@ public class MColumn extends APropertyNode
 	 * @param newIndex
 	 *            the new index
 	 */
-	public MColumn(ANode parent, StandardBaseColumn column, String name, int index) {
+	public MColumn(ANode parent, StandardBaseColumn column, String name,int index) {
 		super(parent, index);
 		setValue(column);
 		this.name = name;
@@ -137,11 +139,11 @@ public class MColumn extends APropertyNode
 			}
 		}
 	}
-
+	
 	/**
-	 * Store the table and section ancestor of this node. When the parent is set
-	 * to null the old value are maintained to allow the undo operation to be
-	 * executed on this node
+	 * Store the table and section ancestor of this node. When the parent
+	 * is set to null the old value are maintained to allow the undo operation
+	 * to be executed on this node
 	 */
 	@Override
 	public void setParent(ANode newparent, int newIndex) {
@@ -151,19 +153,18 @@ public class MColumn extends APropertyNode
 			if (node instanceof MTable) {
 				containerTable = (MTable) node;
 				break;
-			} else if (node instanceof AMCollection) {
+			} else if (node instanceof AMCollection){
 				containerSection = (AMCollection) node;
 			}
 			node = node.getParent();
 		}
-		// When the node is removed (because maybe a cell was deleted) the value
-		// is not
-		// set to null, in this case remove this listener from the node
-		if (newparent == null && getValue() != null) {
+		//When the node is removed (because maybe a cell was deleted) the value is not
+		//set to null, in this case remove this listener from the node
+		if (newparent == null && getValue() != null){
 			getValue().getEventSupport().removePropertyChangeListener(this);
 		}
 	}
-
+	
 	public JRDesignGroup getJrGroup() {
 		return jrGroup;
 	}
@@ -171,21 +172,26 @@ public class MColumn extends APropertyNode
 	public MColumn getNorth() {
 		ANode mparent = getParent();
 		if (TableManager.isBottomOfTable(type)) {
-			if (this instanceof MColumnGroup || this instanceof MColumnGroupCell)
+			if (this instanceof MColumnGroup
+					|| this instanceof MColumnGroupCell)
 				return (MColumn) getChildren().get(0);
 
 			MTable mtable = getMTable();
 			List<ANode> amCollection = getAMCollection();
-			int index = mtable.getChildren().indexOf(amCollection.get(amCollection.size() - 1));
-			AMCollection newmc = (AMCollection) mtable.getChildren().get(index - 1);
+			int index = mtable.getChildren().indexOf(
+					amCollection.get(amCollection.size() - 1));
+			AMCollection newmc = (AMCollection) mtable.getChildren().get(
+					index - 1);
 			return (MColumn) newmc.getChildren().get(0);
-		} else if (mparent instanceof MColumnGroup || mparent instanceof MColumnGroupCell)
+		} else if (mparent instanceof MColumnGroup
+				|| mparent instanceof MColumnGroupCell)
 			return (MColumn) mparent;
 
 		MTable mtable = getMTable();
 		int index = mtable.getChildren().indexOf(mparent);
 		if (index > 0) {
-			AMCollection newmc = (AMCollection) mtable.getChildren().get(index - 1);
+			AMCollection newmc = (AMCollection) mtable.getChildren().get(
+					index - 1);
 			return getBottomColumn(newmc.getChildren());
 		} else
 			return null;
@@ -238,7 +244,8 @@ public class MColumn extends APropertyNode
 		String oldValue = this.name;
 		this.name = name;
 		getValue().getPropertiesMap().setProperty(COLUMN_NAME, name);
-		getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, name); // $NON-NLS-1$
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue,
+				name); //$NON-NLS-1$
 	}
 
 	/*
@@ -265,14 +272,24 @@ public class MColumn extends APropertyNode
 		return tt;
 	}
 
+	private static IPropertyDescriptor[] descriptors;
+	private static Map<String, Object> defaultsMap;
+
+	@Override
+	public Map<String, Object> getDefaultsMap() {
+		return defaultsMap;
+	}
+
 	@Override
 	public IPropertyDescriptor[] getDescriptors() {
 		return descriptors;
 	}
 
 	@Override
-	public void setDescriptors(IPropertyDescriptor[] descriptors1) {
+	public void setDescriptors(IPropertyDescriptor[] descriptors1,
+			Map<String, Object> defaultsMap1) {
 		descriptors = descriptors1;
+		defaultsMap = defaultsMap1;
 	}
 
 	/**
@@ -282,21 +299,25 @@ public class MColumn extends APropertyNode
 	 *            the desc
 	 */
 	@Override
-	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
+	public void createPropertyDescriptors(List<IPropertyDescriptor> desc,
+			Map<String, Object> defaultsMap) {
 		JRExpressionPropertyDescriptor printWhenExprD = new JRExpressionPropertyDescriptor(
-				StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION, Messages.MColumn_print_when_expression);
-		printWhenExprD.setDescription(Messages.MColumn_print_when_expression_description);
+				StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION,
+				Messages.MColumn_print_when_expression);
+		printWhenExprD
+				.setDescription(Messages.MColumn_print_when_expression_description);
 		desc.add(printWhenExprD);
 
-		PixelPropertyDescriptor wD = new PixelPropertyDescriptor(StandardBaseColumn.PROPERTY_WIDTH,
+		PixelPropertyDescriptor wD = new PixelPropertyDescriptor(
+				StandardBaseColumn.PROPERTY_WIDTH,
 				Messages.MColumn_column_width);
 		desc.add(wD);
 
 		JPropertyExpressionsDescriptor propertiesD = new JPropertyExpressionsDescriptor(
 				JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS,
 				com.jaspersoft.studio.messages.Messages.MGraphicElement_property_expressions);
-		propertiesD.setDescription(
-				com.jaspersoft.studio.messages.Messages.MGraphicElement_property_expressions_description);
+		propertiesD
+				.setDescription(com.jaspersoft.studio.messages.Messages.MGraphicElement_property_expressions_description);
 		desc.add(propertiesD);
 
 		printWhenExprD.setCategory(Messages.MColumn_column_properties_category);
@@ -312,32 +333,31 @@ public class MColumn extends APropertyNode
 	 */
 	public Object getPropertyValue(Object id) {
 		StandardBaseColumn jrElement = getValue();
-		if (id.equals(StandardBaseColumn.PROPERTY_WIDTH)) {
+		if (id.equals(StandardBaseColumn.PROPERTY_WIDTH)){
 			return jrElement.getWidth();
 		}
-		if (id.equals(StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION)) {
+		if (id.equals(StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION)){
 			return ExprUtil.getExpression(jrElement.getPrintWhenExpression());
 		}
-		if (id.equals(DesignCell.PROPERTY_HEIGHT)) {
+		if (id.equals(DesignCell.PROPERTY_HEIGHT)){
 			return getMTable().getTableManager().getYhcolumn(type, grName, jrElement).height;
 		}
 		if (id.equals(JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS)) {
 			JRPropertyExpression[] propertyExpressions = jrElement.getPropertyExpressions();
-			if (propertyExpressions != null) {
+			if (propertyExpressions != null){
 				propertyExpressions = propertyExpressions.clone();
 			}
-
+			
 			JRPropertiesMap propertiesMap = jrElement.getPropertiesMap();
-			if (propertiesMap != null) {
+			if (propertiesMap != null){
 				propertiesMap = propertiesMap.cloneProperties();
 			}
-
-			return new PropertyExpressionsDTO(propertyExpressions, propertiesMap, getValue(),
-					ModelUtils.getExpressionContext(this));
+			
+			return new PropertyExpressionsDTO(propertyExpressions, propertiesMap, this);
 		}
-		if (id.equals(MGraphicElement.PROPERTY_MAP)) {
+		if (id.equals(MGraphicElement.PROPERTY_MAP)){
 			JRPropertiesMap propertiesMap = jrElement.getPropertiesMap();
-			if (propertiesMap != null) {
+			if (propertiesMap != null){
 				propertiesMap = propertiesMap.cloneProperties();
 			}
 			return propertiesMap;
@@ -349,16 +369,11 @@ public class MColumn extends APropertyNode
 		StandardBaseColumn jrElement = getValue();
 
 		if (id.equals(StandardBaseColumn.PROPERTY_WIDTH)) {
-			// the editing of a table column width is a complex operation, that
-			// could in most case require the adjustemnt of the width of
-			// other columns. Setting it directly could be risky. Also add here
-			// the logic to set the other columns and not in an appropriate
-			// command could bring problems in the undo of the operation. For
-			// this reason the direct set of this property is discouraged
-			// and it is suggested to used the command SetColumnWidthCommand,
-			// that handle all the necessary operations
-			throw new UnsupportedOperationException(
-					"Column Width shouldn't be set directly, use the appropriate command SetColumnWidthCommand");
+			//the editing of a table column width is a complex operation, that could in most case require the adjustemnt of the width of
+			//other columns. Setting it directly could be risky. Also add here the logic to set the other columns and not in an appropriate
+			//command could bring problems in the undo of the operation. For this reason the direct set of this property is discouraged
+			//and it is suggested to used the command SetColumnWidthCommand, that handle all the necessary operations
+			throw new UnsupportedOperationException("Column Width shouldn't be set directly, use the appropriate command SetColumnWidthCommand");
 		} else if (id.equals(DesignCell.PROPERTY_HEIGHT)) {
 			Integer height = (Integer) value;
 			if (containerSection != null && height.intValue() >= 0) {
@@ -368,18 +383,18 @@ public class MColumn extends APropertyNode
 				String grName = null;
 				if (containerSection instanceof MTableGroupHeader) {
 					grName = ((MTableGroupHeader) containerSection).getJrDesignGroup().getName();
-				} else if (containerSection instanceof MTableGroupFooter) {
+				} else if (containerSection instanceof MTableGroupFooter){
 					grName = ((MTableGroupFooter) containerSection).getJrDesignGroup().getName();
 				}
-
-				containerTable.getTableManager().setHeight(null, height, jrElement, TableColumnSize.getType(classType),
-						grName);
+				
+				containerTable.getTableManager().setHeight(null, height, jrElement, TableColumnSize.getType(classType), grName);
 				containerTable.getTableManager().update();
 
-				getPropertyChangeSupport()
-						.firePropertyChange(new PropertyChangeEvent(this, DesignCell.PROPERTY_HEIGHT, null, value));
+				getPropertyChangeSupport().firePropertyChange(
+						new PropertyChangeEvent(this,
+								DesignCell.PROPERTY_HEIGHT, null, value));
 			}
-		} else if (id.equals(StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION)) {
+		} else if (id.equals(StandardBaseColumn.PROPERTY_PRINT_WHEN_EXPRESSION)){
 			jrElement.setPrintWhenExpression(ExprUtil.setValues(jrElement.getPrintWhenExpression(), value, null));
 		} else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
 			JRPropertiesMap v = (JRPropertiesMap) value;
@@ -389,12 +404,15 @@ public class MColumn extends APropertyNode
 			}
 			names = v.getPropertyNames();
 			for (int i = 0; i < names.length; i++)
-				jrElement.getPropertiesMap().setProperty(names[i], v.getProperty(names[i]));
-			this.getPropertyChangeSupport().firePropertyChange(MGraphicElement.PROPERTY_MAP, false, true);
+				jrElement.getPropertiesMap().setProperty(names[i],
+						v.getProperty(names[i]));
+			this.getPropertyChangeSupport().firePropertyChange(
+					MGraphicElement.PROPERTY_MAP, false, true);
 		} else if (id.equals(JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS)) {
 			if (value instanceof PropertyExpressionsDTO) {
 				PropertyExpressionsDTO dto = (PropertyExpressionsDTO) value;
-				JRPropertyExpression[] expr = jrElement.getPropertyExpressions();
+				JRPropertyExpression[] expr = jrElement
+						.getPropertyExpressions();
 				// Remove the old expression properties if any
 				if (expr != null) {
 					for (JRPropertyExpression ex : expr)
@@ -410,17 +428,20 @@ public class MColumn extends APropertyNode
 					}
 				}
 				// now change properties, first remove the old ones if any
-				String[] names = jrElement.getPropertiesMap().getPropertyNames();
+				String[] names = jrElement.getPropertiesMap()
+						.getPropertyNames();
 				for (int i = 0; i < names.length; i++) {
 					jrElement.getPropertiesMap().removeProperty(names[i]);
 				}
 				// now add the new properties
 				for (PropertyExpressionDTO p : dto.getProperties()) {
 					if (!p.isExpression()) {
-						jrElement.getPropertiesMap().setProperty(p.getName(), p.getValue());
+						jrElement.getPropertiesMap().setProperty(p.getName(),
+								p.getValue());
 					}
 				}
-				this.getPropertyChangeSupport().firePropertyChange(MGraphicElement.PROPERTY_MAP, false, true);
+				this.getPropertyChangeSupport().firePropertyChange(
+						MGraphicElement.PROPERTY_MAP, false, true);
 			}
 		}
 	}
@@ -462,11 +483,10 @@ public class MColumn extends APropertyNode
 
 					MTable mtable = (MTable) section.getParent();
 					if (mtable == null) {
-						if (evt.getSource() instanceof JRPropertyChangeSupport) {
+						if (evt.getSource() instanceof JRPropertyChangeSupport){
 							((JRPropertyChangeSupport) evt.getSource()).removePropertyChangeListener(child);
-						} else if (evt.getSource() instanceof JRChangeEventsSupport) {
-							((JRChangeEventsSupport) evt.getSource()).getEventSupport()
-									.removePropertyChangeListener(child);
+						} else if (evt.getSource() instanceof JRChangeEventsSupport){
+							((JRChangeEventsSupport) evt.getSource()).getEventSupport().removePropertyChangeListener(child);
 						}
 					} else {
 						mtable.getTableManager().refresh();
@@ -482,7 +502,7 @@ public class MColumn extends APropertyNode
 	public AMCollection getSection() {
 		return containerSection;
 	}
-
+	
 	public MTable getMTable() {
 		return containerTable;
 	}
@@ -508,31 +528,31 @@ public class MColumn extends APropertyNode
 		return new JRPropertiesHolder[] { getValue(), getMTable().getValue() };
 	}
 
-	public MColumn getNextColumn() {
+	public MColumn getNextColumn(){
 		ANode parent = getParent();
 		ANode child = this;
-		// If the resized cell is a group cell go up to find the
-		// next to the group
-		while (parent instanceof MColumnGroupCell) {
+		//If the resized cell is a group cell go up to find the 
+		//next to the group
+		while(parent instanceof MColumnGroupCell){
 			child = parent;
 			parent = parent.getParent();
 		}
 		int index = parent.getChildren().indexOf(child);
-		if (index < parent.getChildren().size() - 1) {
-			return (MColumn) parent.getChildren().get(index + 1);
+		if (index < parent.getChildren().size()-1){
+			return (MColumn)parent.getChildren().get(index+1);
 		} else {
-			if (parent instanceof MColumnGroup) {
-				return ((MColumnGroup) parent).getNextColumn();
+			if (parent instanceof MColumnGroup){
+				return ((MColumnGroup)parent).getNextColumn();
 			}
 		}
 		return null;
 	}
-
+	
 	@Override
 	public ILayout getDefaultLayout() {
 		return LayoutManager.getLayout(VerticalRowLayout.class.getName());
 	}
-
+	
 	/**
 	 * Gets the icon descriptor.
 	 * 
@@ -543,46 +563,33 @@ public class MColumn extends APropertyNode
 			iconDescriptor = new TableNodeIconDescriptor("tablecell"); //$NON-NLS-1$
 		return iconDescriptor;
 	}
-
+	
 	/**
 	 * Return the table model that contains this column
 	 * 
-	 * @return the table model that contains this column or null if this column
-	 *         is not in hierarchy with a table node
+	 * @return the table model that contains this column or null if this
+	 * column is not in hierarchy with a table node
 	 */
 	public MTable getTable() {
 		INode node = this;
-		while (node != null && node.getParent() != null && !(node instanceof MTable) && !(node instanceof MRoot)) {
+		while (node != null && node.getParent() != null
+				&& !(node instanceof MTable) && !(node instanceof MRoot)) {
 			node = node.getParent();
 		}
 		if (node instanceof MTable)
 			return (MTable) node;
 		return null;
 	}
-
+	
+	/**
+	 * This type of node return a custom set value command provider that will allow to 
+	 * generate command that will check if the table has the autoresize and if the changed property
+	 * need to trigger its refresh
+	 */
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class adapter) {
-		if (ISetValueCommandProvider.class.equals(adapter)) {
-			// This type of node return a custom set value command provider that
-			// will allow to
-			// generate command that will check if the table has the auto-resize
-			// and if the changed property
-			// need to trigger its refresh
-			return TableSetValueCommandProvider.INSTANCE;
-		} else if (ExpressionContext.class.equals(adapter)) {
-			return getExpressionContext();
-		} else {
-			return super.getAdapter(adapter);
-		}
+		if (adapter == ISetValueCommandProvider.class) return TableSetValueCommandProvider.INSTANCE;
+		else return super.getAdapter(adapter);
 	}
-
-	public ExpressionContext getExpressionContext() {
-		if (containerTable != null) {
-			return containerTable.getExpressionContext();
-		} else {
-			return null;
-		}
-	}
-
 }

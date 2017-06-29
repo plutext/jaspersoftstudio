@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.widgets.scalar;
 
@@ -10,13 +18,12 @@ import java.util.Date;
 import org.eclipse.nebula.widgets.cdatetime.CDT;
 import org.eclipse.swt.widgets.Composite;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.model.query.operand.ScalarOperand;
 
 public class TimestampWidget extends DateWidget {
 
-	public TimestampWidget(Composite parent, ScalarOperand<Timestamp> operand, AQueryDesigner designer) {
-		super(parent, operand, designer);
+	public TimestampWidget(Composite parent, ScalarOperand<Timestamp> operand) {
+		super(parent, operand);
 	}
 
 	protected Date convertDate(Date d) {

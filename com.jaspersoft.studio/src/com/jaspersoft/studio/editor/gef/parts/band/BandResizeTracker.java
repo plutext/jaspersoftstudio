@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.parts.band;
 
@@ -364,6 +372,34 @@ public class BandResizeTracker extends SimpleDragTracker {
 		return isInState(STATE_DRAG_IN_PROGRESS
 				| STATE_ACCESSIBLE_DRAG_IN_PROGRESS);
 	}
+	
+	/*
+	@Override
+	protected boolean handleButtonDown(int button) {
+		if (((BandEditPart)editpart).getBand().getHeight() == 0){
+			List<EditPart> excluded = new ArrayList<EditPart>();
+			excluded.add(this.editpart);
+			EditPart valid = passHandle(excluded);
+			System.out.println("trovata");
+			 
+		} 
+		return true;
+	};
+
+	
+
+	
+	public EditPart passHandle(List<EditPart> excluded){
+		EditPart part = ((GraphicalViewer) editpart.getViewer()).findObjectAtExcluding(getLocation(),excluded);
+		if (part instanceof BandEditPart)
+			if (((BandEditPart)part).getBand().getHeight()>0){
+				return part;
+			}
+		excluded.add(part);
+		if (part == null)
+			return null;
+		else return passHandle(excluded);
+	}*/
 	
 	/**
 	 * Override the original drag in progress to freeze the drag on the reaching of the maximum 

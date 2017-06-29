@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.preferences.exporter;
 
@@ -20,9 +24,9 @@ import com.jaspersoft.studio.preferences.editor.CEncodingFieldEditor;
 import com.jaspersoft.studio.preferences.editor.JSSComboFieldEditor;
 import com.jaspersoft.studio.preferences.util.FieldEditorOverlayPage;
 import com.jaspersoft.studio.preferences.util.PropertiesHelper;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.export.CommonExportConfiguration;
 import net.sf.jasperreports.export.ReportExportConfiguration;
 import net.sf.jasperreports.export.WriterExporterOutput;
@@ -35,8 +39,7 @@ public class JRExporterPreferencePage extends FieldEditorOverlayPage {
 	public static final String PAGE_ID = "com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage.property";
 
 	/**
-	 * Enumeration used to choose what to do when the export action should do
-	 * when the target file already exist
+	 * Enumeration used to choose what to do when the export action should do when the target file already exist
 	 * 
 	 * @author Orlandin Marco
 	 * 
@@ -45,6 +48,9 @@ public class JRExporterPreferencePage extends FieldEditorOverlayPage {
 		OVERWRITE_TARGET, STOP_OPERATION, ASK_EVERYTIME
 	};
 
+	public static final String COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML = "com.jaspersoft.studio.exporter.show.xhtml"; //$NON-NLS-1$
+	public static final String COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA = "com.jaspersoft.studio.exporter.show.excelapi.metadata"; //$NON-NLS-1$
+	public static final String COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI = "com.jaspersoft.studio.exporter.show.excelapi"; //$NON-NLS-1$
 	public static final String COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML = "com.jaspersoft.studio.exporter.show.html"; //$NON-NLS-1$
 
 	public static final String EXPORTER_OVERWRITE = "exporterOverwrite"; //$NON-NLS-1$
@@ -72,12 +78,9 @@ public class JRExporterPreferencePage extends FieldEditorOverlayPage {
 
 		JSSComboFieldEditor expOverwrite = new JSSComboFieldEditor(EXPORTER_OVERWRITE,
 				Messages.JRExporterPreferencePage_fileExistingOption,
-				new String[][] {
-						{ Messages.JRExporterPreferencePage_askTheUser, OVERWRITE_STATE.ASK_EVERYTIME.toString() },
-						{ Messages.JRExporterPreferencePage_alwaysOverwrite,
-								OVERWRITE_STATE.OVERWRITE_TARGET.toString() },
-						{ Messages.JRExporterPreferencePage_abortOperation,
-								OVERWRITE_STATE.STOP_OPERATION.toString() } },
+				new String[][] { { Messages.JRExporterPreferencePage_askTheUser, OVERWRITE_STATE.ASK_EVERYTIME.toString() },
+						{ Messages.JRExporterPreferencePage_alwaysOverwrite, OVERWRITE_STATE.OVERWRITE_TARGET.toString() },
+						{ Messages.JRExporterPreferencePage_abortOperation, OVERWRITE_STATE.STOP_OPERATION.toString() } },
 				getFieldEditorParent());
 		addField(expOverwrite);
 
@@ -85,24 +88,36 @@ public class JRExporterPreferencePage extends FieldEditorOverlayPage {
 		gd.horizontalSpan = 2;
 		new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL).setLayoutData(gd);
 
+		bf = new BooleanFieldEditor(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI, Messages.JRExporterPreferencePage_3,
+				getFieldEditorParent());
+		addField(bf);
+
+		bf = new BooleanFieldEditor(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA,
+				Messages.JRExporterPreferencePage_4, getFieldEditorParent());
+		addField(bf);
+
+		bf = new BooleanFieldEditor(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML, Messages.JRExporterPreferencePage_5,
+				getFieldEditorParent());
+		addField(bf);
+
 		bf = new BooleanFieldEditor(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, Messages.JRExporterPreferencePage_0,
 				getFieldEditorParent());
 		addField(bf);
 
-		// Eventually create the extensions for the page
-		super.createFieldEditors();
 	}
 
 	public static void getDefaults(IPreferenceStore store) {
-		store.setDefault(WriterExporterOutput.PROPERTY_CHARACTER_ENCODING,
-				Misc.nvl(PropertiesHelper.DPROP.getProperty(WriterExporterOutput.PROPERTY_CHARACTER_ENCODING),
-						FileUtils.UTF8_ENCODING)); // $NON-NLS-1$
+		store.setDefault(WriterExporterOutput.PROPERTY_CHARACTER_ENCODING, Misc.nvl(
+				PropertiesHelper.DPROP.getProperty(WriterExporterOutput.PROPERTY_CHARACTER_ENCODING), FileUtils.UTF8_ENCODING)); // $NON-NLS-1$
 		store.setDefault(ReportExportConfiguration.PROPERTY_IGNORE_PAGE_MARGINS,
 				PropertiesHelper.DPROP.getBooleanProperty(ReportExportConfiguration.PROPERTY_IGNORE_PAGE_MARGINS));
 		store.setDefault(CommonExportConfiguration.PROPERTY_EXPORT_CONFIGURATION_OVERRIDE_REPORT_HINTS,
-				PropertiesHelper.DPROP.getBooleanProperty(
-						CommonExportConfiguration.PROPERTY_EXPORT_CONFIGURATION_OVERRIDE_REPORT_HINTS));
+				PropertiesHelper.DPROP
+						.getBooleanProperty(CommonExportConfiguration.PROPERTY_EXPORT_CONFIGURATION_OVERRIDE_REPORT_HINTS));
 
+		store.setDefault(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI, false);
+		store.setDefault(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA, false);
+		store.setDefault(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML, false);
 		store.setDefault(COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, false);
 
 		store.setDefault(EXPORTER_OVERWRITE, OVERWRITE_STATE.ASK_EVERYTIME.toString());
@@ -111,8 +126,7 @@ public class JRExporterPreferencePage extends FieldEditorOverlayPage {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
 	}

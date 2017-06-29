@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.dnd;
 
@@ -9,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.Assert;
@@ -22,20 +32,18 @@ import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescript
 import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.model.AFileResource;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MJar;
 import com.jaspersoft.studio.server.model.MJrxml;
 import com.jaspersoft.studio.server.model.MRDataAdapter;
 import com.jaspersoft.studio.server.model.MRFont;
 import com.jaspersoft.studio.server.model.MRImage;
 import com.jaspersoft.studio.server.model.MRStyleTemplate;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MResourceBundle;
 import com.jaspersoft.studio.server.model.MXmlFile;
 import com.jaspersoft.studio.server.utils.ResourceDescriptorUtil;
 import com.jaspersoft.studio.utils.ImageUtils;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * Helper class to manage DND operations related to the Server Repository.

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish;
 
@@ -10,40 +18,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.export.AExporter;
 import com.jaspersoft.studio.server.export.JrxmlExporter;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.model.AMJrxmlContainer;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MInputControl;
 import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.model.server.ServerProfile;
 import com.jaspersoft.studio.server.utils.RDUtil;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class PublishUtil {
 	public static final String KEY_PUBLISH2JSS_DATA = "PUBLISH2JSS_DATA"; //$NON-NLS-1$
 
 	public static List<AMResource> getResources(AMResource parent, IProgressMonitor monitor,
 			JasperReportsConfiguration jrConfig) {
-		List<AMResource> resources = (List<AMResource>) jrConfig.get(KEY_PUBLISH2JSS_DATA);
-		if (resources == null)
-			jrConfig.put(KEY_PUBLISH2JSS_DATA, new ArrayList<AMResource>());
+		List<AMResource> resources = jrConfig.get(KEY_PUBLISH2JSS_DATA, new ArrayList<AMResource>());
+		jrConfig.put(KEY_PUBLISH2JSS_DATA, resources);
 		loadPreferences(parent, monitor, (IFile) jrConfig.get(FileUtils.KEY_FILE), resources);
 		return resources;
 	}
@@ -59,9 +65,6 @@ public class PublishUtil {
 					ResourceDescriptor rd = new ResourceDescriptor();
 					rd.setName(jrxmln.substring((unit + WSClientHelper._FILES).length()));
 					rd.setLabel(IDStringValidator.safeChar(rd.getName()));
-					String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-					if (!Misc.isNullOrEmpty(d))
-						rd.setDescription(d);
 					rd.setUriString(jrxmln);
 					rd.setParentFolder(unit + "_files");
 					rd.setUriString(rd.getParentFolder() + "/" + rd.getName());
@@ -84,9 +87,6 @@ public class PublishUtil {
 		ResourceDescriptor mainr = new ResourceDescriptor();
 		mainr.setName(Messages.JrxmlPublishAction_defaultresourcename);
 		mainr.setLabel(Messages.JrxmlPublishAction_defaultresourcelabel);
-		String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-		if (!Misc.isNullOrEmpty(d))
-			mainr.setDescription(d);
 		mainr.setWsType(ResourceDescriptor.TYPE_JRXML);
 		mainr.setIsNew(true);
 		mainr.setMainReport(true);
@@ -97,32 +97,10 @@ public class PublishUtil {
 		return mainr;
 	}
 
-	public static void initRUnitName(AMJrxmlContainer runit, JasperDesign jd, JasperReportsConfiguration jConf) {
+	public static void initRUnitName(AMJrxmlContainer runit, JasperDesign jd) {
 		if (runit == null || jd == null)
 			return;
-		String name = getRUnitNAme(jd, jConf);
-		initResourceName(name, runit.getValue());
-		if (Misc.isNullOrEmpty(runit.getValue().getDescription())) {
-			String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-			if (!Misc.isNullOrEmpty(d))
-				runit.getValue().setDescription(d);
-			if (runit instanceof MReportUnit) {
-				d = jd.getProperty(AExporter.COM_JASPERSOFT_STUDIO_REPORT_UNIT_DESCRIPTION);
-				if (!Misc.isNullOrEmpty(d))
-					runit.getValue().setDescription(d);
-			}
-		}
-	}
-
-	public static String getRUnitNAme(JasperDesign jd, JasperReportsConfiguration jConf) {
-		String name = jd.getName();
-		IFile f = (IFile) jConf.get(FileUtils.KEY_FILE);
-		if (f != null) {
-			name = f.getName();
-			if (!Misc.isNullOrEmpty(f.getFileExtension()))
-				name = name.substring(0, name.length() - f.getFileExtension().length() - 1);
-		}
-		return name;
+		initResourceName(jd.getName(), runit.getValue());
 	}
 
 	public static void setChild(ResourceDescriptor rd, ResourceDescriptor child) {
@@ -170,23 +148,18 @@ public class PublishUtil {
 			if (ovw == null)
 				ovw = OverwriteEnum.IGNORE;
 			else if (ovw.equals(OverwriteEnum.IGNORE))
-				;// ovw = OverwriteEnum.OVERWRITE;
+				ovw = OverwriteEnum.OVERWRITE;
 			else if (ovw.equals(OverwriteEnum.OVERWRITE))
 				ovw = OverwriteEnum.IGNORE;
-
 			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".overwrite"), ovw.getValue());
-			if (ovw.equals(OverwriteEnum.ONLY_EXPRESSION)) {
-				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".expression"),
-						popt.getExpression());
-			} else {
-				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"),
-						popt.getPublishMethod().toString());
-				if (popt.getReferencedResource() != null)
-					ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"),
-							popt.getReferencedResource().getUriString());
-				else
-					ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"), null);
-			}
+
+			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"),
+					popt.getPublishMethod().toString());
+			if (popt.getReferencedResource() != null)
+				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"),
+						popt.getReferencedResource().getUriString());
+			else
+				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"), null);
 		}
 	}
 
@@ -202,8 +175,9 @@ public class PublishUtil {
 			List<AMResource> files) {
 		if (parent == null || parent.getValue() == null || parent.getValue().getIsNew())
 			return;
-		for (AMResource f : files)
+		for (AMResource f : files) {
 			loadPreferences(monitor, ifile, f);
+		}
 	}
 
 	public static boolean loadPreferences(IProgressMonitor monitor, IFile ifile, AMResource f) {
@@ -216,28 +190,20 @@ public class PublishUtil {
 				exists = true;
 				popt.setOverwrite(OverwriteEnum.getByValue(ovw));
 			}
-			if (ovw.equals(OverwriteEnum.ONLY_EXPRESSION.getValue())) {
-				String exp = ifile
-						.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".expression"));
-				if (exp != null)
-					popt.setExpression(exp);
-			} else {
-				String ref = ifile.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"));
-				if (ref != null) {
-					exists = true;
-					popt.setPublishMethod(ResourcePublishMethod.valueOf(ref));
-					String path = ifile
-							.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"));
-					if (path != null) {
-						ResourceDescriptor rd = new ResourceDescriptor();
-						rd.setParentFolder(RDUtil.getParentFolder(path));
-						rd.setUriString(path);
-						rd.setWsType(f.getValue().getWsType());
-						popt.setReferencedResource(
-								WSClientHelper.getResource(monitor, f, rd, FileUtils.createTempFile("tmp", "")));
-					} else
-						popt.setPublishMethod(ResourcePublishMethod.LOCAL);
-				}
+			String ref = ifile.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"));
+			if (ref != null) {
+				exists = true;
+				popt.setPublishMethod(ResourcePublishMethod.valueOf(ref));
+				String path = ifile.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"));
+				if (path != null) {
+					ResourceDescriptor rd = new ResourceDescriptor();
+					rd.setParentFolder(RDUtil.getParentFolder(path));
+					rd.setUriString(path);
+					rd.setWsType(f.getValue().getWsType());
+					popt.setReferencedResource(
+							WSClientHelper.getResource(monitor, f, rd, FileUtils.createTempFile("tmp", "")));
+				} else
+					popt.setPublishMethod(ResourcePublishMethod.LOCAL);
 			}
 		} catch (Exception e) {
 			popt.setPublishMethod(ResourcePublishMethod.LOCAL);

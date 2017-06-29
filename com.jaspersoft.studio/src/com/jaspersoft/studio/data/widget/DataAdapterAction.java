@@ -1,11 +1,19 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.widget;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import net.sf.jasperreports.eclipse.viewer.IReportViewerListener;
+import net.sf.jasperreports.eclipse.viewer.ReportViewerEvent;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;
@@ -22,16 +30,10 @@ import com.jaspersoft.studio.data.DataAdapterManager;
 import com.jaspersoft.studio.data.storage.ADataAdapterStorage;
 import com.jaspersoft.studio.data.storage.JRDefaultDataAdapterStorage;
 import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.preferences.execution.ReportExecutionPreferencePage;
-
-import net.sf.jasperreports.eclipse.viewer.IReportViewerListener;
-import net.sf.jasperreports.eclipse.viewer.ReportViewerEvent;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
 
 /**
  * 
- * Action used to show a submenu with all the data adapter and allowing to
- * select them
+ * Action used to show a submenu with all the data adapter and allowing to select them
  * 
  */
 public class DataAdapterAction extends Action implements IMenuCreator, PropertyChangeListener, IReportViewerListener {
@@ -48,18 +50,15 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 
 	private DataAdapterDescriptor selectedDA;
 
-	private String language;
-
 	/**
 	 * Create the action
 	 * 
 	 * @param editor
-	 *            the current runnable editor
+	 *          the current runnable editor
 	 * @param dastorages
-	 *            the data adapter storages
+	 *          the data adapter storages
 	 * @param dataset
-	 *            Some data adapter are available or not depending from the
-	 *            properties of the current dataset
+	 *          Some data adapter are available or not depending from the properties of the current dataset
 	 */
 	public DataAdapterAction(IDataAdapterRunnable editor, ADataAdapterStorage[] dastorages, JRDesignDataset dataset) {
 		super();
@@ -74,13 +73,12 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 	}
 
 	/**
-	 * Create the action, as dataset to get the dataset relative adapters it
-	 * uses the main one
+	 * Create the action, as dataset to get the dataset relative adapters it uses the main one
 	 * 
 	 * @param editor
-	 *            the current runnable editor
+	 *          the current runnable editor
 	 * @param dastorages
-	 *            the data adapter storages
+	 *          the data adapter storages
 	 */
 	public DataAdapterAction(IDataAdapterRunnable editor, ADataAdapterStorage[] dastorages) {
 		super();
@@ -92,10 +90,6 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 		setToolTipText(Messages.DataAdapterAction_2);
 		this.editor = editor;
 		this.dastorages = dastorages;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
 	}
 
 	public JRDesignDataset getCurrentDataset() {
@@ -110,16 +104,11 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 	}
 
 	/**
-	 * Run the report with a specific dataset, selected in the menu. If the
-	 * dataset selected is the JR default one run the report with null as
-	 * dataset, an JasperReports will automatically fallback on the default one
+	 * Run the report with a specific dataset, selected in the menu. If the dataset selected is the JR default one run the
+	 * report with null as dataset, an JasperReports will automatically fallback on the default one
 	 */
 	@Override
 	public void run() {
-		String runonchange = editor.getConfiguration()
-				.getProperty(ReportExecutionPreferencePage.JSS_RUNREPORTONDACHANGE, "true");
-		if (runonchange.equals("false"))
-			return;
 		JRDesignDataset currentDataset = getCurrentDataset();
 		if (currentDataset == null) {
 			editor.runReport(null);
@@ -163,19 +152,6 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 				for (int i = 0; i < dastorages.length; i++) {
 					final ADataAdapterStorage s = dastorages[i];
 					for (DataAdapterDescriptor d : s.getDataAdapterDescriptors(currentDataset)) {
-						if (language != null) {
-							String[] langs = d.getLanguages();
-							if (langs != null) {
-								boolean exists = false;
-								for (String l : langs)
-									if (language.equalsIgnoreCase(l) || l.equals("*")) {
-										exists = true;
-										break;
-									}
-								if (!exists)
-									continue;
-							}
-						}
 						final MenuItem m1 = new MenuItem(listMenu, SWT.PUSH);
 						m1.setImage(d.getIcon(16));
 						m1.addSelectionListener(listener);
@@ -262,8 +238,7 @@ public class DataAdapterAction extends Action implements IMenuCreator, PropertyC
 	/**
 	 * Check if the selected is the default one
 	 * 
-	 * @return true if the selected is the default one (and the default one is
-	 *         set), false otherwise
+	 * @return true if the selected is the default one (and the default one is set), false otherwise
 	 */
 	public boolean isDefaultDASelected() {
 		JRDefaultDataAdapterStorage defaultStorage = DataAdapterManager.getJRDefaultStorage(editor.getConfiguration());

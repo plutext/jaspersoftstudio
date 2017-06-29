@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action;
 
@@ -25,9 +29,8 @@ import com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 /**
- * Action to switch the preview format of the Preview area. This is not a real
- * action since the run method is empty. It instead create a separated menu with
- * the appropriated selection listener to do the switch. However it must extend
+ * Action to switch the preview format of the Preview area. This is not a real action since the run method is empty. It
+ * instead create a separated menu with the appropriated selection listener to do the switch. However it must extend
  * action to be contributed
  * 
  * @author Orlandin Marco
@@ -56,7 +59,7 @@ public class PreviewFormatDropDownAction extends Action implements IMenuCreator 
 	 * Create the action
 	 * 
 	 * @param jConfig
-	 *            the jasper configuration of the current report
+	 *          the jasper configuration of the current report
 	 */
 	public PreviewFormatDropDownAction(JasperReportsConfiguration jConfig) {
 		setText(Messages.ViewSettingsDropDownAction_settingsName);
@@ -86,9 +89,8 @@ public class PreviewFormatDropDownAction extends Action implements IMenuCreator 
 	}
 
 	/**
-	 * Generate the contextual menu that list all the available data preview
-	 * formats and when one of them is choose then it is set on the preview
-	 * editor. The selected one is also highlighted inside the list
+	 * Generate the contextual menu that list all the available data preview formats and when one of them is choose then
+	 * it is set on the preview editor. The selected one is also highlighted inside the list
 	 */
 	@Override
 	public Menu getMenu(Menu parent) {
@@ -111,9 +113,9 @@ public class PreviewFormatDropDownAction extends Action implements IMenuCreator 
 	 * Create a single menu item of the list
 	 * 
 	 * @param key
-	 *            the key of the preview output format that this item select
+	 *          the key of the preview output format that this item select
 	 * @param editor
-	 *            The jrxml editor
+	 *          The jrxml editor
 	 */
 	private void creteItem(final String key, final AbstractJRXMLEditor editor) {
 		final MenuItem item = new MenuItem(menu, SWT.CHECK);
@@ -138,25 +140,36 @@ public class PreviewFormatDropDownAction extends Action implements IMenuCreator 
 	private void createOutputMenu(Menu parent) {
 		AbstractJRXMLEditor editor = getEditor();
 		PreviewContainer preview = (PreviewContainer) editor.getEditor(AbstractJRXMLEditor.PAGE_PREVIEW);
-		// Don't show if the current editor has not a preview area
-		if (preview != null) {
+		//Don't show if the current editor has not a preview area
+		if (preview != null){
 			MenuItem root = new MenuItem(parent, SWT.CASCADE);
 			menu = new Menu(parent);
 			root.setMenu(menu);
 			root.setText(Messages.ViewSettingsDropDownAction_previewFormatMenu);
-
+			
 			viewFactory = preview.getViewFactory();
 			for (String key : viewFactory.getKeys()) {
 				if (viewFactory.isSeparator(key)) {
-					if (key.equals(ViewsFactory.HTML_NO_INTERACTIVITY) && !jConfig.getPropertyBoolean(
-							JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, false))
+					if (key.equals(ViewsFactory.EXCEL_API)
+							&& !jConfig
+									.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI, false))
+						continue;
+					if (key.equals(ViewsFactory.X_HTML)
+							&& !jConfig.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML, false))
+						continue;
+					if (key.equals(ViewsFactory.HTML_NO_INTERACTIVITY)
+							&& !jConfig.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, false))
+						continue;
+					if (key.equals(ViewsFactory.XLS_METADATA)
+							&& !jConfig.getPropertyBoolean(
+									JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA, false))
 						continue;
 					new MenuItem(menu, SWT.SEPARATOR);
 				} else {
 					creteItem(key, editor);
 				}
 			}
-
+	
 			menu.addMenuListener(new MenuAdapter() {
 				@Override
 				public void menuShown(MenuEvent e) {

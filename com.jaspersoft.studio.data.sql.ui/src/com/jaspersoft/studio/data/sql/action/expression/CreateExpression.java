@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.action.expression;
 
@@ -34,6 +42,7 @@ import com.jaspersoft.studio.data.sql.widgets.Factory;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.INode;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 
@@ -132,7 +141,7 @@ public class CreateExpression extends AAction {
 	}
 
 	protected void showDialog(MExpression mexpr) {
-		EditExpressionDialog dialog = new EditExpressionDialog(treeViewer.getControl().getShell(), designer);
+		EditExpressionDialog dialog = new EditExpressionDialog(UIUtils.getShell());
 		dialog.setValue(mexpr);
 		if (dialog.open() == Dialog.OK) {
 			mexpr.setOperator(Operator.getOperator((dialog.getOperator())));

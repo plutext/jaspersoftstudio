@@ -1,13 +1,11 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report.file;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jface.action.Action;
@@ -23,10 +21,8 @@ import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.preview.view.APreview;
 import com.jaspersoft.studio.editor.preview.view.report.IURLViewable;
 import com.jaspersoft.studio.editor.preview.view.report.html.URLContributionItem;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class TextFileViewer extends APreview implements IURLViewable {
 	protected StyledText browser;

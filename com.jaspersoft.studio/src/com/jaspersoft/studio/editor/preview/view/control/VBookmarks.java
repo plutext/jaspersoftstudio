@@ -1,10 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.control;
 
 import java.util.List;
+
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.PrintBookmark;
+import net.sf.jasperreports.engine.base.BasePrintBookmark;
 
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -30,12 +42,8 @@ import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.preview.PreviewJRPrint;
 import com.jaspersoft.studio.editor.preview.view.APreview;
 import com.jaspersoft.studio.editor.preview.view.report.swt.SWTViewer;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.PrintBookmark;
-import net.sf.jasperreports.engine.base.BasePrintBookmark;
 
 public class VBookmarks extends APreview {
 	private Composite composite;

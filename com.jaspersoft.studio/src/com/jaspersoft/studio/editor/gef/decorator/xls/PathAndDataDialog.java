@@ -1,11 +1,27 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.decorator.xls;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.ATitledDialog;
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.JRPropertyExpression;
+import net.sf.jasperreports.engine.JRTextElement;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.design.JRDesignTextField;
+import net.sf.jasperreports.engine.export.JRXlsAbstractMetadataExporter;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -30,20 +46,8 @@ import com.jaspersoft.studio.model.text.MTextField;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedEvent;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
 import com.jaspersoft.studio.swt.widgets.WTextExpression;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
-
-import net.sf.jasperreports.eclipse.ui.ATitledDialog;
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRExpression;
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.JRPropertyExpression;
-import net.sf.jasperreports.engine.JRTextElement;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JRDesignStaticText;
-import net.sf.jasperreports.engine.design.JRDesignTextField;
-import net.sf.jasperreports.engine.export.JRXlsAbstractMetadataExporter;
 
 /**
  * A simple dialog to ask a string value to the user

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jaspersoft.studio.community-edition</groupId>
 	<artifactId>aggregator</artifactId>
-	<version>6.4.2-SNAPSHOT</version>
+	<version>6.2.3.final</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -76,8 +76,8 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 

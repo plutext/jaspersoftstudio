@@ -1,11 +1,21 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.resource.page.selector;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -39,10 +49,8 @@ import com.jaspersoft.studio.server.protocol.Feature;
 import com.jaspersoft.studio.server.utils.IPageCompleteListener;
 import com.jaspersoft.studio.server.wizard.find.FindResourceJob;
 import com.jaspersoft.studio.server.wizard.resource.ResourceWizard;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.inputhistory.InputHistoryCache;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public abstract class ASelector {
 	protected Button brRepo;

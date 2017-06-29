@@ -1,6 +1,12 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (c) 2014 Massimo Rabbi.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Massimo Rabbi <mrabbi@users.sourceforge.net> - initial API and implementation
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.map.ui;
 
@@ -18,6 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.NumberValidator;
 import com.jaspersoft.studio.widgets.map.MapActivator;
 import com.jaspersoft.studio.widgets.map.MapWidgetConstants;
@@ -27,8 +34,6 @@ import com.jaspersoft.studio.widgets.map.core.MapType;
 import com.jaspersoft.studio.widgets.map.support.BaseJavaMapSupport;
 import com.jaspersoft.studio.widgets.map.support.GMapUtils;
 import com.jaspersoft.studio.widgets.map.support.JavaMapSupport;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * This class implements the support for the Google Map component. The panel
