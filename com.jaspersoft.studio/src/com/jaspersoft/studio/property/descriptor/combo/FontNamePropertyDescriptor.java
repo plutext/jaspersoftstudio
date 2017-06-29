@@ -11,7 +11,7 @@ import com.jaspersoft.studio.help.HelpSystem;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
 import com.jaspersoft.studio.property.section.AbstractSection;
 import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
-import com.jaspersoft.studio.property.section.widgets.SPFontNamePopUp;
+import com.jaspersoft.studio.property.section.widgets.SPFontNameCombo;
 
 /**
  * Property descriptor for a combo popup that represent a font
@@ -31,7 +31,7 @@ public class FontNamePropertyDescriptor extends RWCComboPropertyDescriptor {
 
 	@Override
 	public ASPropertyWidget<RWCComboPropertyDescriptor> createWidget(Composite parent, AbstractSection section) {
-		return new SPFontNamePopUp<RWCComboPropertyDescriptor>(parent, section, this);
+		return new SPFontNameCombo<RWCComboPropertyDescriptor>(parent, section, this);
 	}
 		
 	@Override

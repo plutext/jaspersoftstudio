@@ -26,7 +26,6 @@ import com.jaspersoft.studio.model.MReport;
 import com.jaspersoft.studio.model.band.MBand;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 
 /**
@@ -187,7 +186,7 @@ public class PastableElements extends AbstractPastableObject {
 			CompoundCommand copyAndSelectElementsCommand = new CompoundCommand();
 			JSSCompoundCommand copyElementsCommand = new JSSCompoundCommand(null);
 			copyAndSelectElementsCommand.add(copyElementsCommand);
-			List<JRChild> elementsToSelect = new ArrayList<JRChild>();
+			List<JRDesignElement> elementsToSelect = new ArrayList<JRDesignElement>();
 			for(ICopyable node : getNotNestedNodes()){
 				ANode parent = parentsMap.get(node);
 				copyElementsCommand.setReferenceNodeIfNull(parent);

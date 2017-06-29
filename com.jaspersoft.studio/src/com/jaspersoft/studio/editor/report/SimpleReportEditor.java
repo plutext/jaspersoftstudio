@@ -42,8 +42,6 @@ import com.jaspersoft.studio.editor.outline.actions.CreateParameterSetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateSortFieldAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
 import com.jaspersoft.studio.editor.outline.actions.DeleteGroupReportAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.editor.palette.JDPaletteFactory;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.IContainer;
@@ -149,12 +147,6 @@ public class SimpleReportEditor extends ReportEditor {
 					id = CreateVariableAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 	
-					id = SortVariablesAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = SortParametersAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
 					id = CreateParameterAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 					

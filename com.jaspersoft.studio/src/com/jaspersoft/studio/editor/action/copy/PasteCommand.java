@@ -30,7 +30,6 @@ import com.jaspersoft.studio.model.style.MConditionalStyle;
 import com.jaspersoft.studio.model.style.MStyle;
 import com.jaspersoft.studio.model.style.command.CreateConditionalStyleCommand;
 
-import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.JRCloneable;
 import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -91,7 +90,7 @@ public class PasteCommand extends Command {
 			return;
 		createdNodes = 0;
 		createdElements = new ArrayList<INode>();
-		List<JRChild> createdDesignElements = new ArrayList<JRChild>();
+		List<JRDesignElement> createdDesignElements = new ArrayList<JRDesignElement>();
 		for (ANode node : list.keySet()) {
 			JSSCompoundCommand cmd = new JSSCompoundCommand(node);
 			// create new Node put, clone into it
@@ -123,6 +122,10 @@ public class PasteCommand extends Command {
 					} else if (n instanceof MGraphicElement) {
 						MGraphicElement mge = (MGraphicElement) n;
 						JRDesignElement de = (JRDesignElement) mge.getValue();
+						if (parent == node.getParent()) {
+							de.setX(de.getX() + 5);
+							de.setY(de.getY() + 5);
+						}
 						rect = mge.getBounds();
 						rect.setLocation(de.getX(), de.getY());
 					}
@@ -146,20 +149,13 @@ public class PasteCommand extends Command {
 						//Look it the style factory can resolve the command
 						//FIXME: the style factory and the outline factory should not be binded so tightly
 						//we should resolve the factory looking at the editor
-						FixPositionCommand fixPositionCommand = null;
 						Command cmdc = OutlineTreeEditPartFactory.getCreateCommand((ANode) parent, n, rect, -1);
 						if (cmdc == null){
 							cmdc = StyleTreeEditPartFactory.getCreateCommand((ANode)parent, n, rect, -1);
-						}  else if (n instanceof MGraphicElement){
-							MGraphicElement mge = (MGraphicElement) n;
-							fixPositionCommand = new FixPositionCommand(mge, node.getParent(), (ANode)parent);	
 						}
 						if (cmdc != null) {
 							createdElements.add(n);
 							cmd.add(cmdc);
-							if (fixPositionCommand != null){
-								cmd.add(fixPositionCommand);
-							}
 							createdNodes++;
 						}
 

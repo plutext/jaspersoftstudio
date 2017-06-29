@@ -20,8 +20,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.property.descriptor.combo.RWComboBoxPropertyDescriptor;
 import com.jaspersoft.studio.property.section.AbstractSection;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SPRWCombo<T extends IPropertyDescriptor> extends ASPropertyWidget<T> {
 
@@ -94,10 +93,9 @@ public class SPRWCombo<T extends IPropertyDescriptor> extends ASPropertyWidget<T
 				break;
 			}
 		}
-		if (selection != -1){
+		if (selection != -1)
 			combo.select(selection);
-			combo.setText(items[selection]);
-		}else
+		else
 			combo.setText(Misc.nvl(str));
 		String t = combo.getText();
 		// if (oldSel.x != oldSel.y) {

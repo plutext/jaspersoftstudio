@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report.swt;
 
@@ -101,11 +102,6 @@ public class SWTViewer extends APreview implements IJRPrintable, IPreferencePage
 	}
 
 	protected JasperPrint jrprint;
-
-	@Override
-	public JasperPrint getJrPrint() {
-		return jrprint;
-	}
 
 	public void setJRPRint(Statistics stats, JasperPrint jrprint) throws Exception {
 		setJRPRint(stats, jrprint, false);

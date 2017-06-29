@@ -8,6 +8,10 @@ import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,20 +20,14 @@ import org.eclipse.core.runtime.QualifiedName;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.studio.compatibility.JRXmlWriterHelper;
 import com.jaspersoft.studio.model.INode;
-import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.model.AFileResource;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MJar;
 import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.model.server.ServerProfile;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRExpression;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 public class JrxmlExporter extends AExporter {
 	public static final String PROP_REPORT_ISMAIN = "ireport.jasperserver.report.ismain";
@@ -101,12 +99,8 @@ public class JrxmlExporter extends AExporter {
 			ResourceDescriptor runit = repunit.getValue();
 			if (runit != null)
 				jd.setProperty(AExporter.PROP_REPORTUNIT, runit.getUriString());
-			if (!Misc.isNullOrEmpty(runit.getDescription()))
-				jd.setProperty(AExporter.COM_JASPERSOFT_STUDIO_REPORT_UNIT_DESCRIPTION, runit.getDescription());
 		} else
 			jd.getPropertiesMap().removeProperty(AExporter.PROP_REPORTUNIT);
-		if (!Misc.isNullOrEmpty(res.getValue().getDescription()))
-			jd.setProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION, res.getValue().getDescription());
 	}
 
 	private void getResources(AMResource res, JasperDesign jd) throws Exception {

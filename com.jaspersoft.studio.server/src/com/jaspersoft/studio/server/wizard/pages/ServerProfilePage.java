@@ -106,6 +106,7 @@ import com.jaspersoft.studio.swt.widgets.ClasspathComponent;
 import com.jaspersoft.studio.swt.widgets.WLocale;
 import com.jaspersoft.studio.swt.widgets.WSecretText;
 import com.jaspersoft.studio.swt.widgets.WTimeZone;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.UIUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.WizardEndingStateListener;
@@ -116,7 +117,6 @@ import net.sf.jasperreports.eclipse.ui.validator.NotEmptyIFolderValidator;
 import net.sf.jasperreports.eclipse.util.CastorHelper;
 import net.sf.jasperreports.eclipse.util.FileUtils;
 import net.sf.jasperreports.eclipse.util.HttpUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class ServerProfilePage extends WizardPage implements WizardEndingStateListener {
 	private MServerProfile sprofile;

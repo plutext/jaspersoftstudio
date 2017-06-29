@@ -26,8 +26,7 @@ import com.jaspersoft.studio.data.sql.model.metadata.keys.PrimaryKey;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.MDummy;
 import com.jaspersoft.studio.model.MRoot;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class MetaDataUtil {
 	public synchronized static List<MSqlSchema> readSchemas(

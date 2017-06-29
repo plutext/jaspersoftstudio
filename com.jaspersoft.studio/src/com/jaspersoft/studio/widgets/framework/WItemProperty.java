@@ -18,8 +18,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -33,14 +31,11 @@ import com.jaspersoft.studio.editor.expression.IExpressionContextSetter;
 import com.jaspersoft.studio.property.descriptor.expression.dialog.JRExpressionEditor;
 import com.jaspersoft.studio.property.itemproperty.desc.ItemPropertyBaseLabelProvider;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
-import com.jaspersoft.studio.utils.ImageUtils;
 import com.jaspersoft.studio.widgets.framework.events.ItemPropertyModifiedEvent;
 import com.jaspersoft.studio.widgets.framework.events.ItemPropertyModifiedListener;
 import com.jaspersoft.studio.widgets.framework.manager.ItemPropertyLayout;
 import com.jaspersoft.studio.widgets.framework.manager.ItemPropertyLayoutData;
-import com.jaspersoft.studio.widgets.framework.manager.LazyExpressionLabel;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
-import com.jaspersoft.studio.widgets.framework.ui.IDialogProvider;
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.dialog.ItemPropertyElementDialog;
 import com.jaspersoft.studio.widgets.framework.ui.menu.IMenuProvider;
@@ -64,14 +59,7 @@ import net.sf.jasperreports.engine.design.JRDesignExpression;
  */
 public class WItemProperty extends Composite implements IExpressionContextSetter, IWItemProperty {
 	
-	/**
-	 * Style bit: for only the expression mode on the advance dialog
-	 */
-	public static final int FORCE_EXPRESSION_DIALOG = 1 << 1;
-	
-	/** 
-	 * Suffix for properties requiring a custom simple mode handling 
-	 */
+	/** Suffix for properties requiring a custom simple mode handling */
 	public static final String CUSTOM_SIMPLE_MODE_SUFFIX = "_customSimpleMode";
 
 	/**
@@ -103,7 +91,7 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 	/**
 	 * The label that can be clicked to open the expression editor
 	 */
-	private LazyExpressionLabel expressionEditLabel;
+	private Label expressionEditLabel;
 	
 	/**
 	 * Flag typically set when the widget are writing the value
@@ -176,7 +164,7 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 		}
 
 		//Create the expression label
-		expressionEditLabel = new LazyExpressionLabel(this);
+		expressionEditLabel = new Label(this, SWT.NONE);
 		expressionEditLabel.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -200,14 +188,7 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 
 		//Create the edit expression button
 		btnEditExpression = new Button(this, SWT.FLAT);
-		Image loadedImage = JaspersoftStudioPlugin.getInstance().getImage(BUTTON_ICON_PATH);
-		if (contentLayoutData != null){
-			Point buttonSize = contentLayoutData.getButtonSize();
-			Image resizedImage = ImageUtils.resize(loadedImage, buttonSize.x / 2, buttonSize.y / 2);
-			btnEditExpression.setImage(resizedImage);
-		} else {
-			btnEditExpression.setImage(new Image(loadedImage.getDevice(), loadedImage.getImageData()));
-		}
+		btnEditExpression.setImage(JaspersoftStudioPlugin.getInstance().getImage(BUTTON_ICON_PATH));
 		btnEditExpression.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
@@ -216,17 +197,16 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 
 		});
 
-		//Try to don't use a control listener and relying on SWT events
-		//configureWidgetsLayoutData();
-		
+		configureWidgetsLayoutData();
 		if (widgetDescriptor != null) {
 			String tt = widgetDescriptor.getToolTip();
 			expressionEditLabel.setToolTipText(tt);
-			editorControl.setToolTipText(tt);
-			btnEditExpression.setToolTipText(tt);
+			editorControl.setToolTipText(widgetDescriptor.getToolTip());
+			btnEditExpression.setToolTipText(widgetDescriptor.getToolTip());
 		}
 		
 		setLayout(new ItemPropertyLayout(this, titleLabel, expressionEditLabel, editorControl, btnEditExpression));
+		layout();
 	}
 
 	@Override
@@ -245,7 +225,6 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 	/**
 	 * Sets the layout data information for the custom widget controls.
 	 */
-	@SuppressWarnings("unused")
 	private void configureWidgetsLayoutData() {
 		addControlListener(new ControlAdapter() {
 			@Override
@@ -374,14 +353,7 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 	 * Open the dialog to switch between expression and static value
 	 */
 	protected void handleEditButton() {
-		ItemPropertyElementDialog dialog = null; 
-		//if the property description is a dialog provider use the dialog provided by it
-		if (ipDesc instanceof IDialogProvider){
-			dialog = ((IDialogProvider)ipDesc).getDialog(this);
-		} else {
-			dialog = new ItemPropertyElementDialog(UIUtils.getShell(), ipDesc, this);
-			dialog.setForceExpressionMode(hasForcedExpression());
-		}
+		ItemPropertyElementDialog dialog = new ItemPropertyElementDialog(UIUtils.getShell(), ipDesc, this);
 		if (dialog.open() == Dialog.OK) {
 			setValue(dialog.getStaticValue(), dialog.getExpressionValue());
 		}
@@ -425,8 +397,11 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 		return StandardContextualMenu.INSTANCE;
 	}
 
+	/**
+	 * Update the widget, avoid to re-trigger the set value trough the isUpdating flag
+	 */
 	@Override
-	public void updateWidget(boolean refreshLayout){
+	public void updateWidget() {
 		isUpdating = true;
 		try{
 			ipDesc.update(editorControl, this);
@@ -436,20 +411,11 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 				layout(true, true);
 			} else {
 				expressionEditLabel.setImage(null);
-				if (refreshLayout) layout(true, true);
+				layout(true, true);
 			}
 		} finally {
 			isUpdating = false;
 		}
-	}
-	
-	/**
-	 * Update the widget, avoid to re-trigger the set value trough the isUpdating flag
-	 * This will also re-layout the widget
-	 */
-	@Override
-	public void updateWidget() {
-		updateWidget(true);
 	}
 	
 	@Override
@@ -524,14 +490,6 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 	public void setContentLayoutData(ItemPropertyLayoutData data){
 		Assert.isNotNull(data);
 		this.contentLayoutData = data;
-		Image oldImage = btnEditExpression.getImage();
-		if (oldImage != null && !oldImage.isDisposed()){
-			oldImage.dispose();
-		}
-		Point buttonSize = contentLayoutData.getButtonSize();
-		Image loadedImage = JaspersoftStudioPlugin.getInstance().getImage(BUTTON_ICON_PATH);
-		Image resizedImage = ImageUtils.resize(loadedImage, buttonSize.x / 2, buttonSize.y / 2);
-		btnEditExpression.setImage(resizedImage);
 		layout();
 	}
 	
@@ -543,15 +501,4 @@ public class WItemProperty extends Composite implements IExpressionContextSetter
 	public ItemPropertyLayoutData getContentLayoutData(){
 		return contentLayoutData;
 	}
-	
-	/**
-	 * Check if the elements has the flag to force only the expression editing in the dialog
-	 * 
-	 * @return true if the {@link WItemProperty} was created with the force expression dialog stylebit
-	 * false otherwise
-	 */
-	public boolean hasForcedExpression() {
-		return (getStyle() & FORCE_EXPRESSION_DIALOG) == FORCE_EXPRESSION_DIALOG;
-	}
-
 }

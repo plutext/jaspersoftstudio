@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 
 import com.jaspersoft.studio.data.sql.SQLQueryDesigner;
 import com.jaspersoft.studio.data.sql.Util;
@@ -110,7 +111,7 @@ public class CreateXExpression extends AAction {
 	}
 
 	protected void showDialog(MExpressionX mexpr) {
-		EditExpressionXDialog dialog = new EditExpressionXDialog(treeViewer.getControl().getShell(), designer);
+		EditExpressionXDialog dialog = new EditExpressionXDialog(Display.getDefault().getActiveShell());
 		dialog.setValue(mexpr);
 		if (dialog.open() == Dialog.OK) {
 			mexpr.setFunction(dialog.getFunction());

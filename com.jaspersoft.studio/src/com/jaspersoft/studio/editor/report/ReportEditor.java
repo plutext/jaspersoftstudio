@@ -4,6 +4,7 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -52,8 +53,6 @@ import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpressi
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.IContainer;
 import com.jaspersoft.studio.plugin.ExtensionManager;
@@ -141,12 +140,6 @@ public class ReportEditor extends AbstractVisualEditor {
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
 					id = CreateVariableAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = SortVariablesAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = SortParametersAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
 					id = CreateScriptletAction.ID;

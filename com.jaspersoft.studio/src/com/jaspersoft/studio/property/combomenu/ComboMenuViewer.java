@@ -233,10 +233,6 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void addSelectionListener(ComboItemAction listener) {
 		listeners.add(listener);
-		if (elementList != null && !elementList.isEmpty()) {
-			//rebuild the items with the new listener
-			setItems(elementList);
-		}
 	}
 
 	/**
@@ -409,11 +405,7 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void setItems(ComboItem[] newItems) {
 		elementList = new ArrayList<ComboItem>(Arrays.asList(newItems));
-		if (popupMenu != null){
-			popupMenu.dispose();
-			popupMenu = null;
-		}
-		popupMenu = createPopupMenu();
+		createPopupMenu();
 	}
 
 	/**
@@ -424,11 +416,7 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void setItems(List<ComboItem> newItems) {
 		elementList = newItems;
-		if (popupMenu != null){
-			popupMenu.dispose();
-			popupMenu = null;
-		}
-		popupMenu = createPopupMenu();
+		createPopupMenu();
 	}
 
 	/**

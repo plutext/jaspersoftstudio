@@ -45,11 +45,10 @@ public class HttpUtils {
 				.getProperty(ApacheClientProperties.CREDENTIALS_PROVIDER);
 		for (IProxyData d : net.sf.jasperreports.eclipse.util.HttpUtils.proxyService.select(uri)) {
 			Credentials c = net.sf.jasperreports.eclipse.util.HttpUtils.getCredentials(d);
-			if (c != null && cp != null)
+			if (c != null)
 				cp.setCredentials(new AuthScope(new HttpHost(d.getHost(), d.getPort())), c);
 			clientConfig.property(ClientProperties.PROXY_URI,
-					net.sf.jasperreports.eclipse.util.HttpUtils.getProxyProtocol(d) + "://" + d.getHost() + ":"
-							+ d.getPort());
+					d.getType().toLowerCase() + "://" + d.getHost() + ":" + d.getPort());
 			break;
 		}
 		clientConfigs.put(clientConfig, uri);

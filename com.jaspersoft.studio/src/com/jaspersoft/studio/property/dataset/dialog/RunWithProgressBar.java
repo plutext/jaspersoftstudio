@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.dataset.dialog;
 
@@ -37,10 +38,6 @@ public class RunWithProgressBar implements IRunnableContext {
 		gd.heightHint = 20;
 		pb.setLayoutData(gd);
 		pb.setVisible(false);
-	}
-
-	public ProgressBar getProgressBar() {
-		return pb;
 	}
 
 	public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable)
@@ -96,7 +93,6 @@ public class RunWithProgressBar implements IRunnableContext {
 						setCanceled(true);
 					}
 				});
-				cmp.layout();
 			}
 		}
 

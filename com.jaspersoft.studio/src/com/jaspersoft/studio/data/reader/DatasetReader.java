@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.adapter.DataAdapterParameterContributorFactory;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
@@ -44,7 +44,6 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.ReportContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignGroup;
@@ -225,7 +224,7 @@ public class DatasetReader {
 			// likely "default" value.
 			hm.putAll(jConfig.getJRParameters());
 		}
-		hm = ReportController.resetParameters(hm, jConfig);
+		hm = ReportControler.resetParameters(hm, jConfig);
 		if (maxRecords > 0) {
 			hm.put(JRDesignParameter.REPORT_MAX_COUNT, maxRecords);
 		} else {
@@ -236,16 +235,14 @@ public class DatasetReader {
 
 	public static JasperPrint fillReport(JasperReportsConfiguration jConfig, JRDesignDataset designDataset,
 			DataAdapterDescriptor dataAdapterDesc, JasperReport jrobj, Map<String, Object> hm) throws JRException {
+		if (dataAdapterDesc != null)
+			hm.put(DataAdapterParameterContributorFactory.PARAMETER_DATA_ADAPTER, dataAdapterDesc.getDataAdapter());
 		DataAdapterService das = null;
 		try {
-			if (dataAdapterDesc != null) {
-				hm.put(DataAdapterParameterContributorFactory.PARAMETER_DATA_ADAPTER, dataAdapterDesc.getDataAdapter());
-				ReportContext rc = (ReportContext) hm.get(JRParameter.REPORT_CONTEXT);
-				if (rc == null || !rc.containsParameter(DataCacheHandler.PARAMETER_DATA_CACHE_HANDLER)) {
-					das = DataAdapterServiceUtil.getInstance(new ParameterContributorContext(jConfig, designDataset, hm))
-							.getService(dataAdapterDesc.getDataAdapter());
-					das.contributeParameters(hm);
-				}
+			ReportContext rc = (ReportContext) hm.get(JRParameter.REPORT_CONTEXT);
+			if (rc == null || !rc.containsParameter(DataCacheHandler.PARAMETER_DATA_CACHE_HANDLER)) {
+				das = DataAdapterServiceUtil.getInstance(jConfig).getService(dataAdapterDesc.getDataAdapter());
+				das.contributeParameters(hm);
 			}
 			ModelUtils.replacePropertiesMap(designDataset.getPropertiesMap(), jrobj.getMainDataset().getPropertiesMap());
 

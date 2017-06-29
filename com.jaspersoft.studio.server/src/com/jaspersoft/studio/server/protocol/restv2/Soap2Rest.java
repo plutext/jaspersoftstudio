@@ -52,8 +52,7 @@ import com.jaspersoft.jasperserver.dto.resources.ClientXmlaConnection;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.ResourceFactory;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class Soap2Rest {
 	public static Object getResourceContainer(ARestV2Connection rc, ResourceDescriptor rd) throws ParseException {

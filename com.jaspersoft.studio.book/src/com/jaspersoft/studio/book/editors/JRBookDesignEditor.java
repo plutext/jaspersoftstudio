@@ -49,8 +49,6 @@ import com.jaspersoft.studio.editor.outline.actions.CreateParameterSetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateScriptletAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateSortFieldAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.plugin.ExtensionManager;
 import com.jaspersoft.studio.repository.actions.Separator;
@@ -254,14 +252,6 @@ public class JRBookDesignEditor extends AGraphicEditor {
 		action = new CreateVariableAction(this);
 		registry.registerAction(action);
 		selectionActions.add(CreateVariableAction.ID);
-		
-		action = new SortVariablesAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortVariablesAction.ID);
-		
-		action = new SortParametersAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortParametersAction.ID);
 
 		action = new CreateScriptletAction(this);
 		registry.registerAction(action);

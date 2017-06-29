@@ -25,34 +25,25 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IPropertyEditor;
 import com.jaspersoft.studio.widgets.framework.model.SectionPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-import com.jaspersoft.studio.widgets.framework.ui.BigDecimalPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.CheckboxItemPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.ClassItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ColorPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ComboItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.DoublePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FilePropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.FixedMeasurePropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.FixedNumberMesurePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FloatPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FontFamilyComboPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FontStylePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.IntegerPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.LocaleComboPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.LongPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.MeasureUnitPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.SelectableComboItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.TextPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.TimezoneComboPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.TransparentColorPropertyDescription;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * Factory used to build the {@link ItemPropertyDescription} from a {@link WidgetPropertyDescriptor}. It handle also
@@ -122,19 +113,11 @@ public class WidgetFactory {
 			hardcodedWidgets.put("float", new FloatPropertyDescription());
 			hardcodedWidgets.put("integer", new IntegerPropertyDescription());
 			hardcodedWidgets.put("double", new DoublePropertyDescription());
-			hardcodedWidgets.put("long", new LongPropertyDescription());
-			hardcodedWidgets.put("bigdecimal", new BigDecimalPropertyDescription());
 			hardcodedWidgets.put("text", new TextPropertyDescription<String>());
 			hardcodedWidgets.put("selectable_combo", new SelectableComboItemPropertyDescription<String>());
-			hardcodedWidgets.put("class_combo", new ClassItemPropertyDescription());
 			hardcodedWidgets.put("fontfamily_combo", new FontFamilyComboPropertyDescription());
 			hardcodedWidgets.put("fontstyle_selector", new FontStylePropertyDescription());
 			hardcodedWidgets.put("checkbox_selector", new CheckboxItemPropertyDescription());
-			hardcodedWidgets.put("measureunit", new MeasureUnitPropertyDescription());
-			hardcodedWidgets.put("fixedmeasureunit", new FixedMeasurePropertyDescription());
-			hardcodedWidgets.put("fixednumbermeasureunit", new FixedNumberMesurePropertyDescription());
-			hardcodedWidgets.put("timezone_combo", new TimezoneComboPropertyDescription());
-			hardcodedWidgets.put("locale_combo", new LocaleComboPropertyDescription());
 		}
 		return hardcodedWidgets;
 	}

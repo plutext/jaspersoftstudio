@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,11 +30,8 @@ import com.jaspersoft.studio.server.model.AMJrxmlContainer;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class FindResources {
 
@@ -62,8 +62,8 @@ public class FindResources {
 				if (obj instanceof AMResource) {
 					AMResource m = (AMResource) obj;
 					ResourceDescriptor rd = m.getValue();
-					if (names.containsKey(rd.getName())) {
-						if (names.get(rd.getName()) == rd) {
+					if (names.containsKey(rd.getUriString())) {
+						if (names.get(rd.getUriString()) == rd) {
 							continue;
 						} else {
 							// renaming
@@ -73,10 +73,10 @@ public class FindResources {
 								rd.setName(rd.getName() + "_" + i);
 								rd.setLabel(rd.getLabel() + "_" + i);
 								rd.setUriString(rd.getUriString() + "_" + i);
-							} while (names.containsKey(rd.getName()) && i < 10000);
+							} while (names.containsKey(rd.getUriString()) && i < 10000);
 						}
 					}
-					names.put(rd.getName(), rd);
+					names.put(rd.getUriString(), rd);
 					rs.add(m);
 				}
 			}

@@ -49,15 +49,15 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 	/** The icon descriptor. */
 	private static IIconDescriptor iconDescriptor;
-
+	
 	private static IPropertyDescriptor[] descriptors;
-
+	
 	private static NamedEnumPropertyDescriptor<FooterPositionEnum> positionD;
-
+	
 	private static GroupNameValidator validator;
 
 	private static final Integer CONST_MIN_HEIGHT = new Integer(0);
-
+	
 	/**
 	 * Gets the icon descriptor.
 	 * 
@@ -80,11 +80,11 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	 * Instantiates a new m group.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param jfRield
-	 *            the jf rield
+	 *          the jf rield
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 */
 	public MGroup(ANode parent, JRDesignGroup jfRield, int newIndex) {
 		super(parent, newIndex);
@@ -118,7 +118,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	public String getToolTip() {
 		return getIconDescriptor().getToolTip();
 	}
-
+	
 	@Override
 	public IPropertyDescriptor[] getDescriptors() {
 		return descriptors;
@@ -137,8 +137,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	}
 
 	/**
-	 * Update the reference into the static validator when the actual group is
-	 * edited
+	 * Update the reference into the static validator when the actual group is edited
 	 */
 	public void updateValidator() {
 		validator.setTargetNode(this);
@@ -148,7 +147,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	 * Creates the property descriptors.
 	 * 
 	 * @param desc
-	 *            the desc
+	 *          the desc
 	 */
 	@Override
 	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
@@ -159,8 +158,8 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 		nameD.setDescription(Messages.MGroup_name_description);
 		desc.add(nameD);
 
-		JRExpressionPropertyDescriptor expressionD = new JRExpressionPropertyDescriptor(
-				JRDesignGroup.PROPERTY_EXPRESSION, Messages.common_expression);
+		JRExpressionPropertyDescriptor expressionD = new JRExpressionPropertyDescriptor(JRDesignGroup.PROPERTY_EXPRESSION,
+				Messages.common_expression);
 		expressionD.setDescription(Messages.MGroup_expression_description);
 		desc.add(expressionD);
 
@@ -178,11 +177,6 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 				Messages.MGroup_newPageTitle);
 		stNewPageD.setDescription(Messages.MGroup_newPageDescription);
 		desc.add(stNewPageD);
-
-		CheckBoxPropertyDescriptor stPrevOrfanFooterD = new CheckBoxPropertyDescriptor(
-				JRBaseGroup.PROPERTY_PREVENT_ORPHAN_FOOTER, Messages.MGroup_0);
-		stPrevOrfanFooterD.setDescription(Messages.MGroup_0);
-		desc.add(stPrevOrfanFooterD);
 
 		CheckBoxPropertyDescriptor rPageNumD = new CheckBoxPropertyDescriptor(JRBaseGroup.PROPERTY_RESET_PAGE_NUMBER,
 				Messages.MGroup_pageNumberTitle);
@@ -210,28 +204,24 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	@Override
 	protected Map<String, DefaultValue> createDefaultsMap() {
 		Map<String, DefaultValue> defaultsMap = super.createDefaultsMap();
-
+		
 		defaultsMap.put(JRDesignGroup.PROPERTY_MIN_HEIGHT_TO_START_NEW_PAGE, new DefaultValue(CONST_MIN_HEIGHT, false));
 		defaultsMap.put(JRDesignGroup.PROPERTY_KEEP_TOGETHER, new DefaultValue(Boolean.FALSE, false));
 		defaultsMap.put(JRDesignGroup.PROPERTY_REPRINT_HEADER_ON_EACH_PAGE, new DefaultValue(Boolean.FALSE, false));
 		defaultsMap.put(JRDesignGroup.PROPERTY_RESET_PAGE_NUMBER, new DefaultValue(Boolean.FALSE, false));
 		defaultsMap.put(JRDesignGroup.PROPERTY_START_NEW_COLUMN, new DefaultValue(Boolean.FALSE, false));
 		defaultsMap.put(JRDesignGroup.PROPERTY_START_NEW_PAGE, new DefaultValue(Boolean.FALSE, false));
-		defaultsMap.put(JRDesignGroup.PROPERTY_PREVENT_ORPHAN_FOOTER, new DefaultValue(Boolean.FALSE, false));
-
-		int footerPositionValue = NamedEnumPropertyDescriptor.getIntValue(FooterPositionEnum.NORMAL, NullEnum.NOTNULL,
-				FooterPositionEnum.NORMAL);
+		
+		int footerPositionValue = NamedEnumPropertyDescriptor.getIntValue(FooterPositionEnum.NORMAL, NullEnum.NOTNULL, FooterPositionEnum.NORMAL);
 		defaultsMap.put(JRDesignGroup.PROPERTY_FOOTER_POSITION, new DefaultValue(footerPositionValue, false));
-
+		
 		return defaultsMap;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.
-	 * lang.Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
 	 */
 	public Object getPropertyValue(Object id) {
 		JRDesignGroup jrGroup = (JRDesignGroup) getValue();
@@ -252,8 +242,6 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 			return jrGroup.isReprintHeaderOnEachPage();
 		if (id.equals(JRBaseGroup.PROPERTY_KEEP_TOGETHER))
 			return jrGroup.isKeepTogether();
-		if (id.equals(JRBaseGroup.PROPERTY_PREVENT_ORPHAN_FOOTER))
-			return jrGroup.isPreventOrphanFooter();
 		if (id.equals(JRBaseGroup.PROPERTY_FOOTER_POSITION))
 			return positionD.getIntValue(jrGroup.getFooterPositionValue());
 
@@ -264,19 +252,17 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (JRDesignGroup.PROPERTY_NAME.equals(evt.getPropertyName())) {
 			// Temporary fix for the Community Bug #2991
-			// Should be done on JR-side. Let's keep the cache map of groups in
-			// sync.
+			// Should be done on JR-side. Let's keep the cache map of groups in sync.
 			JRDesignGroup jrGroup = (JRDesignGroup) getValue();
 			JasperDesign design = getJasperDesign();
 			if (design != null) {
 				design.getGroupsMap().remove(evt.getOldValue());
 				design.getGroupsMap().put(jrGroup.getName(), jrGroup);
 				// JRDesignDataset dataset = ModelUtils.getDataset(this);
-				JRVariable groupVar = getJasperDesign().getVariablesMap().get(evt.getOldValue() + "_COUNT"); //$NON-NLS-1$
+				JRVariable groupVar = getJasperDesign().getVariablesMap().get(evt.getOldValue() + "_COUNT");
 				if (groupVar != null) {
-					// This should launch the propertyChange event on the
-					// variable so the map is updated also for it
-					((JRDesignVariable) groupVar).setName(jrGroup.getName() + "_COUNT"); //$NON-NLS-1$
+					// This should launch the propertyChange event on the variable so the map is updated also for it
+					((JRDesignVariable) groupVar).setName(jrGroup.getName() + "_COUNT");
 				}
 			}
 		}
@@ -286,9 +272,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.
-	 * lang.Object, java.lang.Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	public void setPropertyValue(Object id, Object value) {
 		JRDesignGroup jrGroup = (JRDesignGroup) getValue();
@@ -309,8 +293,6 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 			jrGroup.setResetPageNumber((Boolean) value);
 		else if (id.equals(JRDesignGroup.PROPERTY_REPRINT_HEADER_ON_EACH_PAGE))
 			jrGroup.setReprintHeaderOnEachPage((Boolean) value);
-		else if (id.equals(JRDesignGroup.PROPERTY_PREVENT_ORPHAN_FOOTER))
-			jrGroup.setPreventOrphanFooter((Boolean) value);
 		else if (id.equals(JRDesignGroup.PROPERTY_KEEP_TOGETHER))
 			jrGroup.setKeepTogether((Boolean) value);
 		else if (id.equals(JRDesignGroup.PROPERTY_FOOTER_POSITION))
@@ -321,7 +303,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 	 * Creates the jr group.
 	 * 
 	 * @param jrDataset
-	 *            the jr dataset
+	 *          the jr dataset
 	 * @return the jR design group
 	 */
 	public static JRDesignGroup createJRGroup(JRDesignDataset jrDataset) {
@@ -349,7 +331,7 @@ public class MGroup extends APropertyNode implements ICopyable, IDragable {
 		}
 		return super.getAdapter(adapter);
 	}
-
+	
 	@Override
 	public boolean isCuttable(ISelection currentSelection) {
 		return true;

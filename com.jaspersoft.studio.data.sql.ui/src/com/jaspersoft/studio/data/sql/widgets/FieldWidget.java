@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.dialogs.FromTableColumnsDialog;
 import com.jaspersoft.studio.data.sql.model.metadata.MSQLColumn;
 import com.jaspersoft.studio.data.sql.model.query.from.MFromTable;
@@ -30,8 +29,8 @@ public class FieldWidget extends AOperandWidget<FieldOperand> {
 
 	private Text txt;
 
-	public FieldWidget(Composite parent, FieldOperand operand, AQueryDesigner designer) {
-		super(parent, SWT.BORDER, operand, designer);
+	public FieldWidget(Composite parent, FieldOperand operand) {
+		super(parent, SWT.BORDER, operand);
 	}
 
 	@Override

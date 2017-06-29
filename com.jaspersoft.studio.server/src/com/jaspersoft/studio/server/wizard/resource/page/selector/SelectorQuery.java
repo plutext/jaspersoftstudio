@@ -7,10 +7,9 @@ package com.jaspersoft.studio.server.wizard.resource.page.selector;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.jasperserver.dto.resources.ResourceMediaType;
 import com.jaspersoft.studio.server.messages.Messages;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MRQuery;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.server.model.AMResource;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SelectorQuery extends ASelector {
 

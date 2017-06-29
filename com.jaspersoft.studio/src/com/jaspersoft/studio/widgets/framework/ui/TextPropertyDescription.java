@@ -15,14 +15,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.UIUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
+import com.jaspersoft.studio.widgets.framework.manager.WidgetFactory;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class TextPropertyDescription<T> extends AbstractExpressionPropertyDescription<T> {
 	
@@ -61,12 +61,14 @@ public class TextPropertyDescription<T> extends AbstractExpressionPropertyDescri
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		//create the expression  control
-		lazyCreateExpressionControl(wiProp, cmp);
+		cmp.getFirstContainer().setLayout(WidgetFactory.getNoPadLayout(2));
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 		
 		//create the simple control
+		cmp.getSecondContainer().setLayout(WidgetFactory.getNoPadLayout(2));
 		final Text simpleControl =  new Text(cmp.getSecondContainer(), SWT.BORDER);
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.verticalAlignment = SWT.CENTER;
 		simpleControl.setLayoutData(textData);
@@ -90,7 +92,7 @@ public class TextPropertyDescription<T> extends AbstractExpressionPropertyDescri
 				if (UIUtil.isMacAndEclipse4()) {
 					if (((Text) e.getSource()).isDisposed())
 						return;
-					wiProp.updateWidget(false);
+					wiProp.updateWidget();
 				}
 			}
 
@@ -98,10 +100,9 @@ public class TextPropertyDescription<T> extends AbstractExpressionPropertyDescri
 
 		if (isReadOnly()){
 			simpleControl.setEnabled(false);
-		} else {
-			setupContextMenu(simpleControl, wiProp);
 		}
 		
+		setupContextMenu(simpleControl, wiProp);
 		cmp.switchToFirstContainer();
 		return cmp;
 	}
@@ -109,7 +110,6 @@ public class TextPropertyDescription<T> extends AbstractExpressionPropertyDescri
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()){
-			lazyCreateExpressionControl(wip, cmp);
 			Text expressionControl = (Text) cmp.getFirstContainer().getData();
 			super.update(expressionControl, wip);
 			cmp.switchToFirstContainer();

@@ -27,8 +27,6 @@ public class VExporter extends APreview {
 
 	private Composite composite;
 	private ScrolledComposite scompo;
-	private PreferencePage page;
-	private IPreferenceStore pfstore;
 
 	public VExporter(Composite parent, JasperReportsConfiguration jContext) {
 		super(parent, jContext);
@@ -49,6 +47,7 @@ public class VExporter extends APreview {
 		scompo.setExpandHorizontal(true);
 		scompo.setExpandVertical(true);
 		scompo.setAlwaysShowScrollBars(false);
+		scompo.setMinSize(100, 100);
 
 		composite = new Composite(scompo, SWT.BORDER);
 		composite.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -60,6 +59,9 @@ public class VExporter extends APreview {
 
 		return scompo;
 	}
+
+	private PreferencePage page;
+	private IPreferenceStore pfstore;
 
 	public PreferencePage getPreferencePage() {
 		return page;
@@ -80,24 +82,12 @@ public class VExporter extends APreview {
 				page.setPreferenceStore(pfstore);
 				page.createControl(composite);
 				Control pageControl = page.getControl();
-				pageControl.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+				pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 			}
 		}
-		refreshControl();
-	}
-	
-	@Override
-	public Control getControl() {
-		refreshControl();
-		return super.getControl();
-	}
-	
-	private void refreshControl() {
-		composite.pack();
-		scompo.setVisible(true);
-		scompo.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-		scompo.pack();
-		scompo.getParent().layout();
+		composite.layout();
+		scompo.update();
+		scompo.layout();
 	}
 }

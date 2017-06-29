@@ -434,7 +434,6 @@ public class Messages extends NLS {
 	public static String DataAdapterEditorPage_5;
 	public static String DataAdapterEditorPage_7;
 	public static String DataAdapterEditorPage_8;
-	public static String DataAdapterEditorPart_0;
 	public static String DataAdapterEditorPart_testButton;
 	public static String DataAdapterInformationPage_adapterDescriptionLabel;
 	public static String DataAdapterInformationPage_adapterDescriptionTooltip;
@@ -1314,7 +1313,6 @@ public class Messages extends NLS {
 	public static String MGraphicElement_width_description;
 	public static String MGraphicElementLineBox_line_box_description;
 	public static String MGraphicElementLinePen_line_pen_description;
-	public static String MGroup_0;
 	public static String MGroup_expression_description;
 	public static String MGroup_footerPosDescription;
 	public static String MGroup_footerPosTitle;
@@ -1931,8 +1929,6 @@ public class Messages extends NLS {
 	public static String ResourcePage_exportedResourceLabel;
 	public static String ResourcePage_pageDescription;
 	public static String ResourcePage_pageTitle;
-	public static String ResourcePage_templateAlreadyExistMessage;
-	public static String ResourcePage_templateAlreadyExistTitle;
 	public static String ReturnValuesPropertyPage_0;
 	public static String ReturnValuesPropertyPage_1;
 	public static String ReturnValuesPropertyPage_2;
@@ -2436,15 +2432,6 @@ public class Messages extends NLS {
 	public static String ZoomActualAction_0;
 	public static String ZoomActualAction_1;
 	public static String ZoomActualAction_3;
-	 
-	public static String SelectParameterDialog_0;
-	public static String SelectParameterDialog_1;
-	public static String SelectParameterDialog_2;
-	public static String SelectParameterDialog_3;
-	public static String SelectParameterDialog_4;
-	public static String SelectParameterDialog_5;
-	public static String SelectParameterDialog_6;
-	public static String SelectParameterDialog_7;
 
 	private Messages() {
 	}

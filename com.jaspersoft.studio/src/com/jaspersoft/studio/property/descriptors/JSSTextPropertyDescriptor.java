@@ -5,7 +5,6 @@
 package com.jaspersoft.studio.property.descriptors;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -26,7 +25,7 @@ public class JSSTextPropertyDescriptor extends TextPropertyDescriptor implements
 	 * Field to check if the widget should be read only
 	 */
 	protected boolean readOnly;
-
+	
 	private int style = SWT.NONE;
 
 	public JSSTextPropertyDescriptor(Object id, String displayName) {
@@ -42,15 +41,12 @@ public class JSSTextPropertyDescriptor extends TextPropertyDescriptor implements
 
 	@Override
 	public CellEditor createPropertyEditor(Composite parent) {
-		if (!readOnly) {
-			CellEditor editor = new EditableTextCellEditor(parent);
-			if (getValidator() != null) {
-				editor.setValidator(getValidator());
-			}
-			HelpSystem.bindToHelp(this, editor.getControl());
-			return editor;
-		}
-		return new TextCellEditor(parent, SWT.READ_ONLY);
+    CellEditor editor = new EditableTextCellEditor(parent);
+    if (getValidator() != null) {
+    	editor.setValidator(getValidator());
+    }
+		HelpSystem.bindToHelp(this, editor.getControl());
+		return editor;
 	}
 
 	public void setReadOnly(boolean value) {

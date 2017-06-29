@@ -7,6 +7,8 @@ package com.jaspersoft.studio.preferences;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -14,9 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
 import com.jaspersoft.studio.property.descriptor.expression.dialog.JRExpressionEditor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * Field editor for a list of user defined expressions.

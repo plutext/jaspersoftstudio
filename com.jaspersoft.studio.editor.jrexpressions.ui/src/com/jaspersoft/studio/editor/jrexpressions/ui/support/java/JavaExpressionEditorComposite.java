@@ -352,7 +352,6 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 			valueType.setClassType(null);
 		} else {
 			editorArea.setText(expression.getText());
-			editorArea.selectAll();
 			valueType.setClassType(this.expression.getValueClassName());
 		}
 		updateExpressionStatus();

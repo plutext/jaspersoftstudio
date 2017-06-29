@@ -54,7 +54,7 @@ import com.jaspersoft.studio.editor.preview.toolbar.LeftToolBarManager;
 import com.jaspersoft.studio.editor.preview.toolbar.PreviewTopToolBarManager;
 import com.jaspersoft.studio.editor.preview.toolbar.TopToolBarManagerJRPrint;
 import com.jaspersoft.studio.editor.preview.view.APreview;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.editor.preview.view.report.html.ABrowserViewer;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.messages.MessagesByKeys;
@@ -64,11 +64,11 @@ import com.jaspersoft.studio.statistics.UsageStatisticsIDs;
 import com.jaspersoft.studio.swt.toolbar.ToolItemContribution;
 import com.jaspersoft.studio.swt.widgets.CSashForm;
 import com.jaspersoft.studio.utils.JRXMLUtils;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.eclipse.viewer.action.AReportAction;
 import net.sf.jasperreports.eclipse.viewer.action.ZoomActualSizeAction;
 import net.sf.jasperreports.eclipse.viewer.action.ZoomInAction;
@@ -106,7 +106,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	 */
 	private boolean runWhenInitilizing = true;
 
-	private ReportController reportControler;
+	private ReportControler reportControler;
 	
 	protected boolean isParameterDirty = true;
 	
@@ -383,7 +383,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 		tbm.update(true);
 
 		getLeftContainer().populate(cleftcompo, getReportControler().createControls(cleftcompo));
-		getLeftContainer().switchView(null, ReportController.FORM_PARAMETERS);
+		getLeftContainer().switchView(null, ReportControler.FORM_PARAMETERS);
 	}
 
 	private ABrowserViewer jiveViewer;
@@ -430,7 +430,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 			dataDapterToolBarManager.setEnabled(false);
 			leftToolbar.setEnabled(false);
 			getLeftContainer().setEnabled(false);
-			getLeftContainer().switchView(null, ReportController.FORM_PARAMETERS);
+			getLeftContainer().switchView(null, ReportControler.FORM_PARAMETERS);
 
 			// Cache the DataAdapter used for this report only if it is not null.
 			if (myDataAdapter != null) {
@@ -498,9 +498,9 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 			sashform.upHide();
 	}
 
-	public ReportController getReportControler() {
+	public ReportControler getReportControler() {
 		if (reportControler == null)
-			reportControler = new ReportController(this, jrContext);
+			reportControler = new ReportControler(this, jrContext);
 		return reportControler;
 	}
 

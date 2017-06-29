@@ -95,9 +95,6 @@ public class CreateTableCommand extends CreateElementCommand {
 			wizard.setConfig(jConfig, false);
 			dialog.create();
 			if (dialog.open() == Dialog.OK) {
-				if (location == null){
-					location = new Rectangle();
-				}
 				srcNode = wizard.getTable(location.width);
 				addCommands(wizard.getCommands());
 				if (srcNode.getValue() == null)

@@ -50,15 +50,13 @@ public class FrameFigure extends AHandleBoundsFigure implements IModelFigure {
 		if (model == null || !allowsFigureDrawCache()){
 			drawVisitor.visitFrame((JRFrame) jrElement);
 			return;
-		} else {
+		} else if (cachedGraphics == null || model.hasChangedProperty()){
+			model.setChangedProperty(false);
 			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)){
-				model.setChangedProperty(false);	
-				cachedGraphics = getCachedGraphics(oldGraphics);
-				drawVisitor.setGraphics2D(cachedGraphics);
-				drawVisitor.visitFrame((JRFrame) jrElement);
-				drawVisitor.setGraphics2D(oldGraphics);
-			}
+			cachedGraphics = getCachedGraphics(oldGraphics);
+			drawVisitor.setGraphics2D(cachedGraphics);
+			drawVisitor.visitFrame((JRFrame) jrElement);
+			drawVisitor.setGraphics2D(oldGraphics);
 		}
 		cachedGraphics.setGraphics(drawVisitor.getGraphics2d());
 		cachedGraphics.paintCache();

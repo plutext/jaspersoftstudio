@@ -4,7 +4,6 @@
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.ui.gef;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,6 +47,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.wb.swt.Keyboard;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 import com.jaspersoft.studio.data.sql.SQLQueryDesigner;
 import com.jaspersoft.studio.data.sql.Util;
@@ -78,10 +79,9 @@ import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.DialogEnabledCommand;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.util.ModelVisitor;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 
 public class SQLQueryDiagram {
@@ -243,7 +243,7 @@ public class SQLQueryDiagram {
 			if (!Misc.isNullOrEmpty(tbls)) {
 				final List<Table> map = new ArrayList<Table>();
 				try {
-					String[] tables = net.sf.jasperreports.eclipse.util.Misc.decodeBase64String(tbls, FileUtils.LATIN1_ENCODING).split(";"); //$NON-NLS-1$
+					String[] tables = new Base64Decoder(tbls).processString().split(";"); //$NON-NLS-1$
 					for (String t : tables) {
 						String[] tprm = t.split(","); //$NON-NLS-1$
 						Table tbl = new Table();
@@ -315,7 +315,7 @@ public class SQLQueryDiagram {
 							}
 						};
 					}
-				} catch (IOException e) {
+				} catch (Base64FormatException e) {
 					e.printStackTrace();
 				}
 			}
@@ -384,7 +384,7 @@ public class SQLQueryDiagram {
 			@Override
 			public void execute() {
 				if (!firstRun)
-					run = UIUtils.showDeleteConfirmation(viewer.getControl().getShell(),  Messages.SQLQueryDiagram_6);
+					run = UIUtils.showDeleteConfirmation(Messages.SQLQueryDiagram_6);
 				firstRun = true;
 				if (run)
 					super.execute();

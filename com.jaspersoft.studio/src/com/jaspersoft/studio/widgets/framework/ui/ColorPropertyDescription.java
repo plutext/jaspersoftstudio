@@ -59,12 +59,11 @@ public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescr
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionEditor = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionEditor);
 
 		final WColorPicker simpleEditor = new WColorPicker(new AlfaRGB(new RGB(0, 0, 0), 0), cmp.getSecondContainer());
 		cmp.getSecondContainer().setData(simpleEditor);
-		cmp.setSimpleControlToHighlight(simpleEditor);
-		
 		simpleEditor.setHaveTransparency(isTransaprent());
 		simpleEditor.addColorSelectionListener(new ColorSelectionListener() {
 
@@ -86,7 +85,6 @@ public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescr
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();

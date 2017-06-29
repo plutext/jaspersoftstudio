@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model.dataset;
 
@@ -325,8 +326,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 			JRPropertyExpression[] propertyExpressions = jrDataset.getPropertyExpressions();
 			if (propertyExpressions != null)
 				propertyExpressions = propertyExpressions.clone();
-			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDataset), getValue(),
-					ModelUtils.getExpressionContext(this));
+			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDataset), this);
 		}
 		if (id.equals(PROPERTY_MAP))
 			return getPropertiesMapClone(jrDataset);

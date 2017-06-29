@@ -15,7 +15,6 @@ import com.jaspersoft.studio.model.band.MBandGroupFooter;
 import com.jaspersoft.studio.model.band.MBandGroupHeader;
 import com.jaspersoft.studio.properties.view.TabbedPropertySheetPage;
 import com.jaspersoft.studio.property.section.AbstractSection;
-import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
 
 public class BandGroupSection extends AbstractSection {
 	/**
@@ -28,6 +27,8 @@ public class BandGroupSection extends AbstractSection {
 		parent = getWidgetFactory().createSection(parent, "Group Band Properties", false, 2);
 
 		createWidget4Property(parent, JRDesignGroup.PROPERTY_MIN_HEIGHT_TO_START_NEW_PAGE);
+
+		createWidget4Property(parent, JRDesignGroup.PROPERTY_FOOTER_POSITION);
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 3;
@@ -49,13 +50,6 @@ public class BandGroupSection extends AbstractSection {
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = 3;
 		createWidget4Property(parent, JRDesignGroup.PROPERTY_KEEP_TOGETHER, false).getControl().setLayoutData(gd);
-
-		ASPropertyWidget<?> w = createWidget4Property(parent, JRDesignGroup.PROPERTY_PREVENT_ORPHAN_FOOTER, false);
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		w.getControl().setLayoutData(gd);
-
-		createWidget4Property(parent, JRDesignGroup.PROPERTY_FOOTER_POSITION);
 	}
 
 	@Override
@@ -78,6 +72,5 @@ public class BandGroupSection extends AbstractSection {
 		addProvidedProperties(JRDesignGroup.PROPERTY_REPRINT_HEADER_ON_EACH_PAGE, Messages.MGroup_reprintPosition);
 		addProvidedProperties(JRDesignGroup.PROPERTY_RESET_PAGE_NUMBER, Messages.MGroup_pageNumberTitle);
 		addProvidedProperties(JRDesignGroup.PROPERTY_KEEP_TOGETHER, Messages.MGroup_keepTitle);
-		addProvidedProperties(JRDesignGroup.PROPERTY_PREVENT_ORPHAN_FOOTER, Messages.MGroup_0);
 	}
 }

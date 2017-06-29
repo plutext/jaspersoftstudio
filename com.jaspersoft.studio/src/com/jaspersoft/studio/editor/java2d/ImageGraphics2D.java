@@ -65,40 +65,21 @@ public class ImageGraphics2D extends ACachedGraphics {
 	 */
 	public ImageGraphics2D(Graphics2D originalGrpahics) {
 		this.targetGraphics = originalGrpahics;
-		
-		//scale the graphics to the current zoom level and set the rendering hints
-		double scaleX = originalGrpahics.getTransform().getScaleX();
-		double scaleY = originalGrpahics.getTransform().getScaleY();
-		image = new BufferedImage( (int)(targetGraphics.getClipBounds().width*scaleX), (int)(originalGrpahics.getClipBounds().height*scaleY), BufferedImage.TYPE_INT_ARGB);
-		imageGraphics = (Graphics2D)image.createGraphics();
-		imageGraphics.scale(scaleX, scaleY);
-		imageGraphics.setRenderingHints(originalGrpahics.getRenderingHints());
+		image = new BufferedImage(targetGraphics.getClipBounds().width, originalGrpahics.getClipBounds().height, BufferedImage.TYPE_INT_ARGB);
+		imageGraphics = (Graphics2D)image.getGraphics();
 	}
 	
 	public ImageGraphics2D(Graphics2D originalGrpahics, int width, int height) {
 		this.targetGraphics = originalGrpahics;
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		imageGraphics = (Graphics2D)image.createGraphics();
-		
-		//scale the graphics to the current zoom level and set the rendering hints
-		double scaleX = originalGrpahics.getTransform().getScaleX();
-		double scaleY = originalGrpahics.getTransform().getScaleY();
-		imageGraphics.scale(scaleX, scaleY);
+		imageGraphics = (Graphics2D)image.getGraphics();
 	}
 	
 	/**
 	 * Paint the content of the buffered image on the target image
 	 */
 	public void paintCache(){
-		double scaleX = targetGraphics.getTransform().getScaleX();
-		double scaleY = targetGraphics.getTransform().getScaleY();
-		//update the current scale value
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
-		//scale the figure to the image size
-		AffineTransform transform = new AffineTransform();
-		transform.scale(1/scaleX, 1/scaleY);
-		targetGraphics.drawImage(image, transform , null);
+		targetGraphics.drawImage(image, null, null);
 	}
 	
 	/**
@@ -330,9 +311,7 @@ public class ImageGraphics2D extends ACachedGraphics {
 
 	@Override
 	public void setFont(Font font) {
-		//java.awt.Font awtFont = new java.awt.Font(fd.getName(), awtStyle, (int) Math.round(fd.getHeight() * _dpi));
-		Font test = new Font(font.getFontName(), font.getStyle(), font.getSize() * 5);
-		imageGraphics.setFont(test);
+		imageGraphics.setFont(font);
 	}
 
 	@Override

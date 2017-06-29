@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview;
 
@@ -149,7 +150,7 @@ public class PreviewJRPrint extends ABasicEditor {
 				throw new PartInitException("Invalid Input: Must be IFileEditorInput or FileStoreEditorInput"); //$NON-NLS-1$
 			}
 			Statistics stats = new Statistics();
-			if (file.getFileExtension().equalsIgnoreCase("jrpxml")) { //$NON-NLS-1$
+			if (file.getFileExtension().equals(".jrpxml")) { //$NON-NLS-1$
 				setJasperPrint(stats, JRPrintXmlLoader.load(jrContext, in));
 			} else {
 				Object obj = JRLoader.loadObject(jrContext, in);
@@ -243,13 +244,11 @@ public class PreviewJRPrint extends ABasicEditor {
 				public void switchView(Statistics stats, String key) {
 					same = currentViewer == key;
 					currentViewer = key;
-					APreview view = pmap.get(key);
+					// APreview view = pmap.get(key);
 					// topToolBarManager.contributeItems(view);
-					if (view instanceof IJRPrintable) {
-						JasperPrint jp = ((IJRPrintable) view).getJrPrint();
-						if (jp == null)
-							same = false;
-					}
+					// if (!switchRightView(view, stats, this))
+					// return;
+
 					super.switchView(stats, key);
 				}
 

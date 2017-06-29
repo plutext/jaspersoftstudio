@@ -29,9 +29,9 @@ public class EllipseFigure extends LineFigure {
 	 */
 	@Override
 	protected void draw(JSSDrawVisitor drawVisitor, JRElement jrElement) {
-		Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-		if (needRefresh(oldGraphics)){
+		if (cachedGraphics == null || model.hasChangedProperty()){
 			model.setChangedProperty(false);
+			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
 			cachedGraphics = getCachedGraphics(oldGraphics);
 			drawVisitor.setGraphics2D(cachedGraphics);
 			drawVisitor.visitEllipse((JREllipse) jrElement);

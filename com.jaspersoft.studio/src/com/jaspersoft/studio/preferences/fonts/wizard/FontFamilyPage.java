@@ -4,6 +4,10 @@
  ******************************************************************************/
 package com.jaspersoft.studio.preferences.fonts.wizard;
 
+import net.sf.jasperreports.engine.fonts.FontFamily;
+import net.sf.jasperreports.engine.fonts.SimpleFontFace;
+import net.sf.jasperreports.engine.fonts.SimpleFontFamily;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -22,15 +26,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.fonts.FontFamily;
-import net.sf.jasperreports.engine.fonts.SimpleFontFace;
-import net.sf.jasperreports.engine.fonts.SimpleFontFamily;
 
 public class FontFamilyPage extends JSSHelpWizardPage {
 	private static final String BOLDITALIC = "BOLDITALIC"; //$NON-NLS-1$

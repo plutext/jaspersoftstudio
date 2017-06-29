@@ -7,13 +7,14 @@ package com.jaspersoft.studio.data;
 import java.io.IOException;
 
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64Encoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 import com.jaspersoft.studio.prm.ParameterSet;
 import com.jaspersoft.studio.prm.ParameterSetProvider;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 
@@ -88,8 +89,8 @@ public class HttpBuiltInParameterProvider {
 			String str = pstore.getString(ParameterSet.PARAMETER_SETS);
 			if (str != null) {
 				try {
-					str = Misc.decodeBase64String(str, FileUtils.LATIN1_ENCODING);
-				} catch (IOException e) {
+					str = new Base64Decoder(str).processString();
+				} catch (Base64FormatException e) {
 					e.printStackTrace();
 					return;
 				}
@@ -100,11 +101,7 @@ public class HttpBuiltInParameterProvider {
 				}
 			}
 			str = PARAMETERSET_HTTP + (str == null ? "" : "\n" + str);
-			try {
-				pstore.setValue(ParameterSet.PARAMETER_SETS, Misc.encodeBase64String(str, FileUtils.LATIN1_ENCODING));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			pstore.setValue(ParameterSet.PARAMETER_SETS, new Base64Encoder(str).processString());
 		} finally {
 			try {
 				pstore.save();

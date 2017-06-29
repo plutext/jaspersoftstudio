@@ -5,12 +5,13 @@
 package com.jaspersoft.studio.components.map.model.marker.dialog;
  
 
+import net.sf.jasperreports.components.items.ItemProperty;
+
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import net.sf.jasperreports.components.items.ItemProperty;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class TMarkerPropertyLabelProvider extends LabelProvider implements ITableLabelProvider {
 

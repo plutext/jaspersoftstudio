@@ -8,18 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.jaspersoft.studio.data.DataAdapterDescriptor;
-import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.property.dataset.dialog.DataQueryAdapters;
-import com.jaspersoft.studio.property.descriptor.expression.ExprUtil;
-import com.jaspersoft.studio.utils.ModelUtils;
-import com.jaspersoft.templates.ReportBundle;
-import com.jaspersoft.templates.TemplateBundle;
-import com.jaspersoft.templates.TemplateEngine;
-import com.jaspersoft.templates.TemplateEngineException;
-
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRElement;
 import net.sf.jasperreports.engine.JRElementGroup;
@@ -45,6 +34,17 @@ import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.SortFieldTypeEnum;
 import net.sf.jasperreports.engine.type.SortOrderEnum;
+
+import com.jaspersoft.studio.data.DataAdapterDescriptor;
+import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.property.dataset.dialog.DataQueryAdapters;
+import com.jaspersoft.studio.property.descriptor.expression.ExprUtil;
+import com.jaspersoft.studio.utils.Misc;
+import com.jaspersoft.studio.utils.ModelUtils;
+import com.jaspersoft.templates.ReportBundle;
+import com.jaspersoft.templates.TemplateBundle;
+import com.jaspersoft.templates.TemplateEngine;
+import com.jaspersoft.templates.TemplateEngineException;
 
 /**
  * A default template Engine which expect in the settings a dataset with the key "main_dataset", and few other optional
@@ -86,10 +86,6 @@ public class DefaultTemplateEngine implements TemplateEngine {
 		Object sortFieldsValue = settings.get(ORDER_GROUP);
 		createSortFields = sortFieldsValue != null ? (Boolean)sortFieldsValue : false; 
 		if (dataset != null) {
-			//avoid to have a null main dataset
-			if (jdCopy.getMainDesignDataset() == null){
-				jdCopy.setMainDataset(new JRDesignDataset(jContext, true));
-			}
 			jdCopy.getMainDesignDataset().setQuery((JRDesignQuery) dataset.getQuery());
 			for (JRField f : dataset.getFields()) {
 				try {
@@ -208,10 +204,9 @@ public class DefaultTemplateEngine implements TemplateEngine {
 			}
 		}
 		// Remove extra groups...
-		if (!keepExtraGroups && !noLayoutChanges) {
-			int groupFieldsCount = groupFields != null ? groupFields.size() : 0;
-			while (groupFieldsCount < jd.getGroupsList().size()) {
-				jd.removeGroup((JRDesignGroup) jd.getGroupsList().get(groupFieldsCount));
+		if (!keepExtraGroups && !noLayoutChanges && groupFields != null) {
+			while (groupFields.size() < jd.getGroupsList().size()) {
+				jd.removeGroup((JRDesignGroup) jd.getGroupsList().get(groupFields.size()));
 			}
 		}
 

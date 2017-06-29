@@ -142,8 +142,6 @@ import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpressi
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.editor.outline.page.MultiOutlineView;
 import com.jaspersoft.studio.editor.palette.JDPaletteFactory;
 import com.jaspersoft.studio.editor.palette.JSSPaletteContextMenuProvider;
@@ -671,14 +669,6 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		action = new CreateVariableAction(this);
 		registry.registerAction(action);
 		selectionActions.add(CreateVariableAction.ID);
-		
-		action = new SortVariablesAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortVariablesAction.ID);
-		
-		action = new SortParametersAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortParametersAction.ID);
 
 		action = new CreateScriptletAction(this);
 		registry.registerAction(action);

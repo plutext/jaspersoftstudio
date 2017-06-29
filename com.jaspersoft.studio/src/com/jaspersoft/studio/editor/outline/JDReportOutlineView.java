@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.jasperreports.engine.type.BandTypeEnum;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
@@ -79,9 +81,7 @@ import com.jaspersoft.studio.model.parameter.MParameters;
 import com.jaspersoft.studio.model.util.EditPartVisitor;
 import com.jaspersoft.studio.model.variable.MVariables;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * The Class JDReportOutlineView.

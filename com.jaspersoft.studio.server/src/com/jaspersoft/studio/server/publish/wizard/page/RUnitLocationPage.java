@@ -8,6 +8,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -49,11 +54,11 @@ import com.jaspersoft.studio.server.action.resource.RefreshResourcesAction;
 import com.jaspersoft.studio.server.export.AExporter;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.model.AMJrxmlContainer;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.IInputControlsContainer;
 import com.jaspersoft.studio.server.model.MFolder;
 import com.jaspersoft.studio.server.model.MJrxml;
 import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.protocol.Feature;
 import com.jaspersoft.studio.server.publish.FindResources;
@@ -61,15 +66,10 @@ import com.jaspersoft.studio.server.publish.PublishUtil;
 import com.jaspersoft.studio.server.utils.ResourceDescriptorUtil;
 import com.jaspersoft.studio.server.utils.ValidationUtils;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class RUnitLocationPage extends JSSHelpWizardPage {
 	private JasperDesign jDesign;
@@ -139,8 +139,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 		if (isC && firstElement instanceof MFolder) {
 			AMJrxmlContainer runit = getReportUnit();
 			isC = runit instanceof AMJrxmlContainer && runit.getParent() != null;
-			if (!(firstElement instanceof MFolder))
-				isC = bnRunit.getSelection();
 		}
 		return isC;
 	}
@@ -226,9 +224,9 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				boolean selected = bnRunit.getSelection();
 				// Enable/Disable the detail textboxes
-				ruLabel.setEnabled(selected);
-				ruID.setEnabled(selected);
-				ruDescription.setEnabled(selected);
+				// ruLabel.setEnabled(selected);
+				// ruID.setEnabled(selected);
+				// ruDescription.setEnabled(selected);
 
 				reportUnit = selected ? getNewRunit() : getNewJrxml();
 				if (reportUnit.getParent() == null) {
@@ -241,7 +239,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 				setPageComplete(isPageComplete());
 			}
 		});
-		bnRunit.setSelection(true);
 
 		// Report Unit shown label (resource descriptor label)
 		Label lblRepoUnitName = new Label(composite, SWT.NONE);
@@ -318,7 +315,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 		GridData descGD = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		descGD.heightHint = 50;
 		ruDescription.setLayoutData(descGD);
-		ruDescription.setText(""); //$NON-NLS-1$
 		ruDescription.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -330,6 +326,7 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 				setErrorMessage(ValidationUtils.validateDesc(rtext));
 			}
 		});
+		ruDescription.setText(""); //$NON-NLS-1$
 
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -468,8 +465,8 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			return;
 		isRefresh = true;
 		boolean isFolder = obj instanceof MFolder;
-		// bnRunit.setSelection(isFolder);
-		// bnRunit.setEnabled(isFolder);
+		bnRunit.setSelection(isFolder);
+		bnRunit.setEnabled(isFolder);
 		ruLabel.setEnabled(bnRunit.getSelection() && isFolder);
 		ruID.setEnabled(bnRunit.getSelection() && isFolder);
 		ruDescription.setEnabled(bnRunit.getSelection() && isFolder);
@@ -538,7 +535,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			String rUnitNAme = PublishUtil.getRUnitNAme(jDesign, jConfig);
 			ruID.setText(rUnitNAme.replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
 			ruLabel.setText(rUnitNAme);
-			ruDescription.setText(newrunit != null ? Misc.nvl(newrunit.getValue().getDescription()) : "");
 		}
 	}
 
