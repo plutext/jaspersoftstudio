@@ -1,12 +1,10 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
@@ -14,20 +12,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
 
-import net.sf.jasperreports.eclipse.util.Misc;
+public class ComboItemPropertyDescription<T> extends TextPropertyDescription<T> {
 
-public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyDescription<T> {
-
-	/**
-	 * Matrix of n*2 for n elements, the first column of the matrix is the key of the element, the second
-	 * the label
-	 */
 	protected String[][] keyValues;
 
 	public ComboItemPropertyDescription() {
@@ -58,12 +51,13 @@ public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyD
 		return kv;
 	}
 	
-	protected String[] convert2Value(String[][] keyValues) {
+	private String[] convert2Value(String[][] keyValues) {
 		String[] v = new String[keyValues.length];
 		for (int i = 0; i < keyValues.length; i++)
 			v[i] = keyValues[i][1];
 		return v;
 	}
+
 
 	public void handleEdit(Control txt, IWItemProperty wProp) {
 		super.handleEdit(txt, wProp);
@@ -84,11 +78,11 @@ public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		final Combo simpleControl = createComboControl(cmp.getSecondContainer());
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		
 		GridData comboData = new GridData(GridData.FILL_HORIZONTAL);
 		comboData.verticalAlignment = SWT.CENTER;
@@ -96,6 +90,14 @@ public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyD
 		simpleControl.setLayoutData(comboData);
 		
 		simpleControl.setItems(convert2Value(keyValues));
+		simpleControl.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (wiProp.isRefresh())
+					return;
+				handleEdit(simpleControl, wiProp);
+			}
+		});
 		simpleControl.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -107,13 +109,7 @@ public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyD
 				simpleControl.setSelection(p);
 			}
 		});
-		
-		if (isReadOnly()){
-			simpleControl.setEnabled(false);
-		} else {
-			setupContextMenu(simpleControl, wiProp);
-		}
-		
+		setupContextMenu(simpleControl, wiProp);
 		cmp.switchToSecondContainer();
 		return cmp;
 	}
@@ -123,7 +119,6 @@ public class ComboItemPropertyDescription<T> extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		boolean isFallback = false;
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();

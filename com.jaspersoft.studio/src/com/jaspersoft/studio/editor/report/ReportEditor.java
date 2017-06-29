@@ -1,9 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -52,8 +57,6 @@ import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpressi
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.IContainer;
 import com.jaspersoft.studio.plugin.ExtensionManager;
@@ -141,12 +144,6 @@ public class ReportEditor extends AbstractVisualEditor {
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
 					id = CreateVariableAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = SortVariablesAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = SortParametersAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
 					id = CreateScriptletAction.ID;

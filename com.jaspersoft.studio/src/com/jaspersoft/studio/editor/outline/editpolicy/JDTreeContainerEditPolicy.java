@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline.editpolicy;
 
@@ -30,9 +38,9 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 	 * Creates the create command.
 	 * 
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @param index
-	 *            the index
+	 *          the index
 	 * @return the command
 	 */
 	protected Command createCreateCommand(ANode child, int index) {
@@ -43,8 +51,7 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.gef.editpolicies.TreeContainerEditPolicy#getAddCommand(org.
-	 * eclipse.gef.requests.ChangeBoundsRequest)
+	 * org.eclipse.gef.editpolicies.TreeContainerEditPolicy#getAddCommand(org.eclipse.gef.requests.ChangeBoundsRequest)
 	 */
 	@Override
 	protected Command getAddCommand(ChangeBoundsRequest request) {
@@ -67,9 +74,7 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.editpolicies.TreeContainerEditPolicy#getCreateCommand(org
-	 * .eclipse.gef.requests.CreateRequest)
+	 * @see org.eclipse.gef.editpolicies.TreeContainerEditPolicy#getCreateCommand(org.eclipse.gef.requests.CreateRequest)
 	 */
 	@Override
 	protected Command getCreateCommand(CreateRequest request) {
@@ -93,8 +98,8 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.editpolicies.TreeContainerEditPolicy#
-	 * getMoveChildrenCommand(org.eclipse.gef.requests. ChangeBoundsRequest)
+	 * @see org.eclipse.gef.editpolicies.TreeContainerEditPolicy#getMoveChildrenCommand(org.eclipse.gef.requests.
+	 * ChangeBoundsRequest)
 	 */
 	@Override
 	protected Command getMoveChildrenCommand(ChangeBoundsRequest request) {
@@ -112,10 +117,9 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 				return command;
 			} else if (oldIndex <= tempIndex) {
 				tempIndex--;
-			} else
-				tempIndex += i;
-			command.add(OutlineTreeEditPartFactory.getReorderCommand((ANode) child.getModel(),
-					(ANode) getHost().getModel(), tempIndex));
+			}
+			command.add(OutlineTreeEditPartFactory.getReorderCommand((ANode) child.getModel(), (ANode) getHost().getModel(),
+					tempIndex));
 		}
 		return command;
 	}
@@ -124,9 +128,9 @@ public class JDTreeContainerEditPolicy extends TreeContainerEditPolicy {
 	 * Checks if is ancestor.
 	 * 
 	 * @param source
-	 *            the source
+	 *          the source
 	 * @param target
-	 *            the target
+	 *          the target
 	 * @return true, if is ancestor
 	 */
 	protected boolean isAncestor(EditPart source, EditPart target) {

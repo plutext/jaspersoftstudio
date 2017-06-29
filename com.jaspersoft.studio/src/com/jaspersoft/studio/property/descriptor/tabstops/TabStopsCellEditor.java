@@ -1,10 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.tabstops;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -30,10 +37,12 @@ public class TabStopsCellEditor extends EditableDialogCellEditor {
 	@Override
 	protected Object openDialogBox(Control cellEditorWindow) {
 		TabStopsEditor wizard = new TabStopsEditor();
-		wizard.setValue(new ArrayList<TabStop>((List<TabStop>) getValue()));
+		wizard.setValue((List<TabStop>) getValue());
 		WizardDialog dialog = new WizardDialog(cellEditorWindow.getShell(), wizard);
-		if (dialog.open() == Dialog.OK)
+		dialog.create();
+		if (dialog.open() == Dialog.OK) {
 			return wizard.getValue();
+		}
 		return null;
 	}
 

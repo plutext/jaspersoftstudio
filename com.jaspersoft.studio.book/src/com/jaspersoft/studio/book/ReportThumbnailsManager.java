@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.book;
 
@@ -13,7 +21,6 @@ import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
@@ -133,15 +140,10 @@ public class ReportThumbnailsManager {
 	 */
 	public static File findFile(String location, JasperReportsConfiguration context)
 	{
-		// Check if the location is an absolute path or URL one
-		File f = null;
-		try {
-			f = new File(location);
-			if (f.exists()) return f;					
-			f = new File(new URI(location).getPath());
-			if (f.exists()) return f;
-		} catch (URISyntaxException e1) {
-		}
+		// Check if the location is an absolute path...
+		File f = new File(location);
+		if (f.exists()) return f;
+		
 		
 		// Check if the file can be found in the classpath...
 		URL url = context.getClassLoader().getResource(location);

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.utils;
 
@@ -45,11 +53,10 @@ public class HttpUtils {
 				.getProperty(ApacheClientProperties.CREDENTIALS_PROVIDER);
 		for (IProxyData d : net.sf.jasperreports.eclipse.util.HttpUtils.proxyService.select(uri)) {
 			Credentials c = net.sf.jasperreports.eclipse.util.HttpUtils.getCredentials(d);
-			if (c != null && cp != null)
+			if (c != null)
 				cp.setCredentials(new AuthScope(new HttpHost(d.getHost(), d.getPort())), c);
 			clientConfig.property(ClientProperties.PROXY_URI,
-					net.sf.jasperreports.eclipse.util.HttpUtils.getProxyProtocol(d) + "://" + d.getHost() + ":"
-							+ d.getPort());
+					d.getType().toLowerCase() + "://" + d.getHost() + ":" + d.getPort());
 			break;
 		}
 		clientConfigs.put(clientConfig, uri);

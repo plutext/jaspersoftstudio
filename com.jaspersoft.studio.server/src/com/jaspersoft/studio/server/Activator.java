@@ -1,8 +1,18 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server;
+
+import net.sf.jasperreports.eclipse.AbstractJRUIPlugin;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -10,16 +20,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.osgi.framework.BundleContext;
 
-import com.jaspersoft.studio.property.dataset.fields.table.TColumn;
-import com.jaspersoft.studio.property.dataset.fields.table.widget.IWCallback;
-import com.jaspersoft.studio.property.dataset.fields.table.widget.WJRProperty;
-import com.jaspersoft.studio.server.export.AExporter;
-import com.jaspersoft.studio.server.ic.ICParameterContributor;
-import com.jaspersoft.studio.server.ic.ResourcePropertyDescription;
 import com.jaspersoft.studio.server.plugin.ExtensionManager;
-import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
-
-import net.sf.jasperreports.eclipse.AbstractJRUIPlugin;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -42,8 +43,9 @@ public class Activator extends AbstractJRUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-	 * BundleContext )
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -52,8 +54,9 @@ public class Activator extends AbstractJRUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-	 * BundleContext )
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -63,25 +66,14 @@ public class Activator extends AbstractJRUIPlugin {
 	@Override
 	protected void postStartOperations() {
 		super.postStartOperations();
-
-		ICParameterContributor.initMetadata();
-		AExporter.initMetadata();
-		WJRProperty.addCallback(ICParameterContributor.ICPATH, new IWCallback() {
-
-			@Override
-			public ItemPropertyDescription<?> create(TColumn c) {
-				return new ResourcePropertyDescription(c.getPropertyName(), c.getLabel(), c.getDescription(), false,
-						null, c.getValue());
-			}
-		});
-
 		Job initParametersJob = new Job("Init JRS built-in parameters") {
-
+			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				try {
-					JRSBuiltInParameterProvider.init();
-				} catch (Exception ex) {
+					JRSBuiltInParameterProvider.init();	
+				}
+				catch(Exception ex) {
 					logError(ex);
 					return Status.CANCEL_STATUS;
 				}

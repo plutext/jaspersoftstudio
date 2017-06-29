@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.dataset.dialog;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -50,26 +52,20 @@ import com.jaspersoft.studio.data.widget.DataAdapterAction;
 import com.jaspersoft.studio.data.widget.IDataAdapterRunnable;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-import com.jaspersoft.studio.property.dataset.da.DataAdapterUI;
-import com.jaspersoft.studio.property.metadata.PropertyMetadataRegistry;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.annotations.properties.PropertyScope;
 import net.sf.jasperreports.data.DataAdapterService;
 import net.sf.jasperreports.data.DataAdapterServiceUtil;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRQuery;
-import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.query.JRJdbcQueryExecuterFactory;
-import net.sf.jasperreports.properties.PropertyMetadata;
-import net.sf.jasperreports.properties.StandardPropertyMetadata;
 
 public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
@@ -83,23 +79,6 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 	private Color background;
 
 	private IFile file;
-
-	public static void initMetadata() {
-		List<PropertyMetadata> pm = new ArrayList<PropertyMetadata>();
-
-		StandardPropertyMetadata spm = new StandardPropertyMetadata();
-		spm.setName(DEFAULT_DATAADAPTER);
-		spm.setLabel("Data Adapter");
-		spm.setDescription("Last Data Adapter Used.");
-		spm.setValueType("jssDA");
-		List<PropertyScope> scopes = new ArrayList<PropertyScope>();
-		scopes.add(PropertyScope.DATASET);
-		spm.setScopes(scopes);
-		spm.setCategory("net.sf.jasperreports.metadata.property.category:data.source");
-		pm.add(spm);
-
-		PropertyMetadataRegistry.addMetadata(pm);
-	}
 
 	public DataQueryAdapters(Composite parent, JasperReportsConfiguration jConfig, JRDesignDataset newdataset,
 			Color background, IRunnableContext runner) {
@@ -158,28 +137,9 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
 		createQuery(tabFolder);
 		createMappingTools(tabFolder, fsetter);
-		createDataAdapterTab(tabFolder);
 
 		tabFolder.setSelection(0);
 		return tabFolder;
-	}
-
-	private DataAdapterUI daUI;
-
-	private void createDataAdapterTab(final CTabFolder tabFolder) {
-		daUI = new DataAdapterUI();
-		daUI.refreshDaUI(tabFolder, background, jDesign, newdataset, jConfig);
-		newdataset.getPropertiesMap().getEventSupport().addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				String pname = evt.getPropertyName();
-				if (pname.equals(DataQueryAdapters.DEFAULT_DATAADAPTER)
-						|| pname.equals(DataQueryAdapters.DEFAULT_DATAADAPTER)) {
-					daUI.refreshDaUI(tabFolder, background, jDesign, newdataset, jConfig);
-				}
-			}
-		});
 	}
 
 	private void createMappingTools(CTabFolder tabFolder, IFieldSetter fsetter) {
@@ -307,7 +267,7 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
 	public Composite createToolbar(Composite parent) {
 		final Composite comp = new Composite(parent, SWT.NONE);
-		comp.setLayout(new GridLayout(6, false));
+		comp.setLayout(new GridLayout(4, false));
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		comp.setBackgroundMode(SWT.INHERIT_FORCE);
 
@@ -480,9 +440,7 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 			ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
 			Thread.currentThread().setContextClassLoader(jConfig.getClassLoader());
 
-			DataAdapterService das = DataAdapterServiceUtil
-					.getInstance(new ParameterContributorContext(jConfig, newdataset, jConfig.getJRParameters()))
-					.getService(da.getDataAdapter());
+			DataAdapterService das = DataAdapterServiceUtil.getInstance(jConfig).getService(da.getDataAdapter());
 			try {
 				final List<JRDesignField> fields = ((IFieldsProvider) da).getFields(das, jConfig, newdataset);
 				if (fields != null) {

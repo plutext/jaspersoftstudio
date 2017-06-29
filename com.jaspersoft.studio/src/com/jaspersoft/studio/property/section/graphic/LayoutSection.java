@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.graphic;
 
@@ -146,17 +154,17 @@ public class LayoutSection extends AbstractSection {
 			if (parentLayout != null){
 				//check if the layout of the parent require additional controls to be shown on the children
 				if (parentLayout.showAdditionalControls(elementProperties, parentProperties)){
-					Composite currentContainer = configurationMap.get(parentLayout);
-					if (currentContainer == null || currentContainer.isDisposed()){
+					if (!configurationMap.containsKey(parentLayout)){
 						//check if its controls where already created, if not create them
-						currentContainer = new Composite(layoutConfigurationPanel, SWT.NONE);
-						currentContainer.setLayout(getNoSpaceLayout(1));
+						Composite container = new Composite(layoutConfigurationPanel, SWT.NONE);
+						container.setLayout(getNoSpaceLayout(1));
 						ILayoutUIProvider controlsProvider = parentLayout.getControlsProvider();
-						controlsProvider.createControls(currentContainer);
-						currentContainer.setData(controlsProvider);
-						configurationMap.put(parentLayout, currentContainer);
+						controlsProvider.createControls(container);
+						container.setData(controlsProvider);
+						configurationMap.put(parentLayout, container);
 					}
 					//the control are for sure created here, move them in the foreground and set their data
+					Composite currentContainer = configurationMap.get(parentLayout);
 					((StackLayout)layoutConfigurationPanel.getLayout()).topControl = currentContainer;
 					setLayoutAreaVisible(true);
 					ILayoutUIProvider controlsProvider = (ILayoutUIProvider)currentContainer.getData();

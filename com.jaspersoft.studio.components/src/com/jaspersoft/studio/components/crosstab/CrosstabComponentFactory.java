@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab;
 
@@ -401,7 +409,7 @@ public class CrosstabComponentFactory implements IComponentFactory {
 	public Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex) {
 		
 		//Check to avoid that dataset objects are dragged inside the crosstab
-		boolean isDatasetType = (child instanceof MVariableSystem) || (child instanceof MField) || ((child instanceof MParameterSystem) &&  !(child instanceof MCrosstabParameter));
+		boolean isDatasetType = (child instanceof MVariableSystem) || (child instanceof MField) || (child instanceof MParameterSystem);
 		if (isDatasetType){
 			//It is a dataset object, check if the target is the crosstab
 			ANode currentParent = parent;
@@ -419,12 +427,6 @@ public class CrosstabComponentFactory implements IComponentFactory {
 				}
 			}
 		}
-		
-		//Avoid to generate create command in the main editor
-		if (parent instanceof MCrosstab && !(parent.getParent() instanceof MPage)){
-			return UnexecutableCommand.INSTANCE;
-		}
-		
 		if (child instanceof MStyle && (child.getValue() != null && parent instanceof MCell)) {
 			SetValueCommand cmd = new SetValueCommand();
 			cmd.setTarget((MCell) parent);
@@ -453,7 +455,7 @@ public class CrosstabComponentFactory implements IComponentFactory {
 				return new CreateParameterCommand((MCrosstabParameters) parent, (MParameter) child, newIndex);
 		}
 		if (child instanceof MMeasure) {
-			if (parent instanceof MCell)
+			if (parent instanceof MCell || parent instanceof MMeasures)
 				return UnexecutableCommand.INSTANCE;
 			if (parent instanceof MCrosstab)
 				return new CreateMeasureCommand((MCrosstab) parent, (MMeasure) child, newIndex);

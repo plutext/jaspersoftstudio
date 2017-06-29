@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor;
 
@@ -403,10 +407,8 @@ public abstract class AbstractJRXMLEditor extends MultiPageEditorPart
 
 			@Override
 			public void partActivated(IWorkbenchPartReference partRef) {
-				if (partRef.getPart(false) == getSite().getPart()){
-					editorActivated();
-				}
-					
+				if (partRef.getPart(false) == getSite().getPart())
+					partActivated = true;
 			}
 
 			@Override
@@ -419,9 +421,8 @@ public abstract class AbstractJRXMLEditor extends MultiPageEditorPart
 
 			@Override
 			public void partDeactivated(IWorkbenchPartReference partRef) {
-				if (partRef.getPart(false) == getSite().getPart()){
-					editorDeactivated();
-				}
+				if (partRef.getPart(false) == getSite().getPart())
+					partActivated = false;
 			}
 
 			@Override
@@ -430,16 +431,10 @@ public abstract class AbstractJRXMLEditor extends MultiPageEditorPart
 
 			@Override
 			public void partHidden(IWorkbenchPartReference partRef) {
-				if (partRef.getPart(false) == getSite().getPart()){
-					editorHidden();
-				}
 			}
 
 			@Override
 			public void partVisible(IWorkbenchPartReference partRef) {
-				if (partRef.getPart(false) == getSite().getPart()){
-					editorVisible();
-				}
 			}
 
 			@Override
@@ -458,23 +453,6 @@ public abstract class AbstractJRXMLEditor extends MultiPageEditorPart
 		this.partActivated = partActivated;
 	}
 
-	protected void editorActivated(){
-		partActivated = true;
-	}
-	
-	protected void editorDeactivated(){
-		partActivated = false;
-	}
-	
-	protected void editorVisible(){
-		
-	}
-	
-	protected void editorHidden(){
-		
-	}
-	
-	
 	/**
 	 * Closes the editor if there are some errors.
 	 */

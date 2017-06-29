@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.wizard.fragments.data.widget;
 
@@ -203,18 +211,17 @@ public abstract class ChartCustomizerWidget {
 		GridData buttonsData = new GridData(GridData.FILL_HORIZONTAL);
 		Button newButton = new Button(parent, SWT.PUSH);
 		newButton.setLayoutData(buttonsData);
-		newButton.setText(Messages.common_add);
+		newButton.setText(Messages.common_new);
 		newButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String uniqueKey = getPropertyDTO().getUniqueKey();
 				JRChartPlot selectedPlot = selectedElement.getValue().getPlot();
 
-				CustomizerPropertyExpressionsDTO dto = new CustomizerPropertyExpressionsDTO(getPropertyDTO().clone(), getPropertyDTO().getPnode());
+				CustomizerPropertyExpressionsDTO dto = new CustomizerPropertyExpressionsDTO(getPropertyDTO().clone());
 				CustomizerNewWizard wizard = new CustomizerNewWizard(uniqueKey, getExpressionContext(), dto, jConfig, selectedPlot);		
-				String title = com.jaspersoft.studio.components.chart.messages.Messages.ChartCustomizerWidget_selectDialogTitle;
-				wizard.setWindowTitle(title);
 				PersistentLocationWizardDialog dialog = new PersistentLocationWizardDialog(UIUtils.getShell(), wizard);		
+				dialog.setTitle("Create Customizer");
 				dialog.setStoreSetting(false);
 				dialog.setDefaultSize(650, 500);
 				if (dialog.open() == Dialog.OK){
@@ -262,7 +269,7 @@ public abstract class ChartCustomizerWidget {
 		GridData buttonsData = new GridData(GridData.FILL_HORIZONTAL);
 		Button deleteButton = new Button(parent, SWT.PUSH);
 		deleteButton.setLayoutData(buttonsData);
-		deleteButton.setText(Messages.common_remove);
+		deleteButton.setText(Messages.common_delete);
 		deleteButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -478,11 +485,10 @@ public abstract class ChartCustomizerWidget {
 				return;
 			}
 			
-			CustomizerPropertyExpressionsDTO dto = new CustomizerPropertyExpressionsDTO(getPropertyDTO().clone(), getPropertyDTO().getPnode());
+			CustomizerPropertyExpressionsDTO dto = new CustomizerPropertyExpressionsDTO(getPropertyDTO().clone());
 			CustomizerEditWizard wizard = new CustomizerEditWizard(editElement, getExpressionContext(), dto, jConfig);		
 			PersistentLocationWizardDialog dialog = new PersistentLocationWizardDialog(UIUtils.getShell(), wizard);
-			String title = com.jaspersoft.studio.components.chart.messages.Messages.ChartCustomizerWidget_editDialogTitle;
-			wizard.setWindowTitle(title);
+			dialog.setTitle("Edit Customizer Properties");
 			dialog.setStoreSetting(false);
 			dialog.setDefaultSize(650, 500);
 			if (dialog.open() == Dialog.OK){

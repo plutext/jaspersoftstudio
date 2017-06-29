@@ -1,5 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.parameter;
 
@@ -33,7 +38,6 @@ import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
@@ -46,7 +50,7 @@ import net.sf.jasperreports.engine.type.ParameterEvaluationTimeEnum;
  */
 public class MParameter extends MParameterSystem implements ICopyable {
 
-	public static final String PROPERTY_MAP = "PROPERTY_MAP"; //$NON-NLS-1$
+	private static final String PROPERTY_MAP = "PROPERTY_MAP"; //$NON-NLS-1$
 
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 
@@ -131,7 +135,7 @@ public class MParameter extends MParameterSystem implements ICopyable {
 				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#defaultValueExpression"));
 
 		JPropertiesPropertyDescriptor propertiesD = new JPropertiesPropertyDescriptor(PROPERTY_MAP,
-				Messages.common_properties, getJasperConfiguration(), getValue());
+				Messages.common_properties);
 		propertiesD.setDescription(Messages.MParameter_properties_description);
 		desc.add(propertiesD);
 		propertiesD.setHelpRefBuilder(
@@ -185,13 +189,6 @@ public class MParameter extends MParameterSystem implements ICopyable {
 		if (id.equals(JRDesignParameter.PROPERTY_EVALUATION_TIME))
 			return evaluationTimeD.getIntValue(jrParameter.getEvaluationTime());
 		return super.getPropertyValue(id);
-	}
-
-	public static JRPropertiesMap getPropertiesMapClone(JRPropertiesHolder jrField) {
-		JRPropertiesMap propertiesMap = jrField.getPropertiesMap();
-		if (propertiesMap != null)
-			propertiesMap = propertiesMap.cloneProperties();
-		return propertiesMap;
 	}
 
 	/*

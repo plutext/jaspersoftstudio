@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action;
 
@@ -13,7 +21,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 
 import com.jaspersoft.studio.JSSCompoundCommand;
-import com.jaspersoft.studio.editor.outline.actions.DynamicActionContributionItem;
 import com.jaspersoft.studio.editor.report.CachedSelectionProvider;
 import com.jaspersoft.studio.editor.report.CommonSelectionCacheProvider;
 import com.jaspersoft.studio.model.ANode;
@@ -184,21 +191,5 @@ public abstract class ACachedSelectionAction extends SetWorkbenchAction {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Method used to know if the action is dirty, this can be used by the action contributor
-	 * (ie {@link DynamicActionContributionItem} ) to refresh the action widget
-	 */
-	public boolean isDirty(){
-		return false;
-	}
-	
-	/**
-	 * Method used to know if the action is dynamic, this can be used by the action contributor
-	 * (ie {@link DynamicActionContributionItem} ) to refresh the action widget
-	 */
-	public boolean isDynamic(){
-		return false;
 	}
 }

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.compatibility;
 
@@ -25,10 +29,10 @@ import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.backward.JRVersionPreferencesPages;
 import com.jaspersoft.studio.compatibility.dialog.VersionDialog;
 import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
@@ -114,7 +118,7 @@ public class JRXmlWriterHelper {
 			String timestamp = ""; //$NON-NLS-1$
 			if (jrContext instanceof JasperReportsConfiguration) {
 				if (((JasperReportsConfiguration) jrContext)
-						.getPropertyBoolean(JRVersionPreferencesPages.JSS_TIMESTAMP_ONSAVE, false)) {
+						.getPropertyBoolean(JRVersionPreferencesPages.JSS_TIMESTAMP_ONSAVE, true)) {
 					timestamp = "<!-- " + DateFormatUtils.ISO_DATETIME_FORMAT.format(new Date()) + " -->\n"; //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}

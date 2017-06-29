@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework;
 
@@ -91,18 +95,9 @@ public interface IWItemProperty {
 	/**
 	 * Update the widget value with the one inside the model element. This should
 	 * not trigger the edit listener since the value inside the element is already
-	 * correct. This will trigger the layout of the widget
+	 * correct
 	 */
 	public void updateWidget();
-	
-	/**
-	 * Update the widget value with the one inside the model element. This should
-	 * not trigger the edit listener since the value inside the element is already
-	 * correct
-	 * 
-	 * @param layout true if the widget should be relayouted, galse otherwise
-	 */
-	public void updateWidget(boolean layout);
 	
 	/**
 	 * Return the contextual menu provider for this element

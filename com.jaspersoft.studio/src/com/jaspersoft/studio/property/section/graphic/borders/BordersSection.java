@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.graphic.borders;
 
@@ -432,7 +436,6 @@ public class BordersSection extends AbstractSection {
 
 		lineWidth = new NullableSpinner(composite, SWT.BORDER, 2, 6);
 		lineWidth.setDefaultValue(0f);
-		lineWidth.setIncrement(0.25f);
 		GridData lineWidthData = new GridData();
 		lineWidthData.widthHint = 50 ;
 		lineWidth.setLayoutData(lineWidthData);
@@ -858,7 +861,7 @@ public class BordersSection extends AbstractSection {
 	 * @param control the padding control to which the menu will be assigned
 	 * @param propertyID the ID of the property that the selection on the menu will change
 	 */
-	protected void createPaddingContextualMenu(final Control control, final String propertyID){
+	protected void createPaddingContextualMenu(Control control, final String propertyID){
 		if (control != null && !control.isDisposed() && control.getMenu() == null){
 			Menu controlMenu = new Menu(control);
 			MenuItem nullItem = new MenuItem(controlMenu, SWT.NONE);
@@ -867,7 +870,6 @@ public class BordersSection extends AbstractSection {
 				public void widgetSelected(SelectionEvent e) {
 					changePropertyPadding(propertyID, null);
 					refresh();
-					control.setFocus();
 				}
 			});
 	    nullItem.setText(Messages.ASPropertyWidget_1);
@@ -882,7 +884,7 @@ public class BordersSection extends AbstractSection {
 	 * @param control the border control to which the menu will be assigned
 	 * @param propertyID the ID of the property that the selection on the menu will change
 	 */
-	protected void createLineContextualMenu(final Control control, final String propertyID){
+	protected void createLineContextualMenu(Control control, final String propertyID){
 		if (control != null && !control.isDisposed() && control.getMenu() == null){
 			Menu controlMenu = new Menu(control);
 			MenuItem nullItem = new MenuItem(controlMenu, SWT.NONE);
@@ -891,7 +893,6 @@ public class BordersSection extends AbstractSection {
 				public void widgetSelected(SelectionEvent e) {
 					changeProperty(propertyID, null);
 					refresh();
-					control.setFocus();
 				}
 			});
 	    nullItem.setText(Messages.ASPropertyWidget_1);

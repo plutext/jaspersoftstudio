@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.menu;
 
@@ -27,7 +31,6 @@ import com.jaspersoft.studio.background.action.BackgroundTransparencyAction;
 import com.jaspersoft.studio.callout.action.CreatePinAction;
 import com.jaspersoft.studio.editor.AContextMenuProvider;
 import com.jaspersoft.studio.editor.JrxmlEditor;
-import com.jaspersoft.studio.editor.action.ACachedSelectionAction;
 import com.jaspersoft.studio.editor.action.EncloseIntoFrameAction;
 import com.jaspersoft.studio.editor.action.HideElementsAction;
 import com.jaspersoft.studio.editor.action.MoveDetailDownAction;
@@ -71,14 +74,11 @@ import com.jaspersoft.studio.editor.outline.actions.CreateStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateStyleTemplateAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
 import com.jaspersoft.studio.editor.outline.actions.DeleteGroupReportAction;
-import com.jaspersoft.studio.editor.outline.actions.DynamicActionContributionItem;
 import com.jaspersoft.studio.editor.outline.actions.RefreshImageAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpression;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.editor.report.ReportContainer;
 import com.jaspersoft.studio.editor.tools.CreateCompositeElementAction;
 import com.jaspersoft.studio.formatting.actions.CenterInParentAction;
@@ -269,14 +269,6 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 		action = getActionRegistry().getAction(CreateVariableAction.ID);
 		if (action != null && action.isEnabled())
 			menu.appendToGroup(GEFActionConstants.GROUP_ADD, action);
-		
-		action = getActionRegistry().getAction(SortVariablesAction.ID);
-		if (action != null && action.isEnabled())
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, new DynamicActionContributionItem((ACachedSelectionAction)action));
-		
-		action = getActionRegistry().getAction(SortParametersAction.ID);
-		if (action != null && action.isEnabled())
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, new DynamicActionContributionItem((ACachedSelectionAction)action));
 
 		action = getActionRegistry().getAction(CreateScriptletAction.ID);
 		if (action != null && action.isEnabled())

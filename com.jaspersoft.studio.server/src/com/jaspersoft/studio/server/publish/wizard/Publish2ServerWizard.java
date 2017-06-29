@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish.wizard;
 
@@ -51,6 +59,7 @@ import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import net.sf.jasperreports.eclipse.builder.jdt.JDTUtils;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileExtension;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
@@ -199,10 +208,6 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 									page0.setValue(jDesign, getNode());
 									snode = page0.getSelectedNode();
 								}
-								if (snode instanceof MJrxml){
-									canFinish = true;
-									getContainer().updateButtons();
-								}
 								if (node != snode) {
 									node = snode;
 									doFindDependentResources();
@@ -230,10 +235,6 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 			if (!page0.isPageComplete()) {
 				page0.setValue(jDesign, getNode());
 				return page0;
-			}
-			if (!(page0.getSelectedNode() instanceof MReportUnit)) {
-				canFinish = true;
-				return null;
 			}
 		}
 		if (page == page2) {

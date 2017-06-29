@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.subreport.command.wizard;
 
@@ -236,7 +240,6 @@ public class NewSubreportPage extends JSSWizardSelectionPage implements IExpress
 									MessageDialog.openError(getShell(), Messages.NewSubreportPage_FileSelectionErrorTitle,
 											Messages.NewSubreportPage_FileSelectionErrorMsg);
 									setSelectedFile(null);
-									return;
 								} else {
 									if (isJRXML != null && !isJRXML) {
 										JasperReport report = (JasperReport) JRLoader.loadObject(jConf, new ByteArrayInputStream(fByte));
@@ -250,12 +253,10 @@ public class NewSubreportPage extends JSSWizardSelectionPage implements IExpress
 						} catch (JRException e1) {
 							e1.printStackTrace();
 						}
-					} else {
+					} else
 						setSelectedFile(null);
-					}
-					if (subreportExpressionEditor != null) {
+					if (subreportExpressionEditor != null)
 						subreportExpressionEditor.setExpression(selectedSubreportExpression);
-					}
 					storeSettings();
 				}
 			}

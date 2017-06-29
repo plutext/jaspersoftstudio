@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.layout.grid;
 
@@ -55,12 +63,12 @@ public class JSSGridBagLayout extends AbstractLayout {
 	public static final String PROPERTY_ROWSPAN = "com.jaspersoft.layout.grid.rowspan"; //$NON-NLS-1$
 	
 	/**
-	 * The key used to store the column weight
+	 * The key used to store the row weight
 	 */
 	public static final String PROPERTY_WEIGHT_COLUMN = "com.jaspersoft.layout.grid.weight.x"; //$NON-NLS-1$
 	
 	/**
-	 * The key used to store the row weight
+	 * The key used to store the column weight
 	 */
 	public static final String PROPERTY_WEIGHT_ROW = "com.jaspersoft.layout.grid.weight.y"; //$NON-NLS-1$
 	

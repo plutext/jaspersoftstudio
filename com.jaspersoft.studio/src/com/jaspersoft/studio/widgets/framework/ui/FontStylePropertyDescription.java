@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2016 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * Licensed under commercial Jaspersoft Subscription License Agreement
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui;
 
@@ -37,7 +38,7 @@ import net.sf.jasperreports.engine.base.JRBaseStyle;
  * 
  * @author Orlandin Marco
  */
-public class FontStylePropertyDescription extends AbstractExpressionPropertyDescription<String> {
+public class FontStylePropertyDescription extends TextPropertyDescription<String> {
 	
 	public FontStylePropertyDescription() {
 		super();
@@ -51,7 +52,8 @@ public class FontStylePropertyDescription extends AbstractExpressionPropertyDesc
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		Composite toolbarsContainer = new Composite(cmp.getSecondContainer(), SWT.NONE);
 		GridLayout containerLayout = new GridLayout(4, false);
@@ -79,7 +81,6 @@ public class FontStylePropertyDescription extends AbstractExpressionPropertyDesc
 		toolItems.add(new Pair<ToolItem, String>(strikeTroughtButton, JRBaseStyle.PROPERTY_STRIKE_THROUGH));
 		
 		cmp.getSecondContainer().setData(toolItems);
-		cmp.setSimpleControlToHighlight(toolbarsContainer);
 		
 		cmp.switchToSecondContainer();
 		return cmp;
@@ -115,7 +116,6 @@ public class FontStylePropertyDescription extends AbstractExpressionPropertyDesc
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();

@@ -1,5 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data;
 
@@ -11,6 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.data.DataAdapter;
+import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.util.CastorUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -19,13 +29,8 @@ import com.jaspersoft.studio.data.storage.ADataAdapterStorage;
 import com.jaspersoft.studio.data.storage.FileDataAdapterStorage;
 import com.jaspersoft.studio.data.storage.JRDefaultDataAdapterStorage;
 import com.jaspersoft.studio.data.storage.PreferencesDataAdapterStorage;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.data.DataAdapter;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.util.CastorUtil;
 
 /*
  * The main plugin class to be used in the desktop.
@@ -35,7 +40,7 @@ import net.sf.jasperreports.util.CastorUtil;
 public class DataAdapterManager {
 
 	private static Map<String, DataAdapterFactory> dataAdapterFactories = new HashMap<String, DataAdapterFactory>();
-
+	
 	private static Map<Object, ADataAdapterStorage> storages = new HashMap<Object, ADataAdapterStorage>();
 
 	/*******************************
@@ -73,8 +78,8 @@ public class DataAdapterManager {
 		// Let's sort the list based on the description. Please note that the description may be localized,
 		// so not all the languages have the same order if assumptions are done.
 
-		DataAdapterFactory[] factories = dataAdapterFactories.values()
-				.toArray(new DataAdapterFactory[dataAdapterFactories.size()]);
+		DataAdapterFactory[] factories = dataAdapterFactories.values().toArray(
+				new DataAdapterFactory[dataAdapterFactories.size()]);
 
 		Arrays.sort(factories, new Comparator<DataAdapterFactory>() {
 
@@ -104,21 +109,22 @@ public class DataAdapterManager {
 		return dataAdapterFactories.get(adapterClassName);
 	}
 
+	
 	public static ADataAdapterStorage[] getDataAdapter(IFile file, IProject project, JasperReportsConfiguration jConfig) {
 		List<ADataAdapterStorage> st = new ArrayList<ADataAdapterStorage>();
 		st.add(getPreferencesStorage());
 		if (file != null) {
 			project = file.getProject();
 		}
-		if (project != null) {
+		if (project!=null) {
 			st.add(getProjectStorage(project));
 		}
-		if (jConfig != null && jConfig.getJasperDesign() != null) {
+		if (jConfig != null && jConfig.getJasperDesign() != null){
 			st.add(getJRDefaultStorage(jConfig));
 		}
 		return st.toArray(new ADataAdapterStorage[st.size()]);
 	}
-
+	
 	public static ADataAdapterStorage[] getDataAdapter(IFile file, JasperReportsConfiguration jConfig) {
 		return getDataAdapter(file, null, jConfig);
 	}
@@ -127,13 +133,12 @@ public class DataAdapterManager {
 		ADataAdapterStorage s = storages.get(key);
 		if (s == null) {
 			s = new FileDataAdapterStorage(key);
-			s.findAll();
 			s.getDataAdapterDescriptors();
 			storages.put(key, s);
 		}
 		return s;
 	}
-
+	
 	/**
 	 * Get the storage for the handling of the default data adapters
 	 * 
@@ -146,7 +151,7 @@ public class DataAdapterManager {
 			s.getDataAdapterDescriptors();
 			storages.put(key, s);
 		}
-		return (JRDefaultDataAdapterStorage) s;
+		return (JRDefaultDataAdapterStorage)s;
 	}
 
 	public static ADataAdapterStorage getPreferencesStorage() {
@@ -201,8 +206,8 @@ public class DataAdapterManager {
 		DataAdapterFactory factory = findFactoryByDataAdapterClass(srcDataAdapter.getClass().getName());
 		DataAdapterDescriptor copy = factory.createDataAdapter();
 		copy.setName(src.name);
-		srcDataAdapter = (DataAdapter) CastorUtil.getInstance(jrContext)
-				.read(new ByteArrayInputStream(src.toXml(jrContext).getBytes()));
+		srcDataAdapter = (DataAdapter) CastorUtil.getInstance(jrContext).read(
+				new ByteArrayInputStream(src.toXml(jrContext).getBytes()));
 		copy.setDataAdapter(srcDataAdapter);
 		return copy;
 	}

@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2016 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * Licensed under commercial Jaspersoft Subscription License Agreement
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui;
 
@@ -13,19 +14,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
 
-import net.sf.jasperreports.eclipse.util.Misc;
-
 /**
  * Property Description to show a checkbox and store the true and false value for the 
  * property
  */
-public class CheckboxItemPropertyDescription extends AbstractExpressionPropertyDescription<Boolean> {
+public class CheckboxItemPropertyDescription extends TextPropertyDescription<Boolean> {
 
 	// Constants for true / false values
 	// Note: HC understands only these string values
@@ -55,11 +55,11 @@ public class CheckboxItemPropertyDescription extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		final Button simpleControl = new Button(cmp.getSecondContainer(), SWT.CHECK);
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		
 		simpleControl.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -79,7 +79,6 @@ public class CheckboxItemPropertyDescription extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		boolean isFallback = false;
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();

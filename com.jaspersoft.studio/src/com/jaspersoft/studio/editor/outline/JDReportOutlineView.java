@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline;
 
@@ -8,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.FigureCanvas;
@@ -79,9 +85,7 @@ import com.jaspersoft.studio.model.parameter.MParameters;
 import com.jaspersoft.studio.model.util.EditPartVisitor;
 import com.jaspersoft.studio.model.variable.MVariables;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * The Class JDReportOutlineView.

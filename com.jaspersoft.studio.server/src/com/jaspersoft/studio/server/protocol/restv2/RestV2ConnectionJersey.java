@@ -1,15 +1,21 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,18 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientResponseContext;
-import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
@@ -53,7 +54,6 @@ import org.glassfish.jersey.SslConfigurator;
 import org.glassfish.jersey.apache.connector.ApacheClientProperties;
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.client.ClientResponse;
 import org.glassfish.jersey.client.RequestEntityProcessing;
 import org.glassfish.jersey.client.spi.Connector;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -114,9 +114,9 @@ import com.jaspersoft.studio.server.utils.ResourceDescriptorUtil;
 import com.jaspersoft.studio.server.wizard.exp.ExportOptions;
 import com.jaspersoft.studio.server.wizard.imp.ImportOptions;
 import com.jaspersoft.studio.server.wizard.permission.PermissionOptions;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.util.FileExtension;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 
@@ -159,7 +159,7 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 			}
 		};
 
-		Registry<ConnectionSocketFactory> ssr = RegistryBuilder.<ConnectionSocketFactory>create()
+		Registry<ConnectionSocketFactory> ssr = RegistryBuilder.<ConnectionSocketFactory> create()
 				.register("https", sslsf).register("http", new PlainConnectionSocketFactory()).build();
 
 		PoolingHttpClientConnectionManager cxMgr = new PoolingHttpClientConnectionManager(ssr);
@@ -181,44 +181,10 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 		HttpUtils.setupProxy(clientConfig, HttpUtils.toSafeUri(sp.getURL()));
 
 		clientConfig.property(ClientProperties.REQUEST_ENTITY_PROCESSING, RequestEntityProcessing.BUFFERED);
-		clientConfig.property(ClientProperties.FOLLOW_REDIRECTS, true);
 		clientConfig.register(JacksonFeature.class).register(ClientQueryMapperProvider.class);
 
 		client = ClientBuilder.newBuilder().withConfig(clientConfig).build();
 		client.register(MultiPartFeature.class);
-		client.register(new ClientResponseFilter() {
-
-			@Override
-			public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
-					throws IOException {
-				if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION)
-					return;
-
-				WebTarget tgt = requestContext.getClient().target(responseContext.getLocation());
-				requestContext.getEntity();
-
-				requestContext.getPropertyNames();
-
-				Builder req = tgt.request();
-				req.headers(requestContext.getHeaders());
-
-				for (String key : requestContext.getPropertyNames())
-					req.property(key, requestContext.getProperty(key));
-
-				Response resp = null;
-				if (requestContext.getMediaType() != null && requestContext.getEntity() != null)
-					resp = req.method(requestContext.getMethod(),
-							Entity.entity(requestContext.getEntity(), requestContext.getMediaType()));
-				else
-					resp = req.method(requestContext.getMethod());
-
-				responseContext.setEntityStream((InputStream) resp.getEntity());
-				responseContext.setStatusInfo(resp.getStatusInfo());
-				responseContext.setStatus(resp.getStatus());
-				((ClientResponse) responseContext).getHeaders().clear();
-				((ClientResponse) responseContext).headers(resp.getStringHeaders());
-			}
-		});
 
 		if (sp.isLogging()) {
 			logger = java.util.logging.Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -250,15 +216,15 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 				target = target.queryParam("ticket", token); //$NON-NLS-1$
 			} else {
 				target = target.queryParam("j_username", sp.getUser()); //$NON-NLS-1$
-				target = target.queryParam("j_password", URLEncoder.encode(parent.getPassword(monitor), "UTF-8")); //$NON-NLS-1$
+				target = target.queryParam("j_password", parent.getPassword(monitor)); //$NON-NLS-1$
 				if (monitor.isCanceled())
 					return false;
 			}
 			target = target.queryParam("orgId", sp.getOrganisation()); //$NON-NLS-1$
 			if (!Misc.isNullOrEmpty(sp.getLocale()))
-				target = target.queryParam("userLocale", Locale.getDefault().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+				target = target.queryParam("userLocale", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (!Misc.isNullOrEmpty(sp.getTimeZone()))
-				target = target.queryParam("userTimezone", TimeZone.getDefault().getID()); //$NON-NLS-1$ //$NON-NLS-2$
+				target = target.queryParam("userTimezone", "true"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			Builder req = target.request();
 			toObj(connector.get(req, monitor), String.class, monitor);
@@ -275,8 +241,7 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 			getServerProfile().setClientUser(null);
 			getServerProfile().setClientUser(getUser(monitor));
 		} catch (HttpResponseException e) {
-			if (!(e.getMessage().contains("Access") || e.getMessage().contains("Forbidden")
-					|| e.getMessage().contains("resource.not.found")))
+			if (!(e.getMessage().contains("Access") || e.getMessage().contains("Forbidden")))
 				throw e;
 		} catch (Exception e) {
 			Activator.getDefault().logError(e);
@@ -365,7 +330,7 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 						else if (name.endsWith(FileExtension.PointJRXML))
 							nrd.setWsType(ResourceDescriptor.TYPE_JRXML);
 						else if (name.endsWith(".jar")) //$NON-NLS-1$
-							nrd.setWsType(ResourceDescriptor.TYPE_CLASS_JAR); // $NON-NLS-1$
+							nrd.setWsType("." + ResourceDescriptor.TYPE_CLASS_JAR); //$NON-NLS-1$
 						else if (name.endsWith(FileExtension.PointJRTX))
 							nrd.setWsType(ResourceDescriptor.TYPE_STYLE_TEMPLATE);
 						else if (name.endsWith("." + ResourceDescriptor.TYPE_CSS_FILE)) //$NON-NLS-1$
@@ -1254,10 +1219,7 @@ public class RestV2ConnectionJersey extends ARestV2ConnectionJersey {
 		String path = ""; //$NON-NLS-1$
 		if (!Misc.isNullOrEmpty(sp.getOrganisation()))
 			path += "organizations/" + sp.getOrganisation() + "/"; //$NON-NLS-1$ //$NON-NLS-2$
-		String usr = sp.getUser();
-		if (sp.isUseSSO())
-			usr = CASUtil.getSSO(sp, monitor).getUser();
-		path += "users/" + usr; //$NON-NLS-1$
+		path += "users/" + sp.getUser(); //$NON-NLS-1$
 		WebTarget tgt = target.path(path);
 
 		Builder req = tgt.request();
