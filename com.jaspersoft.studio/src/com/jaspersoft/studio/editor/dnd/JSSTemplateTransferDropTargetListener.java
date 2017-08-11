@@ -8,13 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.engine.JRBand;
-import net.sf.jasperreports.engine.design.JRDesignField;
-import net.sf.jasperreports.engine.design.JRDesignImage;
-import net.sf.jasperreports.engine.design.JRDesignStaticText;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
-
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
@@ -59,6 +52,13 @@ import com.jaspersoft.studio.model.image.command.dialog.ImageCreationDialog;
 import com.jaspersoft.studio.model.text.MStaticText;
 import com.jaspersoft.studio.model.text.MTextField;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRBand;
+import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignImage;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 /**
  * Custom transfer drop listener for DND operations that supports the {@link DialogEnabledCommand} commands.
@@ -524,7 +524,7 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 			} else if (getTargetEditPart() != null) {
 				final Command command = getCommand();
 
-				createLabelForField(command);
+				//createLabelForField(command);
 				final Object elementToSelect = ((CreateRequest) request).getNewObject();
 
 				ANode lockReferenceNode = null;

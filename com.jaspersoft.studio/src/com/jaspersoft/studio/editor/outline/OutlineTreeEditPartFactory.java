@@ -4,14 +4,19 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.UnexecutableCommand;
+import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
@@ -20,6 +25,7 @@ import com.jaspersoft.studio.callout.command.CreateCalloutCommand;
 import com.jaspersoft.studio.callout.command.DeleteCalloutCommand;
 import com.jaspersoft.studio.callout.pin.MPin;
 import com.jaspersoft.studio.callout.pin.command.DeletePinCommand;
+import com.jaspersoft.studio.editor.gef.parts.FigureEditPart;
 import com.jaspersoft.studio.editor.outline.part.ContainerTreeEditPart;
 import com.jaspersoft.studio.editor.outline.part.NotDragableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.outline.part.NotDragableTreeEditPart;
@@ -51,6 +57,7 @@ import com.jaspersoft.studio.model.band.command.ReorderBandCommandByIndex;
 import com.jaspersoft.studio.model.command.CreateE4ObjectCommand;
 import com.jaspersoft.studio.model.command.CreateElementCommand;
 import com.jaspersoft.studio.model.command.CreateElementGroupCommand;
+import com.jaspersoft.studio.model.command.CreateFieldInEditorCommand;
 import com.jaspersoft.studio.model.command.DeleteElementCommand;
 import com.jaspersoft.studio.model.command.DeleteElementGroupCommand;
 import com.jaspersoft.studio.model.command.NoActionCommand;
@@ -372,6 +379,210 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 		}
 		return null;
 	}
+	
+	public static Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex, Request request) {
+		// System.out.println("create: " + parent + " - " + child);
+				ExtensionManager m = JaspersoftStudioPlugin.getExtensionManager();
+				Command c = m.getCreateCommand(parent, child, location, newIndex);
+				if (c != null)
+					return c;
+				if (child instanceof MCallout)
+					return new CreateCalloutCommand(parent, (MCallout) child, location, newIndex);
+
+				if (child instanceof MField) {
+					if (parent instanceof MFields){
+						return new CreateFieldCommand((MFields) parent, (MField) child, newIndex);
+					} else if (child.getValue() != null){
+						ANode targetNode = null;
+						if (parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame){
+							targetNode = parent;
+						} else if (parent instanceof MGraphicElement){
+							targetNode = parent.getParent();
+						}
+						if (targetNode != null) {
+							int index = newIndex;
+							int createdElements = 1;
+							if (request instanceof CreateRequest){
+								CreateRequest cRequest = (CreateRequest)request;
+								//System.out.println(cRequest.getLocation());
+								Object newObject = cRequest.getNewObject();
+								createdElements = 0;
+								if (newObject instanceof Collection<?>){
+									for(Object createdElement : ((Collection<?>)newObject)){
+										if (createdElement instanceof MField){
+											createdElements++;
+										}
+									}
+								}
+								EditPart targetEditPart = targetNode.getFigureEditPart();
+								if (targetEditPart instanceof FigureEditPart){
+									IFigure hostFigure2 = ((FigureEditPart)targetEditPart).getFigure();
+							        Point location2 = cRequest.getLocation().getCopy();
+							        hostFigure2.translateToRelative(location2);
+							        Dimension newLocation = location2.getDifference(hostFigure2.getBounds().getTopLeft());
+							        index = ModelUtils.getBetweenIndex(targetNode, new Point(newLocation.width, newLocation.height));
+								}
+							}
+							CreateFieldInEditorCommand cmd = new CreateFieldInEditorCommand((MField)child, targetNode, location, index);
+							cmd.setCreatedFields(createdElements);
+							return cmd;
+						}
+					}
+				} else if (child instanceof MParameterSystem) {
+					if (child instanceof MParameter) {
+						if (parent instanceof MParameters) {
+							JRDesignParameter p = (JRDesignParameter) child.getValue();
+							if (p == null || !p.isSystemDefined())
+								return new CreateParameterCommand((MParameters) parent, (MParameter) child, newIndex);
+						}
+					}
+					if (child.getValue() != null
+							&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
+						return new CreateE4ObjectCommand(child, parent, location, newIndex);
+					}
+				} else if (child instanceof MVariableSystem) {
+					if (parent instanceof MVariables) {
+						JRDesignVariable p = (JRDesignVariable) child.getValue();
+						if (p == null || !p.isSystemDefined())
+							return new CreateVariableCommand((MVariables) parent, (MVariable) child, newIndex);
+					}
+					if (child.getValue() != null
+							&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
+						return new CreateE4ObjectCommand(child, parent, location, newIndex);
+					}
+				} else {
+					if (child instanceof MConditionalStyle) {
+						if (parent instanceof MStyle && parent.getValue() instanceof JRDesignStyle)
+							return new CreateConditionalStyleCommand((MStyle) parent, (MConditionalStyle) child, newIndex);
+						return null;
+					} else if (child instanceof MStyle) {
+						if (parent instanceof MStyles)
+							return new CreateStyleCommand((MStyles) parent, (MStyle) child, newIndex);
+						if (parent instanceof MGraphicElement && child.getValue() != null && !(parent instanceof IContainer)) {
+							SetValueCommand cmd = new SetValueCommand();
+							cmd.setTarget((IPropertySource) parent);
+							cmd.setPropertyId(JRDesignElement.PROPERTY_PARENT_STYLE);
+							JRStyle style = (JRStyle) child.getValue();
+							cmd.setPropertyValue(style.getName());
+							return cmd;
+						}
+						if (parent instanceof MStylesTemplate && ((MStylesTemplate)parent).isEditable()){
+							return new com.jaspersoft.studio.editor.style.command.CreateStyleCommand((MStylesTemplate)parent, (MStyle)child, -1);
+						}
+						if (parent instanceof MReport && location != null) {
+							MGraphicElement element = ModelUtils.getElement4Point(parent, new Point(location.x, location.y));
+							if (element != null) {
+								SetValueCommand cmd = new SetValueCommand();
+								cmd.setTarget(element);
+								cmd.setPropertyId(JRDesignElement.PROPERTY_PARENT_STYLE);
+								JRStyle style = (JRStyle) child.getValue();
+								cmd.setPropertyValue(style.getName());
+								return cmd;
+							}
+						}
+					}
+				}
+				//If it is a custom tool require the command to the toolmanger
+				if (child instanceof MCompositeElement){
+					return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement)child, location, newIndex);
+				} else if (child instanceof MPageXofY) {
+					if (parent instanceof MElementGroup)
+						return new CreatePageXofYCommand((MElementGroup) parent, (MPageXofY) child, location, newIndex);
+					if (parent instanceof MBand)
+						return new CreatePageXofYCommand((MBand) parent, (MPageXofY) child, location, newIndex);
+					if (parent instanceof MFrame)
+						return new CreatePageXofYCommand((MFrame) parent, (MPageXofY) child, location, newIndex);
+					if (parent instanceof MReport)
+						return new CreatePageXofYCommand(parent, (MPageXofY) child, location, newIndex);
+				} else if (child instanceof MPercentage) {
+					if (parent instanceof MElementGroup)
+						return new CreatePercentageCommand((MElementGroup) parent, (MPercentage) child, location, newIndex);
+					if (parent instanceof MBand)
+						return new CreatePercentageCommand((MBand) parent, (MPercentage) child, location, newIndex);
+					if (parent instanceof MFrame)
+						return new CreatePercentageCommand((MFrame) parent, (MPercentage) child, location, newIndex);
+					if (parent instanceof MReport)
+						return new CreatePercentageCommand(parent, (MPercentage) child, location, newIndex);
+				} else if (child instanceof MSubreport) {
+					if (parent instanceof MElementGroup)
+						return new CreateSubreportCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MBand)
+						return new CreateSubreportCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MFrame)
+						return new CreateSubreportCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MReport)
+						return new CreateSubreportCommand(parent, (MGraphicElement) child, location, newIndex);
+
+					if (parent instanceof IGroupElement) {
+						return new CreateSubreportCommand(parent, (MGraphicElement) child, location, newIndex);
+					}
+				} else if (child instanceof MImage) {
+					if (parent instanceof MElementGroup)
+						return new CreateImageCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MBand)
+						return new CreateImageCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MFrame)
+						return new CreateImageCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MReport)
+						return new CreateImageCommand(parent, (MGraphicElement) child, location, newIndex);
+
+					if (parent instanceof IGroupElement) {
+						return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
+					}
+				} else if (child instanceof MGraphicElement) {
+					if (parent instanceof MElementGroup)
+						return new CreateElementCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MBand)
+						return new CreateElementCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MFrame)
+						return new CreateElementCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
+					if (parent instanceof MReport)
+						return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
+
+					if (parent instanceof IGroupElement) {
+						return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
+					}
+				} else if (child instanceof MElementGroup) {
+					if (parent instanceof MElementGroup)
+						return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
+					if (parent instanceof MBand)
+						return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
+					if (parent instanceof MFrame)
+						return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
+				} else if (child instanceof MConditionalStyle && ((APropertyNode) child).isEditable()) {
+					if (parent instanceof MStyle && !(parent instanceof MConditionalStyle))
+						return new CreateConditionalStyleCommand((MStyle) parent, (MConditionalStyle) child, newIndex);
+				} else if (child instanceof MStyleTemplate && ((APropertyNode) child).isEditable()) {
+					if (parent instanceof MStyles)
+						return new CreateStyleTemplateCommand((MStyles) parent, (MStyleTemplate) child, 0);
+				} else if (child instanceof MSortField) {
+					if (parent instanceof MSortFields) {
+						JRDesignDataset ds = (JRDesignDataset) parent.getValue();
+						if ((ds.getVariablesList().size() + ds.getFieldsList().size()) >= parent.getChildren().size())
+							return new CreateSortFieldCommand((MSortFields) parent, (MSortField) child, newIndex);
+					}
+				} else if (child instanceof MGroup) {
+					if (parent instanceof MGroups)
+						return new CreateGroupCommand((MGroups) parent, (MGroup) child, newIndex);
+					if (parent instanceof MReport)
+						return new CreateMainGroupCommand((MReport) parent, (MGroup) child, newIndex);
+				} else if (child instanceof MScriptlet) {
+					if (parent instanceof MScriptlets)
+						return new CreateScriptletCommand((MScriptlets) parent, (MScriptlet) child, newIndex);
+				} else if (child instanceof MDataset) {
+					if (parent instanceof MReport) {
+						return new CreateDatasetCommand((MReport) parent, (MDataset) child, newIndex);
+					}
+				} else if (child instanceof MBand) {
+					if (parent instanceof MBandGroupHeader)
+						return new CreateBandGroupHeaderCommand((MBandGroupHeader) parent);
+					if (parent instanceof MBandGroupFooter)
+						return new CreateBandGroupFooterCommand((MBandGroupFooter) parent);
+					if (parent instanceof MBand && parent.getValue() == null)
+						return new CreateBandCommand((MBand) parent, (MBand) child);
+				}
+				return null;
+	}
 
 	/**
 	 * Gets the creates the command.
@@ -387,175 +598,7 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 	 * @return the creates the command
 	 */
 	public static Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex) {
-		// System.out.println("create: " + parent + " - " + child);
-		ExtensionManager m = JaspersoftStudioPlugin.getExtensionManager();
-		Command c = m.getCreateCommand(parent, child, location, newIndex);
-		if (c != null)
-			return c;
-		if (child instanceof MCallout)
-			return new CreateCalloutCommand(parent, (MCallout) child, location, newIndex);
-
-		if (child instanceof MField) {
-			if (parent instanceof MFields)
-				return new CreateFieldCommand((MFields) parent, (MField) child, newIndex);
-			else if (child.getValue() != null
-					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
-				return new CreateE4ObjectCommand(child, parent, location, newIndex);
-			}
-		} else if (child instanceof MParameterSystem) {
-			if (child instanceof MParameter) {
-				if (parent instanceof MParameters) {
-					JRDesignParameter p = (JRDesignParameter) child.getValue();
-					if (p == null || !p.isSystemDefined())
-						return new CreateParameterCommand((MParameters) parent, (MParameter) child, newIndex);
-				}
-			}
-			if (child.getValue() != null
-					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
-				return new CreateE4ObjectCommand(child, parent, location, newIndex);
-			}
-		} else if (child instanceof MVariableSystem) {
-			if (parent instanceof MVariables) {
-				JRDesignVariable p = (JRDesignVariable) child.getValue();
-				if (p == null || !p.isSystemDefined())
-					return new CreateVariableCommand((MVariables) parent, (MVariable) child, newIndex);
-			}
-			if (child.getValue() != null
-					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
-				return new CreateE4ObjectCommand(child, parent, location, newIndex);
-			}
-		} else {
-			if (child instanceof MConditionalStyle) {
-				if (parent instanceof MStyle && parent.getValue() instanceof JRDesignStyle)
-					return new CreateConditionalStyleCommand((MStyle) parent, (MConditionalStyle) child, newIndex);
-				return null;
-			} else if (child instanceof MStyle) {
-				if (parent instanceof MStyles)
-					return new CreateStyleCommand((MStyles) parent, (MStyle) child, newIndex);
-				if (parent instanceof MGraphicElement && child.getValue() != null && !(parent instanceof IContainer)) {
-					SetValueCommand cmd = new SetValueCommand();
-					cmd.setTarget((IPropertySource) parent);
-					cmd.setPropertyId(JRDesignElement.PROPERTY_PARENT_STYLE);
-					JRStyle style = (JRStyle) child.getValue();
-					cmd.setPropertyValue(style.getName());
-					return cmd;
-				}
-				if (parent instanceof MStylesTemplate && ((MStylesTemplate)parent).isEditable()){
-					return new com.jaspersoft.studio.editor.style.command.CreateStyleCommand((MStylesTemplate)parent, (MStyle)child, -1);
-				}
-				if (parent instanceof MReport && location != null) {
-					MGraphicElement element = ModelUtils.getElement4Point(parent, new Point(location.x, location.y));
-					if (element != null) {
-						SetValueCommand cmd = new SetValueCommand();
-						cmd.setTarget(element);
-						cmd.setPropertyId(JRDesignElement.PROPERTY_PARENT_STYLE);
-						JRStyle style = (JRStyle) child.getValue();
-						cmd.setPropertyValue(style.getName());
-						return cmd;
-					}
-				}
-			}
-		}
-		//If it is a custom tool require the command to the toolmanger
-		if (child instanceof MCompositeElement){
-			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement)child, location, newIndex);
-		} else if (child instanceof MPageXofY) {
-			if (parent instanceof MElementGroup)
-				return new CreatePageXofYCommand((MElementGroup) parent, (MPageXofY) child, location, newIndex);
-			if (parent instanceof MBand)
-				return new CreatePageXofYCommand((MBand) parent, (MPageXofY) child, location, newIndex);
-			if (parent instanceof MFrame)
-				return new CreatePageXofYCommand((MFrame) parent, (MPageXofY) child, location, newIndex);
-			if (parent instanceof MReport)
-				return new CreatePageXofYCommand(parent, (MPageXofY) child, location, newIndex);
-		} else if (child instanceof MPercentage) {
-			if (parent instanceof MElementGroup)
-				return new CreatePercentageCommand((MElementGroup) parent, (MPercentage) child, location, newIndex);
-			if (parent instanceof MBand)
-				return new CreatePercentageCommand((MBand) parent, (MPercentage) child, location, newIndex);
-			if (parent instanceof MFrame)
-				return new CreatePercentageCommand((MFrame) parent, (MPercentage) child, location, newIndex);
-			if (parent instanceof MReport)
-				return new CreatePercentageCommand(parent, (MPercentage) child, location, newIndex);
-		} else if (child instanceof MSubreport) {
-			if (parent instanceof MElementGroup)
-				return new CreateSubreportCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MBand)
-				return new CreateSubreportCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MFrame)
-				return new CreateSubreportCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MReport)
-				return new CreateSubreportCommand(parent, (MGraphicElement) child, location, newIndex);
-
-			if (parent instanceof IGroupElement) {
-				return new CreateSubreportCommand(parent, (MGraphicElement) child, location, newIndex);
-			}
-		} else if (child instanceof MImage) {
-			if (parent instanceof MElementGroup)
-				return new CreateImageCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MBand)
-				return new CreateImageCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MFrame)
-				return new CreateImageCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MReport)
-				return new CreateImageCommand(parent, (MGraphicElement) child, location, newIndex);
-
-			if (parent instanceof IGroupElement) {
-				return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
-			}
-		} else if (child instanceof MGraphicElement) {
-			if (parent instanceof MElementGroup)
-				return new CreateElementCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MBand)
-				return new CreateElementCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MFrame)
-				return new CreateElementCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof MReport)
-				return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
-
-			if (parent instanceof IGroupElement) {
-				return new CreateElementCommand(parent, (MGraphicElement) child, location, newIndex);
-			}
-		} else if (child instanceof MElementGroup) {
-			if (parent instanceof MElementGroup)
-				return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
-			if (parent instanceof MBand)
-				return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
-			if (parent instanceof MFrame)
-				return new CreateElementGroupCommand(parent, (MElementGroup) child, newIndex);
-		} else if (child instanceof MConditionalStyle && ((APropertyNode) child).isEditable()) {
-			if (parent instanceof MStyle && !(parent instanceof MConditionalStyle))
-				return new CreateConditionalStyleCommand((MStyle) parent, (MConditionalStyle) child, newIndex);
-		} else if (child instanceof MStyleTemplate && ((APropertyNode) child).isEditable()) {
-			if (parent instanceof MStyles)
-				return new CreateStyleTemplateCommand((MStyles) parent, (MStyleTemplate) child, 0);
-		} else if (child instanceof MSortField) {
-			if (parent instanceof MSortFields) {
-				JRDesignDataset ds = (JRDesignDataset) parent.getValue();
-				if ((ds.getVariablesList().size() + ds.getFieldsList().size()) >= parent.getChildren().size())
-					return new CreateSortFieldCommand((MSortFields) parent, (MSortField) child, newIndex);
-			}
-		} else if (child instanceof MGroup) {
-			if (parent instanceof MGroups)
-				return new CreateGroupCommand((MGroups) parent, (MGroup) child, newIndex);
-			if (parent instanceof MReport)
-				return new CreateMainGroupCommand((MReport) parent, (MGroup) child, newIndex);
-		} else if (child instanceof MScriptlet) {
-			if (parent instanceof MScriptlets)
-				return new CreateScriptletCommand((MScriptlets) parent, (MScriptlet) child, newIndex);
-		} else if (child instanceof MDataset) {
-			if (parent instanceof MReport) {
-				return new CreateDatasetCommand((MReport) parent, (MDataset) child, newIndex);
-			}
-		} else if (child instanceof MBand) {
-			if (parent instanceof MBandGroupHeader)
-				return new CreateBandGroupHeaderCommand((MBandGroupHeader) parent);
-			if (parent instanceof MBandGroupFooter)
-				return new CreateBandGroupFooterCommand((MBandGroupFooter) parent);
-			if (parent instanceof MBand && parent.getValue() == null)
-				return new CreateBandCommand((MBand) parent, (MBand) child);
-		}
-		return null;
+		return getCreateCommand(parent, child, location, newIndex, null);
 	}
 
 	/**
