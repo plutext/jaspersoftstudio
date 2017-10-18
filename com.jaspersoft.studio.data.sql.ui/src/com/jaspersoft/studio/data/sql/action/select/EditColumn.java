@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.action.select;
 
@@ -30,7 +38,8 @@ public class EditColumn extends AAction {
 	@Override
 	public boolean calculateEnabled(Object[] selection) {
 		super.calculateEnabled(selection);
-		return selection != null && selection.length == 1 && selection[0] instanceof ANode
+		return selection != null && selection.length == 1
+				&& selection[0] instanceof ANode
 				&& isColumn((ANode) selection[0]);
 	}
 
@@ -41,9 +50,10 @@ public class EditColumn extends AAction {
 			setText(Messages.EditColumn_0);
 		else if (element instanceof MSelectExpression)
 			setText(Messages.EditColumn_2);
-		else if (element instanceof MSelectColumn)
+		else if(element instanceof MSelectColumn)
 			setText(Messages.EditColumn_0);
-		return element instanceof MSelectColumn || element instanceof MSelectExpression
+		return element instanceof MSelectColumn
+				|| element instanceof MSelectExpression
 				|| element instanceof MSelectSubQuery;
 	}
 
@@ -65,7 +75,8 @@ public class EditColumn extends AAction {
 	}
 
 	protected void doRunSubQuery(MSelectSubQuery mcol) {
-		EditSelectSubQueryDialog dialog = new EditSelectSubQueryDialog(treeViewer.getControl().getShell());
+		EditSelectSubQueryDialog dialog = new EditSelectSubQueryDialog(Display
+				.getDefault().getActiveShell());
 		dialog.setValue(mcol);
 		if (dialog.open() == Window.OK) {
 			mcol.setAlias(dialog.getAlias());
@@ -75,7 +86,8 @@ public class EditColumn extends AAction {
 	}
 
 	protected void doRunExpression(MSelectExpression mcol) {
-		EditSelectExpressionDialog dialog = new EditSelectExpressionDialog(treeViewer.getControl().getShell());
+		EditSelectExpressionDialog dialog = new EditSelectExpressionDialog(
+				Display.getDefault().getActiveShell());
 		dialog.setValue(mcol);
 		if (dialog.open() == Window.OK) {
 			mcol.setValue(dialog.getExpression());
@@ -86,7 +98,8 @@ public class EditColumn extends AAction {
 	}
 
 	protected void doRunColumn(MSelectColumn mcol) {
-		EditSelectColumnDialog dialog = new EditSelectColumnDialog(UIUtils.getShell());
+		EditSelectColumnDialog dialog = new EditSelectColumnDialog(
+				UIUtils.getShell());
 		dialog.setValue(mcol);
 		if (dialog.open() == Dialog.OK) {
 			mcol.setAlias(dialog.getAlias());

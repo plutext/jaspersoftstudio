@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.actions;
 
@@ -19,7 +23,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.preview.MultiPageContainer;
 import com.jaspersoft.studio.editor.preview.view.APreview;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.editor.preview.view.control.VExporter;
 import com.jaspersoft.studio.messages.MessagesByKeys;
 import com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage;
@@ -29,9 +33,9 @@ import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 public class ViewExporterAction extends ASwitchAction implements IMenuCreator {
 	public ViewExporterAction(MultiPageContainer container, IFile file) {
-		super(container, ReportController.FORM_EXPORTER, AS_DROP_DOWN_MENU);
+		super(container, ReportControler.FORM_EXPORTER, AS_DROP_DOWN_MENU);
 		setImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor("icons/resources/equalizer--arrow.png")); //$NON-NLS-1$
-		setToolTipText(MessagesByKeys.getString(ReportController.FORM_EXPORTER));
+		setToolTipText(MessagesByKeys.getString(ReportControler.FORM_EXPORTER));
 		this.file = file;
 		setMenuCreator(this);
 	}

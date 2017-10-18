@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.map.property;
 
@@ -33,6 +41,7 @@ import com.jaspersoft.studio.property.itemproperty.sp.SPItemDataList;
 import com.jaspersoft.studio.property.section.AbstractSection;
 import com.jaspersoft.studio.utils.ExpressionInterpreter;
 import com.jaspersoft.studio.utils.ExpressionUtil;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.map.core.LatLng;
@@ -51,7 +60,6 @@ import net.sf.jasperreports.components.map.MapComponent;
 import net.sf.jasperreports.components.map.StandardMapComponent;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.BasicMapInfoData;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
@@ -115,321 +123,305 @@ public class PathPropertyDescriptor extends AItemDataListPropertyDescriptor {
 					layout.marginWidth = 0;
 					layout.marginRight = -5;
 					cmp.setLayout(layout);
-					try {
-						pmap = new GMapsPathsPanel(cmp, SWT.NONE) {
 
-							private MMap mmap;
-							private BasicMapInfoData mapInfo;
+					pmap = new GMapsPathsPanel(cmp, SWT.NONE) {
 
-							@Override
-							public void initMap() {
-								initMarkers = true;
-								try {
-									mmap = (MMap) pnode;
-									if (mapInfo == null) {
-										mapInfo = mmap.getBasicMapInformation();
-										if (mapInfo.getLatitude() != null && mapInfo.getLongitude() != null)
-											setMapCenter(
-													new LatLng(mapInfo.getLatitude(), mapInfo.getLongitude(), true));
-										else if (mapInfo.getAddress() != null)
-											setAddress(mapInfo.getAddress());
-										else {
-											addPostCreateCommand(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION,
-													getMapCenter().getLat());
-											addPostCreateCommand(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION,
-													getMapCenter().getLng());
-										}
-										if (mapInfo.getMapType() != null)
-											setMapType(MapType.fromStringID(mapInfo.getMapType().getName()));
-										else
-											addPostCreateCommand(StandardMapComponent.PROPERTY_MAP_TYPE, getMapType());
-										if (mapInfo.getZoom() != 0)
-											setZoomLevel(mapInfo.getZoom());
-										else
-											addPostCreateCommand(StandardMapComponent.PROPERTY_ZOOM_EXPRESSION,
-													getZoomLevel());
+						private MMap mmap;
+						private BasicMapInfoData mapInfo;
+
+						@Override
+						public void initMap() {
+							initMarkers = true;
+							try {
+								mmap = (MMap) pnode;
+								if (mapInfo == null) {
+									mapInfo = mmap.getBasicMapInformation();
+									if (mapInfo.getLatitude() != null && mapInfo.getLongitude() != null)
+										setMapCenter(new LatLng(mapInfo.getLatitude(), mapInfo.getLongitude(), true));
+									else if (mapInfo.getAddress() != null)
+										setAddress(mapInfo.getAddress());
+									else {
+										postCreateMap.put(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION,
+												getMapCenter().getLat());
+										postCreateMap.put(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION,
+												getMapCenter().getLng());
 									}
-								} finally {
-									initMarkers = false;
+									if (mapInfo.getMapType() != null)
+										setMapType(MapType.fromStringID(mapInfo.getMapType().getName()));
+									else
+										postCreateMap.put(StandardMapComponent.PROPERTY_MAP_TYPE, getMapType());
+									if (mapInfo.getZoom() != 0)
+										setZoomLevel(mapInfo.getZoom());
+									else
+										postCreateMap.put(StandardMapComponent.PROPERTY_ZOOM_EXPRESSION,
+												getZoomLevel());
 								}
+							} finally {
+								initMarkers = false;
 							}
+						}
 
-							private ExpressionInterpreter getExpressionInterpretter() {
-								JasperDesign jd = mmap.getJasperDesign();
-								JRDesignDataset dataset = null;
-								if (itemData.getDataset() != null)
-									dataset = ModelUtils.getDesignDatasetForDatasetRun(jd,
-											itemData.getDataset().getDatasetRun());
-								if (dataset == null)
-									dataset = ModelUtils.getDataset(mmap);
-								if (dataset == null)
-									dataset = (JRDesignDataset) jd.getMainDataset();
+						private ExpressionInterpreter getExpressionInterpretter() {
+							JasperDesign jd = mmap.getJasperDesign();
+							JRDesignDataset dataset = null;
+							if (itemData.getDataset() != null)
+								dataset = ModelUtils.getDesignDatasetForDatasetRun(jd,
+										itemData.getDataset().getDatasetRun());
+							if (dataset == null)
+								dataset = ModelUtils.getDataset(mmap);
+							if (dataset == null)
+								dataset = (JRDesignDataset) jd.getMainDataset();
 
-								return ExpressionUtil.getCachedInterpreter(dataset, jd, mmap.getJasperConfiguration());
-							}
+							return ExpressionUtil.getCachedInterpreter(dataset, jd, mmap.getJasperConfiguration());
+						}
 
-							@Override
-							public void postInitMap() {
-								super.postInitMap();
-								fillPaths();
-							}
+						@Override
+						public void postInitMap() {
+							super.postInitMap();
+							fillPaths();
+						}
 
-							@Override
-							public void initMarkers() {
-								initMarkers = true;
-								try {
-									if (markersList != null && markersList.getItemCount() > 0)
-										clearMarkers();
-									String path = cPaths.getText();
-									ExpressionInterpreter expIntr = getExpressionInterpretter();
-									for (Item it : itemData.getItems()) {
-										Double lat = null;
-										Double lon = null;
-										String itPath = null;
-										StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
-												.getProperty(it.getProperties(), MapComponent.ITEM_PROPERTY_name);
-										if (ip != null)
-											itPath = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
-										if (!((Misc.isNullOrEmpty(path) && Misc.isNullOrEmpty(itPath))
-												|| path.equals(itPath)))
-											continue;
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_latitude);
-										if (ip != null)
-											lat = ItemPropertyUtil.getItemPropertyDouble(ip, expIntr);
-
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_longitude);
-										if (ip != null)
-											lon = ItemPropertyUtil.getItemPropertyDouble(ip, expIntr);
-										if (lat == null || lon == null) {
-											ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-													MapComponent.ITEM_PROPERTY_address);
-											String adr = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
-											if (Misc.isNullOrEmpty(adr))
-												continue;
-											LatLng coords = GMapUtils.getAddressCoordinates(adr);
-											if (coords != null) {
-												lat = coords.getLat();
-												lon = coords.getLng();
-											}
-										}
-										if (lat == null || lon == null)
-											continue;
-
-										Marker m = new Marker(new LatLng(lat, lon));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_flat);
-										if (ip != null)
-											m.setFlat(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_clickable);
-										if (ip != null)
-											m.setClickable(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_draggable);
-										if (ip != null)
-											m.setDraggable(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_visible);
-										if (ip != null)
-											m.setVisible(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_optimized);
-										if (ip != null)
-											m.getOptions()
-													.setOptimized(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_raiseOnDrag);
-										if (ip != null)
-											m.getOptions().setRaiseOnDrag(
-													ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_cursor);
-										if (ip != null)
-											m.setCursor(ItemPropertyUtil.getItemPropertyString(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_title);
-										if (ip != null)
-											m.setTitle(ItemPropertyUtil.getItemPropertyString(ip, expIntr));
-										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
-												MapComponent.ITEM_PROPERTY_MARKER_zIndex);
-										if (ip != null)
-											m.setZIndex(ItemPropertyUtil.getItemPropertyInteger(ip, expIntr));
-
-										addNewMarker(m);
-									}
-									drawPolyline();
-								} finally {
-									initMarkers = false;
-								}
-							}
-
-							@Override
-							protected void fillPaths() {
-								initMarkers = true;
-								try {
-									String oldSelection = cPaths.getText();
-									cPaths.removeAll();
-									Set<String> set = new LinkedHashSet<String>();
-									ExpressionInterpreter expIntr = getExpressionInterpretter();
-									for (Item it : itemData.getItems()) {
-										StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
-												.getProperty(it.getProperties(), MapComponent.ITEM_PROPERTY_name);
-										if (ip != null) {
-											String path = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
-											if (!Misc.isNullOrEmpty(path))
-												set.add(path);
-										}
-									}
-									cPaths.setItems(set.toArray(new String[set.size()]));
-									int i = 0;
-									for (String path : set) {
-										if (path.equals(oldSelection)) {
-											cPaths.select(i);
-											break;
-										}
-										++i;
-									}
-									if (cPaths.getSelectionIndex() < 0)
-										cPaths.setText(oldSelection);
-								} finally {
-									initMarkers = false;
-								}
-							}
-
-							@Override
-							protected void handlePathChanged() {
-								initMarkers();
-							}
-
-							@Override
-							protected void handleNewMarker(Marker newMarker) {
-								if (initMarkers)
-									return;
-								super.handleNewMarker(newMarker);
-								StandardItem si = new StandardItem();
-								LatLng p = newMarker.getPosition();
-								si.addItemProperty(new StandardItemProperty(MapComponent.ITEM_PROPERTY_latitude,
-										coordinatesFormatter.format(p.getLat()), null));
-								si.addItemProperty(new StandardItemProperty(MapComponent.ITEM_PROPERTY_longitude,
-										coordinatesFormatter.format(p.getLng()), null));
+						@Override
+						public void initMarkers() {
+							initMarkers = true;
+							try {
+								if (markersList != null && markersList.getItemCount() > 0)
+									clearMarkers();
 								String path = cPaths.getText();
-								if (!Misc.isNullOrEmpty(path))
-									si.addItemProperty(
-											new StandardItemProperty(MapComponent.ITEM_PROPERTY_name, path, null)); // $NON-NLS-1$
-								itemData.addItem(si);
-							}
-
-							@Override
-							protected void handleUpdateMarkerPosition(int markerIdx, Marker m) {
-								super.handleUpdateMarkerPosition(markerIdx, m);
-								StandardItem si = (StandardItem) itemData.getItems().get(markerIdx);
-								if (si != null) {
+								ExpressionInterpreter expIntr = getExpressionInterpretter();
+								for (Item it : itemData.getItems()) {
+									Double lat = null;
+									Double lon = null;
+									String itPath = null;
 									StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
-											.getProperty(si.getProperties(), MapComponent.ITEM_PROPERTY_latitude);
-									LatLng p = m.getPosition();
-									if (ip.getValueExpression() != null)
-										ip.setValueExpression(
-												new JRDesignExpression(coordinatesFormatter.format(p.getLat())));
-									else
-										ip.setValue(coordinatesFormatter.format(p.getLat()));
+											.getProperty(it.getProperties(), MapComponent.ITEM_PROPERTY_name);
+									if (ip != null)
+										itPath = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
+									if (!((Misc.isNullOrEmpty(path) && Misc.isNullOrEmpty(itPath))
+											|| path.equals(itPath)))
+										continue;
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_latitude);
+									if (ip != null)
+										lat = ItemPropertyUtil.getItemPropertyDouble(ip, expIntr);
 
-									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(si.getProperties(),
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
 											MapComponent.ITEM_PROPERTY_longitude);
-									if (ip.getValueExpression() != null)
-										ip.setValueExpression(
-												new JRDesignExpression(coordinatesFormatter.format(p.getLng())));
-									else
-										ip.setValue(coordinatesFormatter.format(p.getLng()));
-								}
-							}
-
-							@Override
-							protected void handleRemoveMarker(int[] mIndxs) {
-								List<Item> itms = new ArrayList<Item>();
-								String p = cPaths.getText();
-								if (!Misc.isNullOrEmpty(p)) {
-									ExpressionInterpreter expIntr = getExpressionInterpretter();
-									List<Item> pitems = new ArrayList<Item>();
-									for (Item it : itemData.getItems()) {
-										StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
-												.getProperty(it.getProperties(), MapComponent.ITEM_PROPERTY_name);
-										if (ip != null) {
-											String path = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
-											if (!Misc.isNullOrEmpty(path) && path.equals(p))
-												pitems.add(it);
+									if (ip != null)
+										lon = ItemPropertyUtil.getItemPropertyDouble(ip, expIntr);
+									if (lat == null || lon == null) {
+										ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+												MapComponent.ITEM_PROPERTY_address);
+										String adr = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
+										if (Misc.isNullOrEmpty(adr))
+											continue;
+										LatLng coords = GMapUtils.getAddressCoordinates(adr);
+										if (coords != null) {
+											lat = coords.getLat();
+											lon = coords.getLng();
 										}
 									}
-									for (int i : mIndxs)
-										itms.add(pitems.get(i));
-								} else
-									for (int i : mIndxs)
-										itms.add(itemData.getItems().get(i));
-								for (Item it : itms)
-									itemData.removeItem(it);
-								super.handleRemoveMarker(mIndxs);
-								initMarkers = true;
-								try {
-									postInitMap();
-									initMarkers();
-								} finally {
-									initMarkers = false;
+									if (lat == null || lon == null)
+										continue;
+
+									Marker m = new Marker(new LatLng(lat, lon));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_flat);
+									if (ip != null)
+										m.setFlat(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_clickable);
+									if (ip != null)
+										m.setClickable(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_draggable);
+									if (ip != null)
+										m.setDraggable(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_visible);
+									if (ip != null)
+										m.setVisible(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_optimized);
+									if (ip != null)
+										m.getOptions()
+												.setOptimized(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_raiseOnDrag);
+									if (ip != null)
+										m.getOptions()
+												.setRaiseOnDrag(ItemPropertyUtil.getItemPropertyBoolean(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_cursor);
+									if (ip != null)
+										m.setCursor(ItemPropertyUtil.getItemPropertyString(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_title);
+									if (ip != null)
+										m.setTitle(ItemPropertyUtil.getItemPropertyString(ip, expIntr));
+									ip = (StandardItemProperty) ItemPropertyUtil.getProperty(it.getProperties(),
+											MapComponent.ITEM_PROPERTY_MARKER_zIndex);
+									if (ip != null)
+										m.setZIndex(ItemPropertyUtil.getItemPropertyInteger(ip, expIntr));
+
+									addNewMarker(m);
 								}
+								drawPolyline();
+							} finally {
+								initMarkers = false;
 							}
+						}
 
-							@Override
-							protected void handleAddressChanged(String address) {
-								addPostCreateCommand(StandardMapComponent.PROPERTY_ADDRESS_EXPRESSION, address);
-								addPostCreateCommand(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION, null);
-								addPostCreateCommand(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION, null);
-							}
-
-							@Override
-							protected void handleMapZoomChanged(int newZoomLevel) {
-								if (initMarkers)
-									return;
-								addPostCreateCommand(StandardMapComponent.PROPERTY_ZOOM_EXPRESSION, newZoomLevel);
-							}
-
-							@Override
-							protected void handleMapTypeChanged(MapType mapType) {
-								if (initMarkers)
-									return;
-								addPostCreateCommand(StandardMapComponent.PROPERTY_MAP_TYPE, mapType.ordinal());
-							}
-
-							@Override
-							protected void handleMapCenterChanged(LatLng position) {
-								if (initMarkers)
-									return;
-								super.handleMapCenterChanged(position);
-								if (Misc.isNullOrEmpty(getAddress())) {
-									addPostCreateCommand(StandardMapComponent.PROPERTY_ADDRESS_EXPRESSION, null);
-									addPostCreateCommand(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION,
-											coordinatesFormatter.format(position.getLat()));
-									addPostCreateCommand(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION,
-											coordinatesFormatter.format(position.getLng()));
+						@Override
+						protected void fillPaths() {
+							initMarkers = true;
+							try {
+								String oldSelection = cPaths.getText();
+								cPaths.removeAll();
+								Set<String> set = new LinkedHashSet<String>();
+								ExpressionInterpreter expIntr = getExpressionInterpretter();
+								for (Item it : itemData.getItems()) {
+									StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
+											.getProperty(it.getProperties(), MapComponent.ITEM_PROPERTY_name);
+									if (ip != null) {
+										String path = ItemPropertyUtil.getItemPropertyString(ip, expIntr);
+										if (!Misc.isNullOrEmpty(path))
+											set.add(path);
+									}
 								}
-							}
-
-							@Override
-							protected void handleMarkerDoubleClick(int ind) {
-								editElement.editElement(itemData.getItems(), ind);
-								// update marker?
-								initMarkers = true;
-								try {
-									postInitMap();
-								} finally {
-									initMarkers = false;
+								cPaths.setItems(set.toArray(new String[set.size()]));
+								int i = 0;
+								for (String path : set) {
+									if (path.equals(oldSelection)) {
+										cPaths.select(i);
+										break;
+									}
+									++i;
 								}
+								if (cPaths.getSelectionIndex() < 0)
+									cPaths.setText(oldSelection);
+							} finally {
+								initMarkers = false;
 							}
+						}
 
-						};
-					} catch (Throwable e) {
-						tabItem.dispose();
-						return;
-					}
+						@Override
+						protected void handlePathChanged() {
+							initMarkers();
+						}
+
+						@Override
+						protected void handleNewMarker(Marker newMarker) {
+							if (initMarkers)
+								return;
+							super.handleNewMarker(newMarker);
+							StandardItem si = new StandardItem();
+							LatLng p = newMarker.getPosition();
+							si.addItemProperty(new StandardItemProperty(MapComponent.ITEM_PROPERTY_latitude,
+									String.format("%.7f", p.getLat()), null)); //$NON-NLS-1$
+							si.addItemProperty(new StandardItemProperty(MapComponent.ITEM_PROPERTY_longitude,
+									String.format("%.7f", p.getLng()), null)); //$NON-NLS-1$
+							String path = cPaths.getText();
+							if (!Misc.isNullOrEmpty(path))
+								si.addItemProperty(
+										new StandardItemProperty(MapComponent.ITEM_PROPERTY_name, path, null)); // $NON-NLS-1$
+							itemData.addItem(si);
+						}
+
+						@Override
+						protected void handleUpdateMarkerPosition(int markerIdx, Marker m) {
+							super.handleUpdateMarkerPosition(markerIdx, m);
+							StandardItem si = (StandardItem) itemData.getItems().get(markerIdx);
+							if (si != null) {
+								StandardItemProperty ip = (StandardItemProperty) ItemPropertyUtil
+										.getProperty(si.getProperties(), MapComponent.ITEM_PROPERTY_latitude);
+								LatLng p = m.getPosition();
+								if (ip.getValueExpression() != null)
+									ip.setValueExpression(new JRDesignExpression(String.format("%.7f", p.getLat()))); //$NON-NLS-1$
+								else
+									ip.setValue(String.format("%.7f", p.getLat())); //$NON-NLS-1$
+
+								ip = (StandardItemProperty) ItemPropertyUtil.getProperty(si.getProperties(),
+										MapComponent.ITEM_PROPERTY_longitude);
+								if (ip.getValueExpression() != null)
+									ip.setValueExpression(new JRDesignExpression(String.format("%.7f", p.getLng()))); //$NON-NLS-1$
+								else
+									ip.setValue(String.format("%.7f", p.getLng())); //$NON-NLS-1$
+							}
+						}
+
+						@Override
+						protected void handleRemoveMarker(int markerIndex) {
+							super.handleRemoveMarker(markerIndex);
+							itemData.removeItem(itemData.getItems().get(markerIndex));
+						}
+
+						@Override
+						protected void handleRemoveMarker(int[] mIndxs) {
+							List<Item> itms = new ArrayList<Item>();
+							for (int i : mIndxs)
+								itms.add(itemData.getItems().get(i));
+							for (Item it : itms)
+								itemData.removeItem(it);
+							super.handleRemoveMarker(mIndxs);
+							initMarkers = true;
+							try {
+								postInitMap();
+								initMarkers();
+							} finally {
+								initMarkers = false;
+							}
+						}
+
+						@Override
+						protected void handleAddressChanged(String address) {
+							postCreateMap.put(StandardMapComponent.PROPERTY_ADDRESS_EXPRESSION, address);
+							postCreateMap.put(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION, null);
+							postCreateMap.put(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION, null);
+						}
+
+						@Override
+						protected void handleMapZoomChanged(int newZoomLevel) {
+							if (initMarkers)
+								return;
+							postCreateMap.put(StandardMapComponent.PROPERTY_ZOOM_EXPRESSION, newZoomLevel);
+						}
+
+						@Override
+						protected void handleMapTypeChanged(MapType mapType) {
+							if (initMarkers)
+								return;
+							postCreateMap.put(StandardMapComponent.PROPERTY_MAP_TYPE, mapType.ordinal());
+						}
+
+						@Override
+						protected void handleMapCenterChanged(LatLng position) {
+							if (initMarkers)
+								return;
+							super.handleMapCenterChanged(position);
+							if (Misc.isNullOrEmpty(getAddress())) {
+								postCreateMap.put(StandardMapComponent.PROPERTY_ADDRESS_EXPRESSION, null);
+								postCreateMap.put(StandardMapComponent.PROPERTY_LATITUDE_EXPRESSION,
+										String.format("%.7f", position.getLat())); //$NON-NLS-1$
+								postCreateMap.put(StandardMapComponent.PROPERTY_LONGITUDE_EXPRESSION,
+										String.format("%.7f", position.getLng())); //$NON-NLS-1$
+							}
+						}
+
+						@Override
+						protected void handleMarkerDoubleClick(int ind) {
+							editElement.editElement(itemData.getItems(), ind);
+							// update marker?
+							initMarkers = true;
+							try {
+								postInitMap();
+							} finally {
+								initMarkers = false;
+							}
+						}
+
+					};
+
 					tabItem.setControl(cmp);
 				}
 

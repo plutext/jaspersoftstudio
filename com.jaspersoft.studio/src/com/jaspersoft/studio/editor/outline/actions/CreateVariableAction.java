@@ -1,22 +1,24 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline.actions;
 
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.gef.EditPart;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import com.jaspersoft.studio.editor.gef.util.CreateRequestUtil;
 import com.jaspersoft.studio.editor.palette.JDPaletteCreationFactory;
 import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.variable.MVariable;
 import com.jaspersoft.studio.model.variable.MVariables;
 
@@ -45,23 +47,10 @@ public class CreateVariableAction extends ACreateAndSelectAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(!checkSingleSelectedObject(MVariables.class) && !checkSingleSelectedObject(MVariable.class)){
+		if(!checkSingleSelectedObject(MVariables.class)){
 			return false;
 		}
 		return super.calculateEnabled();
-	}
-	
-	protected boolean setExtendedData(Map<Object, Object> map, List<?> objects) {
-		if (objects.size() == 1) {
-			EditPart part = (EditPart)objects.get(0);
-			if (part.getModel() instanceof MVariable) {
-				MVariable selectedField = (MVariable)part.getModel();
-				ANode parent = selectedField.getParent();
-				int index = parent.getChildren().indexOf(selectedField);
-				map.put(CreateRequestUtil.NEWINDEX, index + 1);
-			}
-		}
-		return true;
 	}
 	
 	/**

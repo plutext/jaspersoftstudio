@@ -1,11 +1,23 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.actions.export;
 
 import java.io.File;
 import java.text.MessageFormat;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.eclipse.viewer.IReportViewer;
+import net.sf.jasperreports.engine.JRAbstractExporter;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -20,16 +32,8 @@ import com.jaspersoft.studio.preferences.editor.pages.Pages;
 import com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage;
 import com.jaspersoft.studio.statistics.UsageStatisticsIDs;
 import com.jaspersoft.studio.utils.Callback;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.viewer.IReportViewer;
-import net.sf.jasperreports.engine.JRAbstractExporter;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.export.JRExportProgressMonitor;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 
 public abstract class AExportAction extends AReportViewerAction {
 
@@ -106,8 +110,8 @@ public abstract class AExportAction extends AReportViewerAction {
 			dialog.setFilterPath(filterPath);
 		if (fileName != null)
 			dialog.setFileName(fileName);
-		else if (getReportViewer() != null && getReportViewer().getReport() != null)
-			dialog.setFileName(Misc.nvl(getReportViewer().getReport().getName()));
+		else
+			dialog.setFileName(getReportViewer().getReport().getName());
 
 		String filePath = dialog.open();
 		if (filePath != null) {
@@ -128,8 +132,8 @@ public abstract class AExportAction extends AReportViewerAction {
 					@Override
 					public void completed(File value) {
 						// Log the export statistics of the exported format
-						JaspersoftStudioPlugin.getInstance().getUsageManager().audit(
-								AExportAction.this.getClass().getName(), UsageStatisticsIDs.CATEGORY_EXPORT_FORMAT);
+						JaspersoftStudioPlugin.getInstance().getUsageManager().audit(AExportAction.this.getClass().getName(),
+								UsageStatisticsIDs.CATEGORY_EXPORT_FORMAT);
 						if (jContext != null && jContext.getJasperDesign() != null) {
 							String reportLanguage = jContext.getJasperDesign().getLanguage();
 							if (reportLanguage != null) {
@@ -148,8 +152,8 @@ public abstract class AExportAction extends AReportViewerAction {
 	}
 
 	/**
-	 * Method called to execute the export operation. Typically this is called by
-	 * the run method since it is executing the action
+	 * Method called to execute the export operation. Typically this is called by the run method since it is executing the
+	 * action
 	 */
 	protected void export(final File file, final Callback<File> callback) throws Exception {
 		final JasperPrint jrPrint = getReportViewer().getReport();
@@ -175,12 +179,10 @@ public abstract class AExportAction extends AReportViewerAction {
 	}
 
 	/**
-	 * Method called to preview the report, this is a utility method provided from
-	 * the action and can be called outside. Essentially a preview and an export
-	 * operation are really similar since the preview export into a temp file and
-	 * show it. But for this reason it need to do less checks (for file existing for
-	 * example) and for this reason there are two separate methods to export or
-	 * preview the report
+	 * Method called to preview the report, this is a utility method provided from the action and can be called outside.
+	 * Essentially a preview and an export operation are really similar since the preview export into a temp file and show
+	 * it. But for this reason it need to do less checks (for file existing for example) and for this reason there are two
+	 * separate methods to export or preview the report
 	 */
 	public void preview(final File file, final JasperPrint jrPrint, final Callback<File> callback) throws Exception {
 		if (jrPrint == null || jrPrint.getPages() == null)
@@ -244,12 +246,11 @@ public abstract class AExportAction extends AReportViewerAction {
 			JRExportProgressMonitor monitor, File file);
 
 	/**
-	 * Called when the destination file already exist, check what to do using the
-	 * preferences and it can use a static value chosen by the user before or prompt
-	 * a question
+	 * Called when the destination file already exist, check what to do using the preferences and it can use a static
+	 * value chosen by the user before or prompt a question
 	 * 
-	 * @return true if the export operation should continue and the target file
-	 *         overwritten, false if the operation should be aborted
+	 * @return true if the export operation should continue and the target file overwritten, false if the operation should
+	 *         be aborted
 	 */
 	protected boolean continueIfFileExist() {
 		boolean result = true;
@@ -264,16 +265,14 @@ public abstract class AExportAction extends AReportViewerAction {
 			// Prompt the question to the user
 			Boolean[] answers = UIUtils.showConfirmation(Messages.AExportAction_overwriteTitle,
 					Messages.AExportAction_overwriteMessage, Messages.AExportAction_overwriteCheckbox);
-			// the first element of the array is the decision made on the dialog, the second
-			// is the value of the checkbox
+			// the first element of the array is the decision made on the dialog, the second is the value of the checkbox
 			result = answers[0];
 			if (answers[1]) {
 				// need to remember the decision
-				String selectionToRemember = result
-						? JRExporterPreferencePage.OVERWRITE_STATE.OVERWRITE_TARGET.toString()
+				String selectionToRemember = result ? JRExporterPreferencePage.OVERWRITE_STATE.OVERWRITE_TARGET.toString()
 						: JRExporterPreferencePage.OVERWRITE_STATE.STOP_OPERATION.toString();
-				JaspersoftStudioPlugin.getInstance().getPreferenceStore()
-						.setValue(JRExporterPreferencePage.EXPORTER_OVERWRITE, selectionToRemember);
+				JaspersoftStudioPlugin.getInstance().getPreferenceStore().setValue(JRExporterPreferencePage.EXPORTER_OVERWRITE,
+						selectionToRemember);
 			}
 		} else if (exporterValue.equals(JRExporterPreferencePage.OVERWRITE_STATE.STOP_OPERATION)) {
 			result = false;
@@ -283,16 +282,15 @@ public abstract class AExportAction extends AReportViewerAction {
 	}
 
 	/**
-	 * Called to proceed to the export of the report. It does some additional check
-	 * than doPreview, since the export many times need also to check if or not to
-	 * overwrite an existing file, instead in the preview it used a temp.
+	 * Called to proceed to the export of the report. It does some additional check than doPreview, since the export many
+	 * times need also to check if or not to overwrite an existing file, instead in the preview it used a temp.
 	 * 
 	 * @param file
-	 *            the destination file
+	 *          the destination file
 	 * @param jrPrint
-	 *            the jrprint to export
+	 *          the jrprint to export
 	 * @param monitor
-	 *            monitor for the operation
+	 *          monitor for the operation
 	 */
 	protected void doExport(File file, JasperPrint jrPrint, final IProgressMonitor monitor) {
 		try {
@@ -313,8 +311,8 @@ public abstract class AExportAction extends AReportViewerAction {
 							if (monitor.isCanceled())
 								Thread.currentThread().interrupt();
 							monitor.worked(1);
-							monitor.subTask(MessageFormat.format(Messages.PageNumberContributionItem_page,
-									new Integer(current++), size));
+							monitor.subTask(
+									MessageFormat.format(Messages.PageNumberContributionItem_page, new Integer(current++), size));
 						}
 
 					});
@@ -328,16 +326,15 @@ public abstract class AExportAction extends AReportViewerAction {
 	}
 
 	/**
-	 * Called to proceed to the preview of the report. It does some additional check
-	 * than doPreview, since the export many times need also to check if or not to
-	 * overwrite an existing file, instead in the preview it used a temp.
+	 * Called to proceed to the preview of the report. It does some additional check than doPreview, since the export many
+	 * times need also to check if or not to overwrite an existing file, instead in the preview it used a temp.
 	 * 
 	 * @param file
-	 *            the destination temp file
+	 *          the destination temp file
 	 * @param jrPrint
-	 *            the jrprint to export
+	 *          the jrprint to export
 	 * @param monitor
-	 *            monitor for the operation
+	 *          monitor for the operation
 	 */
 	public void doPreview(File file, JasperPrint jrPrint, final IProgressMonitor monitor) {
 		try {
@@ -352,8 +349,8 @@ public abstract class AExportAction extends AReportViewerAction {
 						if (monitor.isCanceled())
 							Thread.currentThread().interrupt();
 						monitor.worked(1);
-						monitor.subTask(MessageFormat.format(Messages.PageNumberContributionItem_page,
-								new Integer(current++), size));
+						monitor
+								.subTask(MessageFormat.format(Messages.PageNumberContributionItem_page, new Integer(current++), size));
 					}
 
 				});

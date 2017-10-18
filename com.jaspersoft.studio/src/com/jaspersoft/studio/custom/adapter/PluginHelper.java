@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.custom.adapter;
 
@@ -119,7 +127,7 @@ public class PluginHelper {
 				}
 			}
 
-			classpathEntries.add(JavaCore.newContainerEntry(new Path(JavaRuntime.JRE_CONTAINER + "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8")));
+			classpathEntries.add(JavaCore.newContainerEntry(new Path(JavaRuntime.JRE_CONTAINER + "/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6")));
 			classpathEntries.add(JavaCore.newContainerEntry(new Path("org.eclipse.pde.core.requiredPlugins")));
 
 			javaProject.setRawClasspath(classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]), progressMonitor);
@@ -259,7 +267,7 @@ public class PluginHelper {
 		maniContent.append("Bundle-ActivationPolicy: lazy\n");
 		maniContent.append("Eclipse-BuddyPolicy: registered\n");
 		maniContent.append("Eclipse-RegisterBuddy: com.jaspersoft.studio.data\n");		
-		maniContent.append("Bundle-RequiredExecutionEnvironment: JavaSE-1.8\r\n");
+		maniContent.append("Bundle-RequiredExecutionEnvironment: JavaSE-1.6\r\n");
 		if (!externalLibs.isEmpty()){
 			maniContent.append("Bundle-ClassPath: ");
 			for(IFile lib : externalLibs){

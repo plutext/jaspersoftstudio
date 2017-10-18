@@ -1,11 +1,21 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish.wizard.page;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,10 +53,8 @@ import com.jaspersoft.studio.server.wizard.resource.ResourceWizard;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.ASelector;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource.SelectionType;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.inputhistory.InputHistoryCache;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * This widget is used to select the data source that will be associated to a
@@ -199,8 +207,8 @@ public class DatasourceSelectionComposite extends Composite {
 	}
 
 	/**
-	 * Configures the information needed to correctly use the datasource selection
-	 * widget.
+	 * Configures the information needed to correctly use the datasource
+	 * selection widget.
 	 * 
 	 * @param parent
 	 *            the parent anode from which retrieve a {@link MServerProfile}
@@ -212,7 +220,7 @@ public class DatasourceSelectionComposite extends Composite {
 		this.parent = parent;
 		this.res = resource;
 
-		ResourceDescriptor r = SelectorDatasource.getDatasource(res.getValue(), res);
+		ResourceDescriptor r = SelectorDatasource.getDatasource(res.getValue());
 		if (r != null) {
 			if (r.getIsReference())
 				setEnabled(SelectorDatasource.SelectionType.REMOTE_DATASOURCE);
@@ -226,8 +234,8 @@ public class DatasourceSelectionComposite extends Composite {
 	private boolean refresh = false;
 
 	/*
-	 * Enables (and resets) the internal status of the widget depending on the type
-	 * of datasource we are creating/modifying.
+	 * Enables (and resets) the internal status of the widget depending on the
+	 * type of datasource we are creating/modifying.
 	 */
 	private void setEnabled(SelectorDatasource.SelectionType type) {
 		if (refresh)
@@ -248,7 +256,7 @@ public class DatasourceSelectionComposite extends Composite {
 			rbNoDS.setSelection(false);
 
 		// Enable and check all the resource related information
-		ResourceDescriptor r = SelectorDatasource.getDatasource(res.getValue(), res);
+		ResourceDescriptor r = SelectorDatasource.getDatasource(res.getValue());
 		switch (type) {
 		case REMOTE_DATASOURCE:
 			rbDSFromRepo.setSelection(true);
@@ -278,12 +286,12 @@ public class DatasourceSelectionComposite extends Composite {
 	}
 
 	/*
-	 * Performs the selection of a local datasource. Shows a dialog where the user
-	 * can choose the right one.
+	 * Performs the selection of a local datasource. Shows a dialog where the
+	 * user can choose the right one.
 	 */
 	private void selectLocalDatasource() {
 		ResourceDescriptor runit = res.getValue();
-		ResourceDescriptor ref = SelectorDatasource.getDatasource(runit, res);
+		ResourceDescriptor ref = SelectorDatasource.getDatasource(runit);
 
 		if (ASelector.isReference(ref))
 			ref = null;
@@ -392,17 +400,18 @@ public class DatasourceSelectionComposite extends Composite {
 	}
 
 	/*
-	 * Remove a previous existing datasource from the MResource instance specified.
+	 * Remove a previous existing datasource from the MResource instance
+	 * specified.
 	 */
 	private void removeDatasource(final AMResource res) {
-		ResourceDescriptor rdel = SelectorDatasource.getDatasource(res.getValue(), res);
+		ResourceDescriptor rdel = SelectorDatasource.getDatasource(res.getValue());
 		if (rdel != null)
 			res.getValue().getChildren().remove(rdel);
 	}
 
 	/**
-	 * @return <code>true</code> if a valid alternative for dataset information is
-	 *         selected, <code>false</code> otherwise
+	 * @return <code>true</code> if a valid alternative for dataset information
+	 *         is selected, <code>false</code> otherwise
 	 */
 	public boolean isDatasourceSelectionValid() {
 		return (rbNoDS != null && rbNoDS.getSelection()) || (!textDSFromRepo.getText().trim().isEmpty() && valid)

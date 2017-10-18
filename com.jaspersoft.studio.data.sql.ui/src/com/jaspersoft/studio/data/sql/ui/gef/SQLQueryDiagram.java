@@ -1,10 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.ui.gef;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +20,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
 
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
@@ -48,12 +58,13 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.wb.swt.Keyboard;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 import com.jaspersoft.studio.data.sql.SQLQueryDesigner;
 import com.jaspersoft.studio.data.sql.Util;
 import com.jaspersoft.studio.data.sql.action.LayoutAction;
 import com.jaspersoft.studio.data.sql.action.TableModeShowAction;
-import com.jaspersoft.studio.data.sql.action.TableSelectAllAction;
 import com.jaspersoft.studio.data.sql.action.select.CreateColumn;
 import com.jaspersoft.studio.data.sql.action.table.CreateTable;
 import com.jaspersoft.studio.data.sql.action.table.DeleteTable;
@@ -78,11 +89,7 @@ import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.DialogEnabledCommand;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.util.ModelVisitor;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SQLQueryDiagram {
 	private SQLQueryDesigner designer;
@@ -198,10 +205,6 @@ public class SQLQueryDiagram {
 				}
 				menu.add(new org.eclipse.jface.action.Separator());
 
-				TableSelectAllAction sa = new TableSelectAllAction(designer, Messages.SQLQueryDiagram_0);  
-				if (sa.calculateEnabled(selection))
-					menu.add(sa);
-
 				TableModeShowAction ms = new TableModeShowAction(designer, "keys", Messages.SQLQueryDiagram_2); //$NON-NLS-1$
 				if (ms.calculateEnabled(selection))
 					menu.add(ms);
@@ -243,7 +246,7 @@ public class SQLQueryDiagram {
 			if (!Misc.isNullOrEmpty(tbls)) {
 				final List<Table> map = new ArrayList<Table>();
 				try {
-					String[] tables = net.sf.jasperreports.eclipse.util.Misc.decodeBase64String(tbls, FileUtils.LATIN1_ENCODING).split(";"); //$NON-NLS-1$
+					String[] tables = new Base64Decoder(tbls).processString().split(";"); //$NON-NLS-1$
 					for (String t : tables) {
 						String[] tprm = t.split(","); //$NON-NLS-1$
 						Table tbl = new Table();
@@ -315,7 +318,7 @@ public class SQLQueryDiagram {
 							}
 						};
 					}
-				} catch (IOException e) {
+				} catch (Base64FormatException e) {
 					e.printStackTrace();
 				}
 			}
@@ -384,7 +387,7 @@ public class SQLQueryDiagram {
 			@Override
 			public void execute() {
 				if (!firstRun)
-					run = UIUtils.showDeleteConfirmation(viewer.getControl().getShell(),  Messages.SQLQueryDiagram_6);
+					run = UIUtils.showDeleteConfirmation(Messages.SQLQueryDiagram_6);
 				firstRun = true;
 				if (run)
 					super.execute();

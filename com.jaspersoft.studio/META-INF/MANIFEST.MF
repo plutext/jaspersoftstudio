@@ -3,33 +3,33 @@ Eclipse-ExtensibleAPI: true
 Bundle-ManifestVersion: 2
 Bundle-Name: Jaspersoft Studio Designer
 Bundle-SymbolicName: com.jaspersoft.studio;singleton:=true
-Bundle-Version: 6.4.4.qualifier
+Bundle-Version: 6.2.3.final
 Bundle-Activator: com.jaspersoft.studio.JaspersoftStudioPlugin
 Bundle-Vendor: TIBCO Software Inc.
 Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6,
+ JavaSE-1.7
 Require-Bundle: org.eclipse.ui.cheatsheets;bundle-version="3.4.0";visibility:=reexport,
  org.eclipse.core.filesystem;bundle-version="1.3.0";visibility:=reexport,
  org.eclipse.gef;bundle-version="3.6.0";visibility:=reexport,
- net.sf.jasperreports;bundle-version="6.4.4";visibility:=reexport,
- com.jaspersoft.studio.properties;bundle-version="6.4.4";visibility:=reexport,
+ net.sf.jasperreports;bundle-version="6.2.3";visibility:=reexport,
+ com.jaspersoft.studio.properties;bundle-version="6.2.3";visibility:=reexport,
  org.eclipse.help.ui;bundle-version="3.5.0";visibility:=reexport,
  org.eclipse.ui.forms;bundle-version="3.5.0",
  javax.servlet;bundle-version="3.0.0",
  org.apache.log4j;bundle-version="1.2.15";visibility:=reexport,
- org.eclipse.nebula.widgets.cdatetime;bundle-version="1.0.0";visibility:=reexport,
- com.jaspersoft.studio.babel.editor;bundle-version="6.4.4";visibility:=reexport,
+ org.eclipse.nebula.widgets.cdatetime;bundle-version="0.14.0";visibility:=reexport,
+ com.jaspersoft.studio.babel.editor;bundle-version="6.2.3";visibility:=reexport,
  org.eclipse.ui.workbench,
- net.sf.jasperreports.samples;bundle-version="6.4.4",
+ net.sf.jasperreports.samples;bundle-version="6.2.3",
  com.jaspersoft.studio.bundles.bouncycastle;bundle-version="1.4.6";visibility:=reexport,
  org.eclipse.swt,
  org.eclipse.pde.ui,
  org.eclipse.jetty.util,
  org.eclipse.jetty.server,
  org.eclipse.jetty.servlet,
- com.ibm.icu,
- org.apache.commons.codec;bundle-version="1.6.0";visibility:=reexport
+ com.ibm.icu
 Bundle-ClassPath: patch-library.jar,
  lib/opal-1.0.1.jar,
  lib/commons-validator-1.3.1.jar,
@@ -186,7 +186,6 @@ Export-Package: com.jaspersoft.studio;
    com.jaspersoft.studio.model,
    org.eclipse.gef",
  com.jaspersoft.studio.editor.gef.decorator,
- com.jaspersoft.studio.editor.gef.decorator.chainable,
  com.jaspersoft.studio.editor.gef.decorator.pdf,
  com.jaspersoft.studio.editor.gef.decorator.text,
  com.jaspersoft.studio.editor.gef.figures;
@@ -258,7 +257,6 @@ Export-Package: com.jaspersoft.studio;
    org.eclipse.swt.widgets,
    org.eclipse.gef.ui.parts,
    org.eclipse.gef",
- com.jaspersoft.studio.editor.gef.selection,
  com.jaspersoft.studio.editor.gef.texture,
  com.jaspersoft.studio.editor.gef.ui.actions;uses:="org.eclipse.gef.ui.actions,org.eclipse.ui,org.eclipse.swt.widgets",
  com.jaspersoft.studio.editor.gef.util,
@@ -322,8 +320,6 @@ Export-Package: com.jaspersoft.studio;
    com.jaspersoft.studio.utils,
    org.eclipse.swt.widgets",
  com.jaspersoft.studio.editor.preview.actions;uses:="org.eclipse.jface.action,org.eclipse.swt.widgets,com.jaspersoft.studio.editor.preview",
- com.jaspersoft.studio.editor.preview.datasnapshot,
- com.jaspersoft.studio.editor.preview.element,
  com.jaspersoft.studio.editor.preview.input;uses:="net.sf.jasperreports.engine.design,org.eclipse.swt.graphics,org.eclipse.swt.widgets",
  com.jaspersoft.studio.editor.preview.input.ext,
  com.jaspersoft.studio.editor.preview.jive,
@@ -605,8 +601,6 @@ Export-Package: com.jaspersoft.studio;
    com.jaspersoft.studio.utils.jasper,
    com.jaspersoft.studio.data.designer,
    org.eclipse.swt.widgets",
- com.jaspersoft.studio.property.dataset.fields.table,
- com.jaspersoft.studio.property.dataset.fields.table.widget,
  com.jaspersoft.studio.property.dataset.wizard;
   uses:="org.eclipse.jface.wizard,
    net.sf.jasperreports.engine.design,
@@ -742,9 +736,9 @@ Export-Package: com.jaspersoft.studio;
  com.jaspersoft.studio.property.itemproperty,
  com.jaspersoft.studio.property.itemproperty.desc,
  com.jaspersoft.studio.property.itemproperty.dialog,
+ com.jaspersoft.studio.property.itemproperty.event,
  com.jaspersoft.studio.property.itemproperty.label,
  com.jaspersoft.studio.property.itemproperty.sp,
- com.jaspersoft.studio.property.metadata,
  com.jaspersoft.studio.property.propertiesviewer;
   uses:="org.eclipse.swt.custom,
    org.eclipse.jface.viewers,
@@ -769,7 +763,6 @@ Export-Package: com.jaspersoft.studio;
    com.jaspersoft.studio.model,
    com.jaspersoft.studio.properties.view,
    org.eclipse.swt.widgets",
- com.jaspersoft.studio.property.section.graphic.borders,
  com.jaspersoft.studio.property.section.obj,
  com.jaspersoft.studio.property.section.report;
   uses:="org.eclipse.gef.ui.actions,
@@ -860,16 +853,6 @@ Export-Package: com.jaspersoft.studio;
    net.sf.jasperreports.engine",
  com.jaspersoft.studio.utils.jobs;uses:="org.eclipse.jface.operation",
  com.jaspersoft.studio.utils.parameter;uses:="net.sf.jasperreports.engine.design,com.jaspersoft.studio.utils.jasper,net.sf.jasperreports.engine",
- com.jaspersoft.studio.widgets.framework,
- com.jaspersoft.studio.widgets.framework.events,
- com.jaspersoft.studio.widgets.framework.manager,
- com.jaspersoft.studio.widgets.framework.manager.panel,
- com.jaspersoft.studio.widgets.framework.model,
- com.jaspersoft.studio.widgets.framework.ui,
- com.jaspersoft.studio.widgets.framework.ui.dialog,
- com.jaspersoft.studio.widgets.framework.ui.menu,
- com.jaspersoft.studio.widgets.framework.ui.providers,
- com.jaspersoft.studio.widgets.framework.ui.widget,
  com.jaspersoft.studio.wizards;
   uses:="org.eclipse.jface.wizard,
    org.eclipse.jface.operation,

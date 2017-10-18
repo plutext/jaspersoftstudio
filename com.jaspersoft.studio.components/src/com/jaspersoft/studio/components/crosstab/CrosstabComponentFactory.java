@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab;
 
@@ -13,7 +21,6 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.part.WorkbenchPart;
 
@@ -64,6 +71,7 @@ import com.jaspersoft.studio.components.crosstab.model.measure.MMeasure;
 import com.jaspersoft.studio.components.crosstab.model.measure.MMeasures;
 import com.jaspersoft.studio.components.crosstab.model.measure.action.CreateMeasureAction;
 import com.jaspersoft.studio.components.crosstab.model.measure.command.CreateMeasureCommand;
+import com.jaspersoft.studio.components.crosstab.model.measure.command.CreateMeasureFieldCommand;
 import com.jaspersoft.studio.components.crosstab.model.measure.command.DeleteMeasureCommand;
 import com.jaspersoft.studio.components.crosstab.model.measure.command.ReorderMeasureCommand;
 import com.jaspersoft.studio.components.crosstab.model.nodata.MCrosstabWhenNoData;
@@ -96,7 +104,6 @@ import com.jaspersoft.studio.components.crosstab.part.CrosstabTitleCellEditPart;
 import com.jaspersoft.studio.components.crosstab.part.CrosstabTitleEditPart;
 import com.jaspersoft.studio.components.crosstab.part.CrosstabWhenNoDataEditPart;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
-import com.jaspersoft.studio.editor.outline.part.OpenableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
 import com.jaspersoft.studio.editor.tools.CompositeElementManager;
 import com.jaspersoft.studio.editor.tools.MCompositeElement;
@@ -113,8 +120,6 @@ import com.jaspersoft.studio.model.band.MBand;
 import com.jaspersoft.studio.model.dataset.MDataset;
 import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.frame.MFrame;
-import com.jaspersoft.studio.model.image.MImage;
-import com.jaspersoft.studio.model.image.command.CreateImageCommand;
 import com.jaspersoft.studio.model.parameter.MParameter;
 import com.jaspersoft.studio.model.parameter.MParameterSystem;
 import com.jaspersoft.studio.model.style.MStyle;
@@ -137,7 +142,6 @@ import net.sf.jasperreports.crosstabs.JRCrosstabParameter;
 import net.sf.jasperreports.crosstabs.JRCrosstabRowGroup;
 import net.sf.jasperreports.crosstabs.design.JRDesignCellContents;
 import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabCell;
 import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabDataset;
 import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabParameter;
 import net.sf.jasperreports.crosstabs.type.CrosstabTotalPositionEnum;
@@ -146,7 +150,6 @@ import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.Pair;
 
 public class CrosstabComponentFactory implements IComponentFactory {
 	
@@ -171,7 +174,7 @@ public class CrosstabComponentFactory implements IComponentFactory {
 		if (jrObject instanceof JRDesignCrosstab) {
 			JRDesignCrosstab ct = (JRDesignCrosstab) jrObject;
 			ct.preprocess();
-			CrosstabManager ctManager = new CrosstabManager(ct, parent.getJasperDesign());
+			CrosstabManager ctManager = new CrosstabManager(ct);
 			MCrosstab mCrosstab = new MCrosstab(parent, ct, newIndex, ctManager);
 			MCrosstabParameters mp = new MCrosstabParameters(mCrosstab, ct, JRDesignCrosstab.PROPERTY_PARAMETERS);
 			if (ct.getParameters() != null){
@@ -259,59 +262,8 @@ public class CrosstabComponentFactory implements IComponentFactory {
 		if (p.getCrosstabHeader() != null)
 			ReportFactory.createElementsForBand(mc, p.getCrosstabHeader().getChildren());
 
-		if (p.getTotalPositionValue() != null &&  !p.getTotalPositionValue().equals(CrosstabTotalPositionEnum.NONE)) {
-			JRDesignCrosstab crosstab = rg.getMCrosstab().getValue();
+		if (!p.getTotalPositionValue().equals(CrosstabTotalPositionEnum.NONE)) {
 			mc = new MColumnGroupTotalCell(rg, p.getTotalHeader(), p.getName());
-			
-			
-			// I need to add the extra cells...
-			Pair<String,String> cellKey = new Pair<String,String>(null, p.getName());
-			JRDesignCrosstabCell totalCell = (JRDesignCrosstabCell)crosstab.getCellsMap().get(cellKey);
-			if (totalCell == null) {
-				totalCell = new JRDesignCrosstabCell();
-				totalCell.setColumnTotalGroup(p.getName());
-				try {
-					crosstab.addCell(totalCell);
-					cellKey = new Pair<String,String>(null, null);
-					JRCrosstabCell detailCell = crosstab.getCellsMap().get(cellKey);
-					totalCell.setHeight(20);
-					if (detailCell == null) {
-						totalCell.setWidth(60);
-					} else {
-						totalCell.setHeight(detailCell.getHeight());
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-			// for each column, we need to add the total...
-			List<JRCrosstabRowGroup> rows = crosstab.getRowGroupsList();
-			if (rows != null) {
-				for (JRCrosstabRowGroup row : rows) {
-					cellKey = new Pair<String,String>(row.getName(), p.getName());
-					JRDesignCrosstabCell cell = (JRDesignCrosstabCell)crosstab.getCellsMap().get(cellKey);
-					if (cell == null) {
-						cell = new JRDesignCrosstabCell();
-						cell.setColumnTotalGroup(p.getName());
-						cell.setRowTotalGroup(row.getName());
-						try {
-							int height = 20;
-							for(JRCrosstabCell rowCell : crosstab.getCellsList()) {
-								if (ModelUtils.safeEquals(row.getName(), ((JRDesignCrosstabCell)rowCell).getRowTotalGroup())) {
-									height = rowCell.getHeight();
-									break;
-								}
-							}
-							crosstab.addCell(cell);
-							cell.setHeight(height);
-							cell.setWidth(60);
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
-					}
-					
-				}
-			}
 			ReportFactory.createElementsForBand(mc, p.getTotalHeader().getChildren());
 		}
 
@@ -328,61 +280,8 @@ public class CrosstabComponentFactory implements IComponentFactory {
 		MCell mc = new MRowGroupHeaderCell(rg, p.getHeader(), p.getName());
 		ReportFactory.createElementsForBand(mc, p.getHeader().getChildren());
 
-		if (p.getTotalPositionValue() != null && !p.getTotalPositionValue().equals(CrosstabTotalPositionEnum.NONE)) {
-			JRDesignCrosstab crosstab = rg.getMCrosstab().getValue();
-			JRCrosstabRowGroup lastGroup = null; 
-			if (!crosstab.getRowGroupsList().isEmpty()){
-				lastGroup = crosstab.getRowGroupsList().get(crosstab.getRowGroupsList().size()-1);
-			}
-			
+		if (!p.getTotalPositionValue().equals(CrosstabTotalPositionEnum.NONE)) {
 			mc = new MRowGroupTotalCell(rg, p.getTotalHeader(), p.getName());
-			
-			Pair<String,String> cellKey = new Pair<String,String>(p.getName(), null);
-			JRDesignCrosstabCell totalCell = (JRDesignCrosstabCell)crosstab.getCellsMap().get(cellKey);
-			if (totalCell == null) {
-				totalCell = new JRDesignCrosstabCell();
-				totalCell.setRowTotalGroup(p.getName());
-				try {
-					crosstab.addCell(totalCell);
-					totalCell.setHeight(20);
-					if (lastGroup != null){
-						Pair<String, String> key = new Pair<String,String>(lastGroup.getName(), totalCell.getColumnTotalGroup());
-						JRCrosstabCell cell = crosstab.getCellsMap().get(key);
-						totalCell.setWidth(cell.getWidth());
-					} else {
-						totalCell.setWidth(p.getWidth());
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-			
-			JRCrosstabColumnGroup[] columns = crosstab.getColumnGroups();
-			if (columns != null) {
-				for(JRCrosstabColumnGroup column : columns) {
-					cellKey = new Pair<String,String>(p.getName(), column.getName());
-					JRDesignCrosstabCell cell = (JRDesignCrosstabCell)crosstab.getCellsMap().get(cellKey);
-					if (cell == null) {
-						cell = new JRDesignCrosstabCell();
-						cell.setRowTotalGroup(p.getName());
-						cell.setColumnTotalGroup(column.getName());
-						try {
-							crosstab.addCell(cell);
-							cell.setHeight(20);
-							
-							if (lastGroup != null){
-								Pair<String, String> key = new Pair<String,String>(lastGroup.getName(), column.getName());
-								JRCrosstabCell otherCell = crosstab.getCellsMap().get(key);
-								cell.setWidth(otherCell.getWidth());
-							} else {
-								cell.setWidth(p.getWidth());
-							}
-						} catch (Exception ex) {
-							ex.printStackTrace();
-						}
-					}
-				}
-			}
 			ReportFactory.createElementsForBand(mc, p.getTotalHeader().getChildren());
 		}
 	}
@@ -474,11 +373,7 @@ public class CrosstabComponentFactory implements IComponentFactory {
 		for(INode node : new ArrayList<INode>(currentNode.getChildren())){
 			deleteChildren(node);
 		}
-		ANode aNode = (ANode) currentNode;
-		aNode.setParent(null, -1);
-		//It is important to set the value to null to remove any old property change listener
-		//set by this node
-		aNode.setValue(null);
+		((ANode)currentNode).setParent(null, -1);
 	}
 
 	public List<?> getChildren4Element(Object jrObject) {
@@ -506,18 +401,6 @@ public class CrosstabComponentFactory implements IComponentFactory {
 	}
 
 	public Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex) {
-		
-		//Check to avoid that dataset objects are dragged inside the crosstab
-		boolean isDatasetType = (child instanceof MVariableSystem) || (child instanceof MField) || ((child instanceof MParameterSystem) &&  !(child instanceof MCrosstabParameter));
-		if (isDatasetType){
-			//It is a dataset object, check if the target is the crosstab
-			ANode currentParent = parent;
-			while(currentParent != null){
-				if (currentParent instanceof MCrosstab) return UnexecutableCommand.INSTANCE;
-				else currentParent = currentParent.getParent();
-			}
-		}
-		
 		if (parent instanceof MPage) {
 			for (INode c : parent.getChildren()) {
 				if (c instanceof MCrosstab) {
@@ -526,12 +409,6 @@ public class CrosstabComponentFactory implements IComponentFactory {
 				}
 			}
 		}
-		
-		//Avoid to generate create command in the main editor
-		if (parent instanceof MCrosstab && !(parent.getParent() instanceof MPage)){
-			return UnexecutableCommand.INSTANCE;
-		}
-		
 		if (child instanceof MStyle && (child.getValue() != null && parent instanceof MCell)) {
 			SetValueCommand cmd = new SetValueCommand();
 			cmd.setTarget((MCell) parent);
@@ -560,24 +437,30 @@ public class CrosstabComponentFactory implements IComponentFactory {
 				return new CreateParameterCommand((MCrosstabParameters) parent, (MParameter) child, newIndex);
 		}
 		if (child instanceof MMeasure) {
-			if (parent instanceof MCell)
-				return UnexecutableCommand.INSTANCE;
+			if (parent instanceof MCell && ((MCell) parent).getMCrosstab() != null)
+				return new CreateMeasureFieldCommand((MMeasure) child, (MCell) parent, location);
+			// return new CreateMeasureCommand((MCell) parent, (MMeasure) child,
+			// newIndex);
 			if (parent instanceof MCrosstab)
 				return new CreateMeasureCommand((MCrosstab) parent, (MMeasure) child, newIndex);
 			if (parent instanceof MMeasures)
 				return new CreateMeasureCommand((MMeasures) parent, (MMeasure) child, newIndex);
 		}
 		if (child instanceof MColumnGroup) {
-			if (parent instanceof MCell || parent instanceof MColumnGroup)
-				return UnexecutableCommand.INSTANCE;
+			if (parent instanceof MCell && ((MCell) parent).getMCrosstab() != null)
+				return new CreateColumnCommand((MCell) parent, (MColumnGroup) child, newIndex);
+			if (parent instanceof MColumnGroup)
+				return new CreateColumnCommand((MColumnGroup) parent, (MColumnGroup) child, newIndex);
 			if (parent instanceof MCrosstab)
 				return new CreateColumnCommand((MCrosstab) parent, (MColumnGroup) child, newIndex);
 			if (parent instanceof MColumnGroups)
 				return new CreateColumnCommand((MColumnGroups) parent, (MColumnGroup) child, newIndex);
 		}
 		if (child instanceof MRowGroup) {
-			if (parent instanceof MCell || parent instanceof MRowGroup)
-				return UnexecutableCommand.INSTANCE;
+			if (parent instanceof MCell && ((MCell) parent).getMCrosstab() != null)
+				return new CreateRowCommand((MCell) parent, (MRowGroup) child, newIndex);
+			if (parent instanceof MRowGroup)
+				return new CreateRowCommand((MRowGroup) parent, (MRowGroup) child, newIndex);
 			if (parent instanceof MCrosstab)
 				return new CreateRowCommand((MCrosstab) parent, (MRowGroup) child, newIndex);
 			if (parent instanceof MRowGroups)
@@ -612,8 +495,6 @@ public class CrosstabComponentFactory implements IComponentFactory {
 		if (child instanceof MCompositeElement){
 			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement)child, location, newIndex);
 		}  
-		if (child instanceof MImage && parent instanceof MCell)
-			return new CreateImageCommand((MCell)parent, (MImage)child, location, newIndex);
 		if (child instanceof MGraphicElement && parent instanceof MCell)
 			return new CreateElementCommand((MCell) parent, (MGraphicElement) child, location, newIndex);
 		if (child instanceof MElementGroup && parent instanceof MCell)
@@ -795,13 +676,6 @@ public class CrosstabComponentFactory implements IComponentFactory {
 			return new CrosstabWhenNoDataEditPart();
 		if (model instanceof MTitle)
 			return new CrosstabTitleEditPart();
-		return null;
-	}
-	
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		if (model instanceof MCrosstab)
-			return new OpenableContainerTreeEditPart();
 		return null;
 	}
 

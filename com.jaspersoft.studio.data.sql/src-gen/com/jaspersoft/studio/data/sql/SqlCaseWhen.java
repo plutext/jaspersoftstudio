@@ -12,7 +12,6 @@ package com.jaspersoft.studio.data.sql;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link com.jaspersoft.studio.data.sql.SqlCaseWhen#getWop <em>Wop</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.SqlCaseWhen#getExpr <em>Expr</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.SqlCaseWhen#getTexp <em>Texp</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.SqlCaseWhen#getEexp <em>Eexp</em>}</li>
@@ -24,32 +23,6 @@ package com.jaspersoft.studio.data.sql;
  */
 public interface SqlCaseWhen extends SQLCaseWhens
 {
-  /**
-   * Returns the value of the '<em><b>Wop</b></em>' containment reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Wop</em>' containment reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Wop</em>' containment reference.
-   * @see #setWop(Operands)
-   * @see com.jaspersoft.studio.data.sql.SqlPackage#getSqlCaseWhen_Wop()
-   * @model containment="true"
-   * @generated
-   */
-  Operands getWop();
-
-  /**
-   * Sets the value of the '{@link com.jaspersoft.studio.data.sql.SqlCaseWhen#getWop <em>Wop</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Wop</em>' containment reference.
-   * @see #getWop()
-   * @generated
-   */
-  void setWop(Operands value);
-
   /**
    * Returns the value of the '<em><b>Expr</b></em>' containment reference.
    * <!-- begin-user-doc -->

@@ -1,11 +1,25 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.customvisualization.server;
 
 import java.io.File;
 import java.util.Set;
+
+import net.sf.jasperreports.components.items.ItemProperty;
+import net.sf.jasperreports.components.items.StandardItemProperty;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -14,33 +28,23 @@ import com.jaspersoft.studio.server.model.AFileResource;
 import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.publish.PublishOptions;
 import com.jaspersoft.studio.server.publish.imp.AImpObject;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.components.items.ItemProperty;
-import net.sf.jasperreports.components.items.StandardItemProperty;
-import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public abstract class AImpResource extends AImpObject {
 	public AImpResource(JasperReportsConfiguration jrConfig) {
 		super(jrConfig);
 	}
 
-	public AFileResource publish(JasperDesign jd, ItemProperty img, MReportUnit mrunit, IProgressMonitor monitor,
-			Set<String> fileset, IFile file) throws Exception {
+	public AFileResource publish(JasperDesign jd, ItemProperty img,
+			MReportUnit mrunit, IProgressMonitor monitor, Set<String> fileset,
+			IFile file) throws Exception {
 		String str = img.getValue();
 		JRDesignExpression exp = (JRDesignExpression) img.getValueExpression();
 		if (exp != null)
 			str = getPath(fileset, exp);
 		else
 			str = preparePath(fileset, str);
-		if (fileset.contains(str)) {
-			setupSameExpression(mrunit, exp, str);
-			return null;
-		}
 		if (str == null)
 			return null;
 		File f = findFile(file, str);
@@ -50,9 +54,10 @@ public abstract class AImpResource extends AImpObject {
 			if (exp != null) {
 				popt.setjExpression(exp);
 				if (!f.getName().contains(":"))
-					popt.setExpression("\"repo:" + IDStringValidator.safeChar(f.getName()) + "\"");
+					popt.setExpression("repo:" + f.getName());
 			} else if (Misc.isNullOrEmpty(img.getValue())) {
-				popt.setValueSetter(popt.new ValueSetter<StandardItemProperty>((StandardItemProperty) img) {
+				popt.setValueSetter(popt.new ValueSetter<StandardItemProperty>(
+						(StandardItemProperty) img) {
 
 					@Override
 					public void setup() {
@@ -60,7 +65,8 @@ public abstract class AImpResource extends AImpObject {
 					}
 				});
 				if (!f.getName().contains(":"))
-					popt.getValueSetter().setValue("\"repo:" + IDStringValidator.safeChar(f.getName()) + "\"");
+					popt.getValueSetter().setValue(
+							"\"repo:" + f.getName() + "\"");
 			}
 			fileset.add(str);
 

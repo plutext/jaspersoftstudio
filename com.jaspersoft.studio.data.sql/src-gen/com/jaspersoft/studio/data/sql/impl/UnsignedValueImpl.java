@@ -35,7 +35,7 @@ public class UnsignedValueImpl extends MinimalEObjectImpl.Container implements U
    * @generated
    * @ordered
    */
-  protected static final Long INTEGER_EDEFAULT = null;
+  protected static final Integer INTEGER_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getInteger() <em>Integer</em>}' attribute.
@@ -45,7 +45,7 @@ public class UnsignedValueImpl extends MinimalEObjectImpl.Container implements U
    * @generated
    * @ordered
    */
-  protected Long integer = INTEGER_EDEFAULT;
+  protected Integer integer = INTEGER_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -73,7 +73,7 @@ public class UnsignedValueImpl extends MinimalEObjectImpl.Container implements U
    * <!-- end-user-doc -->
    * @generated
    */
-  public Long getInteger()
+  public Integer getInteger()
   {
     return integer;
   }
@@ -83,9 +83,9 @@ public class UnsignedValueImpl extends MinimalEObjectImpl.Container implements U
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setInteger(Long newInteger)
+  public void setInteger(Integer newInteger)
   {
-    Long oldInteger = integer;
+    Integer oldInteger = integer;
     integer = newInteger;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, SqlPackage.UNSIGNED_VALUE__INTEGER, oldInteger, integer));
@@ -118,7 +118,7 @@ public class UnsignedValueImpl extends MinimalEObjectImpl.Container implements U
     switch (featureID)
     {
       case SqlPackage.UNSIGNED_VALUE__INTEGER:
-        setInteger((Long)newValue);
+        setInteger((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);

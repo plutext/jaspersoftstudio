@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.utils;
 
@@ -11,7 +19,6 @@ import java.util.Map;
 
 import net.sf.jasperreports.eclipse.util.FileExtension;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.StringUtils;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.design.JasperDesign;
@@ -46,7 +53,7 @@ public class SubreportsUtil {
 		if (expr == null || expr.isEmpty())
 			return;
 		if (expr.endsWith(FileExtension.PointJASPER))
-			expr = StringUtils.replaceAllIns(expr, FileExtension.PointJASPER + "$", FileExtension.PointJRXML);
+			expr = expr.replaceAll(FileExtension.PointJASPER + "$", FileExtension.PointJRXML);
 		expr = expr.replaceFirst("repo:", "");
 		File f = FileUtils.findFile(file, expr);
 		if (f == null)
@@ -67,8 +74,7 @@ public class SubreportsUtil {
 				IFile ifile = fs[0];
 				fmap.put(f, ifile);
 				try {
-					JasperDesign jd = JRXMLUtils.getJasperDesign(jConfig, ifile.getContents(),
-							ifile.getFileExtension());
+					JasperDesign jd = JRXMLUtils.getJasperDesign(jConfig, ifile.getContents(), ifile.getFileExtension());
 					if (jd != null) {
 						for (JRDesignElement el : ModelUtils.getAllElements(jd)) {
 							if (el instanceof JRDesignSubreport)

@@ -1,11 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.parts.editPolicy;
 
 import java.util.Collection;
-import java.util.List;
+
+import net.sf.jasperreports.engine.design.JRDesignGraphicElement;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
@@ -21,7 +30,6 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
@@ -52,13 +60,6 @@ import com.jaspersoft.studio.model.IGraphicElement;
 import com.jaspersoft.studio.model.IGuidebleElement;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.band.MBand;
-import com.jaspersoft.studio.model.field.FieldUtils;
-import com.jaspersoft.studio.model.field.MField;
-import com.jaspersoft.studio.model.field.MFields;
-import com.jaspersoft.studio.model.parameter.MParameter;
-import com.jaspersoft.studio.model.variable.MVariable;
-
-import net.sf.jasperreports.engine.design.JRDesignGraphicElement;
 
 /*
  * The Class PageLayoutEditPolicy.
@@ -174,44 +175,31 @@ public class PageLayoutEditPolicy extends XYLayoutEditPolicy {
 			Rectangle copyconstraint = constraint.getCopy();
 			if (request.getNewObject() instanceof Collection<?>) {
 				JSSCompoundCommand ccmd = new JSSCompoundCommand(parent);
-				Collection<?> objs = (Collection<?>) request.getNewObject(); 
-				boolean positionModifiedCreation = false;
-				if (parent instanceof IGraphicElement && !isGraphicObjects(objs)) {
-					if (objs.size() > 1) {
-						positionModifiedCreation = true;
-						Rectangle rparent = ((IGraphicElement) parent).getBounds();
-						int w = rparent.width / objs.size();
-						int rest = rparent.width - w * objs.size();
-						copyconstraint.setLocation(rparent.x + ReportPageFigure.PAGE_BORDER.left, copyconstraint.getLocation().y);
-						// Commented for back-compatibility in 3.6.
-						// Replaced with the following line.
-						// copyconstraint.setWidth(w + rest);
-						copyconstraint.width = w + rest;
-						for (Object it : objs) {
-							Command cmd = getCreateCommand(parent, it, copyconstraint.getCopy(), index, request);
-							if (cmd != null) {
-								ccmd.add(cmd);
-								copyconstraint.translate(w + rest, 0);
-								// Commented for back-compatibility in 3.6.
-								// Replaced with the following line.
-								// copyconstraint.setWidth(w);
-								copyconstraint.width = w;
-								rest = 0;
-							}
-						}
-					} else if (objs.size() == 1 && parent.getChildren().isEmpty()) {	
-						positionModifiedCreation = true;
-						Rectangle rparent = ((IGraphicElement) parent).getBounds();
-						copyconstraint.setLocation(rparent.x + ReportPageFigure.PAGE_BORDER.left, copyconstraint.getLocation().y);
-						Command cmd = getCreateCommand(parent, objs.iterator().next(), copyconstraint.getCopy(), index, request);
+				Collection<?> objs = (Collection<?>) request.getNewObject();
+				if (parent instanceof IGraphicElement && !isGraphicObjects(objs) && objs.size() > 1) {
+					Rectangle rparent = ((IGraphicElement) parent).getBounds();
+					int w = rparent.width / objs.size();
+					int rest = rparent.width - w * objs.size();
+					copyconstraint.setLocation(rparent.x + ReportPageFigure.PAGE_BORDER.left, copyconstraint.getLocation().y);
+					// Commented for back-compatibility in 3.6.
+					// Replaced with the following line.
+					// copyconstraint.setWidth(w + rest);
+					copyconstraint.width = w + rest;
+					for (Object it : objs) {
+						Command cmd = getCreateCommand(parent, it, copyconstraint.getCopy(), index);
 						if (cmd != null) {
 							ccmd.add(cmd);
-						}	
+							copyconstraint.translate(w + rest, 0);
+							// Commented for back-compatibility in 3.6.
+							// Replaced with the following line.
+							// copyconstraint.setWidth(w);
+							copyconstraint.width = w;
+							rest = 0;
+						}
 					}
-				} 
-				if (!positionModifiedCreation) {
+				} else {
 					for (Object it : objs) {
-						Command cmd = getCreateCommand(parent, it, copyconstraint.getCopy(), index, request);
+						Command cmd = getCreateCommand(parent, it, copyconstraint.getCopy(), index);
 						if (cmd != null) {
 							ccmd.add(cmd);
 							copyconstraint.translate(70, 0);
@@ -225,9 +213,8 @@ public class PageLayoutEditPolicy extends XYLayoutEditPolicy {
 				action.dropInto(getHost().getModel(), copyconstraint, -1);
 				action.run();
 				return action.getCommand();
-			} else {
-				return getCreateCommand(parent, request.getNewObject(), copyconstraint, index, request);
-			}
+			} else
+				return getCreateCommand(parent, request.getNewObject(), copyconstraint, index);
 		}
 		return null;
 	}
@@ -269,7 +256,7 @@ public class PageLayoutEditPolicy extends XYLayoutEditPolicy {
 	 * @param index
 	 * @return
 	 */
-	protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+	protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 		if (obj instanceof ANode) {
 			ANode aNode = (ANode) obj;
 			if (aNode instanceof MGraphicElement) {
@@ -305,44 +292,10 @@ public class PageLayoutEditPolicy extends XYLayoutEditPolicy {
 						parent = (ANode) container;
 					}
 				}
-			} else if (aNode instanceof MField || aNode instanceof MParameter || aNode instanceof MVariable) {
-				adjustConstraints(parent, constraint);
-			} else if (aNode instanceof MFields) {
-				adjustConstraints(parent, constraint);
-				CompoundCommand c = new CompoundCommand();
-				List<MField> fields = FieldUtils.getFields((MFields) aNode);
-
-				Rectangle rparent = ((IGraphicElement) parent).getBounds();
-				int w = rparent.width / fields.size();
-				int rest = rparent.width - w * fields.size() - constraint.x;
-				constraint.width = w + rest;
-				for (MField f : fields) {
-					Command cmd = OutlineTreeEditPartFactory.getCreateCommand(parent, f, constraint.getCopy(), index, request, false);
-					if (cmd != null && cmd.canExecute()) {
-						c.add(cmd);
-						constraint.translate(w + rest, 0);
-						// Commented for back-compatibility in 3.6.
-						// Replaced with the following line.
-						// copyconstraint.setWidth(w);
-						constraint.width = w;
-						rest = 0;
-					}
-				}
-				if (!c.isEmpty())
-					return c;
-				return null;
 			}
-			return OutlineTreeEditPartFactory.getCreateCommand(parent, aNode, constraint, index, request, false);
+			return OutlineTreeEditPartFactory.getCreateCommand(parent, aNode, constraint, index);
 		}
 		return null;
-	}
-
-	private void adjustConstraints(ANode parent, Rectangle constraint) {
-		if (parent.getChildren().isEmpty())
-			if (parent instanceof MGraphicElement)
-				constraint.y = ((MGraphicElement) parent).getBounds().y;
-			else if (parent instanceof MBand)
-				constraint.y = ((MBand) parent).getBounds().y;
 	}
 
 	/*

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.figures;
 
@@ -35,9 +43,9 @@ public class SubreportFigure extends FrameFigure {
 	@Override
 	protected void draw(JSSDrawVisitor drawVisitor, JRElement jrElement) {
 		if (model != null && allowsFigureDrawCache()) {
-			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)) {
+			if (cachedGraphics == null || model.hasChangedProperty()) {
 				model.setChangedProperty(false);
+				Graphics2D oldGraphics = drawVisitor.getGraphics2d();
 				cachedGraphics = getCachedGraphics(oldGraphics);
 				drawVisitor.setGraphics2D(cachedGraphics);
 				drawVisitor.visitSubreport((JRSubreport) jrElement);

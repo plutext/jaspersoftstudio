@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.jaspersoft.studio.rcp.feature"
-      label="RCP feature for TIBCO Jaspersoft Studio Community"
-      version="6.4.4.qualifier"
+      label="Jaspersoft Studio Community RCP Feature"
+      version="6.2.3.final"
       provider-name="TIBCO Software Inc."
+      plugin="net.sf.jasperreports"
       os="linux,macosx,win32"
       ws="cocoa,gtk,win32">
 
    <description url="http://community.jaspersoft.com/project/jaspersoft-studio">
-      RCP feature for the version TIBCO Jaspersoft Studio Community Edition
+      Eclipse-based JasperReports Designer
    </description>
 
-   <copyright>
-      Copyright (C) 2010 - 2017. TIBCO Software Inc.
+   <copyright url="http://www.jaspersoft.com/legal-notices">
+      Copyright © 2005 - 2015 TIBCO Software Inc.
    </copyright>
 
+   <license url="%licenseURL">
+      %license
+   </license>
+
    <url>
-      <update label="TIBCO Jaspersoft Studio update site" url="http://jasperstudio.sf.net/updates"/>
-      <discovery label="TIBCO Jaspersoft Studio Community Edition" url="http://community.jaspersoft.com/project/jaspersoft-studio"/>
+      <update label="Jaspersoft Studio site" url="http://jasperstudio.sf.net/updates"/>
+      <discovery label="Jaspersoft Studio" url="http://community.jaspersoft.com/project/jaspersoft-studio"/>
    </url>
 
    <includes
@@ -39,6 +44,18 @@
 
    <includes
          id="org.tmatesoft.svnkit"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
+   <includes
+         id="org.tigris.subversion.clientadapter.feature"
+         version="0.0.0"
+         optional="true"
+         search-location="both"/>
+
+   <includes
+         id="org.tigris.subversion.clientadapter.svnkit.feature"
          version="0.0.0"
          optional="true"
          search-location="both"/>
@@ -96,7 +113,7 @@
 
    <requires>
       <import plugin="org.eclipse.ui.intro"/>
-      <import plugin="com.jaspersoft.studio" version="6.4.4" match="greaterOrEqual"/>
+      <import plugin="com.jaspersoft.studio" version="6.2.3" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.browser" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.equinox.p2.operations" version="2.0.0" match="greaterOrEqual"/>

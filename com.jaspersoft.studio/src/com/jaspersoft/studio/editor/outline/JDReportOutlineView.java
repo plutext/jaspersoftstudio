@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline;
 
@@ -8,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.FigureCanvas;
@@ -50,6 +56,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.PageBook;
@@ -60,12 +67,14 @@ import com.jaspersoft.studio.editor.IGraphicalEditor;
 import com.jaspersoft.studio.editor.dnd.ImageResourceDropTargetListener;
 import com.jaspersoft.studio.editor.dnd.ImageURLTransfer;
 import com.jaspersoft.studio.editor.dnd.JSSTemplateTransferDropTargetListener;
+import com.jaspersoft.studio.editor.gef.parts.EditableFigureEditPart;
 import com.jaspersoft.studio.editor.gef.parts.MainDesignerRootEditPart;
 import com.jaspersoft.studio.editor.java2d.J2DLightweightSystem;
 import com.jaspersoft.studio.editor.java2d.JSSScrollingGraphicalViewer;
 import com.jaspersoft.studio.editor.java2d.figure.JSSScrollableThumbnail;
 import com.jaspersoft.studio.editor.menu.AppContextMenuProvider;
 import com.jaspersoft.studio.editor.outline.part.TreeEditPart;
+import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
 import com.jaspersoft.studio.editor.report.EditorContributor;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.ANode;
@@ -76,9 +85,7 @@ import com.jaspersoft.studio.model.parameter.MParameters;
 import com.jaspersoft.studio.model.util.EditPartVisitor;
 import com.jaspersoft.studio.model.variable.MVariables;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * The Class JDReportOutlineView.
@@ -366,18 +373,25 @@ public class JDReportOutlineView extends ContentOutlinePage implements IAdaptabl
 						TreeItem[] ti = t.getSelection();
 						if (ti != null && ti.length > 0) {
 							Object obj = ti[0].getData();
-							if (obj instanceof EditPart) {
-								//if the part is openable and understand the open request then perform the request
-								EditPart part = (EditPart) obj;
+							if (obj instanceof TreeEditPart && editor instanceof AbstractVisualEditor) {
+
+								EditPart part = (EditPart) ((AbstractVisualEditor) editor).getGraphicalViewer().getEditPartRegistry()
+										.get(((TreeEditPart) obj).getModel());
 								SelectionRequest request = new SelectionRequest();
 								request.setType(RequestConstants.REQ_OPEN);
-								if (part.understandsRequest(request)) {
+								if (part != null) {
 									part.performRequest(request);
-									return;
+								} else {
+									TreeEditPart atep = (TreeEditPart) obj;
+									// If the part can understand the request perform it on the edit part
+									// otherwise use a general open editor method
+									if (atep.understandsRequest(request)) {
+										atep.performRequest(request);
+									} else if (atep.getModel() instanceof ANode) {
+										EditableFigureEditPart.openEditor(((ANode) atep.getModel()).getValue(), (IEditorPart) editor,
+												(ANode) atep.getModel());
+									}
 								}
-							}
-							if(ti.length==1 && ti[0].getItemCount()>0){
-								 ti[0].setExpanded(!ti[0].getExpanded());
 							}
 						}
 					}

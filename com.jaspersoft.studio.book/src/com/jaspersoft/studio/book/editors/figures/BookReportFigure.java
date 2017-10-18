@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.book.editors.figures;
 
@@ -10,7 +18,6 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RectangleFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.wb.swt.ResourceManager;
 
@@ -42,10 +49,6 @@ public class BookReportFigure extends RectangleFigure {
 	 * its content
 	 */
 	public void updateBounds(){
-		setBounds(calculateBounds());
-	}
-	
-	private Rectangle calculateBounds(){
 		Rectangle bounds = new Rectangle(super.getBounds());
 		int preferredHeight = 0;
 		for(Object child : getChildren()){
@@ -54,26 +57,23 @@ public class BookReportFigure extends RectangleFigure {
 		}
 		if (preferredHeight == 0) preferredHeight = 200;
 		bounds.setHeight(preferredHeight+20);
-		return bounds;
-	}
-	
-	
-	@Override
-	public Rectangle getBounds() {
-		return calculateBounds();
+		setBounds(bounds);
 	}
 	
 	@Override
 	public void add(IFigure figure, Object constraint, int index) {
-		GridData dataConstraint = new GridData(SWT.FILL,SWT.FILL,true,false);
+		GridData dataConstraint = new GridData(GridData.FILL_HORIZONTAL);
 		super.add(figure, dataConstraint, index);
+		updateBounds();
 	}
 	
 	@Override
 	protected void fillShape(Graphics graphics) {
 		Color oldBackColor = graphics.getBackgroundColor();
+		
 		graphics.setBackgroundColor(ResourceManager.getColor(255, 255, 255));
 		graphics.fillRectangle(getBounds());
+		
 		graphics.setBackgroundColor(oldBackColor);
 	}
 

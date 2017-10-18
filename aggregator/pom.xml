@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jaspersoft.studio.community-edition</groupId>
 	<artifactId>aggregator</artifactId>
-	<version>6.4.4-SNAPSHOT</version>
+	<version>6.2.3.final</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.26.0</tycho-version>
+		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Force this property when producing official release -->
@@ -76,9 +76,8 @@
 				<artifactId>tycho-compiler-plugin</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<useProjectSettings>false</useProjectSettings>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
 			</plugin>
 

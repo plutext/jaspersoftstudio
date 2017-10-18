@@ -23,7 +23,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link com.jaspersoft.studio.data.sql.impl.SqlCaseWhenImpl#getWop <em>Wop</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.impl.SqlCaseWhenImpl#getExpr <em>Expr</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.impl.SqlCaseWhenImpl#getTexp <em>Texp</em>}</li>
  *   <li>{@link com.jaspersoft.studio.data.sql.impl.SqlCaseWhenImpl#getEexp <em>Eexp</em>}</li>
@@ -33,16 +32,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  */
 public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
 {
-  /**
-   * The cached value of the '{@link #getWop() <em>Wop</em>}' containment reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getWop()
-   * @generated
-   * @ordered
-   */
-  protected Operands wop;
-
   /**
    * The cached value of the '{@link #getExpr() <em>Expr</em>}' containment reference.
    * <!-- begin-user-doc -->
@@ -92,54 +81,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   protected EClass eStaticClass()
   {
     return SqlPackage.Literals.SQL_CASE_WHEN;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Operands getWop()
-  {
-    return wop;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public NotificationChain basicSetWop(Operands newWop, NotificationChain msgs)
-  {
-    Operands oldWop = wop;
-    wop = newWop;
-    if (eNotificationRequired())
-    {
-      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, SqlPackage.SQL_CASE_WHEN__WOP, oldWop, newWop);
-      if (msgs == null) msgs = notification; else msgs.add(notification);
-    }
-    return msgs;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setWop(Operands newWop)
-  {
-    if (newWop != wop)
-    {
-      NotificationChain msgs = null;
-      if (wop != null)
-        msgs = ((InternalEObject)wop).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - SqlPackage.SQL_CASE_WHEN__WOP, null, msgs);
-      if (newWop != null)
-        msgs = ((InternalEObject)newWop).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - SqlPackage.SQL_CASE_WHEN__WOP, null, msgs);
-      msgs = basicSetWop(newWop, msgs);
-      if (msgs != null) msgs.dispatch();
-    }
-    else if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, SqlPackage.SQL_CASE_WHEN__WOP, newWop, newWop));
   }
 
   /**
@@ -296,8 +237,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   {
     switch (featureID)
     {
-      case SqlPackage.SQL_CASE_WHEN__WOP:
-        return basicSetWop(null, msgs);
       case SqlPackage.SQL_CASE_WHEN__EXPR:
         return basicSetExpr(null, msgs);
       case SqlPackage.SQL_CASE_WHEN__TEXP:
@@ -318,8 +257,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   {
     switch (featureID)
     {
-      case SqlPackage.SQL_CASE_WHEN__WOP:
-        return getWop();
       case SqlPackage.SQL_CASE_WHEN__EXPR:
         return getExpr();
       case SqlPackage.SQL_CASE_WHEN__TEXP:
@@ -340,9 +277,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   {
     switch (featureID)
     {
-      case SqlPackage.SQL_CASE_WHEN__WOP:
-        setWop((Operands)newValue);
-        return;
       case SqlPackage.SQL_CASE_WHEN__EXPR:
         setExpr((OrExpr)newValue);
         return;
@@ -366,9 +300,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   {
     switch (featureID)
     {
-      case SqlPackage.SQL_CASE_WHEN__WOP:
-        setWop((Operands)null);
-        return;
       case SqlPackage.SQL_CASE_WHEN__EXPR:
         setExpr((OrExpr)null);
         return;
@@ -392,8 +323,6 @@ public class SqlCaseWhenImpl extends SQLCaseWhensImpl implements SqlCaseWhen
   {
     switch (featureID)
     {
-      case SqlPackage.SQL_CASE_WHEN__WOP:
-        return wop != null;
       case SqlPackage.SQL_CASE_WHEN__EXPR:
         return expr != null;
       case SqlPackage.SQL_CASE_WHEN__TEXP:

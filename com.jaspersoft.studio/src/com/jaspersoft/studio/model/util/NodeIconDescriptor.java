@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.util;
 
@@ -39,7 +47,7 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	 * Instantiates a new node icon descriptor.
 	 * 
 	 * @param name
-	 *            the name
+	 *          the name
 	 */
 	public NodeIconDescriptor(String name) {
 		this(name, JaspersoftStudioPlugin.getInstance());
@@ -75,8 +83,7 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	public ResourceBundle getResourceBundle(AbstractUIPlugin plugin) {
 		if (getResourceBundleIcons() == null) {
 			ResourceBundle inputStream = null;
-			inputStream = ResourceBundle.getBundle("resources/icons", Locale.getDefault(), //$NON-NLS-1$
-					plugin.getClass().getClassLoader());
+			inputStream = ResourceBundle.getBundle("resources/icons",  Locale.getDefault(), plugin.getClass().getClassLoader()); //$NON-NLS-1$
 			setResourceBundleIcons(inputStream);
 		}
 		return getResourceBundleIcons();
@@ -86,9 +93,9 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	 * Gets the from bundle.
 	 * 
 	 * @param key
-	 *            the key
+	 *          the key
 	 * @param def
-	 *            the def
+	 *          the def
 	 * @return the from bundle
 	 */
 	private String getFromBundle(String key, String def) {
@@ -105,15 +112,15 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	 * Instantiates a new node icon descriptor.
 	 * 
 	 * @param title
-	 *            the title
+	 *          the title
 	 * @param description
-	 *            the description
+	 *          the description
 	 * @param toolTip
-	 *            the tool tip
+	 *          the tool tip
 	 * @param icon16
-	 *            the icon16
+	 *          the icon16
 	 * @param icon32
-	 *            the icon32
+	 *          the icon32
 	 */
 	public NodeIconDescriptor(String title, String description, String toolTip, String icon16, String icon32) {
 		this.ICON_TITLE = title;
@@ -138,9 +145,8 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	 * @see com.jaspersoft.studio.model.IIconDescriptor#getIcon16()
 	 */
 	public ImageDescriptor getIcon16() {
-		if (plugin != null)
-			return AbstractUIPlugin.imageDescriptorFromPlugin(plugin.getBundle().getSymbolicName(), ICON_16);
-		return JaspersoftStudioPlugin.getInstance().getImageDescriptor(ICON_16);
+		// return JaspersoftStudioPlugin.getImageDescriptor(ICON_16);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(plugin.getBundle().getSymbolicName(), ICON_16);
 	}
 
 	/*
@@ -158,9 +164,7 @@ public class NodeIconDescriptor implements IIconDescriptor {
 	 * @see com.jaspersoft.studio.model.IIconDescriptor#getIcon32()
 	 */
 	public ImageDescriptor getIcon32() {
-		if (plugin != null)
-			return AbstractUIPlugin.imageDescriptorFromPlugin(plugin.getBundle().getSymbolicName(), ICON_32);
-		return JaspersoftStudioPlugin.getInstance().getImageDescriptor(ICON_32);
+		return AbstractUIPlugin.imageDescriptorFromPlugin(plugin.getBundle().getSymbolicName(), ICON_32);
 	}
 
 	/*

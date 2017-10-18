@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.combomenu;
 
@@ -233,10 +241,6 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void addSelectionListener(ComboItemAction listener) {
 		listeners.add(listener);
-		if (elementList != null && !elementList.isEmpty()) {
-			//rebuild the items with the new listener
-			setItems(elementList);
-		}
 	}
 
 	/**
@@ -409,11 +413,7 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void setItems(ComboItem[] newItems) {
 		elementList = new ArrayList<ComboItem>(Arrays.asList(newItems));
-		if (popupMenu != null){
-			popupMenu.dispose();
-			popupMenu = null;
-		}
-		popupMenu = createPopupMenu();
+		createPopupMenu();
 	}
 
 	/**
@@ -424,11 +424,7 @@ public class ComboMenuViewer implements IMenuProvider {
 	 */
 	public void setItems(List<ComboItem> newItems) {
 		elementList = newItems;
-		if (popupMenu != null){
-			popupMenu.dispose();
-			popupMenu = null;
-		}
-		popupMenu = createPopupMenu();
+		createPopupMenu();
 	}
 
 	/**

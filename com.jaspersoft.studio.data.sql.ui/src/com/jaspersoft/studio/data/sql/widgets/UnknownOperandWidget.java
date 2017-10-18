@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.widgets;
 
@@ -13,14 +21,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.model.query.operand.UnknownOperand;
 
 public class UnknownOperandWidget extends AOperandWidget<UnknownOperand> {
 	private Text txt;
 
-	public UnknownOperandWidget(Composite parent, UnknownOperand operand, AQueryDesigner designer) {
-		super(parent, SWT.NONE, operand, designer);
+	public UnknownOperandWidget(Composite parent, UnknownOperand operand) {
+		super(parent, SWT.NONE, operand);
 
 	}
 
@@ -41,8 +48,7 @@ public class UnknownOperandWidget extends AOperandWidget<UnknownOperand> {
 		txt.setLayoutData(gd);
 
 		DataBindingContext bindingContext = new DataBindingContext();
-		bindingContext.bindValue(SWTObservables.observeText(txt, SWT.Modify),
-				PojoObservables.observeValue(getValue(), "value")); //$NON-NLS-1$
+		bindingContext.bindValue(SWTObservables.observeText(txt, SWT.Modify), PojoObservables.observeValue(getValue(), "value")); //$NON-NLS-1$
 	}
 
 }

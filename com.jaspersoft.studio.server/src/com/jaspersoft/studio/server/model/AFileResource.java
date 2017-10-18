@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.model;
 
@@ -37,8 +45,10 @@ public abstract class AFileResource extends AMResource {
 		this.file = file;
 		if (file != null)
 			try {
-				getValue().setFile(file);
-				getValue().setData(Base64.encodeBase64(net.sf.jasperreports.eclipse.util.FileUtils.getBytes(file)));
+				getValue()
+						.setData(
+								Base64.encodeBase64(net.sf.jasperreports.eclipse.util.FileUtils
+										.getBytes(file)));
 				getValue().setHasData(true);
 				return;
 			} catch (IOException e) {
@@ -67,7 +77,8 @@ public abstract class AFileResource extends AMResource {
 	@Override
 	public String getJRSUrl() throws UnsupportedEncodingException {
 		return "flow.html?_flowId=addFileResourceFlow&selectedResource="
-				+ URLEncoder.encode(getValue().getUriString(), "ISO-8859-1") + "&ParentFolderUri="
+				+ URLEncoder.encode(getValue().getUriString(), "ISO-8859-1")
+				+ "&ParentFolderUri="
 				+ URLEncoder.encode(getValue().getParentFolder(), "ISO-8859-1");
 	}
 }
