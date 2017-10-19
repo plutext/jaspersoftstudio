@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptors;
 
@@ -29,22 +37,22 @@ public class DoublePropertyDescriptor extends TextPropertyDescriptor implements 
 	/**
 	 * Flag used to set the widget to accept the null value
 	 */
-	protected boolean isNullable = true;
+	private boolean isNullable = true;
 
 	/**
 	 * The minimum value accepted
 	 */
-	protected double minValue = 0;
+	private double minValue = 0;
 
 	/**
 	 * The maximum value accepted
 	 */
-	protected double maxValue = Double.MAX_VALUE;
+	private double maxValue = Double.MAX_VALUE;
 	
 	/**
 	 * Number of decimal digits shwon and accepted
 	 */
-	protected int digitsNumber = 6;
+	private int digitsNumber = 6;
 	
 	/**
 	 * Instantiates a new float property descriptor.

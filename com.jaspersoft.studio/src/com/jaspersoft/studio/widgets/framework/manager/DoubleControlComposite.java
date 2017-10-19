@@ -1,13 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.manager;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
 
@@ -32,16 +35,6 @@ public class DoubleControlComposite extends Composite {
 	private Composite secondControlContainer;
 	
 	/**
-	 * The proponent control of the simple
-	 */
-	private Control simplecontrolToHighlight;
-
-	/**
-	 * The proponent control of the expression
-	 */
-	private Control expressionControlToHightLigh;
-	
-	/**
 	 * The layout of this control
 	 */
 	private StackLayout layout = new StackLayout();
@@ -61,8 +54,6 @@ public class DoubleControlComposite extends Composite {
 		firstControlContainer.setLayout(WidgetFactory.getNoPadLayout(1));
 		secondControlContainer = new Composite(this, SWT.NONE);
 		secondControlContainer.setLayout(WidgetFactory.getNoPadLayout(1));
-		simplecontrolToHighlight = secondControlContainer;
-		expressionControlToHightLigh = firstControlContainer;
 		layout.topControl = firstControlContainer;
 	}
 
@@ -89,10 +80,8 @@ public class DoubleControlComposite extends Composite {
 	 * it also request a layout of this container and of its children
 	 */
 	public void switchToFirstContainer(){
-		if (layout.topControl != firstControlContainer){
-			layout.topControl = firstControlContainer;
-			layout(true, true);
-		}
+		layout.topControl = firstControlContainer;
+		layout(true, true);
 	}
 	
 	/**
@@ -100,49 +89,7 @@ public class DoubleControlComposite extends Composite {
 	 * it also request a layout of this container and of its children
 	 */
 	public void switchToSecondContainer(){
-		if (layout.topControl != secondControlContainer){
-			layout.topControl = secondControlContainer;
-			layout(true, true);
-		}
-	}
-	
-	/**
-	 * Return the proponent control of the simple mode, by default it 
-	 * is the composite where the control is created but can be changed
-	 * 
-	 * @return a control can be null
-	 */
-	public Control getSimpleControlToHighlight(){
-		return simplecontrolToHighlight;
-	}
-	
-	/**
-	 * Set the proponent control of the simple mode, by default it 
-	 * is the composite where the control is created but can be changed
-	 * 
-	 * @param the new control
-	 */
-	public void setSimpleControlToHighlight(Control control){
-		simplecontrolToHighlight = control;
-	}
-	
-	/**
-	 * Return the proponent control of the expression mode, by default it 
-	 * is the composite where the control is created but can be changed
-	 * 
-	 * @return a control can be null
-	 */
-	public Control getExpressionControlToHighlight(){
-		return expressionControlToHightLigh;
-	}
-	
-	/**
-	 * Set the proponent control of the expression mode, by default it 
-	 * is the composite where the control is created but can be changed
-	 * 
-	 * @param the new control
-	 */
-	public void setExpressionControlToHighlight(Control control){
-		expressionControlToHightLigh = control;
+		layout.topControl = secondControlContainer;
+		layout(true, true);
 	}
 }

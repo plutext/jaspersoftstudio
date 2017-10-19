@@ -1,11 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.wizard;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+
+import net.sf.jasperreports.eclipse.builder.jdt.JDTUtils;
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -59,10 +68,6 @@ import com.jaspersoft.studio.utils.SelectionHelper;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.ContextData;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
-
-import net.sf.jasperreports.eclipse.builder.jdt.JDTUtils;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
 
 public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implements INewWizard, SelectionListener {
 	/** The wizard ID */
@@ -137,21 +142,21 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 				PlatformUI.getWorkbench().getHelpSystem().displayHelp(contextName);
 			}
 		};
-
+		
 		@Override
 		public boolean canFlipToNextPage() {
-			if (JDTUtils.isVirtualResource(getContainerFullPath())) {
+			if(JDTUtils.isVirtualResource(getContainerFullPath())) {
 				setErrorMessage(Messages.NewFileDataAdapterWizard_VirtualFolderError);
 				return false;
 			}
 			return super.canFlipToNextPage();
 		}
-
+		
 		@Override
 		public boolean isPageComplete() {
 			return !JDTUtils.isVirtualResource(getContainerFullPath()) && super.isPageComplete();
 		}
-
+		
 		@Override
 		public void setVisible(boolean visible) {
 			JDTUtils.deactivateLinkedResourcesSupport(visible);
@@ -161,8 +166,8 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 
 	@Override
 	public void addPages() {
-		step1 = new WizardNewAdapterPage("newFilePage1", (IStructuredSelection) selection, //$NON-NLS-1$
-				ContextHelpIDs.WIZARD_NEW_DATAAPDATER);
+		step1 = new WizardNewAdapterPage(
+				"newFilePage1", (IStructuredSelection) selection, ContextHelpIDs.WIZARD_NEW_DATAAPDATER);//$NON-NLS-1$
 		step1.setTitle(Messages.NewFileDataAdapterWizard_1);
 		step1.setDescription(Messages.NewFileDataAdapterWizard_2);
 		step1.setFileExtension("xml");//$NON-NLS-1$
@@ -207,7 +212,9 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 	public IWizardPage getNextPage(IWizardPage page) {
 		if (page == step1) {
 			IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(step1.getContainerFullPath());
-			IFile file = r.getProject().getFile(step1.getContainerFullPath() + Messages.ReportNewWizard_1 + step1.getFileName());
+
+			IFile file = r.getProject().getFile(
+					step1.getContainerFullPath() + Messages.ReportNewWizard_1 + step1.getFileName());
 			getConfig().init(file);
 		}
 		if (page == dataAdapterListPage) {// && event.getTargetPage() == dataAdapterEditorPage) {
@@ -217,19 +224,15 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 
 			java.text.MessageFormat fm = new java.text.MessageFormat(Messages.DataAdapterWizard_newdataadaptername);
 			// 1. instance a new dataAdapter using the factory
-			try {
-				DataAdapterDescriptor newDataAdapter = factory.createDataAdapter();
-				newDataAdapter.getDataAdapter(getConfig()).setName(fm.format(new Object[] { 1 }));
+			DataAdapterDescriptor newDataAdapter = factory.createDataAdapter();
+			newDataAdapter.getDataAdapter().setName(fm.format(new Object[] { 1 }));
 
-				// 2. set in the wizard page the data adapter to edit
-				if (selectedFactory != factory) {
-					dataAdapterEditorPage.setJrContext(getConfig());
-					dataAdapterEditorPage.setDataAdapter(newDataAdapter);
+			// 2. set in the wizard page the data adapter to edit
+			if (selectedFactory != factory) {
+				dataAdapterEditorPage.setJrContext(getConfig());
+				dataAdapterEditorPage.setDataAdapter(newDataAdapter);
 
-					selectedFactory = factory;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				selectedFactory = factory;
 			}
 		}
 		return super.getNextPage(page);
@@ -285,7 +288,7 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 		}
 		return true;
 	}
-
+	
 	@Override
 	public boolean performCancel() {
 		JDTUtils.restoreLinkedResourcesSupport();
@@ -320,7 +323,6 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 				file.setContents(in, true, true, monitor);
 			else
 				file.create(in, true, monitor);
-			DataAdapterManager.getDataAdapter(file, file.getProject(), getConfig());
 		} finally {
 			FileUtils.closeStream(in);
 		}
@@ -349,8 +351,7 @@ public class NewFileDataAdapterWizard extends AbstractDataAdapterWizard implemen
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		if (selection instanceof StructuredSelection) {
 			if (selection.getFirstElement() instanceof IProject || selection.getFirstElement() instanceof IFile
-					|| selection.getFirstElement() instanceof IFolder
-					|| selection.getFirstElement() instanceof IPackageFragment) {
+					|| selection.getFirstElement() instanceof IFolder || selection.getFirstElement() instanceof IPackageFragment) {
 				this.selection = selection;
 				return;
 			}

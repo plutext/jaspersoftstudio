@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.table.model;
 
@@ -17,7 +25,6 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.jaspersoft.studio.callout.pin.IPinContainer;
 import com.jaspersoft.studio.components.section.name.NameSection;
-import com.jaspersoft.studio.components.table.DSListener;
 import com.jaspersoft.studio.components.table.TableComponentFactory;
 import com.jaspersoft.studio.components.table.TableDatasetRunProperyDescriptor;
 import com.jaspersoft.studio.components.table.TableManager;
@@ -50,6 +57,7 @@ import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.property.ISetValueCommandProvider;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.components.table.BaseColumn;
 import net.sf.jasperreports.components.table.ColumnGroup;
@@ -58,7 +66,6 @@ import net.sf.jasperreports.components.table.StandardBaseColumn;
 import net.sf.jasperreports.components.table.StandardColumn;
 import net.sf.jasperreports.components.table.StandardTable;
 import net.sf.jasperreports.components.table.WhenNoDataTypeTableEnum;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDatasetRun;
 import net.sf.jasperreports.engine.JRElementGroup;
@@ -146,8 +153,8 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 					deleteGroup(jrGroup.getName());
 				}
 				// Run an event on the table to force a grapghical refresh of
-				// the columns
-				setChangedProperty(true, evt);
+				// the columnss
+				setChangedProperty(true);
 				MTable.this.propertyChange(new PropertyChangeEvent(getValue(),
 						StandardTable.PROPERTY_COLUMNS, null, null));
 			}
@@ -449,9 +456,8 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(JRDesignDatasetRun.PROPERTY_DATASET_NAME)) {
-			getStandardTable().getEventSupport().firePropertyChange(new PropertyChangeEvent(evt.getSource(), DSListener.REFRESH_DATASET, evt.getOldValue(), evt.getNewValue()));
-		} else if (evt.getPropertyName().equals(StandardTable.PROPERTY_DATASET_RUN)) {
+		
+		if (evt.getPropertyName().equals(StandardTable.PROPERTY_DATASET_RUN)) {
 			addDatasetGroupListener();
 		} else if (evt.getPropertyName().equals(MGraphicElement.FORCE_GRAPHICAL_REFRESH)) {
 			ANode parent = getParent();

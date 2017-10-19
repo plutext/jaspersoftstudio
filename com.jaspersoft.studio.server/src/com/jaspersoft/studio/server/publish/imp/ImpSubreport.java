@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish.imp;
 
@@ -8,17 +16,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import org.eclipse.core.resources.IFile;
-
-import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.studio.server.model.MJrxml;
-import com.jaspersoft.studio.server.model.MReportUnit;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
 import net.sf.jasperreports.eclipse.util.FileExtension;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.util.StringUtils;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -26,6 +25,13 @@ import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
+
+import org.eclipse.core.resources.IFile;
+
+import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
+import com.jaspersoft.studio.server.model.MJrxml;
+import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 public class ImpSubreport extends AImpObject {
 
@@ -65,7 +71,7 @@ public class ImpSubreport extends AImpObject {
 
 	@Override
 	protected String doPath(String path) {
-		return StringUtils.replaceAllIns(path, FileExtension.PointJASPER + "$", FileExtension.PointJRXML);
+		return path.replaceAll(FileExtension.PointJASPER, FileExtension.PointJRXML);
 	}
 
 	protected ResourceDescriptor createResource(MReportUnit mrunit) {
@@ -73,12 +79,6 @@ public class ImpSubreport extends AImpObject {
 	}
 
 	protected JRDesignExpression getExpression(JRDesignElement img) {
-		JRDesignExpression exp = (JRDesignExpression) ((JRDesignSubreport) img).getExpression();
-		if (exp != null && !Misc.isNullOrEmpty(exp.getText())) {
-			exp.setText(StringUtils.replaceAllIns(exp.getText(), FileExtension.PointJASPER + "$",
-					FileExtension.PointJRXML));
-			return exp;
-		}
 		return (JRDesignExpression) ((JRDesignSubreport) img).getExpression();
 	}
 }

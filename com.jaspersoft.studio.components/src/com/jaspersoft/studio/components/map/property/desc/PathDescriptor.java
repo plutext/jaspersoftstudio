@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.map.property.desc;
 
@@ -13,11 +21,12 @@ import com.jaspersoft.studio.components.map.messages.Messages;
 import com.jaspersoft.studio.model.util.ItemPropertyUtil;
 import com.jaspersoft.studio.properties.view.validation.ValidationError;
 import com.jaspersoft.studio.property.itemproperty.desc.ADescriptor;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.widgets.framework.IPropertyEditor;
 import com.jaspersoft.studio.widgets.framework.PropertyEditorAdapter;
-import com.jaspersoft.studio.widgets.framework.ui.BigDecimalPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ColorPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ComboItemPropertyDescription;
+import com.jaspersoft.studio.widgets.framework.ui.DoublePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FloatPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.IntegerPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
@@ -29,7 +38,6 @@ import net.sf.jasperreports.components.items.ItemProperty;
 import net.sf.jasperreports.components.items.StandardItem;
 import net.sf.jasperreports.components.items.StandardItemProperty;
 import net.sf.jasperreports.components.map.MapComponent;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRExpression;
 
 /**
@@ -37,62 +45,62 @@ import net.sf.jasperreports.engine.JRExpression;
  * 
  */
 public class PathDescriptor extends ADescriptor {
-
+	
 	private IPropertyEditor standardItemEditor = new PropertyEditorAdapter() {
-
+		
 		@Override
 		public JRExpression getPropertyValueExpression(String propertyName) {
 
-			for (ItemProperty prop : item.getProperties()) {
-				if (prop.getName().equals(propertyName)) {
-					StandardItemProperty stdProp = (StandardItemProperty) prop;
+			for(ItemProperty prop : item.getProperties()){
+				if (prop.getName().equals(propertyName)){
+					StandardItemProperty stdProp = (StandardItemProperty)prop;
 					return stdProp.getValueExpression();
 				}
 			}
 			return null;
 		}
-
+		
 		@Override
 		public String getPropertyValue(String propertyName) {
 
-			for (ItemProperty prop : item.getProperties()) {
-				if (prop.getName().equals(propertyName)) {
-					StandardItemProperty stdProp = (StandardItemProperty) prop;
+			for(ItemProperty prop : item.getProperties()){
+				if (prop.getName().equals(propertyName)){
+					StandardItemProperty stdProp = (StandardItemProperty)prop;
 					return stdProp.getValue();
 				}
 			}
 			return null;
 		}
-
+		
 		@Override
 		public void createUpdateProperty(String propertyName, String value, JRExpression valueExpression) {
 			boolean found = false;
-
-			for (ItemProperty prop : item.getProperties()) {
-				if (prop.getName().equals(propertyName)) {
-					StandardItemProperty stdProp = (StandardItemProperty) prop;
+			
+			for(ItemProperty prop : item.getProperties()){
+				if (prop.getName().equals(propertyName)){
+					StandardItemProperty stdProp = (StandardItemProperty)prop;
 					stdProp.setValue(value);
 					stdProp.setValueExpression(valueExpression);
-					found = true;
+					found = true; 
 					break;
 				}
 			}
-			if (!found) {
-				((StandardItem) item).addItemProperty(new StandardItemProperty(propertyName, value, valueExpression));
+			if (!found){
+				((StandardItem)item).addItemProperty(new StandardItemProperty(propertyName, value, valueExpression));
 			}
 		}
-
+		
 		@Override
 		public void removeProperty(String propertyName) {
-			for (ItemProperty prop : item.getProperties()) {
-				if (prop.getName().equals(propertyName)) {
-					((StandardItem) item).removeItemProperty(prop);
+			for(ItemProperty prop : item.getProperties()){
+				if (prop.getName().equals(propertyName)){
+					((StandardItem)item).removeItemProperty(prop);
 					break;
 				}
 			}
 		}
 	};
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -139,10 +147,10 @@ public class PathDescriptor extends ADescriptor {
 				new TextPropertyDescription<String>(MapComponent.ITEM_PROPERTY_name, Messages.PathDescriptor_1,
 						Messages.PathDescriptor_2, false, MapComponent.DEFAULT_PATH_NAME),
 
-				new BigDecimalPropertyDescription(MapComponent.ITEM_PROPERTY_latitude, Messages.MarkerPage_LatitudeColumn,
-						"", false, new BigDecimal("37.7833"), new BigDecimal("-85"), new BigDecimal("85")),
-				new BigDecimalPropertyDescription(MapComponent.ITEM_PROPERTY_longitude, Messages.MarkerPage_LongitudeColumn,
-						"", false, new BigDecimal("-122.4167"), new BigDecimal("-180"), new BigDecimal("180")),
+				new DoublePropertyDescription(MapComponent.ITEM_PROPERTY_latitude,
+						Messages.MarkerPage_LatitudeColumn, "", false, new BigDecimal(37.7833d), -85d, 85d),
+				new DoublePropertyDescription(MapComponent.ITEM_PROPERTY_longitude,
+						Messages.MarkerPage_LongitudeColumn, "", false, new BigDecimal(-122.4167d), -180d, 180d),
 
 				new TextPropertyDescription<String>(MapComponent.ITEM_PROPERTY_address, Messages.PathDescriptor_3,
 						Messages.PathDescriptor_4, false),
@@ -153,16 +161,16 @@ public class PathDescriptor extends ADescriptor {
 				new ColorPropertyDescription<String>(MapComponent.ITEM_PROPERTY_STYLE_strokeColor,
 						Messages.PathDescriptor_7, Messages.PathDescriptor_8, false),
 
-				new FloatPropertyDescription(MapComponent.ITEM_PROPERTY_STYLE_strokeOpacity, Messages.PathDescriptor_9,
-						Messages.PathDescriptor_10, false, new Float(0), new Float(1)),
+				new FloatPropertyDescription(MapComponent.ITEM_PROPERTY_STYLE_strokeOpacity,
+						Messages.PathDescriptor_9, Messages.PathDescriptor_10, false, new Float(0), new Float(1)),
 				new IntegerPropertyDescription(MapComponent.ITEM_PROPERTY_STYLE_strokeWeight,
 						Messages.PathDescriptor_11, Messages.PathDescriptor_12, false, new Integer(1), null),
 
 				new ColorPropertyDescription<String>(MapComponent.ITEM_PROPERTY_STYLE_fillColor,
 						Messages.PathDescriptor_13, Messages.PathDescriptor_14, false),
 
-				new FloatPropertyDescription(MapComponent.ITEM_PROPERTY_STYLE_fillOpacity, Messages.PathDescriptor_15,
-						Messages.PathDescriptor_16, false, new Float(0), new Float(1)),
+				new FloatPropertyDescription(MapComponent.ITEM_PROPERTY_STYLE_fillOpacity,
+						Messages.PathDescriptor_15, Messages.PathDescriptor_16, false, new Float(0), new Float(1)),
 				new ComboItemPropertyDescription<Boolean>(MapComponent.ITEM_PROPERTY_STYLE_isPolygon,
 						Messages.PathDescriptor_17, Messages.PathDescriptor_18, false, Boolean.FALSE,
 						new String[] { "", "true", "false" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
@@ -181,8 +189,8 @@ public class PathDescriptor extends ADescriptor {
 				new ComboItemPropertyDescription<Boolean>(MapComponent.ITEM_PROPERTY_visible,
 						Messages.PathDescriptor_27, Messages.PathDescriptor_28, false, Boolean.FALSE,
 						new String[] { "", "true", "false" }), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				new IntegerPropertyDescription(MapComponent.ITEM_PROPERTY_MARKER_zIndex, Messages.PathDescriptor_29,
-						Messages.PathDescriptor_30, false, new Integer(0), null),
+				new IntegerPropertyDescription(MapComponent.ITEM_PROPERTY_MARKER_zIndex,
+						Messages.PathDescriptor_29, Messages.PathDescriptor_30, false, new Integer(0), null),
 
 		};
 	}

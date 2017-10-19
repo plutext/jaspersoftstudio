@@ -1,11 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.csv;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
@@ -46,15 +55,13 @@ import com.jaspersoft.studio.data.AFileDataAdapterComposite;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.DateNumberFormatWidget;
 import com.jaspersoft.studio.data.messages.Messages;
-import com.jaspersoft.studio.swt.events.ChangeEvent;
-import com.jaspersoft.studio.swt.events.ChangeListener;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
 import com.jaspersoft.studio.swt.widgets.table.ListOrderButtons;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.data.DataAdapter;
 import net.sf.jasperreports.data.csv.CsvDataAdapter;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.eclipse.util.StringUtils;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRCsvDataSource;
@@ -253,15 +260,7 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 		btnDelete.setText(Messages.CSVDataAdapterComposite_8);
 		btnDelete.setEnabled(false);
 
-		ListOrderButtons lb = new ListOrderButtons();
-		lb.createOrderButtons(composite_4, tableViewer);
-		lb.addChangeListener(new ChangeListener() {
-
-			@Override
-			public void changed(ChangeEvent event) {
-				pchangesuport.firePropertyChange("dirty", false, true);
-			}
-		});
+		new ListOrderButtons().createOrderButtons(composite_4, tableViewer);
 
 		Group grpOther = new Group(composite_2, SWT.NONE);
 		grpOther.setText(Messages.CSVDataAdapterComposite_9);
@@ -457,7 +456,6 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 
 				tableViewer.refresh();
 				setTableSelection(-1);
-				pchangesuport.firePropertyChange("dirty", false, true);
 			}
 		});
 
@@ -466,6 +464,7 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+
 				removeEntries();
 			}
 		});
@@ -478,8 +477,10 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 			}
 
 			public void keyPressed(KeyEvent e) {
-				if (e.character == SWT.DEL)
+
+				if (e.character == SWT.DEL) {
 					removeEntries();
+				}
 			}
 		});
 
@@ -844,15 +845,23 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 	 * Removes selected entries from the data model
 	 */
 	private void removeEntries() {
+
 		int[] indices = table.getSelectionIndices();
+
 		if (indices.length > 0) {
-			List<String> toDel = new ArrayList<String>();
-			for (int i = 0; i < indices.length; i++)
-				toDel.add(rows.get(indices[i]));
-			rows.removeAll(toDel);
+
+			Arrays.sort(indices);
+			int removedItems = 0;
+
+			for (int i : indices) {
+				// To prevent an IndexOutOfBoundsException
+				// we need to subtract number of removed items
+				// from the removed item index.
+				rows.remove(i - removedItems);
+				removedItems++;
+			}
 			tableViewer.refresh();
 			setTableSelection(indices[0]);
-			pchangesuport.firePropertyChange("dirty", false, true);
 		}
 	}
 
@@ -921,7 +930,6 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 	@Override
 	protected void fireFileChanged(boolean showWarning) {
 		try {
-			super.fireFileChanged(showWarning);
 			if (showWarning) {
 				if (UIUtils.showConfirmation(Messages.CSVDataAdapterComposite_0, Messages.CSVDataAdapterComposite_1))
 					getCSVColumns();
@@ -942,8 +950,6 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 	 *             , Exception
 	 */
 	private void getCSVColumns() throws IOException, Exception {
-		if (Misc.isNullOrEmpty(textFileName.getText()))
-			return;
 		JRCsvDataSource ds = new JRCsvDataSource(getJrContext(), textFileName.getText());
 		ds.setUseFirstRowAsHeader(true);
 
@@ -995,7 +1001,6 @@ public class CSVDataAdapterComposite extends AFileDataAdapterComposite {
 		setTableSelection(-1);
 		btnDelete.setEnabled(true);
 		btnCheckSkipFirstLine.setSelection(true);
-		pchangesuport.firePropertyChange("dirty", false, true);
 	}
 
 	/**

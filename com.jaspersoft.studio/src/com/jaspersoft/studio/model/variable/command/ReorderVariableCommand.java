@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.variable.command;
 
@@ -11,7 +15,6 @@ import net.sf.jasperreports.engine.design.JRDesignVariable;
 
 import org.eclipse.gef.commands.Command;
 
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultVariablesAction;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.variable.MVariable;
 import com.jaspersoft.studio.model.variable.MVariables;
@@ -70,7 +73,6 @@ public class ReorderVariableCommand extends Command {
 			}
 			boolean showDefaults = jrContext != null ? jrContext.getPropertyBoolean(
 					DesignerPreferencePage.P_SHOW_VARIABLES_DEFAULTS, Boolean.TRUE) : true;
-			showDefaults = showDefaults && !HideDefaultVariablesAction.areDefaultVariablesHidden(jrContext);
 			if (!showDefaults)
 				newIndex += i;
 			newIndex = Math.max(newIndex, i);

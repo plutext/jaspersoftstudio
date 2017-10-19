@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.menu;
 
@@ -27,8 +31,6 @@ import com.jaspersoft.studio.background.action.BackgroundTransparencyAction;
 import com.jaspersoft.studio.callout.action.CreatePinAction;
 import com.jaspersoft.studio.editor.AContextMenuProvider;
 import com.jaspersoft.studio.editor.JrxmlEditor;
-import com.jaspersoft.studio.editor.action.ACachedSelectionAction;
-import com.jaspersoft.studio.editor.action.BindElementsAction;
 import com.jaspersoft.studio.editor.action.EncloseIntoFrameAction;
 import com.jaspersoft.studio.editor.action.HideElementsAction;
 import com.jaspersoft.studio.editor.action.MoveDetailDownAction;
@@ -37,7 +39,6 @@ import com.jaspersoft.studio.editor.action.MoveGroupDownAction;
 import com.jaspersoft.studio.editor.action.MoveGroupUpAction;
 import com.jaspersoft.studio.editor.action.OpenEditorAction;
 import com.jaspersoft.studio.editor.action.ShowPropertyViewAction;
-import com.jaspersoft.studio.editor.action.UnBindElementsAction;
 import com.jaspersoft.studio.editor.action.align.Align2BorderAction;
 import com.jaspersoft.studio.editor.action.band.MaximizeContainerAction;
 import com.jaspersoft.studio.editor.action.band.StretchToContentAction;
@@ -62,7 +63,6 @@ import com.jaspersoft.studio.editor.outline.actions.CreateDatasetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateDetailBandAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateDetailBandActionOnDetail;
 import com.jaspersoft.studio.editor.outline.actions.CreateFieldAction;
-import com.jaspersoft.studio.editor.outline.actions.CreateFieldsContainerAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupFooterAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupHeaderAction;
@@ -74,18 +74,11 @@ import com.jaspersoft.studio.editor.outline.actions.CreateStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateStyleTemplateAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
 import com.jaspersoft.studio.editor.outline.actions.DeleteGroupReportAction;
-import com.jaspersoft.studio.editor.outline.actions.DynamicActionContributionItem;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultVariablesAction;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultsParametersAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshImageAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpression;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.ShowFieldsTreeAction;
-import com.jaspersoft.studio.editor.outline.actions.SortFieldsAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.editor.report.ReportContainer;
 import com.jaspersoft.studio.editor.tools.CreateCompositeElementAction;
 import com.jaspersoft.studio.formatting.actions.CenterInParentAction;
@@ -121,9 +114,9 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 	 * Instantiates a new app context menu provider.
 	 * 
 	 * @param viewer
-	 *            the viewer
+	 *          the viewer
 	 * @param registry
-	 *            the registry
+	 *          the registry
 	 */
 	public AppContextMenuProvider(EditPartViewer viewer, ActionRegistry registry) {
 		super(viewer, registry);
@@ -132,9 +125,7 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action
-	 * .IMenuManager)
+	 * @see org.eclipse.gef.ContextMenuProvider#buildContextMenu(org.eclipse.jface.action.IMenuManager)
 	 */
 	@Override
 	public void buildContextMenu(IMenuManager menu) {
@@ -149,8 +140,7 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 			if (action != null && action.isEnabled())
 				menu.add(action);
 
-			MenuManager submenu = new MenuManager(Messages.MBackgrounImage_labelTransparency, null,
-					"BackgroundTransparency");//$NON-NLS-1$
+			MenuManager submenu = new MenuManager(Messages.MBackgrounImage_labelTransparency, null, "BackgroundTransparency");//$NON-NLS-1$
 
 			action = getActionRegistry().getAction(BackgroundTransparencyAction.TRANSPARENCY_5);
 			if (action != null && action.isEnabled())
@@ -255,16 +245,7 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 		action = getActionRegistry().getAction(EncloseIntoFrameAction.ID);
 		if (action.isEnabled())
 			menu.appendToGroup(GEFActionConstants.GROUP_COPY, action);
-		
-		action = getActionRegistry().getAction(BindElementsAction.ID);
-		if (action.isEnabled())
-			menu.appendToGroup(GEFActionConstants.GROUP_COPY, action);
 
-		action = getActionRegistry().getAction(UnBindElementsAction.ID);
-		if (action.isEnabled())
-			menu.appendToGroup(GEFActionConstants.GROUP_COPY, action);
-
-		
 		menu.appendToGroup(GEFActionConstants.GROUP_COPY, new Separator());
 
 		action = getActionRegistry().getAction(CreateCompositeElementAction.ID);
@@ -277,57 +258,7 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 
 		// -----------------------------------------------------------
 
-		// ADD THE SORT ACTIONS
-
-		action = getActionRegistry().getAction(SortVariablesAction.ID);
-		if (action != null && action.isEnabled()) {
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-					new DynamicActionContributionItem((ACachedSelectionAction) action));
-
-			action = getActionRegistry().getAction(HideDefaultVariablesAction.ID);
-			if (action != null && action.isEnabled()) {
-				menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-						new DynamicActionContributionItem((ACachedSelectionAction) action));
-			}
-
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, new Separator());
-		}
-
-		action = getActionRegistry().getAction(SortParametersAction.ID);
-		if (action != null && action.isEnabled()) {
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-					new DynamicActionContributionItem((ACachedSelectionAction) action));
-
-			action = getActionRegistry().getAction(HideDefaultsParametersAction.ID);
-			if (action != null && action.isEnabled()) {
-				menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-						new DynamicActionContributionItem((ACachedSelectionAction) action));
-			}
-
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, new Separator());
-		}
-
-		IAction actionF1 = getActionRegistry().getAction(SortFieldsAction.ID);
-		if (actionF1 != null && actionF1.isEnabled()) {
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-					new DynamicActionContributionItem((ACachedSelectionAction) actionF1));
-		}
-
-		IAction actionF2 = getActionRegistry().getAction(ShowFieldsTreeAction.ID);
-		if (actionF2 != null && actionF2.isEnabled()) {
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD,
-					new DynamicActionContributionItem((ACachedSelectionAction) actionF2));
-		}
-		if (actionF1 != null || actionF2 != null)
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, new Separator());
-
-		// ADD THE OTHER ACTIONS
-
 		action = getActionRegistry().getAction(CreateFieldAction.ID);
-		if (action != null && action.isEnabled())
-			menu.appendToGroup(GEFActionConstants.GROUP_ADD, action);
-
-		action = getActionRegistry().getAction(CreateFieldsContainerAction.ID);
 		if (action != null && action.isEnabled())
 			menu.appendToGroup(GEFActionConstants.GROUP_ADD, action);
 
@@ -386,7 +317,7 @@ public class AppContextMenuProvider extends AContextMenuProvider {
 		action = getActionRegistry().getAction(CreateStyleTemplateAction.ID);
 		if (action != null && action.isEnabled())
 			menu.appendToGroup(GEFActionConstants.GROUP_ADD, action);
-
+		
 		action = getActionRegistry().getAction(RefreshImageAction.ID);
 		if (action != null && action.isEnabled())
 			menu.appendToGroup(GEFActionConstants.GROUP_ADD, action);

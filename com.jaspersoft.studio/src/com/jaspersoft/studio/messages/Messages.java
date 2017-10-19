@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.messages;
 
@@ -119,7 +127,6 @@ public class Messages extends NLS {
 	public static String common_radius;
 	public static String common_record_delimiter;
 	public static String common_rectangle;
-	public static String common_remove;
 	public static String common_reorder_elements;
 	public static String common_report_objects;
 	public static String common_report;
@@ -226,7 +233,6 @@ public class Messages extends NLS {
 	public static String BandGroupWizard_group_band;
 	public static String BandReturnValueDialog_0;
 	public static String BandSection_title;
-	public static String BindElementsAction_name;
 	public static String BookmarkSection_bookmarkSectionTitle;
 	public static String BooleanCellEditorValidator_value_is_not_instance_of_boolean;
 	public static String BordersSection_all_borders_tool_tip;
@@ -354,9 +360,6 @@ public class Messages extends NLS {
 	public static String CreateFieldAction_create_field_tool_tip;
 	public static String CreateFieldCommand_field_name;
 	public static String CreateFieldCommand_field_name_text_dialog;
-	public static String CreateFieldsContainerAction_0;
-	public static String CreateFieldsContainerAction_1;
-	public static String CreateFieldsContainerCommand_1;
 	public static String CreateGroupAction_create_group;
 	public static String CreateGroupAction_create_group_tool_tip;
 	public static String CreateGroupCommand_group_name_dialog_text;
@@ -438,7 +441,6 @@ public class Messages extends NLS {
 	public static String DataAdapterEditorPage_5;
 	public static String DataAdapterEditorPage_7;
 	public static String DataAdapterEditorPage_8;
-	public static String DataAdapterEditorPart_0;
 	public static String DataAdapterEditorPart_testButton;
 	public static String DataAdapterInformationPage_adapterDescriptionLabel;
 	public static String DataAdapterInformationPage_adapterDescriptionTooltip;
@@ -485,13 +487,7 @@ public class Messages extends NLS {
 	public static String DataPreviewTable_RecordsNum1000;
 	public static String DataPreviewTable_RecordsNum500;
 	public static String DataPreviewTable_RecordsNumAll;
-	public static String DataQueryAdapters_0;
-	public static String DataQueryAdapters_1;
 	public static String DataQueryAdapters_10;
-	public static String DataQueryAdapters_13;
-	public static String DataQueryAdapters_17;
-	public static String DataQueryAdapters_4;
-	public static String DataQueryAdapters_5;
 	public static String DataQueryAdapters_9;
 	public static String DataQueryAdapters_jobname;
 	public static String DataQueryAdapters_languagetitle;
@@ -594,7 +590,6 @@ public class Messages extends NLS {
 	public static String DesignerPreferencePage_pagebackground;
 	public static String DesignerPreferencePage_pageprintmargincolor;
 	public static String DesignerPreferencePage_pixelMeasure;
-	public static String DesignerPreferencePage_resizeBandOption;
 	public static String DesignerPreferencePage_rulerMeasureLabel;
 	public static String DesignerPreferencePage_savereportonpreview;
 	public static String DesignerPreferencePage_show_band_names;
@@ -793,17 +788,10 @@ public class Messages extends NLS {
 	public static String ExportMetadataPage_9;
 	public static String ExportStyleAsTemplateAction_actionName;
 	public static String ExportStyleAsTemplateAction_actionTooltip;
-	public static String ExpressionEditorPreferencePage_confirmationOnClosing;
-	public static String ExpressionEditorPreferencePage_rememberLocation;
-	public static String ExpressionEditorPreferencePage_rememberSize;
 	public static String ExpressionEditorPreferencePage_subtitle;
 	public static String ExpressionEditorPreferencePage_userDefinedExpressions;
 	public static String ExpressionEditorSupportUtil_ConfirmOnCloseMessage;
 	public static String ExpressionEditorSupportUtil_ConfirmOnCloseTitle;
-	public static String ExpressionListFieldEditor_CustomExpressionCreationWarningMsg;
-	public static String ExpressionListFieldEditor_CustomExpressionCreationWarningTitle;
-	public static String ExpressionListFieldEditor_CustomExpressionEditWarningMessage;
-	public static String ExpressionListFieldEditor_CustomExpressionEditWarningTitle;
 	public static String FieldEditorOverlayPage_2;
 	public static String FieldEditorOverlayPage_3;
 	public static String FieldEditorOverlayPage_4;
@@ -901,8 +889,6 @@ public class Messages extends NLS {
 	public static String GlobalPreferencePage_19;
 	public static String GlobalPreferencePage_20;
 	public static String GlobalPreferencePage_5;
-	public static String GlobalPreferencePage_disableExpression;
-	public static String GlobalPreferencePage_disableExpressionTooltip;
 	public static String GlobalPreferencePage_EmbeddedBrowserSection;
 	public static String GlobalPreferencePage_flagDescription;
 	public static String GlobalPreferencePage_jettyServerTitle;
@@ -1082,7 +1068,6 @@ public class Messages extends NLS {
 	public static String JRExporterPreferencePage_alwaysOverwrite;
 	public static String JRExporterPreferencePage_askTheUser;
 	public static String JRExporterPreferencePage_fileExistingOption;
-	public static String JRExpressionEditor_undefinedLanguage;
 	public static String JRExpressionPage_1;
 	public static String JRExpressionPage_description;
 	public static String JRPropertyDialog_propName;
@@ -1335,9 +1320,6 @@ public class Messages extends NLS {
 	public static String MGraphicElement_width_description;
 	public static String MGraphicElementLineBox_line_box_description;
 	public static String MGraphicElementLinePen_line_pen_description;
-	public static String MGroup_0;
-	public static String MGroup_1;
-	public static String MGroup_2;
 	public static String MGroup_expression_description;
 	public static String MGroup_footerPosDescription;
 	public static String MGroup_footerPosTitle;
@@ -1439,7 +1421,6 @@ public class Messages extends NLS {
 	public static String MParagraph_tabStopsTitle;
 	public static String MParagraph_tabStopWidthDescription;
 	public static String MParagraph_tabStopWidthTitle;
-	public static String MParameter_3;
 	public static String MParameter_default_value_expression;
 	public static String MParameter_default_value_expression_description;
 	public static String MParameter_description_description;
@@ -1610,14 +1591,6 @@ public class Messages extends NLS {
 	public static String OpenEditorAction_actionName;
 	public static String OpenEditorAction_actionTooltip;
 	public static String OpenInDesignerToolAction_actionName;
-	public static String OrderContributionItem_confMessage;
-	public static String OrderContributionItem_confTitle;
-	public static String OrderContributionItem_disabledtooltip;
-	public static String OrderContributionItem_fieldstooltip;
-	public static String OrderContributionItem_paramName;
-	public static String OrderContributionItem_paramTooltip;
-	public static String OrderContributionItem_varName;
-	public static String OrderContributionItem_varTooltip;
 	public static String OrganizeAsTableAction_actionDescription;
 	public static String OrganizeAsTableAction_actionName;
 	public static String PaddingSection_all_padding_tool_tip;
@@ -1854,12 +1827,6 @@ public class Messages extends NLS {
 	public static String PreviewEditor_starting;
 	public static String PreviewJRPrint_1;
 	public static String PreviewJRPrint_2;
-	public static String PreviewTopToolBarManager_1;
-	public static String PreviewTopToolBarManager_12;
-	public static String PreviewTopToolBarManager_2;
-	public static String PreviewTopToolBarManager_3;
-	public static String PreviewTopToolBarManager_8;
-	public static String PreviewTopToolBarManager_9;
 	public static String PreviousPageAction_actionName;
 	public static String PreviousPageAction_actionTolltip;
 	public static String PropertiesComponent_0;
@@ -1963,8 +1930,6 @@ public class Messages extends NLS {
 	public static String ResourcePage_exportedResourceLabel;
 	public static String ResourcePage_pageDescription;
 	public static String ResourcePage_pageTitle;
-	public static String ResourcePage_templateAlreadyExistMessage;
-	public static String ResourcePage_templateAlreadyExistTitle;
 	public static String ReturnValuesPropertyPage_0;
 	public static String ReturnValuesPropertyPage_1;
 	public static String ReturnValuesPropertyPage_2;
@@ -2066,13 +2031,9 @@ public class Messages extends NLS {
 	public static String SortFieldPage_description;
 	public static String SortFieldPage_field;
 	public static String SortFieldPage_remove;
-	public static String SortFieldsAction_1;
 	public static String SortFieldSection_sort_field;
 	public static String SortFieldSection_sort_order;
 	public static String SortFieldWizard_Title;
-	public static String SortParametersAction_1;
-	public static String SortVariablesAction_2;
-	public static String SortVariablesAction_common_sortalphabetically;
 	public static String SourcePage_dialogText;
 	public static String SourcePage_errorFileError;
 	public static String SourcePage_errorFileNotSelected;
@@ -2424,7 +2385,6 @@ public class Messages extends NLS {
 	public static String QueryExecutorDataAdapterFactory_description;
 	public static String QueryExecutorDataAdapterFactory_label;
 
-	public static String UnBindElementsAction_name;
 	public static String Unit_errorTooBig;
 	public static String Unit_errorTooSmall;
 	public static String UsageManager_checkVersionJobName;
@@ -2473,21 +2433,6 @@ public class Messages extends NLS {
 	public static String ZoomActualAction_0;
 	public static String ZoomActualAction_1;
 	public static String ZoomActualAction_3;
-	 
-	public static String SelectParameterDialog_0;
-	public static String SelectParameterDialog_1;
-	public static String SelectParameterDialog_2;
-	public static String SelectParameterDialog_3;
-	public static String SelectParameterDialog_4;
-	public static String SelectParameterDialog_5;
-	public static String SelectParameterDialog_6;
-	public static String SelectParameterDialog_7;
-
-	public static String SpreadsheetPostDelete_message;
-	public static String SpreadsheetPostDelete_messageDetail;
-	public static String SpreadsheetPostDelete_optionDeleteColumn;
-	public static String SpreadsheetPostDelete_optionDeleteSelected;
-	public static String SpreadsheetPostDelete_title;
 
 	private Messages() {
 	}

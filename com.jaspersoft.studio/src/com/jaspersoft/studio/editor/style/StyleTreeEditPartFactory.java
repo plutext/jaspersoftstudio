@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.style;
 
@@ -14,7 +22,6 @@ import com.jaspersoft.studio.editor.style.command.CreateStyleCommand;
 import com.jaspersoft.studio.editor.style.command.CreateStyleTemplateReferenceCommand;
 import com.jaspersoft.studio.editor.style.command.DeleteStyleCommand;
 import com.jaspersoft.studio.editor.style.command.DeleteStyleTemplateCommand;
-import com.jaspersoft.studio.editor.style.tree.OpenableStyleTreeEditPart;
 import com.jaspersoft.studio.editor.style.tree.StyleContainerTreeEditPart;
 import com.jaspersoft.studio.editor.style.tree.StyleTreeEditPart;
 import com.jaspersoft.studio.model.ANode;
@@ -35,11 +42,10 @@ public class StyleTreeEditPartFactory implements EditPartFactory {
 	 */
 	public EditPart createEditPart(EditPart context, Object model) {
 		EditPart editPart = null;
-		if (model instanceof IContainerEditPart) {
+		if (model instanceof IContainerEditPart)
 			editPart = new StyleContainerTreeEditPart();
-		} else if (model instanceof MStyleTemplateReference) {
-			editPart = new OpenableStyleTreeEditPart();
-		} else editPart = new StyleTreeEditPart();
+		else
+			editPart = new StyleTreeEditPart();
 		if (editPart != null)
 			editPart.setModel(model);
 		return editPart;

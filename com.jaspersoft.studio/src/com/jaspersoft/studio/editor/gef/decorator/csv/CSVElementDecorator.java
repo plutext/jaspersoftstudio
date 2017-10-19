@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.decorator.csv;
 
@@ -22,8 +30,8 @@ import com.jaspersoft.studio.editor.action.csv.CSVAction;
 import com.jaspersoft.studio.editor.action.csv.CSVColDataAction;
 import com.jaspersoft.studio.editor.action.csv.CSVColSettingAction;
 import com.jaspersoft.studio.editor.action.csv.CSVRootAction;
-import com.jaspersoft.studio.editor.gef.decorator.chainable.ChainableDecorator;
-import com.jaspersoft.studio.editor.gef.decorator.chainable.ChainableElementDecorator;
+import com.jaspersoft.studio.editor.gef.decorator.text.TextDecorator;
+import com.jaspersoft.studio.editor.gef.decorator.text.TextElementDecorator;
 import com.jaspersoft.studio.editor.gef.figures.ComponentFigure;
 import com.jaspersoft.studio.editor.gef.parts.FigureEditPart;
 import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
@@ -38,7 +46,7 @@ import com.jaspersoft.studio.model.text.MTextElement;
  * @author Orlandin Marco
  * 
  */
-public class CSVElementDecorator extends ChainableElementDecorator {
+public class CSVElementDecorator extends TextElementDecorator {
 
 	/**
 	 * The XSL contributor for the text decoration
@@ -53,7 +61,7 @@ public class CSVElementDecorator extends ChainableElementDecorator {
 	@Override
 	public void setupFigure(ComponentFigure fig, FigureEditPart editPart) {
 		super.setupFigure(fig, editPart);
-		ChainableDecorator textDecorator = getDecorator(fig);
+		TextDecorator textDecorator = getDecorator(fig);
 		textDecorator.removeDecorator(decorator);
 		if (editPart.getjConfig().getPropertyBooleanDef(ShowCSVTagsAction.ID, false)) {
 			textDecorator.addDecorator(decorator);

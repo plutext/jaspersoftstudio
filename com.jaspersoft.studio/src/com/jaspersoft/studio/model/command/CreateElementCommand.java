@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.command;
 
@@ -12,7 +20,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.jaspersoft.studio.JSSCompoundCommand;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.editor.defaults.DefaultManager;
 import com.jaspersoft.studio.editor.layout.LazyLayoutCommand;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.IGroupElement;
@@ -317,16 +324,6 @@ public class CreateElementCommand extends Command {
 				addCommand(cmd);
 			}
 		}
-		
-    	applayDefaultAttributes(srcNode.getClass(), jrElement);
-	}
-	
-	/**
-	 * Apply the attribute from the default set, can be overridden to provide 
-	 * specific behavior
-	 */
-	protected void applayDefaultAttributes(Class<?> clazz, JRElement element){
-		DefaultManager.INSTANCE.applyDefault(clazz, element);
 	}
 	
 	/**

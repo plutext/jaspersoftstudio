@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view;
 
@@ -46,8 +50,8 @@ public abstract class AViewsFactory {
 				if (val == null && getMap().get(key) != null) {
 					Class<? extends APreview> clazz = getMap().get(key);
 					try {
-						val = clazz.getConstructor(Composite.class, JasperReportsConfiguration.class)
-								.newInstance(composite, jContext);
+						val = clazz.getConstructor(Composite.class, JasperReportsConfiguration.class).newInstance(composite,
+								jContext);
 					} catch (IllegalArgumentException e) {
 						e.printStackTrace();
 					} catch (SecurityException e) {
@@ -67,8 +71,18 @@ public abstract class AViewsFactory {
 			}
 		};
 		for (String key : getMap().keySet()) {
-			if (key.equals(ViewsFactory.HTML_NO_INTERACTIVITY) && !jContext
-					.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, false))
+			if (key.equals(ViewsFactory.EXCEL_API)
+					&& !jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI, false))
+				continue;
+			if (key.equals(ViewsFactory.X_HTML)
+					&& !jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML, false))
+				continue;
+			if (key.equals(ViewsFactory.HTML_NO_INTERACTIVITY)
+					&& !jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_HTML, false))
+				continue;
+			if (key.equals(ViewsFactory.XLS_METADATA)
+					&& !jContext.getPropertyBoolean(
+							JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA, false))
 				continue;
 			pmap.put(key, null);
 		}

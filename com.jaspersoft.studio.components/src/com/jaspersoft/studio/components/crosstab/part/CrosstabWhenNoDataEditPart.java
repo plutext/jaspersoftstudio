@@ -1,10 +1,21 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.part;
 
 import java.util.List;
+
+import net.sf.jasperreports.crosstabs.design.JRDesignCellContents;
+import net.sf.jasperreports.engine.design.JRDesignElement;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
@@ -47,9 +58,6 @@ import com.jaspersoft.studio.model.IGraphicElement;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.MPage;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-
-import net.sf.jasperreports.crosstabs.design.JRDesignCellContents;
-import net.sf.jasperreports.engine.design.JRDesignElement;
 
 /*
  * BandEditPart creates the figure for the band. The figure is actually just the bottom border of the band. This allows
@@ -120,8 +128,7 @@ public class CrosstabWhenNoDataEditPart extends ACrosstabCellEditPart {
 					getLayoutTargetFeedback(request);
 				}
 
-				@Override
-				protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+				protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 					if (parent instanceof MPage)
 						parent = getModel();
 					Rectangle b = ((MCell) getModel()).getBounds();
@@ -129,7 +136,7 @@ public class CrosstabWhenNoDataEditPart extends ACrosstabCellEditPart {
 					int y = constraint.y - b.y;// - ReportPageFigure.PAGE_BORDER.top;
 					constraint = new Rectangle(x, y, constraint.width, constraint.height);
 
-					return super.getCreateCommand(parent, obj, constraint, index, request);
+					return super.getCreateCommand(parent, obj, constraint, index);
 				}
 
 				@Override

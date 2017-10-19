@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.statistics;
 
@@ -72,17 +80,12 @@ public class VersionCheckResult {
 	/**
 	 * Validate the information to know if the update is available. The update
 	 * is available if the version on the server is not null and greater from
-	 * the currently installed version. If there is any error it return 
-	 * false
+	 * the currently installed version
 	 * 
 	 * @return true if the there is an update available, false otherwise
 	 */
 	public boolean canUpdate(){
-		try{ 
-			return serverVersion != null && !serverVersion.equals("ko") && FileUtils.versionCompare(serverVersion, currentVersion) > 0;
-		} catch (Exception ex){
-			return false;
-		}
+		return serverVersion != null && !serverVersion.equals("ko") && FileUtils.versionCompare(serverVersion, currentVersion) > 0;
 	}
 }
 

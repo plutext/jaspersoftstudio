@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -154,16 +162,5 @@ public abstract class MGraphicElementLineBox extends MGraphicElement implements 
 		if (DefaultManager.INSTANCE.hasDefault()){
 			
 		}
-	}
-	
-	/**
-	 * Since this property aggregate more complex object this will allow to reset
-	 * also the children when the reset action happen on a LINE_BOX
-	 */
-	@Override
-	public boolean forcePropertyChildrenReset(Object id) {
-		if (id.equals(LINE_BOX)) {
-			return true;
-		} else return super.forcePropertyChildrenReset(id);
 	}
 }

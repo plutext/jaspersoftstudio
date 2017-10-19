@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.report.util;
 
@@ -12,9 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class Unit {
 	
@@ -195,12 +202,12 @@ public class Unit {
 			return val;
 		BigDecimal c = units.get(unit);
 		if (c != null)
-			return c.multiply(new BigDecimal(val)).divide(new BigDecimal(dpi), 6, RoundingMode.CEILING).doubleValue();
+			return c.multiply(new BigDecimal(val)).divide(new BigDecimal(dpi), 4, RoundingMode.CEILING).doubleValue();
 		return val;
 	}
 
 	private double fromValue(BigDecimal c) {
-		double uval = c.multiply(new BigDecimal(value)).divide(new BigDecimal(dpi), 6, RoundingMode.CEILING).doubleValue();
+		double uval = c.multiply(new BigDecimal(value)).divide(new BigDecimal(dpi), 4, RoundingMode.CEILING).doubleValue();
 		// System.out.println("FROM -> Value: " + value + " C: " + c + " REZULT:" + uval + "[" + unit + "]");
 		return uval;
 	}

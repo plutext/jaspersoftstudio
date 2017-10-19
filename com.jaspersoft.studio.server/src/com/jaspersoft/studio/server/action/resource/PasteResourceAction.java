@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.action.resource;
 
@@ -162,8 +170,7 @@ public class PasteResourceAction extends Action {
 					try {
 						INode root = parent.getRoot();
 						final String puri = parent instanceof AMResource
-								? ((AMResource) parent).getValue().getUriString()
-								: ""; //$NON-NLS-1$
+								? ((AMResource) parent).getValue().getUriString() : ""; //$NON-NLS-1$
 						doWork(monitor, parent, list);
 						ANode p = parent;
 						if (parent instanceof AMResource)
@@ -362,8 +369,6 @@ public class PasteResourceAction extends Action {
 								origin.setIsReference(true);
 						}
 						saveToReportUnit(monitor, (AMResource) parent, ws, origin);
-						if (parent instanceof MReportUnit)
-							parent.setValue(ws.get(monitor, ((AMResource) parent).getValue(), null));
 					}
 				}
 				deleteIfCut(monitor, m);
@@ -503,12 +508,6 @@ public class PasteResourceAction extends Action {
 
 	protected void saveToReportUnit(IProgressMonitor monitor, AMResource parent, IConnection ws,
 			ResourceDescriptor origin) throws IOException, Exception {
-		ResourceDescriptor prd = putIntoReportUnit(monitor, parent, ws, origin);
-		ws.addOrModifyResource(monitor, prd, null);
-	}
-
-	public static ResourceDescriptor putIntoReportUnit(IProgressMonitor monitor, AMResource parent, IConnection ws,
-			ResourceDescriptor origin) throws IOException, Exception {
 		ResourceDescriptor prd = parent.getValue();
 		ResourceDescriptor rd = null;
 		File file = null;
@@ -540,10 +539,10 @@ public class PasteResourceAction extends Action {
 			}
 		}
 		prd.getChildren().add(rd);
-		return prd;
+		ws.addOrModifyResource(monitor, prd, null);
 	}
 
-	public static boolean isSameServer(ANode parent, AMResource m) {
+	private boolean isSameServer(ANode parent, AMResource m) {
 		IConnection mc = m.getWsClient();
 		IConnection pc = null;
 		if (parent instanceof AMResource)
@@ -562,7 +561,7 @@ public class PasteResourceAction extends Action {
 		return true;
 	}
 
-	protected static ResourceDescriptor doPasteIntoReportUnit(ResourceDescriptor prd, ResourceDescriptor origin) {
+	protected ResourceDescriptor doPasteIntoReportUnit(ResourceDescriptor prd, ResourceDescriptor origin) {
 		String ruuri = prd.getUriString();
 		origin.setParentFolder(ruuri + "_files"); //$NON-NLS-1$
 		origin.setIsNew(true);
@@ -580,7 +579,7 @@ public class PasteResourceAction extends Action {
 		return origin;
 	}
 
-	private static String getRName(String name, List<?> children) {
+	private String getRName(String name, List<?> children) {
 		String n = name;
 		int j = 0;
 		for (int i = 0; i < children.size(); i++) {
@@ -625,7 +624,7 @@ public class PasteResourceAction extends Action {
 		}
 	}
 
-	public static void refreshNode(INode p, IProgressMonitor monitor) throws Exception {
+	private void refreshNode(INode p, IProgressMonitor monitor) throws Exception {
 		if (p instanceof AMResource)
 			WSClientHelper.refreshResource((AMResource) p, monitor);
 		else if (p instanceof MServerProfile) {

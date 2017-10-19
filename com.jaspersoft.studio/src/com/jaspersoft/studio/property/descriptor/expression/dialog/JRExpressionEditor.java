@@ -1,18 +1,24 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.expression.dialog;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
 
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
 import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
 import com.jaspersoft.studio.messages.Messages;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 
 public class JRExpressionEditor extends Wizard {
@@ -41,13 +47,7 @@ public class JRExpressionEditor extends Wizard {
 
 	public JRExpressionEditor() {
 		super();
-		ExpressionContext reportExpressionContext = ExpressionEditorSupportUtil.getReportExpressionContext();
-		String reportLanguage = null;
-		if(reportExpressionContext!=null){
-			reportLanguage = reportExpressionContext.getJasperReportsConfiguration().getJasperDesign().getLanguage();
-		}
-		setWindowTitle(Messages.common_expression_editor + 
-				NLS.bind(" ({0})", Misc.nvl(reportLanguage, Messages.JRExpressionEditor_undefinedLanguage)));	//$NON-NLS-1$
+		setWindowTitle(Messages.common_expression_editor);
 	}
 
 	@Override

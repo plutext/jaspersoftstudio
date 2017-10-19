@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.model.parameter.action;
 
@@ -8,9 +16,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 
-import com.jaspersoft.studio.components.crosstab.model.parameter.MCrosstabParameter;
 import com.jaspersoft.studio.editor.outline.actions.ACreateAction;
 import com.jaspersoft.studio.editor.palette.JDPaletteCreationFactory;
+import com.jaspersoft.studio.model.parameter.MParameter;
 
 /*
  * The Class CreateGroupAction.
@@ -28,7 +36,7 @@ public class CreateCrosstabParameterAction extends ACreateAction {
 	 */
 	public CreateCrosstabParameterAction(IWorkbenchPart part) {
 		super(part);
-		setCreationFactory(new JDPaletteCreationFactory(MCrosstabParameter.class));
+		setCreationFactory(new JDPaletteCreationFactory(MParameter.class));
 	}
 
 	/**

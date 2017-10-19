@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.json;
 
@@ -22,11 +30,11 @@ import com.jaspersoft.studio.data.AFileDataAdapterComposite;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.DateNumberFormatWidget;
 import com.jaspersoft.studio.data.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.data.DataAdapter;
 import net.sf.jasperreports.data.json.JsonDataAdapter;
 import net.sf.jasperreports.data.json.JsonExpressionLanguageEnum;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JasperReportsContext;
 
 public class JsonDataAdapterComposite extends AFileDataAdapterComposite {

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.text2model;
 
@@ -11,6 +19,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.util.KeyValue;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
@@ -49,11 +61,7 @@ import com.jaspersoft.studio.data.sql.model.query.operand.UnknownOperand;
 import com.jaspersoft.studio.data.sql.model.query.select.MSelect;
 import com.jaspersoft.studio.data.sql.model.query.select.MSelectSubQuery;
 import com.jaspersoft.studio.model.ANode;
-
-import net.sf.jasperreports.eclipse.util.KeyValue;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
+import com.jaspersoft.studio.utils.Misc;
 
 public class ConvertExpression {
 
@@ -171,7 +179,7 @@ public class ConvertExpression {
 						ConvertSelectColumns.operands2String(designer, qroot, parent, xexpr.getCol(), msel)));
 			else
 				me.getOperands().add(new FieldOperand(null, null, me));
-			me.setFunction(xexpr.getXf().getLiteral().replace("{", ""));
+			me.setFunction(xexpr.getXf().getLiteral());
 			if (xexpr.getPrm() != null) {
 				JRDesignDataset jrDataset = designer.getjDataset();
 				if (xexpr.getPrm() instanceof JRParameter)

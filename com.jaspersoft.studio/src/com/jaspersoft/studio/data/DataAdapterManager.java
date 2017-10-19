@@ -1,42 +1,36 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+
+import net.sf.jasperreports.data.DataAdapter;
+import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.util.CastorUtil;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.data.customadapters.ConfigurableDataAdapterFactory;
-import com.jaspersoft.studio.data.customadapters.ui.AdapterWidgetsDescriptor;
 import com.jaspersoft.studio.data.storage.ADataAdapterStorage;
 import com.jaspersoft.studio.data.storage.FileDataAdapterStorage;
 import com.jaspersoft.studio.data.storage.JRDefaultDataAdapterStorage;
 import com.jaspersoft.studio.data.storage.PreferencesDataAdapterStorage;
-import com.jaspersoft.studio.preferences.customadapters.CustomDataAdaptersPreferencePage;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-import com.jaspersoft.studio.widgets.framework.manager.StandardJSONWidgetsDescriptorResolver;
-
-import net.sf.jasperreports.data.DataAdapter;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.wizard.project.ProjectUtil;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.util.CastorUtil;
 
 /*
  * The main plugin class to be used in the desktop.
@@ -47,48 +41,7 @@ public class DataAdapterManager {
 
 	private static Map<String, DataAdapterFactory> dataAdapterFactories = new HashMap<String, DataAdapterFactory>();
 	
-	private static Map<String, DataAdapterFactory> customFactories = new HashMap<String, DataAdapterFactory>();
-
 	private static Map<Object, ADataAdapterStorage> storages = new HashMap<Object, ADataAdapterStorage>();
-	
-	static {
-		//Listener used to clear the cache when something about the data adapters definition change in the preferences
-		JaspersoftStudioPlugin.getInstance().getPreferenceStore().addPropertyChangeListener(new IPropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(CustomDataAdaptersPreferencePage.CUSTOMDATAADAPTERS)){
-					customFactories.clear();
-					loadCustomFactories();
-				}
-			}
-		});
-		loadCustomFactories();
-	}
-	
-	/**
-	 * Load the definitions of all the custom configurable data adapters
-	 */
-	protected static void loadCustomFactories() {		
-		String definitions = JaspersoftStudioPlugin.getInstance().getPreferenceStore().getString(CustomDataAdaptersPreferencePage.CUSTOMDATAADAPTERS);
-		StringTokenizer st = new StringTokenizer(definitions, File.pathSeparator + "\n\r"); //$NON-NLS-1$
-		Set<String> pathsList = new LinkedHashSet<String>();
-		while (st.hasMoreTokens())
-			pathsList.add(st.nextToken());
-		if (!pathsList.isEmpty()) {
-			StandardJSONWidgetsDescriptorResolver resolver = new StandardJSONWidgetsDescriptorResolver(AdapterWidgetsDescriptor.class);
-			for (String definition : pathsList) {
-				File file = new File(definition);
-				if (file.exists()) {
-					AdapterWidgetsDescriptor loadedDecriptor = (AdapterWidgetsDescriptor)resolver.loadDescriptor(JasperReportsConfiguration.getDefaultInstance(), file.getAbsolutePath());
-					if (loadedDecriptor != null) {
-						ConfigurableDataAdapterFactory factory = new ConfigurableDataAdapterFactory(loadedDecriptor);
-						customFactories.put(loadedDecriptor.getAdapterClass(), factory);
-					}
-				}
-			}
-		}
-	}
 
 	/*******************************
 	 ** Data Adapter Factories Part **
@@ -125,8 +78,8 @@ public class DataAdapterManager {
 		// Let's sort the list based on the description. Please note that the description may be localized,
 		// so not all the languages have the same order if assumptions are done.
 
-		DataAdapterFactory[] factories = dataAdapterFactories.values()
-				.toArray(new DataAdapterFactory[dataAdapterFactories.size()]);
+		DataAdapterFactory[] factories = dataAdapterFactories.values().toArray(
+				new DataAdapterFactory[dataAdapterFactories.size()]);
 
 		Arrays.sort(factories, new Comparator<DataAdapterFactory>() {
 
@@ -141,7 +94,6 @@ public class DataAdapterManager {
 
 		List<DataAdapterFactory> listOfDataAdapterFactories = new ArrayList<DataAdapterFactory>();
 		listOfDataAdapterFactories.addAll(Arrays.asList(factories));
-		listOfDataAdapterFactories.addAll(customFactories.values());
 
 		return listOfDataAdapterFactories;
 	}
@@ -154,26 +106,25 @@ public class DataAdapterManager {
 	public static DataAdapterFactory findFactoryByDataAdapterClass(String adapterClassName) {
 		if (Misc.isNullOrEmpty(adapterClassName))
 			return null;
-		DataAdapterFactory factory = dataAdapterFactories.get(adapterClassName);
-		if (factory != null) return factory;
-		else return customFactories.get(adapterClassName);
+		return dataAdapterFactories.get(adapterClassName);
 	}
 
+	
 	public static ADataAdapterStorage[] getDataAdapter(IFile file, IProject project, JasperReportsConfiguration jConfig) {
 		List<ADataAdapterStorage> st = new ArrayList<ADataAdapterStorage>();
 		st.add(getPreferencesStorage());
 		if (file != null) {
 			project = file.getProject();
 		}
-		if (project != null) {
+		if (project!=null) {
 			st.add(getProjectStorage(project));
 		}
-		if (jConfig != null && jConfig.getJasperDesign() != null) {
+		if (jConfig != null && jConfig.getJasperDesign() != null){
 			st.add(getJRDefaultStorage(jConfig));
 		}
 		return st.toArray(new ADataAdapterStorage[st.size()]);
 	}
-
+	
 	public static ADataAdapterStorage[] getDataAdapter(IFile file, JasperReportsConfiguration jConfig) {
 		return getDataAdapter(file, null, jConfig);
 	}
@@ -182,13 +133,12 @@ public class DataAdapterManager {
 		ADataAdapterStorage s = storages.get(key);
 		if (s == null) {
 			s = new FileDataAdapterStorage(key);
-			s.findAll();
 			s.getDataAdapterDescriptors();
 			storages.put(key, s);
 		}
 		return s;
 	}
-
+	
 	/**
 	 * Get the storage for the handling of the default data adapters
 	 * 
@@ -201,7 +151,7 @@ public class DataAdapterManager {
 			s.getDataAdapterDescriptors();
 			storages.put(key, s);
 		}
-		return (JRDefaultDataAdapterStorage) s;
+		return (JRDefaultDataAdapterStorage)s;
 	}
 
 	public static ADataAdapterStorage getPreferencesStorage() {
@@ -256,8 +206,8 @@ public class DataAdapterManager {
 		DataAdapterFactory factory = findFactoryByDataAdapterClass(srcDataAdapter.getClass().getName());
 		DataAdapterDescriptor copy = factory.createDataAdapter();
 		copy.setName(src.name);
-		srcDataAdapter = (DataAdapter) CastorUtil.getInstance(jrContext)
-				.read(new ByteArrayInputStream(src.toXml(jrContext).getBytes()));
+		srcDataAdapter = (DataAdapter) CastorUtil.getInstance(jrContext).read(
+				new ByteArrayInputStream(src.toXml(jrContext).getBytes()));
 		copy.setDataAdapter(srcDataAdapter);
 		return copy;
 	}

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.dataset.dialog;
 
@@ -15,8 +19,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.jaspersoft.studio.property.dataset.preview.DataPreviewTable;
-import com.jaspersoft.studio.property.dataset.preview.DataPreviewTable.DataPreviewBean;
+import com.jaspersoft.studio.property.dataset.dialog.DataPreviewTable.DataPreviewBean;
 
 import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 import net.sf.jasperreports.engine.design.JRDesignField;
@@ -24,7 +27,7 @@ import net.sf.jasperreports.engine.design.JRDesignField;
 public class CopyDataDialog extends ATitledDialog {
 	private DataPreviewTable dpt;
 
-	public CopyDataDialog(Shell parentShell, DataPreviewTable dpt) {
+	protected CopyDataDialog(Shell parentShell, DataPreviewTable dpt) {
 		super(parentShell);
 		setTitle("Data");
 		setDefaultSize(500, 400);

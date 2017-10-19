@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.part;
 
@@ -12,7 +20,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
-import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 
 import com.jaspersoft.studio.components.crosstab.figure.EmptyCellFigure;
@@ -45,11 +52,10 @@ public class CrosstabTitleEditPart extends ACrosstabCellEditPart {
 		super.createEditPolicies();
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new PageLayoutEditPolicy() {
 
-			@Override
-			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 				if (parent instanceof MPage)
 					parent = getModel();
-				return super.getCreateCommand(parent, obj, constraint, index, request);
+				return super.getCreateCommand(parent, obj, constraint, index);
 			}
 		});
 	}

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.statistics;
 
@@ -18,7 +22,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
 import net.sf.jasperreports.eclipse.util.HttpUtils;
 
@@ -610,7 +613,8 @@ public class UsageManager {
 			uploadUsageStats.schedule();
 		}
 		// Check for update
-		if (!UIUtils.isDevMode()) { //$NON-NLS-1$
+		String devmode = System.getProperty("devmode"); //$NON-NLS-1$
+		if (devmode == null || !devmode.equals("true")) { //$NON-NLS-1$
 			Job job = new Job(Messages.UsageManager_checkVersionJobName) {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
@@ -732,9 +736,7 @@ public class UsageManager {
 			newInstallation = 2;
 			setInstallationInfo(VERSION_INFO, getVersion());
 		}
-		//Log the current OS
-		String OS = OSIdentifier.getOSInfo();
-		audit_set(OS, UsageStatisticsIDs.CATEGORY_OPERATIVE_SYSTEM, 1);
+
 		StringBuilder urlBuilder = new StringBuilder();
 		urlBuilder.append(HEARTBEAT_SERVER_URL);
 		urlBuilder.append("?version=");//$NON-NLS-1$
@@ -770,17 +772,9 @@ public class UsageManager {
 			if (proxy != null)
 				req.viaProxy(proxy);
 			HttpResponse resp = exec.execute(req).returnResponse();
-			int statusCode = resp.getStatusLine().getStatusCode() ;
-			if (statusCode == 200) {
-				
-				// Update the installation info only if the informations was given correctly to the server
-				setInstallationInfo(VERSION_INFO, getVersion());
-				// Remove the old backward compatibility value if present to switch to the new system
-				if (backward_uuid != null) {
-					ph.removeString(BACKWARD_UUID_PROPERTY, InstanceScope.SCOPE);
-				}
-				
+			if (resp.getStatusLine().getStatusCode() == 200) {
 				String response = IOUtils.toString(resp.getEntity().getContent());
+
 				String serverVersion = null;
 				String optmsg = ""; //$NON-NLS-1$ 
 				for (String inputLine : IOUtils.readLines(new StringReader(response))) {
@@ -789,6 +783,12 @@ public class UsageManager {
 					} else {
 						optmsg += inputLine;
 					}
+				}
+				// Update the installation info only if the informations was given correctly to the server
+				setInstallationInfo(VERSION_INFO, getVersion());
+				// Remove the old backward compatibility value if present to switch to the new system
+				if (backward_uuid != null) {
+					ph.removeString(BACKWARD_UUID_PROPERTY, InstanceScope.SCOPE);
 				}
 				return new VersionCheckResult(serverVersion, optmsg, getVersion());
 			}

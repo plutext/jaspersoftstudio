@@ -1,5 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report.file;
 
@@ -28,7 +37,7 @@ import com.jaspersoft.studio.editor.preview.actions.export.ExportMenuAction;
 import com.jaspersoft.studio.editor.preview.stats.Statistics;
 import com.jaspersoft.studio.editor.preview.view.APreview;
 import com.jaspersoft.studio.editor.preview.view.IPreferencePage;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.editor.preview.view.report.ExportMenu;
 import com.jaspersoft.studio.editor.preview.view.report.IJRPrintable;
 import com.jaspersoft.studio.messages.Messages;
@@ -82,11 +91,6 @@ public abstract class AFileViewer extends APreview implements IJRPrintable, IPre
 
 	private JasperPrint jrprint;
 
-	@Override
-	public JasperPrint getJrPrint() {
-		return jrprint;
-	}
-
 	public void setJRPRint(Statistics stats, JasperPrint jrprint) throws Exception {
 		setJRPRint(stats, jrprint, false);
 	}
@@ -101,10 +105,10 @@ public abstract class AFileViewer extends APreview implements IJRPrintable, IPre
 					try {
 						File tmpFile = File.createTempFile("report", getExtension());
 						AExportAction exp = createExporterAction(rptviewer);
-						stats.startCount(ReportController.ST_EXPORTTIME);
+						stats.startCount(ReportControler.ST_EXPORTTIME);
 						exp.doPreview(tmpFile, jrprint, monitor);
-						stats.endCount(ReportController.ST_EXPORTTIME);
-						stats.setValue(ReportController.ST_REPORTSIZE, tmpFile.length());
+						stats.endCount(ReportControler.ST_EXPORTTIME);
+						stats.setValue(ReportControler.ST_REPORTSIZE, tmpFile.length());
 						final String content = (FileUtils.readFileAsAString(tmpFile));
 						UIUtils.getDisplay().asyncExec(new Runnable() {
 

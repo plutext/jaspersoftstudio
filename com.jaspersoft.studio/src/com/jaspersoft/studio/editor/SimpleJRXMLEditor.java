@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor;
 
@@ -38,7 +42,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
-import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
@@ -503,20 +506,5 @@ public class SimpleJRXMLEditor extends AbstractJRXMLEditor implements  IJROBject
 	 */
 	public ReportContainer getReportContainer() {
 		return reportContainer;
-	}
-	
-	/**
-	 * Gets the current active inner editor.
-	 * The {@link ReportContainer} is itself a {@link MultiPageEditorPart}, so
-	 * it can contains different opened editors (i.e. lists, tables, cross-tabs).
-	 * 
-	 * @return the second level active editor
-	 */
-	@Override
-	public IEditorPart getActiveInnerEditor() {
-		IEditorPart iep = getActiveEditor();
-		if (iep instanceof ReportContainer)
-			return ((ReportContainer) iep).getActiveEditor();
-		return iep;
 	}
 }

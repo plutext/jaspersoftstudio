@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.property.section;
 
@@ -88,7 +96,7 @@ public class ChartPlotSection extends AbstractRealValueSection {
 	/**
 	 * Stack layout used to show the correct panel
 	 */
-	private RealSizeStackLayout dyinamicCompositeLayout;
+	private RealSizeStackLayout dyinamicCompositeLayout = new RealSizeStackLayout();
 	
 	/**
 	 * Composite where the chart type specific controls are shown
@@ -100,7 +108,7 @@ public class ChartPlotSection extends AbstractRealValueSection {
 	 * that has the definition of the controls for that type of chart and the composite
 	 * container that contains the controls
 	 */
-	private HashMap<Class<?>, Pair<AbstractRealValueSection, Composite>> subsections;
+	private HashMap<Class<?>, Pair<AbstractRealValueSection, Composite>> subsections = new HashMap<Class<?>, Pair<AbstractRealValueSection, Composite>>();
 	
 	@Override
 	public void createControls(Composite parent,TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -112,10 +120,8 @@ public class ChartPlotSection extends AbstractRealValueSection {
 		mainComposite = new Composite(parent, SWT.NONE);
 		GridData mainCompositeData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		mainCompositeData.horizontalSpan = 2;
-		dyinamicCompositeLayout = new RealSizeStackLayout();
 		mainComposite.setLayoutData(mainCompositeData);
 		mainComposite.setLayout(dyinamicCompositeLayout);
-		subsections = new HashMap<Class<?>, Pair<AbstractRealValueSection, Composite>>();
 	}
 	
 

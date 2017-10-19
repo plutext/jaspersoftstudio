@@ -1,10 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.resource.page.selector;
 
 import java.io.File;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -25,21 +35,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.jasperserver.dto.resources.ClientFile.FileType;
 import com.jaspersoft.jasperserver.dto.resources.ResourceMediaType;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.server.ServerManager;
 import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.model.AFileResource;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MJrxml;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.properties.dialog.RepositoryDialog;
 import com.jaspersoft.studio.server.protocol.Feature;
 import com.jaspersoft.studio.server.wizard.find.FindResourceJob;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SelectorJrxml {
 	private Button brRepo;
@@ -93,9 +100,7 @@ public class SelectorJrxml {
 				// due to tree viewer node expansion...
 				MServerProfile msp = ServerManager.getMServerProfileCopy((MServerProfile) parent.getRoot());
 				if (res.isSupported(Feature.SEARCHREPOSITORY)) {
-					boolean sv = msp.getWsClient().getServerInfo().getVersion().compareTo("5.5") >= 0;
-					ResourceDescriptor rd = FindResourceJob.doFindResource(msp,
-							new String[] { sv ? FileType.jrxml.name() : ResourceMediaType.FILE_CLIENT_TYPE }, null);
+					ResourceDescriptor rd = FindResourceJob.doFindResource(msp, new String[] { ResourceMediaType.FILE_CLIENT_TYPE }, null);
 					if (rd != null)
 						setRemoteResource(res, rd, parent);
 				} else {
@@ -141,8 +146,7 @@ public class SelectorJrxml {
 		bLoc.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				FilteredResourcesSelectionDialog wizard = new FilteredResourcesSelectionDialog(UIUtils.getShell(),
-						false, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
+				FilteredResourcesSelectionDialog wizard = new FilteredResourcesSelectionDialog(UIUtils.getShell(), false, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
 				wizard.setInitialPattern("*.jrxml");//$NON-NLS-1$
 				if (wizard.open() == Dialog.OK) {
 					ResourceDescriptor jrxmlDescriptor = new ResourceDescriptor();

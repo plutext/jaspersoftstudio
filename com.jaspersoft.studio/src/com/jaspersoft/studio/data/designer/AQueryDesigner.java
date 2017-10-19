@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.designer;
 
@@ -16,11 +20,11 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import com.jaspersoft.studio.data.IQueryDesigner;
 import com.jaspersoft.studio.swt.widgets.CSashForm;
 import com.jaspersoft.studio.swt.widgets.CSashForm.ICustomSashFormListener;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.AWizardPage;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRParameter;
@@ -56,10 +60,6 @@ public abstract class AQueryDesigner implements IQueryDesigner, IRunnableContext
 	public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable)
 			throws InvocationTargetException, InterruptedException {
 		container.run(fork, cancelable, runnable);
-	}
-
-	public AQueryDesignerContainer getContainer() {
-		return container;
 	}
 
 	public JasperDesign getjDesign() {
