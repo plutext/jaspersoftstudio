@@ -70,7 +70,6 @@ public class MoveDetailUpAction extends ACachedSelectionAction implements IGloba
 		if (!checkSameType(firstBand, bands)) return null;
 	
 		JSSCompoundCommand cmd = new JSSCompoundCommand(firstBand);
-		cmd.enableSelectionRestore(true);
 	
 		//Check that all the bands can be moved
 		List<Pair<Integer, MBand>> bandsToMove = new ArrayList<Pair<Integer, MBand>>();

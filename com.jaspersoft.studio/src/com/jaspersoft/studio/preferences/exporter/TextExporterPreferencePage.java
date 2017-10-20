@@ -4,6 +4,9 @@
  ******************************************************************************/
 package com.jaspersoft.studio.preferences.exporter;
 
+import net.sf.jasperreports.export.TextExporterConfiguration;
+import net.sf.jasperreports.export.TextReportConfiguration;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -17,10 +20,7 @@ import com.jaspersoft.studio.preferences.editor.text.NStringFieldEditor;
 import com.jaspersoft.studio.preferences.editor.text.TextFieldEditor;
 import com.jaspersoft.studio.preferences.util.FieldEditorOverlayPage;
 import com.jaspersoft.studio.preferences.util.PropertiesHelper;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.export.TextExporterConfiguration;
-import net.sf.jasperreports.export.TextReportConfiguration;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * 
@@ -39,14 +39,12 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 	public void createFieldEditors() {
 		FloatFieldEditor ffe = new FloatFieldEditor(TextReportConfiguration.PROPERTY_CHARACTER_WIDTH,
 				Messages.TextExporterPreferencePage_7, getFieldEditorParent());
-		ffe.setErrorMessage("Invalid float value");
 		addField(ffe);
 		HelpSystem.setHelp(ffe.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ffe.getPreferenceName());
 
 		ffe = new FloatFieldEditor(TextReportConfiguration.PROPERTY_CHARACTER_HEIGHT,
 				Messages.TextExporterPreferencePage_8, getFieldEditorParent());
-		ffe.setErrorMessage("Invalid float value");
 		addField(ffe);
 		HelpSystem.setHelp(ffe.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ffe.getPreferenceName());
@@ -57,8 +55,8 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 		HelpSystem.setHelp(ife.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ife.getPreferenceName());
 
-		ife = new IntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_HEIGHT,
-				Messages.TextExporterPreferencePage_10, getFieldEditorParent());
+		ife = new IntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_HEIGHT, Messages.TextExporterPreferencePage_10,
+				getFieldEditorParent());
 		addField(ife);
 		HelpSystem.setHelp(ife.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ife.getPreferenceName());
@@ -69,10 +67,9 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 
 		TextFieldEditor te = new TextFieldEditor(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR,
 				Messages.TextExporterPreferencePage_12, true, getFieldEditorParent());
-		te.setEmptyStringAllowed(true);
 		addField(te);
-
-		// Eventually create the extensions for the page
+		
+		//Eventually create the extensions for the page
 		super.createFieldEditors();
 	}
 
@@ -81,8 +78,8 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 			// we can't store null values in the store, but for this one we have null
 			// a workaround is to remove the property for null values
 			// so we initialise the default only if no properties are initialised
-			store.setDefault(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR, Misc
-					.nvl(PropertiesHelper.DPROP.getProperty(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR), "")); //$NON-NLS-1$
+			store.setDefault(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR,
+					Misc.nvl(PropertiesHelper.DPROP.getProperty(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR), "")); //$NON-NLS-1$
 		}
 
 		store.setDefault(TextReportConfiguration.PROPERTY_CHARACTER_HEIGHT,
@@ -94,7 +91,7 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 		store.setDefault(TextReportConfiguration.PROPERTY_PAGE_WIDTH,
 				Misc.nvl(PropertiesHelper.DPROP.getProperty(TextReportConfiguration.PROPERTY_PAGE_WIDTH), "0")); //$NON-NLS-1$
 
-		store.setDefault(TextExporterConfiguration.PROPERTY_LINE_SEPARATOR, "\n"); //$NON-NLS-1$
+		store.setDefault(TextExporterConfiguration.PROPERTY_LINE_SEPARATOR, "\n"); //$NON-NLS-1$ 
 	}
 
 	/*

@@ -12,7 +12,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.jaspersoft.studio.JSSCompoundCommand;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.editor.defaults.DefaultManager;
 import com.jaspersoft.studio.editor.layout.LazyLayoutCommand;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.IGroupElement;
@@ -317,16 +316,6 @@ public class CreateElementCommand extends Command {
 				addCommand(cmd);
 			}
 		}
-		
-    	applayDefaultAttributes(srcNode.getClass(), jrElement);
-	}
-	
-	/**
-	 * Apply the attribute from the default set, can be overridden to provide 
-	 * specific behavior
-	 */
-	protected void applayDefaultAttributes(Class<?> clazz, JRElement element){
-		DefaultManager.INSTANCE.applyDefault(clazz, element);
 	}
 	
 	/**

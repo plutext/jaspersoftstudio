@@ -6,13 +6,13 @@ package com.jaspersoft.studio.model.field;
 
 import java.beans.PropertyChangeEvent;
 
+import net.sf.jasperreports.engine.JRConstants;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.events.CollectionElementAddedEvent;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.wb.swt.ResourceManager;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.editor.outline.actions.ShowFieldsTreeAction;
-import com.jaspersoft.studio.editor.outline.actions.SortFieldsAction;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.IContainerEditPart;
 import com.jaspersoft.studio.model.INode;
@@ -20,10 +20,6 @@ import com.jaspersoft.studio.model.IPastable;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.model.util.NodeIconDescriptor;
 import com.jaspersoft.studio.model.util.ReportFactory;
-
-import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.events.CollectionElementAddedEvent;
 
 /*
  * The Class MFields.
@@ -49,17 +45,13 @@ public class MFields extends ANode implements IPastable, IContainerEditPart {
 	/** The descriptors. */
 	protected static IPropertyDescriptor[] descriptors;
 
-	public MFields() {
-		super();
-	}
-
 	/**
 	 * Instantiates a new m fields.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param jrDataset
-	 *            the jr dataset
+	 *          the jr dataset
 	 */
 	public MFields(ANode parent, JRDesignDataset jrDataset) {
 		super(parent, -1);
@@ -86,21 +78,13 @@ public class MFields extends ANode implements IPastable, IContainerEditPart {
 	 * @see com.jaspersoft.studio.model.INode#getImagePath()
 	 */
 	public ImageDescriptor getImagePath() {
-		if (SortFieldsAction.areFieldsSorted(getJasperConfiguration())) {
-			return ResourceManager.getPluginImageDescriptor(JaspersoftStudioPlugin.PLUGIN_ID,
-					"/icons/resources/fields_ordered-16.png");
-		}
-		if (!(getParent() instanceof MFields) && ShowFieldsTreeAction.isFieldsTree(getJasperConfiguration()))
-			return ResourceManager.getPluginImageDescriptor(JaspersoftStudioPlugin.PLUGIN_ID,
-					"/icons/resources/field-tree-16.png");
 		return getIconDescriptor().getIcon16();
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.jaspersoft.studio.model.ANode#propertyChange(java.beans.
-	 * PropertyChangeEvent)
+	 * @see com.jaspersoft.studio.model.ANode#propertyChange(java.beans.PropertyChangeEvent)
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -131,8 +115,6 @@ public class MFields extends ANode implements IPastable, IContainerEditPart {
 		}
 		if (!(evt.getSource() instanceof ANode))
 			newEvent = new PropertyChangeEvent(this, evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
-		if (getParent() == null)
-			return;
 		getPropertyChangeSupport().firePropertyChange(newEvent);
 	}
 }

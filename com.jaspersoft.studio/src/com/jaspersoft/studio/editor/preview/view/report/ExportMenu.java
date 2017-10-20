@@ -4,6 +4,8 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report;
 
+import net.sf.jasperreports.eclipse.viewer.IReportViewer;
+
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 
@@ -21,12 +23,14 @@ import com.jaspersoft.studio.editor.preview.actions.export.ExportAsXmlAction;
 import com.jaspersoft.studio.editor.preview.actions.export.ExportAsXmlWithImagesAction;
 import com.jaspersoft.studio.editor.preview.actions.export.ExportMenuAction;
 import com.jaspersoft.studio.editor.preview.actions.export.html.ExportAsLHtmlAction;
+import com.jaspersoft.studio.editor.preview.actions.export.html.ExportAsXHtmlAction;
+import com.jaspersoft.studio.editor.preview.actions.export.xls.ExportAsExcelAPIAction;
 import com.jaspersoft.studio.editor.preview.actions.export.xls.ExportAsOdsAction;
 import com.jaspersoft.studio.editor.preview.actions.export.xls.ExportAsXlsAction;
+import com.jaspersoft.studio.editor.preview.actions.export.xls.ExportAsXlsMetadataAction;
 import com.jaspersoft.studio.editor.preview.actions.export.xls.ExportAsXlsxAction;
+import com.jaspersoft.studio.preferences.exporter.JRExporterPreferencePage;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.viewer.IReportViewer;
 
 public class ExportMenu {
 	public static ExportMenuAction getExportMenu(IReportViewer rptviewer, JasperReportsConfiguration jContext) {
@@ -38,6 +42,8 @@ public class ExportMenu {
 
 		mm.add(new ExportAsPdfAction(rptviewer, jContext, exportMenu));
 		mm.add(new ExportAsLHtmlAction(rptviewer, jContext, exportMenu));
+		if (jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_XHTML, false))
+			mm.add(new ExportAsXHtmlAction(rptviewer, jContext, exportMenu));
 		mm.add(new Separator());
 
 		mm.add(new ExportAsRtfAction(rptviewer, jContext, exportMenu));
@@ -49,7 +55,12 @@ public class ExportMenu {
 
 		mm.add(new Separator());
 		mm.add(new ExportAsXlsAction(rptviewer, jContext, exportMenu));
+		if (jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI_METADATA,
+				false))
+			mm.add(new ExportAsXlsMetadataAction(rptviewer, jContext, exportMenu));
 		mm.add(new ExportAsXlsxAction(rptviewer, jContext, exportMenu));
+		if (jContext.getPropertyBoolean(JRExporterPreferencePage.COM_JASPERSOFT_STUDIO_EXPORTER_SHOW_EXCELAPI, false))
+			mm.add(new ExportAsExcelAPIAction(rptviewer, jContext, exportMenu));
 
 		mm.add(new ExportAsCsvAction(rptviewer, jContext, exportMenu));
 		mm.add(new ExportAsCsvMetadataAction(rptviewer, jContext, exportMenu));

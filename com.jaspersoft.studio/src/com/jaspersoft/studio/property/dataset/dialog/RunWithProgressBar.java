@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.dataset.dialog;
 
@@ -39,15 +40,12 @@ public class RunWithProgressBar implements IRunnableContext {
 		pb.setVisible(false);
 	}
 
-	public ProgressBar getProgressBar() {
-		return pb;
-	}
-
 	public void run(boolean fork, boolean cancelable, IRunnableWithProgress runnable)
 			throws InvocationTargetException, InterruptedException {
 		IProgressMonitor monitor = getProgressMonitor(cancelable);
-		if (pb != null && !pb.isDisposed())
-			ModalContext.run(runnable, true, monitor, UIUtils.getDisplay());
+
+		ModalContext.run(runnable, true, monitor, UIUtils.getDisplay());
+
 	}
 
 	public IProgressMonitor getProgressMonitor(boolean cancelable) {
@@ -64,7 +62,7 @@ public class RunWithProgressBar implements IRunnableContext {
 		 * Create a new ProgressBarMonitor.
 		 * 
 		 * @param progressBar
-		 *            the ProgressBar control
+		 *          the ProgressBar control
 		 */
 		public ProgressBarMonitor(ProgressBar progressBar, boolean cancelable) {
 			this.progressBar = progressBar;
@@ -95,7 +93,6 @@ public class RunWithProgressBar implements IRunnableContext {
 						setCanceled(true);
 					}
 				});
-				cmp.layout();
 			}
 		}
 

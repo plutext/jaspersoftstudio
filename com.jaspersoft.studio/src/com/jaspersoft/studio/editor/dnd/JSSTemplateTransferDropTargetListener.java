@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.design.JRDesignImage;
@@ -60,14 +59,6 @@ import com.jaspersoft.studio.model.image.command.dialog.ImageCreationDialog;
 import com.jaspersoft.studio.model.text.MStaticText;
 import com.jaspersoft.studio.model.text.MTextField;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-import com.jaspersoft.studio.property.dataset.dialog.DataQueryAdapters;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.engine.JRBand;
-import net.sf.jasperreports.engine.design.JRDesignField;
-import net.sf.jasperreports.engine.design.JRDesignImage;
-import net.sf.jasperreports.engine.design.JRDesignStaticText;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 /**
  * Custom transfer drop listener for DND operations that supports the {@link DialogEnabledCommand} commands.
@@ -297,16 +288,9 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 				List<CreateE4ObjectCommand> creationCommands = new ArrayList<CreateE4ObjectCommand>();
 				// Build a list of all the created fields
 				for (Object command : compCommand.getCommands()) {
-					if (command instanceof CompoundCommand) {
-						CompoundCommand cc = (CompoundCommand) command;
-						for (Object c : cc.getCommands()) {
-							if (c instanceof CreateE4ObjectCommand
-									&& ((CreateE4ObjectCommand) c).getChild() instanceof MField)
-								creationCommands.add((CreateE4ObjectCommand) c);
-						}
-					} else if (command instanceof CreateE4ObjectCommand && ((CreateE4ObjectCommand) command).getChild() instanceof MField){
+					if (command instanceof CreateE4ObjectCommand
+							&& ((CreateE4ObjectCommand) command).getChild() instanceof MField)
 						creationCommands.add((CreateE4ObjectCommand) command);
-					}
 				}
 				String dragMessage = null;
 				for (CreateE4ObjectCommand creatElementC : creationCommands) {
@@ -540,7 +524,7 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 			} else if (getTargetEditPart() != null) {
 				final Command command = getCommand();
 
-				//createLabelForField(command);
+				createLabelForField(command);
 				final Object elementToSelect = ((CreateRequest) request).getNewObject();
 
 				ANode lockReferenceNode = null;

@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model.band;
 
@@ -8,6 +9,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.jasperreports.engine.ExpressionReturnValue;
+import net.sf.jasperreports.engine.JRBand;
+import net.sf.jasperreports.engine.JRConstants;
+import net.sf.jasperreports.engine.JRElementGroup;
+import net.sf.jasperreports.engine.JRPropertiesHolder;
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.base.JRBaseBand;
+import net.sf.jasperreports.engine.design.JRDesignBand;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignSubreport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.type.BandTypeEnum;
+import net.sf.jasperreports.engine.type.SplitTypeEnum;
+import net.sf.jasperreports.engine.util.JRCloneUtils;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -44,22 +60,7 @@ import com.jaspersoft.studio.property.descriptor.properties.JPropertiesPropertyD
 import com.jaspersoft.studio.property.descriptors.JSSPixelNotNullValidator;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.ExpressionReturnValue;
-import net.sf.jasperreports.engine.JRBand;
-import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRElementGroup;
-import net.sf.jasperreports.engine.JRPropertiesHolder;
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.base.JRBaseBand;
-import net.sf.jasperreports.engine.design.JRDesignBand;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignSubreport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
-import net.sf.jasperreports.engine.type.SplitTypeEnum;
-import net.sf.jasperreports.engine.util.JRCloneUtils;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * The Class MBand.
@@ -74,7 +75,7 @@ public class MBand extends APropertyNode implements IGraphicElement, IPastable, 
 	private static final Integer CONST_HEIGHT = new Integer(50);
 
 	private static IPropertyDescriptor[] descriptors;
-
+	
 	/**
 	 * The icon descriptor.
 	 */
@@ -89,7 +90,7 @@ public class MBand extends APropertyNode implements IGraphicElement, IPastable, 
 	 * The band type.
 	 */
 	private BandTypeEnum bandType;
-
+	
 	private JRBandDTO returnValuesDTO;
 
 	/**
@@ -324,7 +325,6 @@ public class MBand extends APropertyNode implements IGraphicElement, IPastable, 
 
 		return getIconDescriptor().getToolTip();
 	}
-
 	@Override
 	public IPropertyDescriptor[] getDescriptors() {
 		return descriptors;
@@ -382,7 +382,7 @@ public class MBand extends APropertyNode implements IGraphicElement, IPastable, 
 				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#printWhenExpression")); //$NON-NLS-1$
 
 		JPropertiesPropertyDescriptor propertiesMapD = new JPropertiesPropertyDescriptor(MGraphicElement.PROPERTY_MAP,
-				Messages.common_properties, getJasperConfiguration(), getValue());
+				Messages.common_properties);
 		propertiesMapD.setDescription(Messages.common_properties);
 		desc.add(propertiesMapD);
 

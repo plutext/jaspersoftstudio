@@ -17,7 +17,6 @@ import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.preferences.bindings.BindingsPreferencePersistence;
 import com.jaspersoft.studio.preferences.bindings.JSSKeySequence;
 import com.jaspersoft.studio.preferences.bindings.JSSKeyStroke;
-import com.jaspersoft.studio.utils.SelectionHelper;
 
 import net.sf.jasperreports.eclipse.JasperReportsPlugin;
 
@@ -66,7 +65,7 @@ public class ParentSelectionOverrider implements ISelectionOverrider {
 				if (ignoreSelected) currentNode = currentNode.getParent();
 				while(currentNode != null){
 					if (searchedType.isAssignableFrom(currentNode.getClass())){
-						EditPart part = SelectionHelper.getEditPart(currentNode);
+						EditPart part = currentNode.getFigureEditPart();
 						if (part != null){
 							part.getViewer().deselectAll();
 							if (part.getViewer() instanceof JSSScrollingGraphicalViewer){

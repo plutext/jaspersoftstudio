@@ -88,12 +88,10 @@ public class DeleteColumnCellCommand extends Command {
 			return true;
 		} else if (type.isAssignableFrom(MTableColumnFooter.class) && jrColumn.getColumnFooter() != null) {
 			return true;
-		} else if (groupName != null) {
-			if (type.isAssignableFrom(MTableGroupHeader.class) && jrColumn.getGroupHeader(groupName) != null) {
-				return true;
-			} else if (type.isAssignableFrom(MTableGroupFooter.class) && jrColumn.getGroupFooter(groupName) != null) {
-				return true;
-			}
+		} else if (type.isAssignableFrom(MTableGroupHeader.class) && jrColumn.getGroupHeader(groupName) != null) {
+			return true;
+		} else if (type.isAssignableFrom(MTableGroupFooter.class) && jrColumn.getGroupFooter(groupName) != null) {
+			return true;
 		}
 		return false;
 	}

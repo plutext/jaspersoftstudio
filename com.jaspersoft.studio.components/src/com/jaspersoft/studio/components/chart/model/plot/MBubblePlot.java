@@ -34,12 +34,8 @@ import net.sf.jasperreports.engine.JRConstants;
 public class MBubblePlot extends MChartPlot {
 	
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
+	
 	private static IPropertyDescriptor[] descriptors;
-	private static NamedEnumPropertyDescriptor<ScaleTypeEnum> scaleType;
-	private MFont clFont;
-	private MFont ctFont;
-	private MFont vlFont;
-	private MFont vtFont;
 
 	public MBubblePlot(JRBubblePlot value) {
 		super(value);
@@ -357,6 +353,12 @@ public class MBubblePlot extends MChartPlot {
 
 		return super.getPropertyValue(id);
 	}
+
+	private MFont clFont;
+	private MFont ctFont;
+	private MFont vlFont;
+	private MFont vtFont;
+	private NamedEnumPropertyDescriptor<ScaleTypeEnum> scaleType;
 
 	/*
 	 * (non-Javadoc)

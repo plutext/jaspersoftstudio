@@ -12,10 +12,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import net.sf.jasperreports.crosstabs.JRCrosstabColumnGroup;
+import net.sf.jasperreports.crosstabs.JRCrosstabMeasure;
+import net.sf.jasperreports.crosstabs.JRCrosstabParameter;
+import net.sf.jasperreports.crosstabs.JRCrosstabRowGroup;
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabColumnGroup;
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabMeasure;
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabParameter;
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabRowGroup;
+import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRVariable;
+import net.sf.jasperreports.expressions.annotations.JRExprFunctionBean;
+
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -24,12 +36,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSource;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -39,8 +45,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.dialogs.FilteredTree;
-import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.wb.swt.ResourceManager;
 
 import com.jaspersoft.studio.editor.expression.CrosstabTotalVariable;
@@ -58,20 +62,6 @@ import com.jaspersoft.studio.editor.jrexpressions.ui.support.TreeArrayContentPro
 import com.jaspersoft.studio.preferences.ExpressionEditorPreferencePage;
 import com.jaspersoft.studio.utils.RecentExpressions;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.crosstabs.JRCrosstabColumnGroup;
-import net.sf.jasperreports.crosstabs.JRCrosstabMeasure;
-import net.sf.jasperreports.crosstabs.JRCrosstabParameter;
-import net.sf.jasperreports.crosstabs.JRCrosstabRowGroup;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabColumnGroup;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabMeasure;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabParameter;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabRowGroup;
-import net.sf.jasperreports.engine.JRField;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JRVariable;
-import net.sf.jasperreports.expressions.annotations.JRExprFunctionBean;
 
 /**
  * The details panel (composite) for a specific object category ({@link ObjectCategoryItem}).
@@ -100,7 +90,6 @@ public class ObjectCategoryDetailsPanel extends Composite {
 	private List<Object> categoryDetails;
 	private boolean functionMode=false;
 	private EditingAreaHelper editingAreaInfo;
-	private Category previousCategory;
 
 	/**
 	 * Creates the details panel composite.
@@ -121,16 +110,13 @@ public class ObjectCategoryDetailsPanel extends Composite {
 		
 		Composite categoryContentCmp=new Composite(panelSashForm, SWT.NONE);
 		final GridLayout layout2 = new GridLayout(1,false);
-		layout2.marginWidth=0;
+		layout2.marginWidth=5;
 		layout2.marginHeight=0;
 		categoryContentCmp.setLayout(layout2);
-		
-		FilteredTree ft = new FilteredTree(categoryContentCmp, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER, new PatternFilter(), true);
-		categoryContent=ft.getViewer();
+		categoryContent=new TreeViewer(categoryContentCmp, SWT.BORDER);
 		GridData catContentGD=new GridData(SWT.FILL, SWT.FILL, true, true);
 		catContentGD.heightHint=350;
-		ft.setLayoutData(catContentGD);
-		ColumnViewerToolTipSupport.enableFor(categoryContent);
+		categoryContent.getTree().setLayoutData(catContentGD);
 		categoryContentLblProvider = new ObjectItemStyledLabelProvider();
 		categoryContent.setLabelProvider(categoryContentLblProvider);
 		categoryContent.setContentProvider(new TreeArrayContentProvider());
@@ -159,26 +145,24 @@ public class ObjectCategoryDetailsPanel extends Composite {
 				if(selObject instanceof ExpObject){
 					// Parameters, Variables, Fields
 					editingAreaInfo.setUpdate(true);
-					editingAreaInfo.insertAtCurrentLocation(((ExpObject) selObject).getExpression(),false, true);
+					editingAreaInfo.insertAtCurrentLocation(((ExpObject) selObject).getExpression(),false);
 					editingAreaInfo.setUpdate(false);
 				}
 				else if (selObject instanceof JRExprFunctionBean){
 					// Functions
 					editingAreaInfo.setUpdate(true);
-					editingAreaInfo.insertAtCurrentLocation(((JRExprFunctionBean) selObject).getId()+"( )",false, false); //$NON-NLS-1$
-					editingAreaInfo.moveCaretToNextParenthesis();
+					editingAreaInfo.insertAtCurrentLocation(((JRExprFunctionBean) selObject).getId()+"( )",false); //$NON-NLS-1$
 					editingAreaInfo.setUpdate(false);
 					showFunctionDetailsPanel();
 				}
 				else if (selObject instanceof String){
 					// Recent or user defined expressions
 					editingAreaInfo.setUpdate(true);
-					editingAreaInfo.insertAtCurrentLocation((String)selObject,false, true);
+					editingAreaInfo.insertAtCurrentLocation((String)selObject,false);
 					editingAreaInfo.setUpdate(false);
 				}
 			}
 		});
-		addDragSupport(categoryContent);
 		
 		buttonsToolbar = new ToolBar(categoryContentCmp, SWT.FLAT);
 		buttonsToolbar.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, false, false));
@@ -192,11 +176,11 @@ public class ObjectCategoryDetailsPanel extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				if(additionalDetailsStackLayout.topControl!=null) {
 					additionalDetailsStackLayout.topControl.setVisible(ExpressionEditorSupportUtil.toggleShowBuiltInParameters());
-					refreshPanelUI(selItem,true);
+					refreshPanelUI(selItem);
 				}
 				else {
 					ExpressionEditorSupportUtil.toggleShowBuiltInParameters();
-					refreshPanelUI(selItem,true);
+					refreshPanelUI(selItem);
 				}
 			}
 		});
@@ -211,11 +195,11 @@ public class ObjectCategoryDetailsPanel extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				if(additionalDetailsStackLayout.topControl!=null) {
 					additionalDetailsStackLayout.topControl.setVisible(ExpressionEditorSupportUtil.toggleShowBuiltInVariables());
-					refreshPanelUI(selItem,true);
+					refreshPanelUI(selItem);
 				}
 				else {
 					ExpressionEditorSupportUtil.toggleShowBuiltInVariables();
-					refreshPanelUI(selItem,true);
+					refreshPanelUI(selItem);
 				}
 			}
 		});
@@ -230,7 +214,7 @@ public class ObjectCategoryDetailsPanel extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				ExpressionEditorSupportUtil.toggleSortIncreaseItems(getExpObjectType(selItem));
 				sortDecreaseItems.setSelection(false);
-				refreshPanelUI(selItem,true);
+				refreshPanelUI(selItem);
 			}
 		});
 		sortDecreaseItems = new ToolItem(buttonsToolbar, SWT.CHECK);
@@ -243,7 +227,7 @@ public class ObjectCategoryDetailsPanel extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				ExpressionEditorSupportUtil.toggleSortDecreaseItems(getExpObjectType(selItem));
 				sortIncreaseItems.setSelection(false);
-				refreshPanelUI(selItem,true);
+				refreshPanelUI(selItem);
 			}
 		});
 		
@@ -277,57 +261,12 @@ public class ObjectCategoryDetailsPanel extends Composite {
 	 * Refreshes the UI of the panel using the new selected item information.
 	 * 
 	 * @param selItem the new category selected
-	 * @param force flag to force the refresh anyway
-	 */
-	public void refreshPanelUI(ObjectCategoryItem selItem) {
-		refreshPanelUI(selItem,false);
-	}
-	
-	/**
-	 * Refreshes the UI of the panel using the new selected item information.
-	 * 
-	 * @param selItem the new category selected
-	 * @param force flag to force the refresh anyway
-	 */
-	public void refreshPanelUI(ObjectCategoryItem selItem, boolean force) {
-		this.selItem=selItem;
-		categoryContentLblProvider.setCategory(this.selItem.getCategory());		
-		if(force || !selItem.getCategory().equals(previousCategory)){
-			updateCategoryChildren(selItem);
-			this.previousCategory = this.selItem.getCategory();
-		}
-		
-		// We are inside a JRFunction
-		if(selItem.getCategory()==Category.BUILT_IN_FUNCTIONS && 
-				editingAreaInfo!=null && editingAreaInfo.getCurrentLibraryFunctionName()!=null){
-			final String currFunctionName = editingAreaInfo.getCurrentLibraryFunctionName();
-			for(TreeItem item : categoryContent.getTree().getItems()){
-				JRExprFunctionBean function = (JRExprFunctionBean)item.getData();
-				if(function.getId().equals(currFunctionName)){
-					functionMode=true;
-					categoryContent.setSelection(new StructuredSelection(item.getData()),true);
-					break;
-				}
-			}
-		}
-
-		// Otherwise preselect the first one (if possible)
-		else if(categoryContent.getTree().getItemCount()>0){
-			ISelection currSelection = categoryContent.getSelection();
-			if(currSelection==null || StructuredSelection.EMPTY.equals(currSelection)){
-				TreeItem item = categoryContent.getTree().getItem(0);
-				if(!item.getData().equals(((StructuredSelection)currSelection).getFirstElement())){
-					categoryContent.setSelection(new StructuredSelection(item.getData()),true);
-				}
-			}
-		}
-	}
-
-	/*
-	 *	Update the list of category children.
 	 */
 	@SuppressWarnings("unchecked")
-	private void updateCategoryChildren(ObjectCategoryItem selItem) {
+	public void refreshPanelUI(ObjectCategoryItem selItem) {
+		this.selItem=selItem;
+		categoryContentLblProvider.setCategory(this.selItem.getCategory());
+		// Update the list of category children
 		categoryContent.getTree().clearAll(true);
 		categoryDetails = new ArrayList<Object>();		
 		switch (selItem.getCategory()) {
@@ -398,7 +337,9 @@ public class ObjectCategoryDetailsPanel extends Composite {
 				buttonsToolbar.getParent().layout();
 				break;
 			case RECENT_EXPRESSIONS:
-				categoryDetails.addAll(RecentExpressions.getRecentExpressionsList());
+				List<String> recentExpressions = RecentExpressions.getRecentExpressionsList();
+				Collections.reverse(recentExpressions);
+				categoryDetails.addAll(recentExpressions);
 				configureMinimalLayout();
 				break;
 			case USER_DEFINED_EXPRESSIONS:
@@ -462,7 +403,27 @@ public class ObjectCategoryDetailsPanel extends Composite {
 		default:
 			break;
 		}
+		
 		categoryContent.setInput(categoryDetails.toArray());
+		
+		// We are inside a JRFunction
+		if(selItem.getCategory()==Category.BUILT_IN_FUNCTIONS && 
+				editingAreaInfo!=null && editingAreaInfo.getCurrentLibraryFunctionName()!=null){
+			final String currFunctionName = editingAreaInfo.getCurrentLibraryFunctionName();
+			for(TreeItem item : categoryContent.getTree().getItems()){
+				JRExprFunctionBean function = (JRExprFunctionBean)item.getData();
+				if(function.getId().equals(currFunctionName)){
+					functionMode=true;
+					categoryContent.setSelection(new StructuredSelection(item.getData()),true);
+					break;
+				}
+			}
+		}
+		// Otherwise preselect the first one (if possible)
+		else if(categoryContent.getTree().getItemCount()>0){
+			TreeItem item = categoryContent.getTree().getItem(0);
+			categoryContent.setSelection(new StructuredSelection(item.getData()),true);
+		}
 	}
 
 	/*
@@ -491,12 +452,8 @@ public class ObjectCategoryDetailsPanel extends Composite {
 				gl.marginHeight=0;
 				gl.marginWidth=0;
 				cmp.setLayout(gl);
-				
-				FilteredTree ft = new FilteredTree(cmp, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.BORDER | SWT.BORDER_SOLID, new PatternFilter(), true);
-				ft.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
-				final TreeViewer tv = ft.getViewer();
-				ColumnViewerToolTipSupport.enableFor(tv);
-				addDragSupport(tv);
+				final TreeViewer tv=new TreeViewer(cmp, SWT.BORDER | SWT.BORDER_SOLID);
+				tv.getTree().setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
 				currentControl=cmp;
 				
 				List<String> methodFirms = getExpObjectMethodFirms((ExpObject)selItem);
@@ -504,7 +461,9 @@ public class ObjectCategoryDetailsPanel extends Composite {
 				tv.setLabelProvider(new ObjectItemStyledLabelProvider());
 				Collections.sort(methodFirms);
 				tv.setInput(methodFirms.toArray());
+				
 				tv.addDoubleClickListener(new IDoubleClickListener() {
+					 
 					public void doubleClick(DoubleClickEvent event) {
 						Object selElement=((IStructuredSelection)tv.getSelection()).getFirstElement();
 						Object categoryContentSel=((IStructuredSelection)categoryContent.getSelection()).getFirstElement();
@@ -513,7 +472,7 @@ public class ObjectCategoryDetailsPanel extends Composite {
 							editingAreaInfo.setUpdate(true);
 							editingAreaInfo.insertAtCurrentLocation(
 									((ExpObject)categoryContentSel).getExpression() + "." + //$NON-NLS-1$
-									detailStr.substring(0,detailStr.lastIndexOf(')')+1),false, true);
+									detailStr.substring(0,detailStr.lastIndexOf(')')+1),false);
 							editingAreaInfo.setUpdate(false);
 						}
 					}
@@ -738,78 +697,6 @@ public class ObjectCategoryDetailsPanel extends Composite {
 		else if(ExpressionEditorSupportUtil.isSortIncreaseItems(getExpObjectType(selItem))){
 			Collections.sort(items);
 		}
-	}
-	
-	/*
-	 * Add drag support to the specified tree widget
-	 */
-	private void addDragSupport(final TreeViewer tv){
-		DragSource dragSrc = new DragSource(tv.getTree(), DND.DROP_DEFAULT | DND.DROP_COPY);
-		dragSrc.setTransfer(new Transfer[]{TextTransfer.getInstance()});
-		dragSrc.addDragListener(new DragSourceListener() {
-			
-			private int textLength = -1;
-			private boolean moveNextParenthesis = false;
-			
-			@Override
-			public void dragStart(DragSourceEvent event) {
-				TreeItem[] selection = tv.getTree().getSelection();
-				if(selection!=null && selection.length==1){
-					event.doit = true;
-				}
-				editingAreaInfo.setUpdate(true);
-			}
-			
-			@Override
-			public void dragSetData(DragSourceEvent event) {
-				StringBuffer dataTxtSB = new StringBuffer();
-				// always add the first piece of the txt in the central panel
-				Object categoryContentSel=((IStructuredSelection)categoryContent.getSelection()).getFirstElement();
-				if(categoryContentSel instanceof ExpObject) {
-					dataTxtSB.append(((ExpObject)categoryContentSel).getExpression());
-				}
-				else if (categoryContentSel instanceof JRExprFunctionBean){
-					JRExprFunctionBean funct=(JRExprFunctionBean)categoryContentSel;
-					dataTxtSB.append(funct.getId()).append("()");
-					moveNextParenthesis = true;
-				}
-				else if (categoryContentSel instanceof String){
-					dataTxtSB.append(categoryContentSel);
-				}
-				else {
-					dataTxtSB.append("");
-				}
-				// possibly add the second piece of the txt using the right panel
-				if(tv!=categoryContent){
-					Object selElement=((IStructuredSelection)tv.getSelection()).getFirstElement();
-					if(selElement instanceof String){
-						String detailStr=(String)selElement;
-						dataTxtSB.append(".").append(detailStr.substring(0,detailStr.lastIndexOf(')')+1));
-					}
-				}
-				String text = dataTxtSB.toString();
-				textLength = text.length();
-				event.data = text;
-			}
-			
-			@Override
-			public void dragFinished(DragSourceEvent event) {
-				if(event.doit && textLength>0){
-					// drag finished correctly
-					if(moveNextParenthesis){
-						editingAreaInfo.moveCaretToNextParenthesis();
-					}
-					else {
-						editingAreaInfo.moveCaretAhead(textLength);
-					}
-				}
-				// reset info
-				moveNextParenthesis = false;
-				textLength = -1;
-				editingAreaInfo.setUpdate(false);
-			}
-		});
-
 	}
 	
 }

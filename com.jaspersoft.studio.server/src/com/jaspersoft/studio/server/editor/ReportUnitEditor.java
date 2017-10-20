@@ -55,8 +55,7 @@ public class ReportUnitEditor extends PreviewJRPrint implements IRunReport, IPar
 	@Override
 	protected void loadJRPrint(IEditorInput input) throws PartInitException {
 		try {
-			reportUnitURI = FileUtils
-					.readInputStreamAsString(((StringInput) getEditorInput()).getStorage().getContents());
+			reportUnitURI = FileUtils.readInputStreamAsString(((StringInput) getEditorInput()).getStorage().getContents());
 		} catch (Exception e1) {
 			throw new PartInitException(e1.getMessage(), e1);
 		}
@@ -134,12 +133,12 @@ public class ReportUnitEditor extends PreviewJRPrint implements IRunReport, IPar
 
 		sashform.setWeights(new int[] { 100, 150 });
 	}
-
+	
 	@Override
 	public String getTitleToolTip() {
-		if (reportUnitURI != null) {
+		if(reportUnitURI!=null) {
 			int lastPartIndex = reportUnitURI.lastIndexOf(":"); //$NON-NLS-1$
-			if (lastPartIndex != -1) {
+			if(lastPartIndex!=-1){
 				return reportUnitURI.substring(0, lastPartIndex);
 			}
 		}

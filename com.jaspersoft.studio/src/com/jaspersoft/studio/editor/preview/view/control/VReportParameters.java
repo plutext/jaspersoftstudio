@@ -25,7 +25,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.jaspersoft.studio.editor.preview.actions.export.AExportAction;
 import com.jaspersoft.studio.editor.preview.input.IParameter;
-import com.jaspersoft.studio.editor.preview.input.PropertyChangeNotifier;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.messages.MessagesByKeys;
 import com.jaspersoft.studio.preferences.editor.pages.Pages;
@@ -45,8 +44,8 @@ public class VReportParameters extends VParameters {
 	private Button btAll;
 	private Pages pages;
 
-	public VReportParameters(Composite parent, JasperReportsConfiguration jContext, PropertyChangeNotifier propertyChangeNotifier) {
-		super(parent, jContext, propertyChangeNotifier);
+	public VReportParameters(Composite parent, JasperReportsConfiguration jContext) {
+		super(parent, jContext);
 		isSystem = true;
 	}
 
@@ -62,7 +61,7 @@ public class VReportParameters extends VParameters {
 	}
 
 	@Override
-	protected void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
+	public void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
 		super.createInputControls(prompts, params);
 
 		createVerticalSeprator(false);
@@ -126,8 +125,8 @@ public class VReportParameters extends VParameters {
 			pageTo.setEnabled(true);
 		} else
 			btAll.setSelection(true);
-		
-		refreshControl();
+
+		composite.layout();
 	}
 
 	private void createPage(Group container) {
@@ -224,7 +223,7 @@ public class VReportParameters extends VParameters {
 			to = from;
 		return Integer.toString(from) + ";" + Integer.toString(to); //$NON-NLS-1$
 	}
-	
+
 	class OffsetModifyListener implements ModifyListener {
 		private Text txt;
 		private String property;

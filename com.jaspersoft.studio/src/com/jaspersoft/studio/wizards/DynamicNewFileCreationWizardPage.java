@@ -60,12 +60,8 @@ public class DynamicNewFileCreationWizardPage extends NewFileCreationWizardPage 
 		}
 		ReportNewWizard container = (ReportNewWizard)getWizard();
 		ReportTemplatesWizardPage firstStaticStep = container.getTemplateChooserStep();
-		if ( firstStaticStep.getTemplateBundle() != null){
-			WizardPage[] pages = firstStaticStep.getTemplateBundle().getCustomWizardPages();
-			return  isPageComplete() && (pages.length>0 || container.hasCongratulationStep());
-		} else {
-			return false;
-		}
+		WizardPage[] pages = firstStaticStep.getTemplateBundle().getCustomWizardPages();
+		return  isPageComplete() && (pages.length>0 || container.hasCongratulationStep());
 	}
 	
 	@Override

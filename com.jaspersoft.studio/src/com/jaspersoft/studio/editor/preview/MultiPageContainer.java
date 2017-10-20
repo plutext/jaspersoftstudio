@@ -36,10 +36,8 @@ public class MultiPageContainer {
 		this.stats = stats;
 		if (composite.isDisposed())
 			return;
-		if (((StackLayout) composite.getLayout()).topControl != view.getControl()) {
-			((StackLayout) composite.getLayout()).topControl = view.getControl();
-			composite.layout();
-		}
+		((StackLayout) composite.getLayout()).topControl = view.getControl();
+		composite.layout();
 		// here should update exporters properties
 	}
 

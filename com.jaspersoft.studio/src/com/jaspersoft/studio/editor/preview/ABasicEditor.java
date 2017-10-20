@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview;
 
@@ -20,7 +21,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.EditorPart;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.DeltaVisitor;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
@@ -152,7 +152,6 @@ public abstract class ABasicEditor extends EditorPart {
 
 		try {
 			initJRContext(file);
-			JaspersoftStudioPlugin.getExtensionManager().onInitContext(jrContext);
 			setSite(site);
 			setPartName(input.getName());
 			setInput(input);

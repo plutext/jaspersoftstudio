@@ -47,7 +47,6 @@ import com.jaspersoft.studio.widgets.map.support.JavaMapSupport;
  * 
  * @author Massimo Rabbi (mrabbi@users.sourceforge.net)
  */
-@Deprecated
 public class GMapsDetailsPanel {
 
 	// SWT widgets

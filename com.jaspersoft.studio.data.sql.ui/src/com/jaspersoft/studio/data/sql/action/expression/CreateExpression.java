@@ -34,6 +34,7 @@ import com.jaspersoft.studio.data.sql.widgets.Factory;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.INode;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 
@@ -132,7 +133,7 @@ public class CreateExpression extends AAction {
 	}
 
 	protected void showDialog(MExpression mexpr) {
-		EditExpressionDialog dialog = new EditExpressionDialog(treeViewer.getControl().getShell(), designer);
+		EditExpressionDialog dialog = new EditExpressionDialog(UIUtils.getShell());
 		dialog.setValue(mexpr);
 		if (dialog.open() == Dialog.OK) {
 			mexpr.setOperator(Operator.getOperator((dialog.getOperator())));

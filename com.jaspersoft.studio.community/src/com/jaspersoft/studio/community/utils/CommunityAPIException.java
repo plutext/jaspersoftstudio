@@ -4,7 +4,7 @@
  ******************************************************************************/
 package com.jaspersoft.studio.community.utils;
 
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * Custom exception suitable to notify errors during operations with the

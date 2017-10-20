@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.jasperserver.dto.resources.ClientFile.FileType;
 import com.jaspersoft.jasperserver.dto.resources.ResourceMediaType;
 import com.jaspersoft.studio.jface.IFileSelection;
 import com.jaspersoft.studio.jface.dialogs.FilePreviewSelectionDialog;
@@ -107,7 +106,9 @@ public class FileSelector implements IFileSelection {
 						msp = wizard.getValue();
 						try {
 							jd.setProperty(AExporter.PROP_SERVERURL, msp.getValue().getUrl());
-							jd.setProperty(AExporter.PROP_USER, AExporter.encodeUsr(msp.getValue()));
+							jd.setProperty(AExporter.PROP_USER,
+									msp.getValue().getUser() + (msp.getValue().getOrganisation() != null
+											? "|" + msp.getValue().getOrganisation() : "")); //$NON-NLS-1$ //$NON-NLS-2$
 						} catch (MalformedURLException e1) {
 							e1.printStackTrace();
 						} catch (URISyntaxException e1) {
@@ -121,14 +122,13 @@ public class FileSelector implements IFileSelection {
 
 			protected void showFindDialog(MServerProfile msp) {
 				if (msp.isSupported(Feature.SEARCHREPOSITORY)) {
-					boolean t = msp.getWsClient().getServerInfo().getVersion().compareTo("5.5") >= 0;
 					String[] incl = null;
 					if (dialog instanceof SubreportSelectionDialog)
-						incl = new String[] { t ? FileType.jrxml.name() : ResourceMediaType.FILE_CLIENT_TYPE };
+						incl = new String[] { ResourceMediaType.FILE_CLIENT_TYPE };
 					else if (dialog instanceof ImageSelectionDialog)
-						incl = new String[] { t ? FileType.img.name() : ResourceMediaType.FILE_CLIENT_TYPE };
+						incl = new String[] { ResourceMediaType.FILE_CLIENT_TYPE };
 					else if (dialog instanceof StyleTemplateSelectionDialog)
-						incl = new String[] { t ? FileType.jrtx.name() : ResourceMediaType.FILE_CLIENT_TYPE };
+						incl = new String[] { ResourceMediaType.FILE_CLIENT_TYPE };
 					ResourceDescriptor rd = FindResourceJob.doFindResource(msp, incl, null, true);
 					if (rd != null) {
 						dialog.setFileExpressionText("repo:" + rd.getUriString()); //$NON-NLS-1$

@@ -308,9 +308,4 @@ public class MLineBox extends APropertyNode implements IPropertySource {
 		}
 		return jConfig;
 	}
-	
-	@Override
-	public boolean forcePropertyChildrenReset(Object id) {
-		return true;
-	}
 }

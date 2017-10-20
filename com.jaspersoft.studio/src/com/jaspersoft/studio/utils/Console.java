@@ -60,8 +60,7 @@ public class Console {
 	public void showConsole() {
 		// ConsolePlugin.getDefault().getConsoleManager().showConsoleView(myConsole);
 		try {
-			if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null)
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ReportStateView.ID);
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ReportStateView.ID);
 		} catch (PartInitException e) {
 			UIUtils.showError(e);
 		}
@@ -147,7 +146,7 @@ public class Console {
 			}
 		});
 	}
-
+	
 	public void addProblem(final String message, final SourceLocation location, final JRDesignElement element) {
 		Display.getDefault().asyncExec(new Runnable() {
 
@@ -179,17 +178,10 @@ public class Console {
 	}
 
 	public void clearConsole() {
-		UIUtils.getDisplay().syncExec(new Runnable() {
-
-			@Override
-			public void run() {
-				for (VErrorPreview vep : ePreviews)
-					vep.setStats(null);
-				console.clearConsole();
-				for (VErrorPreview vep : ePreviews)
-					vep.clear();
-			}
-		});
-
+		for (VErrorPreview vep : ePreviews)
+			vep.setStats(null);
+		console.clearConsole();
+		for (VErrorPreview vep : ePreviews)
+			vep.clear();
 	}
 }

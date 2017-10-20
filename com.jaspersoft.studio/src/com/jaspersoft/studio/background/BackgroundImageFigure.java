@@ -168,7 +168,6 @@ public class BackgroundImageFigure extends RectangleFigure {
 				}
 				if (path == null){
 					image = null;
-					lastPath = null;
 					//discard the cache
 					scaledImages.clear();
 				} else if (!path.equals(lastPath)){

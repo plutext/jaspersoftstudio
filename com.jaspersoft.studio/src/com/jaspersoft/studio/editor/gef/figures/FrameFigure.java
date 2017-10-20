@@ -6,17 +6,17 @@ package com.jaspersoft.studio.editor.gef.figures;
 
 import java.awt.Graphics2D;
 
-import org.eclipse.draw2d.XYLayout;
-import org.eclipse.draw2d.geometry.Rectangle;
-
-import com.jaspersoft.studio.editor.java2d.ImageGraphics2D;
-import com.jaspersoft.studio.jasper.JSSDrawVisitor;
-import com.jaspersoft.studio.model.MGraphicElement;
-
 import net.sf.jasperreports.engine.JRBoxContainer;
 import net.sf.jasperreports.engine.JRElement;
 import net.sf.jasperreports.engine.JRFrame;
 import net.sf.jasperreports.engine.JRLineBox;
+
+import org.eclipse.draw2d.XYLayout;
+import org.eclipse.draw2d.geometry.Rectangle;
+
+import com.jaspersoft.studio.editor.java2d.StackGraphics2D;
+import com.jaspersoft.studio.jasper.JSSDrawVisitor;
+import com.jaspersoft.studio.model.MGraphicElement;
 
 /*
  * The Class FrameFigure.
@@ -50,15 +50,13 @@ public class FrameFigure extends AHandleBoundsFigure implements IModelFigure {
 		if (model == null || !allowsFigureDrawCache()){
 			drawVisitor.visitFrame((JRFrame) jrElement);
 			return;
-		} else {
+		} else if (cachedGraphics == null || model.hasChangedProperty()){
+			model.setChangedProperty(false);
 			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)){
-				model.setChangedProperty(false);	
-				cachedGraphics = getCachedGraphics(oldGraphics);
-				drawVisitor.setGraphics2D(cachedGraphics);
-				drawVisitor.visitFrame((JRFrame) jrElement);
-				drawVisitor.setGraphics2D(oldGraphics);
-			}
+			cachedGraphics = getCachedGraphics(oldGraphics);
+			drawVisitor.setGraphics2D(cachedGraphics);
+			drawVisitor.visitFrame((JRFrame) jrElement);
+			drawVisitor.setGraphics2D(oldGraphics);
 		}
 		cachedGraphics.setGraphics(drawVisitor.getGraphics2d());
 		cachedGraphics.paintCache();
@@ -137,6 +135,6 @@ public class FrameFigure extends AHandleBoundsFigure implements IModelFigure {
 	}
 	
 	protected ACachedGraphics getCachedGraphics(Graphics2D originalGraphics){
-		return new ImageGraphics2D(originalGraphics);
+		return new StackGraphics2D(originalGraphics);
 	}
 }

@@ -28,8 +28,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.jaspersoft.studio.messages.Messages;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class TextFieldEditor extends FieldEditor {
 

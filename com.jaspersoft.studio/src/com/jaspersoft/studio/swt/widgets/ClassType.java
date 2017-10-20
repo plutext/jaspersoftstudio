@@ -14,8 +14,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.studio.property.descriptor.classname.ClassTypeCellEditor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class ClassType {
 	private Text factoryText;

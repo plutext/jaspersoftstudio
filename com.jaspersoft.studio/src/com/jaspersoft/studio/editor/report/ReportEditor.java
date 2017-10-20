@@ -4,6 +4,7 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -37,7 +38,6 @@ import com.jaspersoft.studio.editor.outline.actions.CreateDatasetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateDetailBandAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateDetailBandActionOnDetail;
 import com.jaspersoft.studio.editor.outline.actions.CreateFieldAction;
-import com.jaspersoft.studio.editor.outline.actions.CreateFieldsContainerAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupFooterAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupHeaderAction;
@@ -49,16 +49,10 @@ import com.jaspersoft.studio.editor.outline.actions.CreateStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateStyleTemplateAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
 import com.jaspersoft.studio.editor.outline.actions.DeleteGroupReportAction;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultVariablesAction;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultsParametersAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpression;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.ShowFieldsTreeAction;
-import com.jaspersoft.studio.editor.outline.actions.SortFieldsAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.IContainer;
 import com.jaspersoft.studio.plugin.ExtensionManager;
@@ -139,28 +133,7 @@ public class ReportEditor extends AbstractVisualEditor {
 					String id = DeleteGroupReportAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
-					id = SortVariablesAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
-					id = SortParametersAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
-					id = SortFieldsAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
-					id = ShowFieldsTreeAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
-					id = HideDefaultsParametersAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
-					id = HideDefaultVariablesAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-
 					id = CreateFieldAction.ID;
-					bars.setGlobalActionHandler(id, registry.getAction(id));
-					
-					id = CreateFieldsContainerAction.ID;
 					bars.setGlobalActionHandler(id, registry.getAction(id));
 
 					id = CreateSortFieldAction.ID;

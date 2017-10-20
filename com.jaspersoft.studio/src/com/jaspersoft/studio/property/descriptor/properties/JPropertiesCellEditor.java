@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.properties;
 
@@ -10,23 +11,18 @@ import org.eclipse.swt.widgets.Control;
 
 import com.jaspersoft.studio.property.descriptor.EditableDialogCellEditor;
 import com.jaspersoft.studio.property.descriptor.properties.dialog.JRPropertyEditor;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.engine.JRPropertiesMap;
 
 public class JPropertiesCellEditor extends EditableDialogCellEditor {
-	private JasperReportsConfiguration jConfig;
-	private Object jrElement;
 
-	public JPropertiesCellEditor(Composite parent, JasperReportsConfiguration jConfig, Object jrElement) {
+	public JPropertiesCellEditor(Composite parent) {
 		super(parent);
-		this.jConfig = jConfig;
-		this.jrElement = jrElement;
 	}
 
 	@Override
 	protected Object openDialogBox(Control cellEditorWindow) {
-		JRPropertyEditor wizard = new JRPropertyEditor(jConfig, jrElement);
+		JRPropertyEditor wizard = new JRPropertyEditor();
 		wizard.setValue((JRPropertiesMap) getValue());
 		WizardDialog dialog = new WizardDialog(cellEditorWindow.getShell(), wizard);
 		dialog.create();
@@ -34,7 +30,7 @@ public class JPropertiesCellEditor extends EditableDialogCellEditor {
 			return wizard.getValue();
 		return null;
 	}
-
+	
 	private JPropertiesLabelProvider labelProvider;
 
 	@Override

@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -207,7 +208,7 @@ public class MCompositeElementReport extends MReport {
 		desc.add(ignorePaginationD);
 
 		JPropertiesPropertyDescriptor propertiesMapD = new JPropertiesPropertyDescriptor(MGraphicElement.PROPERTY_MAP,
-				Messages.common_properties, getJasperConfiguration(), getValue());
+				Messages.common_properties);
 		propertiesMapD.setDescription(Messages.common_properties);
 		desc.add(propertiesMapD);
 

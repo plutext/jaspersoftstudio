@@ -16,7 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class WLocale extends Composite {
 	private Combo combo;

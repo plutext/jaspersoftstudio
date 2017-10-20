@@ -61,24 +61,13 @@ public class LayoutSection extends AbstractSection {
 	/**
 	 * Hashmap used to cache the created configuration composite for a specific layout
 	 */
-	private HashMap<ILayout, Composite> childConfigurationMap = new HashMap<ILayout, Composite>();
-	
-	/**
-	 * Hashmap used to cache the created configuration composite for a specific layout
-	 */
-	private HashMap<ILayout, Composite> nodeConfigurationMap = new HashMap<ILayout, Composite>();
+	private HashMap<ILayout, Composite> configurationMap = new HashMap<ILayout, Composite>();
 	
 	/**
 	 * The composite where the controls for the configuration of the layout are created. It has
 	 * a {@link StackLayout}, so the controls for each layout strategy are shown trough it
 	 */
-	private Composite parentLayoutConfigurationPanel;
-	
-	/**
-	 * The composite where the controls for the configuration of the layout are created. It has
-	 * a {@link StackLayout}, so the controls for each layout strategy are shown trough it
-	 */
-	private Composite currentLayoutConfigurationPanel;
+	private Composite layoutConfigurationPanel;
 	
 	/**
 	 * The composite where the layout combo and its label are created
@@ -125,22 +114,12 @@ public class LayoutSection extends AbstractSection {
 		comboContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		comboContainer.setLayout(getNoSpaceLayout(2));
 		getWidgetFactory().createCLabel(comboContainer, Messages.LayoutSection_propertylable, SWT.RIGHT);
-		layoutCombo = new SPLayoutCombo(comboContainer, this, pd){
-			@Override
-			protected void handlePropertyChange() {
-				super.handlePropertyChange();
-				showSection();
-			}
-		};
+		layoutCombo = new SPLayoutCombo(comboContainer, this, pd);
 		
 		//Create the are where the layout additional controls are created
-		parentLayoutConfigurationPanel = new Composite(container, SWT.NONE);
-		parentLayoutConfigurationPanel.setLayout(new RealSizeStackLayout());
-		currentLayoutConfigurationPanel = new Composite(container, SWT.NONE);
-		currentLayoutConfigurationPanel.setLayout(new RealSizeStackLayout());
-		
-		setParentLayoutAreaVisible(false);
-		setCurrentLayoutAreaVisible(false);
+		layoutConfigurationPanel = new Composite(container, SWT.NONE);
+		layoutConfigurationPanel.setLayout(new RealSizeStackLayout());
+		setLayoutAreaVisible(false);
 		widgets.put(pd.getId(), layoutCombo); 
 			
 	}
@@ -156,7 +135,6 @@ public class LayoutSection extends AbstractSection {
 		JRPropertiesMap parentProperties = LayoutManager.getPropertyMap(getElement().getParent());
 		JRPropertiesMap elementProperties = LayoutManager.getPropertyMap(getElement());
 		
-		boolean isShowingControls = false;
 		if (parentProperties != null){
 			//get the layout of the parent
 			String str = parentProperties.getProperty(ILayout.KEY);
@@ -167,66 +145,31 @@ public class LayoutSection extends AbstractSection {
 			
 			if (parentLayout != null){
 				//check if the layout of the parent require additional controls to be shown on the children
-				if (parentLayout.showAdditionalControlsOnChild(elementProperties, parentProperties)){
-					Composite currentContainer = childConfigurationMap.get(parentLayout);
-					if (currentContainer == null || currentContainer.isDisposed()){
+				if (parentLayout.showAdditionalControls(elementProperties, parentProperties)){
+					if (!configurationMap.containsKey(parentLayout)){
 						//check if its controls where already created, if not create them
-						currentContainer = new Composite(parentLayoutConfigurationPanel, SWT.NONE);
-						currentContainer.setLayout(getNoSpaceLayout(1));
+						Composite container = new Composite(layoutConfigurationPanel, SWT.NONE);
+						container.setLayout(getNoSpaceLayout(1));
 						ILayoutUIProvider controlsProvider = parentLayout.getControlsProvider();
-						controlsProvider.createControls(currentContainer);
-						currentContainer.setData(controlsProvider);
-						childConfigurationMap.put(parentLayout, currentContainer);
+						controlsProvider.createControls(container);
+						container.setData(controlsProvider);
+						configurationMap.put(parentLayout, container);
 					}
 					//the control are for sure created here, move them in the foreground and set their data
-					((StackLayout)parentLayoutConfigurationPanel.getLayout()).topControl = currentContainer;
-					setParentLayoutAreaVisible(true);
+					Composite currentContainer = configurationMap.get(parentLayout);
+					((StackLayout)layoutConfigurationPanel.getLayout()).topControl = currentContainer;
+					setLayoutAreaVisible(true);
 					ILayoutUIProvider controlsProvider = (ILayoutUIProvider)currentContainer.getData();
 					controlsProvider.setData(getElement(), this);
-					isShowingControls = true;
+					return true;
 				} else {
 					//the layout of the parent doesn't require additional controls, hide the visible one if any
-					((StackLayout)parentLayoutConfigurationPanel.getLayout()).topControl = null;
-					setParentLayoutAreaVisible(false);
+					((StackLayout)layoutConfigurationPanel.getLayout()).topControl = null;
+					setLayoutAreaVisible(false);
 				}
 			}
 		}
-		
-		if (elementProperties != null){
-			//get the layout of the current node
-			String str = elementProperties.getProperty(ILayout.KEY);
-			if (str == null){
-				str = FreeLayout.class.getName();
-			}
-			ILayout currentLayout = LayoutManager.getLayout(str);	
-			
-			if (currentLayout != null){
-				//check if the layout of the parent require additional controls to be shown on the children
-				if (currentLayout.showAdditionalControlsOnNode(elementProperties, parentProperties)){
-					Composite currentContainer = nodeConfigurationMap.get(currentLayout);
-					if (currentContainer == null || currentContainer.isDisposed()){
-						//check if its controls where already created, if not create them
-						currentContainer = new Composite(currentLayoutConfigurationPanel, SWT.NONE);
-						currentContainer.setLayout(getNoSpaceLayout(1));
-						ILayoutUIProvider controlsProvider = currentLayout.getControlsProvider();
-						controlsProvider.createLayoutControls(currentContainer);
-						currentContainer.setData(controlsProvider);
-						nodeConfigurationMap.put(currentLayout, currentContainer);
-					}
-					//the control are for sure created here, move them in the foreground and set their data
-					((StackLayout)currentLayoutConfigurationPanel.getLayout()).topControl = currentContainer;
-					setCurrentLayoutAreaVisible(true);
-					ILayoutUIProvider controlsProvider = (ILayoutUIProvider)currentContainer.getData();
-					controlsProvider.setData(getElement(), this);
-					isShowingControls = true;
-				} else {
-					//the layout of the parent doesn't require additional controls, hide the visible one if any
-					((StackLayout)currentLayoutConfigurationPanel.getLayout()).topControl = null;
-					setCurrentLayoutAreaVisible(false);
-				}
-			}
-		}
-		return isShowingControls;
+		return false;
 	}
 	
 	/**
@@ -275,24 +218,11 @@ public class LayoutSection extends AbstractSection {
 	 * 
 	 * @param value true to show the area, false to hide it
 	 */
-	protected void setParentLayoutAreaVisible(boolean value){
-		parentLayoutConfigurationPanel.setVisible(value);
+	protected void setLayoutAreaVisible(boolean value){
+		layoutConfigurationPanel.setVisible(value);
 		GridData layoutData = new GridData(GridData.FILL_BOTH);
 		layoutData.exclude = !value;
-		parentLayoutConfigurationPanel.setLayoutData(layoutData);
-	}
-	
-	/**
-	 * Hide or show the layout area, when hidden it is also excluded from the size
-	 * calculation
-	 * 
-	 * @param value true to show the area, false to hide it
-	 */
-	protected void setCurrentLayoutAreaVisible(boolean value){
-		currentLayoutConfigurationPanel.setVisible(value);
-		GridData layoutData = new GridData(GridData.FILL_BOTH);
-		layoutData.exclude = !value;
-		currentLayoutConfigurationPanel.setLayoutData(layoutData);
+		layoutConfigurationPanel.setLayoutData(layoutData);
 	}
 	
 	/**

@@ -10,6 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,61 +30,14 @@ import com.jaspersoft.studio.server.model.AMJrxmlContainer;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class FindResources {
 
-	public static boolean find(IProgressMonitor monitor, AMJrxmlContainer n, JasperDesign jd, IFile file)
-			throws Exception {
-		List<?> rs = findResources(monitor, n, jd);
-		setupPublishOptions(monitor, n, file, rs);
-
-		return !Misc.isNullOrEmpty(rs);
-	}
-
-	public static boolean setupPublishOptions(IProgressMonitor monitor, AMJrxmlContainer n, IFile file, List<?> rs) {
-		boolean hasOverwrite = false;
-		if (rs != null) {
-			for (Object obj : rs) {
-				if (obj instanceof AMResource) {
-					AMResource mres = (AMResource) obj;
-					PublishOptions po = mres.getPublishOptions();
-					if (po == null || po.getOverwrite() == null)
-						continue;
-					if (mres instanceof AFileResource && PublishUtil.loadPreferences(monitor, file, mres)) {
-						po.setOverwrite(OverwriteEnum.ONLY_EXPRESSION);
-						continue;
-					}
-					if (po.getOverwrite().equals(OverwriteEnum.OVERWRITE)) {
-						if (n instanceof MReportUnit) {
-							ResourceDescriptor v = mres.getValue();
-							for (ResourceDescriptor r : ((MReportUnit) n).getValue().getChildren()) {
-								if (r.getWsType().equals(v.getWsType()) && r.getName().equals(v.getName())) {
-									v.setParentFolder(r.getParentFolder());
-									v.setUriString(r.getUriString());
-									if (r.getIsReference()) {
-										po.setPublishMethod(ResourcePublishMethod.REFERENCE);
-										ResourceDescriptor rd = new ResourceDescriptor();
-										rd.setUriString(r.getUriString());
-										rd.setWsType(r.getWsType());
-										po.setReferencedResource(rd);
-									}
-									po.setOverwrite(OverwriteEnum.IGNORE);
-									break;
-								}
-							}
-						}
-						if (po.getOverwrite().equals(OverwriteEnum.OVERWRITE))
-							hasOverwrite = true;
-					}
-				}
-			}
-		}
-		return hasOverwrite;
+	public static boolean find(IProgressMonitor monitor, AMJrxmlContainer mres, JasperDesign jd) throws Exception {
+		List<?> r = findResources(monitor, mres, jd);
+		return !Misc.isNullOrEmpty(r);
 	}
 
 	public static List<?> findResources(IProgressMonitor monitor, AMJrxmlContainer mres, JasperDesign jd)
@@ -106,8 +62,8 @@ public class FindResources {
 				if (obj instanceof AMResource) {
 					AMResource m = (AMResource) obj;
 					ResourceDescriptor rd = m.getValue();
-					if (names.containsKey(rd.getName())) {
-						if (names.get(rd.getName()) == rd) {
+					if (names.containsKey(rd.getUriString())) {
+						if (names.get(rd.getUriString()) == rd) {
 							continue;
 						} else {
 							// renaming
@@ -117,10 +73,10 @@ public class FindResources {
 								rd.setName(rd.getName() + "_" + i);
 								rd.setLabel(rd.getLabel() + "_" + i);
 								rd.setUriString(rd.getUriString() + "_" + i);
-							} while (names.containsKey(rd.getName()) && i < 10000);
+							} while (names.containsKey(rd.getUriString()) && i < 10000);
 						}
 					}
-					names.put(rd.getName(), rd);
+					names.put(rd.getUriString(), rd);
 					rs.add(m);
 				}
 			}
@@ -163,7 +119,7 @@ public class FindResources {
 
 				if (prunit != null && srvURL != null && mserv.getValue().getUrl().equals(srvURL)) {
 					try {
-						// WSClientHelper.connect(mserv, monitor);
+						WSClientHelper.connect(mserv, monitor);
 						WSClientHelper.connectGetData(mserv, monitor);
 					} catch (Exception e) {
 						List<MServerProfile> m = ServerManager.getServerProfiles(jd, mserv.getJasperConfiguration(),
@@ -175,7 +131,7 @@ public class FindResources {
 								continue;
 							}
 							try {
-								// WSClientHelper.connect(sp, monitor);
+								WSClientHelper.connect(sp, monitor);
 								WSClientHelper.connectGetData(sp, monitor);
 								mserv = sp;
 								break;
@@ -189,8 +145,8 @@ public class FindResources {
 					// usual.
 					AMResource selectedRepoUnit = WSClientHelper.findSelected(mserv.getChildren(), monitor, prunit,
 							mserv.getWsClient(monitor));
-					if (selectedRepoUnit != null && selectedRepoUnit instanceof MReportUnit) {
-						if (pres != null && !pres.equals(prunit)) {
+					if (selectedRepoUnit != null) {
+						if (pres != null && !pres.equals(prunit) && selectedRepoUnit instanceof MReportUnit) {
 							selectedRepoUnit.removeChildren();
 							ANode parent = selectedRepoUnit;
 							for (ResourceDescriptor r : selectedRepoUnit.getValue().getChildren()) {

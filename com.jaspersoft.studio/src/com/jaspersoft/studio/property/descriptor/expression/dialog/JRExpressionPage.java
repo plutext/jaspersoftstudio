@@ -4,7 +4,6 @@
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.expression.dialog;
 
-import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
@@ -22,11 +21,11 @@ import com.jaspersoft.studio.editor.expression.ExpressionStatus;
 import com.jaspersoft.studio.editor.expression.IExpressionStatusChangeListener;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.swt.widgets.ClassType;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.RecentExpressions;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 
 public class JRExpressionPage extends JSSHelpWizardPage {
@@ -85,17 +84,11 @@ public class JRExpressionPage extends JSSHelpWizardPage {
 			contributedComposite.setExpressionContext(getExpressionContext());
 			contributedComposite.addExpressionStatusChangeListener(new IExpressionStatusChangeListener() {
 				public void statusChanged(ExpressionStatus status) {
-					setErrorMessage(null);
-					switch (status) {
-						case INFO:
-							setMessage(Messages.JRExpressionPage_description);
-							break;
-						case ERROR: 
-							setMessage(status.getShortDescription(),DialogPage.ERROR);
-							break;
-						case WARNING: 
-							setMessage(status.getShortDescription(),DialogPage.WARNING);
-							break;
+					if(status.equals(ExpressionStatus.ERROR)){
+						setErrorMessage(status.getShortDescription());
+					}
+					else{
+						setErrorMessage(null);
 					}
 				}
 			});

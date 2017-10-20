@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model.parameter;
 
@@ -32,9 +33,7 @@ import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.eclipse.util.StringUtils;
 import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
@@ -47,13 +46,18 @@ import net.sf.jasperreports.engine.type.ParameterEvaluationTimeEnum;
  */
 public class MParameter extends MParameterSystem implements ICopyable {
 
-	public static final String PROPERTY_MAP = "PROPERTY_MAP"; //$NON-NLS-1$
+	private static final String PROPERTY_MAP = "PROPERTY_MAP"; //$NON-NLS-1$
+
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
+
+	// Must use its own descriptors since they are different from the ones of the superclass
+
+	private static IPropertyDescriptor[] descriptors;
+
 	/** The icon descriptor. */
 	private static IIconDescriptor iconDescriptor;
+
 	private static NamedEnumPropertyDescriptor<ParameterEvaluationTimeEnum> evaluationTimeD;
-	// Must use its own descriptors since they are different from the ones of the superclass
-	private IPropertyDescriptor[] descriptors;
 
 	/**
 	 * Gets the icon descriptor.
@@ -77,11 +81,11 @@ public class MParameter extends MParameterSystem implements ICopyable {
 	 * Instantiates a new m parameter.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param jrParameter
-	 *            the jr parameter
+	 *          the jr parameter
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 */
 	public MParameter(ANode parent, JRDesignParameter jrParameter, int newIndex) {
 		super(parent, jrParameter, newIndex);
@@ -101,7 +105,7 @@ public class MParameter extends MParameterSystem implements ICopyable {
 	 * Creates the property descriptors.
 	 * 
 	 * @param desc
-	 *            the desc
+	 *          the desc
 	 */
 	@Override
 	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
@@ -111,8 +115,8 @@ public class MParameter extends MParameterSystem implements ICopyable {
 				Messages.common_description);
 		descriptionD.setDescription(Messages.MParameter_description_description);
 		desc.add(descriptionD);
-		descriptionD.setHelpRefBuilder(new HelpReferenceBuilder(
-				"net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#parameterDescription")); //$NON-NLS-1$
+		descriptionD.setHelpRefBuilder(
+				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#parameterDescription"));
 
 		CheckBoxPropertyDescriptor isForPromptingD = new CheckBoxPropertyDescriptor(
 				JRDesignParameter.PROPERTY_FOR_PROMPTING, Messages.MParameter_is_for_prompting, NullEnum.NOTNULL);
@@ -123,28 +127,28 @@ public class MParameter extends MParameterSystem implements ICopyable {
 				JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION, Messages.MParameter_default_value_expression);
 		defValueExprD.setDescription(Messages.MParameter_default_value_expression_description);
 		desc.add(defValueExprD);
-		defValueExprD.setHelpRefBuilder(new HelpReferenceBuilder(
-				"net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#defaultValueExpression")); //$NON-NLS-1$
+		defValueExprD.setHelpRefBuilder(
+				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#defaultValueExpression"));
 
 		JPropertiesPropertyDescriptor propertiesD = new JPropertiesPropertyDescriptor(PROPERTY_MAP,
-				Messages.common_properties, getJasperConfiguration(), getValue());
+				Messages.common_properties);
 		propertiesD.setDescription(Messages.MParameter_properties_description);
 		desc.add(propertiesD);
 		propertiesD.setHelpRefBuilder(
-				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#property")); //$NON-NLS-1$
+				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#property"));
 
-		NClassTypePropertyDescriptor classD = new NClassTypePropertyDescriptor(
-				JRDesignParameter.PROPERTY_NESTED_TYPE_NAME, Messages.MParameter_nested_type_name);
+		NClassTypePropertyDescriptor classD = new NClassTypePropertyDescriptor(JRDesignParameter.PROPERTY_NESTED_TYPE_NAME,
+				Messages.MParameter_nested_type_name);
 		classD.setDescription(Messages.MParameter_nested_type_name_description);
 		desc.add(classD);
 
 		evaluationTimeD = new NamedEnumPropertyDescriptor<ParameterEvaluationTimeEnum>(
-				JRDesignParameter.PROPERTY_EVALUATION_TIME, Messages.common_evaluation_time,
-				ParameterEvaluationTimeEnum.EARLY, NullEnum.NULL);
-		evaluationTimeD.setDescription(Messages.MParameter_3);
+				JRDesignParameter.PROPERTY_EVALUATION_TIME, Messages.common_evaluation_time, ParameterEvaluationTimeEnum.EARLY,
+				NullEnum.NULL);
+		evaluationTimeD.setDescription(Messages.common_evaluation_time);
 		desc.add(evaluationTimeD);
 
-		setHelpPrefix(desc, "net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#parameter"); //$NON-NLS-1$
+		setHelpPrefix(desc, "net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#parameter");
 	}
 
 	@Override
@@ -162,9 +166,7 @@ public class MParameter extends MParameterSystem implements ICopyable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.jaspersoft.studio.model.parameter.MParameterSystem#getPropertyValue(java.
-	 * lang.Object)
+	 * @see com.jaspersoft.studio.model.parameter.MParameterSystem#getPropertyValue(java.lang.Object)
 	 */
 	@Override
 	public Object getPropertyValue(Object id) {
@@ -180,53 +182,30 @@ public class MParameter extends MParameterSystem implements ICopyable {
 		}
 		if (id.equals(JRDesignParameter.PROPERTY_NESTED_TYPE_NAME))
 			return jrParameter.getNestedTypeName();
-		if (id.equals(JRDesignParameter.PROPERTY_EVALUATION_TIME)) {
-			if (evaluationTimeD == null)
-				getPropertyDescriptors();
+		if (id.equals(JRDesignParameter.PROPERTY_EVALUATION_TIME))
 			return evaluationTimeD.getIntValue(jrParameter.getEvaluationTime());
-		}
 		return super.getPropertyValue(id);
-	}
-
-	public static JRPropertiesMap getPropertiesMapClone(JRPropertiesHolder jrField) {
-		JRPropertiesMap propertiesMap = jrField.getPropertiesMap();
-		if (propertiesMap != null)
-			propertiesMap = propertiesMap.cloneProperties();
-		return propertiesMap;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.jaspersoft.studio.model.parameter.MParameterSystem#setPropertyValue(java.
-	 * lang.Object, java.lang.Object)
+	 * @see com.jaspersoft.studio.model.parameter.MParameterSystem#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	@Override
 	public void setPropertyValue(Object id, Object value) {
 		JRDesignParameter jrParameter = (JRDesignParameter) getValue();
 
 		if (id.equals(JRDesignParameter.PROPERTY_EVALUATION_TIME)) {
-			if (evaluationTimeD == null)
-				getPropertyDescriptors();
 			jrParameter.setEvaluationTime(evaluationTimeD.getEnumValue(value));
-		} else if (id.equals(JRDesignParameter.PROPERTY_DESCRIPTION)){
-			if(StringUtils.isNullOrEmpty((String) value)){
-				jrParameter.setDescription(null);
-			}
-			else {
-				jrParameter.setDescription((String) value);				
-			}
-		}
-		else if (id.equals(JRDesignParameter.PROPERTY_FOR_PROMPTING) && isMainDataset()){
+		} else if (id.equals(JRDesignParameter.PROPERTY_DESCRIPTION))
+			jrParameter.setDescription((String) value);
+		else if (id.equals(JRDesignParameter.PROPERTY_FOR_PROMPTING) && isMainDataset())
 			jrParameter.setForPrompting(((Boolean) value).booleanValue());
-		}
-		else if (id.equals(JRDesignParameter.PROPERTY_NESTED_TYPE_NAME)){
+		else if (id.equals(JRDesignParameter.PROPERTY_NESTED_TYPE_NAME))
 			jrParameter.setNestedTypeName((String) value);
-		}
-		else if (id.equals(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION)){
+		else if (id.equals(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION))
 			jrParameter.setDefaultValueExpression(ExprUtil.setValues(jrParameter.getDefaultValueExpression(), value));
-		}
 		else if (id.equals(PROPERTY_MAP)) {
 			JRPropertiesMap v = (JRPropertiesMap) value;
 			String[] names = jrParameter.getPropertiesMap().getPropertyNames();
@@ -245,7 +224,7 @@ public class MParameter extends MParameterSystem implements ICopyable {
 	 * Creates the jr parameter.
 	 * 
 	 * @param jrDataset
-	 *            the jr dataset
+	 *          the jr dataset
 	 * @return the jR design parameter
 	 */
 	public static JRDesignParameter createJRParameter(JRDesignDataset jrDataset) {

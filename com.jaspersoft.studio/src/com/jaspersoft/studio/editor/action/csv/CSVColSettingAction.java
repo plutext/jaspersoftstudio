@@ -4,6 +4,10 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action.csv;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.export.CsvMetadataReportConfiguration;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -12,11 +16,7 @@ import com.jaspersoft.studio.editor.gef.decorator.csv.NameDataChooserDialog;
 import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.property.SetValueCommand;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.export.CsvMetadataReportConfiguration;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * This CSV action is used to display all the columns defined and to provide a dialog to modify their names

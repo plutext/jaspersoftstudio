@@ -10,7 +10,6 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRElement;
 import net.sf.jasperreports.engine.JRElementGroup;
 import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -21,20 +20,18 @@ public class LayoutCommand extends Command {
 	private ILayout layout;
 	private JRElementGroup container;
 	private Dimension size;
-	private JasperDesign jd;
 	
-	public LayoutCommand(JasperDesign jd, JRElementGroup container, ILayout layout, Dimension size) {
+	public LayoutCommand(JRElementGroup container, ILayout layout, Dimension size) {
 		super();
 		this.size = size;
 		this.layout = layout;
 		this.container = container;
-		this.jd = jd;
 	}
 
 	@Override
 	public void execute() {
 		if (layout != null && container != null)
-			map = layout.layout(jd, container, container.getElements(), size);
+			map = layout.layout(container.getElements(), size);
 	}
 
 	@Override

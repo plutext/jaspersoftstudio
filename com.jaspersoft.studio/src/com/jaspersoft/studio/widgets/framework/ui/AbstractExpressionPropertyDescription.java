@@ -16,14 +16,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.UIUtil;
+import com.jaspersoft.studio.utils.inputhistory.InputHistoryCache;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
-import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
 import com.jaspersoft.studio.widgets.framework.ui.menu.IMenuProvider;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 
@@ -152,28 +152,17 @@ public abstract class AbstractExpressionPropertyDescription<T> implements ItemPr
 			wiProp.setValue(null, new JRDesignExpression(Misc.nvl(tvalue)));
 		}
 	}
-	
-	/**
-	 * This is used to created the expression controls in a lazy way, doing this the expression 
-	 * control can be created only when the expression mode should be shown. It also check to 
-	 * avoid to create it multiple times
-	 */
-	protected void lazyCreateExpressionControl(IWItemProperty wiProp, DoubleControlComposite cmp){
-		if (wiProp.isExpressionMode() && cmp.getFirstContainer().getChildren().length == 0){
-			Control expressionControl = createExpressionControl(wiProp, cmp.getFirstContainer());
-			cmp.getFirstContainer().setData(expressionControl);
-			cmp.setExpressionControlToHighlight(expressionControl);
-		}
-	}
-	
-	/**
-	 * Create the control to input the expression
-	 */
-	protected Control createExpressionControl(final IWItemProperty wiProp, Composite parent){
+
+	// Flag used to overcome the problem of focus events in Mac OS X
+	// - JSS Bugzilla 42999
+	// - Eclipse Bug 383750
+	// It makes sense only on E4 platform and Mac OS X operating systems.
+	public Control createControl(final IWItemProperty wiProp, Composite parent) {
 		Text textExpression = new Text(parent, SWT.BORDER | SWT.WRAP);
 		//The expression control always fill the available area in both directions
 		GridData textData = new GridData(GridData.FILL_BOTH); 
 		textExpression.setLayoutData(textData);
+		InputHistoryCache.bindText(textExpression, name);
 		textExpression.addFocusListener(new FocusAdapter() {
 
 			@Override
@@ -204,10 +193,6 @@ public abstract class AbstractExpressionPropertyDescription<T> implements ItemPr
 		}
 
 		return textExpression;
-	}
-
-	public Control createControl(IWItemProperty wiProp, Composite parent) {
-		return createExpressionControl(wiProp, parent);
 	}
 
 	protected void setupContextMenu(final Control c, final IWItemProperty wiProp) {

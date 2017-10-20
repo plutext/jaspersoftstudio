@@ -293,12 +293,8 @@ public class JsonDataManager implements ISelectableNodes<JsonSupportNode> {
 	private List<JRDesignField> getFieldFromGenericJsonNode(JsonNode node, List<JRDesignField> fields) {
 		JRDesignField f = new JRDesignField();
 		f.setName(ModelUtils.getNameForField(fields, "node"));
-		String infoStr = ".";
-		if(language.equalsIgnoreCase(JsonExpressionLanguageEnum.JSONQL.getName())){
-			infoStr = "[0]";
-		}
-		f.setDescription(infoStr);
-		f.getPropertiesMap().setProperty(getFieldExpressionName(), infoStr);
+		f.setDescription(".");
+		f.getPropertiesMap().setProperty(getFieldExpressionName(), ".");
 		f.setValueClass(String.class); // FIXME improve with type checking
 		fields.add(f);
 		return fields;

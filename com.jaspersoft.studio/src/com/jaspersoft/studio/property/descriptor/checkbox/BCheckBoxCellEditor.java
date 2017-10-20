@@ -40,7 +40,7 @@ public class BCheckBoxCellEditor extends EditableComboBoxCellEditor {
 	 *          the list of strings for the combo box
 	 */
 	public BCheckBoxCellEditor(Composite parent, NullEnum canBeNull) {
-		this(parent, canBeNull, SWT.READ_ONLY);
+		this(parent, canBeNull, SWT.NONE);
 	}
 
 	/**

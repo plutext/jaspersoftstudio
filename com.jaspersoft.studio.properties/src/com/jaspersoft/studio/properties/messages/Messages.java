@@ -23,12 +23,6 @@ public final class Messages extends NLS {
 		// private constructor
 	}
 
-	public static String AdvancedPropertySection_restoreDefaultName;
-
-	public static String AdvancedPropertySection_restoreDefaultTooltip;
-
-	public static String CustomDefaultsAction_restoreDefaultChildrenName;
-
 	public static String PropertiesPreferencePage_preferenceDescription;
 
 	public static String PropertiesPreferencePage_preferenceTitle;

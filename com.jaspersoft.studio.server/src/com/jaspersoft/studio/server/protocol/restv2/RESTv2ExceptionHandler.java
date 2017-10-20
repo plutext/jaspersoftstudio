@@ -17,8 +17,7 @@ import org.apache.http.client.HttpResponseException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.jaspersoft.jasperserver.jaxrs.client.dto.common.ErrorDescriptor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class RESTv2ExceptionHandler {
 	private ARestV2Connection c;
