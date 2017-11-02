@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,26 +20,39 @@ import org.eclipse.swt.widgets.Control;
 import com.jaspersoft.studio.editor.preview.input.BooleanNumericInput;
 import com.jaspersoft.studio.editor.preview.input.IDataInput;
 import com.jaspersoft.studio.editor.preview.input.ParameterJasper;
+import com.jaspersoft.studio.editor.preview.input.PropertyChangeNotifier;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.execution.InputControlsPreferencePage;
 import com.jaspersoft.studio.utils.ExpressionUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
+
 public class VParameters extends AVParameters {
 
-	public VParameters(Composite parent, JasperReportsConfiguration jContext) {
+	private PropertyChangeNotifier propertyChangeNotifier;
+	
+	public VParameters(Composite parent, JasperReportsConfiguration jContext, PropertyChangeNotifier propertyChangeNotifier) {
 		super(parent, jContext);
+		this.propertyChangeNotifier = propertyChangeNotifier;
 	}
-
-	public void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
+	
+	protected void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
 		this.params = params;
 		this.prompts = prompts;
 		Map<String, Boolean> dirtyMap = new HashMap<String, Boolean>();
-		for (String key : incontrols.keySet())
-			dirtyMap.put(key, incontrols.get(key).isDirty());
+		for (String key : incontrols.keySet()){
+			IDataInput control =  incontrols.get(key);
+			dirtyMap.put(key, control.isDirty());
+			propertyChangeNotifier.removeDataInput(control);
+		}
 		incontrols.clear();
 		for (Control c : composite.getChildren())
 			c.dispose();
+		
 		boolean first = true;
 		if (prompts != null)
 			for (JRParameter p : prompts)
@@ -209,12 +217,12 @@ public class VParameters extends AVParameters {
 		return true;
 	}
 
-	private void createControl(Composite sectionClient, ParameterJasper pres, IDataInput in, JRDesignParameter p,
-			boolean first) {
+	private void createControl(Composite sectionClient, ParameterJasper pres, final IDataInput in, JRDesignParameter p,boolean first) {
 		incontrols.put(p.getName(), in);
 		createVerticalSeprator(first);
 		createLabel(sectionClient, pres, in);
 		in.createInput(sectionClient, pres, params);
+		propertyChangeNotifier.addDataInput(in);
 	}
 
 	protected boolean createInput(Composite sectionClient, JRDesignParameter p, Map<String, Object> params, boolean first)
@@ -227,7 +235,8 @@ public class VParameters extends AVParameters {
 		}
 		for (IDataInput in : ReportControler.inputs) {
 			if (in.isForType(pres.getValueClass())) {
-				createControl(sectionClient, pres, in.getInstance(), p, first);
+				final IDataInput input = in.getInstance();
+				createControl(sectionClient, pres, input, p, first);		
 				return true;
 			}
 		}
