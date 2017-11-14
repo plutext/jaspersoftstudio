@@ -1,19 +1,18 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -22,37 +21,15 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
-
 /*
  * /* The Class Colors.
  * 
  * @author Chicu Veaceslav
  */
 public class Colors {
-	
-	/** Map to keep track of the HTML Color Names
-	 	https://www.w3schools.com/colors/colors_names.asp  */
-	private static final Properties htmlColorNames;
+
 	/** Pattern for hexadecimal colors (i.e: #FFCA12) */
 	public static final Pattern HEX_COLOR_PATTERN = Pattern.compile("#[a-fA-F0-9]{6}");
-	
-	static {
-		htmlColorNames=new Properties();
-		InputStream in = null;
-		try {
-			in = Colors.class.getResourceAsStream("htmlColorNames.properties");
-			htmlColorNames.load(in);
-		}
-		catch(IOException ex) {
-			JaspersoftStudioPlugin.getInstance().logError(ex);
-		}
-		finally {
-			if(in!=null){
-				IOUtils.closeQuietly(in);
-			}
-		}
-	}
 
 	/**
 	 * Gets the sW t4 awt color.
@@ -186,14 +163,6 @@ public class Colors {
 			return ""; //$NON-NLS-1$
 		}
 		return getHexEncodedAWTColor(getAWT4SWTRGBColor(alfaRgbColor));
-	}
-
-	public static String getRGBAEncodedRGBColor(AlfaRGB alfaRgbColor) {
-		if (alfaRgbColor == null) {
-			return ""; //$NON-NLS-1$
-		}
-		RGB rgb = alfaRgbColor.getRgb();
-		return "rgba(" + rgb.red + "," + rgb.green + "," + rgb.blue + "," + alfaRgbColor.getAlfa() + ")";
 	}
 
 	/**
@@ -339,62 +308,4 @@ public class Colors {
 		}
 		return listMatches.toArray(new String[listMatches.size()]);
 	}
-
-	/**
-	 * Given a bunch of colors it produces an encoded string that can be used in different places as compact value
-	 * representation.
-	 * <p>
-	 * <em>Sample return value</em>: <code>['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9']</code>
-	 * 
-	 * @param colors
-	 *          the array of colors
-	 * @return the encoded string representing the array of colors
-	 */
-	public static String encodeHexColorsAsArray(String[] colors) {
-		StringBuffer sb = new StringBuffer();
-		if (colors != null && colors.length > 0) {
-			String separator = "";
-			sb.append("[");
-			for (String col : colors) {
-				sb.append(separator);
-				separator = ",";
-				sb.append("'").append(col).append("'");
-			}
-			sb.append("]");
-		}
-		return sb.toString();
-	}
-	
-	/**
-	 * Returns the HTML color name for the specified hex value if any.
-	 * 
-	 * @param hex the color hex value (i.e #FFAABB)
-	 * @return the HTML color name found, <code>null</code> otherwise
-	 */
-	public static String getHtmlColorName(String hex) {
-		if(!StringUtils.isEmpty(hex)){
-			for(String p : htmlColorNames.stringPropertyNames()){
-				if(htmlColorNames.getProperty(p).equalsIgnoreCase(hex)){
-					return p;
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns the hex value for the specified HTML color name.
-	 *  
-	 * @param name the HTML color name
-	 * @return the color hex value found (i.e #AABBCC), <code>null</code> otherwise
-	 */
-	public static String getHtmlColorHex(String name) {
-		if(!StringUtils.isEmpty(name)){
-			return htmlColorNames.getProperty(name.toLowerCase());
-		}
-		else {
-			return null;
-		}
-	}
-	
 }

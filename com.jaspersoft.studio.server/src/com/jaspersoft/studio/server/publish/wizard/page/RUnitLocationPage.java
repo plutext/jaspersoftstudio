@@ -1,12 +1,25 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish.wizard.page;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -49,11 +62,11 @@ import com.jaspersoft.studio.server.action.resource.RefreshResourcesAction;
 import com.jaspersoft.studio.server.export.AExporter;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.model.AMJrxmlContainer;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.IInputControlsContainer;
 import com.jaspersoft.studio.server.model.MFolder;
 import com.jaspersoft.studio.server.model.MJrxml;
 import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.protocol.Feature;
 import com.jaspersoft.studio.server.publish.FindResources;
@@ -61,15 +74,10 @@ import com.jaspersoft.studio.server.publish.PublishUtil;
 import com.jaspersoft.studio.server.utils.ResourceDescriptorUtil;
 import com.jaspersoft.studio.server.utils.ValidationUtils;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class RUnitLocationPage extends JSSHelpWizardPage {
 	private JasperDesign jDesign;
@@ -139,8 +147,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 		if (isC && firstElement instanceof MFolder) {
 			AMJrxmlContainer runit = getReportUnit();
 			isC = runit instanceof AMJrxmlContainer && runit.getParent() != null;
-			if (!(firstElement instanceof MFolder))
-				isC = bnRunit.getSelection();
 		}
 		return isC;
 	}
@@ -181,21 +187,18 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			public Object[] getChildren(Object parentElement) {
 				if (parentElement instanceof AMResource) {
 					AMResource mres = (AMResource) parentElement;
-					if (mres instanceof MReportUnit || (mres.isSupported(Feature.INPUTCONTROLS_ORDERING)
-							&& (mres instanceof IInputControlsContainer))) {
+					if (mres instanceof MReportUnit || (mres.isSupported(Feature.INPUTCONTROLS_ORDERING) && (mres instanceof IInputControlsContainer))) {
 						if (mres.getChildren() != null && mres.getChildren().size() > 0) {
 							List<INode> children = new ArrayList<INode>();
 							if (mres.getChildren().get(0) instanceof MDummy)
 								try {
-									// WSClientHelper.refreshContainer(mres, new
-									// NullProgressMonitor());
+									//WSClientHelper.refreshContainer(mres, new NullProgressMonitor());
 									return mres.getChildren().toArray();
 								} catch (Exception e) {
 									UIUtils.showError(e);
 								}
 							for (INode n : mres.getChildren())
-								if (n instanceof AMResource
-										&& !SelectorDatasource.isDatasource(((AMResource) n).getValue()))
+								if (n instanceof AMResource && !SelectorDatasource.isDatasource(((AMResource) n).getValue()))
 									children.add(n);
 							return children.toArray();
 						}
@@ -226,9 +229,9 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			public void widgetSelected(SelectionEvent e) {
 				boolean selected = bnRunit.getSelection();
 				// Enable/Disable the detail textboxes
-				ruLabel.setEnabled(selected);
-				ruID.setEnabled(selected);
-				ruDescription.setEnabled(selected);
+				// ruLabel.setEnabled(selected);
+				// ruID.setEnabled(selected);
+				// ruDescription.setEnabled(selected);
 
 				reportUnit = selected ? getNewRunit() : getNewJrxml();
 				if (reportUnit.getParent() == null) {
@@ -241,7 +244,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 				setPageComplete(isPageComplete());
 			}
 		});
-		bnRunit.setSelection(true);
 
 		// Report Unit shown label (resource descriptor label)
 		Label lblRepoUnitName = new Label(composite, SWT.NONE);
@@ -255,25 +257,11 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 				if (isRefresh)
 					return;
 				isRefresh = true;
-				MReportUnit mru = getNewRunit();
 				String rtext = ruLabel.getText();
-				String id = IDStringValidator.safeChar(rtext);
 				String validationError = ValidationUtils.validateLabel(rtext);
-				if (validationError == null) {
-					ANode p = mru.getParent();
-					if (p != null)
-						for (INode n : p.getChildren()) {
-							if (n instanceof AMResource && n != mru) {
-								if (((AMResource) n).getValue().getName().equals(id))
-									validationError = "This id is already used in this folder";
-								else if (((AMResource) n).getValue().getLabel().equals(rtext))
-									validationError = "This label is already used in this folder";
-							}
-						}
-				}
 				setErrorMessage(validationError);
 				if (validationError == null) {
-					ResourceDescriptor ru = mru.getValue();
+					ResourceDescriptor ru = getNewRunit().getValue();
 					ru.setLabel(rtext);
 					// suggest the ID
 					if (canSuggestID) {
@@ -332,7 +320,6 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 		GridData descGD = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		descGD.heightHint = 50;
 		ruDescription.setLayoutData(descGD);
-		ruDescription.setText(""); //$NON-NLS-1$
 		ruDescription.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
@@ -344,6 +331,7 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 				setErrorMessage(ValidationUtils.validateDesc(rtext));
 			}
 		});
+		ruDescription.setText(""); //$NON-NLS-1$
 
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -385,10 +373,8 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 							try {
 								getContainer().run(true, true, new IRunnableWithProgress() {
 
-									public void run(IProgressMonitor monitor)
-											throws InvocationTargetException, InterruptedException {
-										monitor.beginTask(Messages.Publish2ServerWizard_MonitorName,
-												IProgressMonitor.UNKNOWN);
+									public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+										monitor.beginTask(Messages.Publish2ServerWizard_MonitorName, IProgressMonitor.UNKNOWN);
 										try {
 											if (serverProvider == null)
 												serverProvider = new ServerProvider();
@@ -456,7 +442,7 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			rd.setResourceProperty(ResourceDescriptor.PROP_RU_ALWAYS_PROPMT_CONTROLS, true);
 			newrunit = new MReportUnit(null, rd, -1);
 		}
-		PublishUtil.initRUnitName(newrunit, jDesign, jConfig);
+		PublishUtil.initRUnitName(newrunit, jDesign);
 		return newrunit;
 	}
 
@@ -466,12 +452,12 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			rd.setName(null);
 			newjrxml = new MJrxml(null, rd, -1);
 		}
-		PublishUtil.initRUnitName(newjrxml, jDesign, jConfig);
+		PublishUtil.initRUnitName(newjrxml, jDesign);
 		return newjrxml;
 	}
 
 	private AMJrxmlContainer getReportUnit() {
-		PublishUtil.initRUnitName(reportUnit, jDesign, jConfig);
+		PublishUtil.initRUnitName(reportUnit, jDesign);
 		return reportUnit;
 	}
 
@@ -482,8 +468,8 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 			return;
 		isRefresh = true;
 		boolean isFolder = obj instanceof MFolder;
-		// bnRunit.setSelection(isFolder);
-		// bnRunit.setEnabled(isFolder);
+		bnRunit.setSelection(isFolder);
+		bnRunit.setEnabled(isFolder);
 		ruLabel.setEnabled(bnRunit.getSelection() && isFolder);
 		ruID.setEnabled(bnRunit.getSelection() && isFolder);
 		ruDescription.setEnabled(bnRunit.getSelection() && isFolder);
@@ -549,10 +535,8 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 
 	private void initIDLabel() {
 		if (jDesign != null) {
-			String rUnitNAme = PublishUtil.getRUnitNAme(jDesign, jConfig);
-			ruID.setText(rUnitNAme.replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
-			ruLabel.setText(rUnitNAme);
-			ruDescription.setText(newrunit != null ? Misc.nvl(newrunit.getValue().getDescription()) : "");
+			ruID.setText(jDesign.getName().replace(" ", "")); //$NON-NLS-1$ //$NON-NLS-2$
+			ruLabel.setText(jDesign.getName());
 		}
 	}
 
@@ -599,8 +583,7 @@ public class RUnitLocationPage extends JSSHelpWizardPage {
 								List<ResourceDescriptor> children = mReportUnit.getValue().getChildren();
 								ResourceDescriptor rd = null;
 								for (ResourceDescriptor c : children) {
-									if (c.getWsType().equals(ResourceDescriptor.TYPE_JRXML)
-											&& c.getUriString().equals(res)) {
+									if (c.getWsType().equals(ResourceDescriptor.TYPE_JRXML) && c.getUriString().equals(res)) {
 										rd = c;
 										break;
 									}

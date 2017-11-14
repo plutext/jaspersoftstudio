@@ -66,8 +66,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
     switch (eClass.getClassifierID())
     {
       case SqlPackage.MODEL: return createModel();
-      case SqlPackage.WITH_QUERY: return createWithQuery();
-      case SqlPackage.WITH_COLUMNS: return createWithColumns();
       case SqlPackage.FETCH_FIRST: return createFetchFirst();
       case SqlPackage.OFFSET: return createOffset();
       case SqlPackage.LIMIT: return createLimit();
@@ -83,15 +81,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
       case SqlPackage.JOIN_CONDITION: return createJoinCondition();
       case SqlPackage.USING_COLS: return createUsingCols();
       case SqlPackage.TABLE_OR_ALIAS: return createTableOrAlias();
-      case SqlPackage.FROM_VALUES: return createFromValues();
-      case SqlPackage.FROM_VALUES_COLUMNS: return createFromValuesColumns();
-      case SqlPackage.FROM_VALUES_COLUMN_NAMES: return createFromValuesColumnNames();
-      case SqlPackage.COLUMN_NAMES: return createColumnNames();
-      case SqlPackage.VALUES: return createValues();
-      case SqlPackage.ROWS: return createRows();
-      case SqlPackage.ROW: return createRow();
-      case SqlPackage.ROW_VALUES: return createRowValues();
-      case SqlPackage.ROW_VALUE: return createRowValue();
       case SqlPackage.PIVOT_TABLE: return createPivotTable();
       case SqlPackage.PIVOT_FUNCTIONS: return createPivotFunctions();
       case SqlPackage.PIVOT_FUNCTION: return createPivotFunction();
@@ -156,7 +145,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
       case SqlPackage.INTEGER_VALUE: return createIntegerValue();
       case SqlPackage.UNSIGNED_VALUE: return createUnsignedValue();
       case SqlPackage.COL: return createCol();
-      case SqlPackage.ABC: return createabc();
       case SqlPackage.UNIPIVOT_IN_CLAUSE: return createUnipivotInClause();
       case SqlPackage.UICARGS: return createuicargs();
       case SqlPackage.PVCS: return createpvcs();
@@ -187,10 +175,10 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case SqlPackage.XFUNCTION:
-        return createXFunctionFromString(eDataType, initialValue);
       case SqlPackage.EXTRACT_VALUES:
         return createEXTRACT_VALUESFromString(eDataType, initialValue);
+      case SqlPackage.XFUNCTION:
+        return createXFunctionFromString(eDataType, initialValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -206,10 +194,10 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
   {
     switch (eDataType.getClassifierID())
     {
-      case SqlPackage.XFUNCTION:
-        return convertXFunctionToString(eDataType, instanceValue);
       case SqlPackage.EXTRACT_VALUES:
         return convertEXTRACT_VALUESToString(eDataType, instanceValue);
+      case SqlPackage.XFUNCTION:
+        return convertXFunctionToString(eDataType, instanceValue);
       default:
         throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
     }
@@ -224,28 +212,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
   {
     ModelImpl model = new ModelImpl();
     return model;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public WithQuery createWithQuery()
-  {
-    WithQueryImpl withQuery = new WithQueryImpl();
-    return withQuery;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public WithColumns createWithColumns()
-  {
-    WithColumnsImpl withColumns = new WithColumnsImpl();
-    return withColumns;
   }
 
   /**
@@ -411,105 +377,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
   {
     TableOrAliasImpl tableOrAlias = new TableOrAliasImpl();
     return tableOrAlias;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public FromValues createFromValues()
-  {
-    FromValuesImpl fromValues = new FromValuesImpl();
-    return fromValues;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public FromValuesColumns createFromValuesColumns()
-  {
-    FromValuesColumnsImpl fromValuesColumns = new FromValuesColumnsImpl();
-    return fromValuesColumns;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public FromValuesColumnNames createFromValuesColumnNames()
-  {
-    FromValuesColumnNamesImpl fromValuesColumnNames = new FromValuesColumnNamesImpl();
-    return fromValuesColumnNames;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ColumnNames createColumnNames()
-  {
-    ColumnNamesImpl columnNames = new ColumnNamesImpl();
-    return columnNames;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Values createValues()
-  {
-    ValuesImpl values = new ValuesImpl();
-    return values;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Rows createRows()
-  {
-    RowsImpl rows = new RowsImpl();
-    return rows;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public Row createRow()
-  {
-    RowImpl row = new RowImpl();
-    return row;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RowValues createRowValues()
-  {
-    RowValuesImpl rowValues = new RowValuesImpl();
-    return rowValues;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RowValue createRowValue()
-  {
-    RowValueImpl rowValue = new RowValueImpl();
-    return rowValue;
   }
 
   /**
@@ -1221,17 +1088,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public abc createabc()
-  {
-    abcImpl abc = new abcImpl();
-    return abc;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public UnipivotInClause createUnipivotInClause()
   {
     UnipivotInClauseImpl unipivotInClause = new UnipivotInClauseImpl();
@@ -1397,28 +1253,6 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
    * <!-- end-user-doc -->
    * @generated
    */
-  public XFunction createXFunctionFromString(EDataType eDataType, String initialValue)
-  {
-    XFunction result = XFunction.get(initialValue);
-    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-    return result;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public String convertXFunctionToString(EDataType eDataType, Object instanceValue)
-  {
-    return instanceValue == null ? null : instanceValue.toString();
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EXTRACT_VALUES createEXTRACT_VALUESFromString(EDataType eDataType, String initialValue)
   {
     EXTRACT_VALUES result = EXTRACT_VALUES.get(initialValue);
@@ -1432,6 +1266,28 @@ public class SqlFactoryImpl extends EFactoryImpl implements SqlFactory
    * @generated
    */
   public String convertEXTRACT_VALUESToString(EDataType eDataType, Object instanceValue)
+  {
+    return instanceValue == null ? null : instanceValue.toString();
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public XFunction createXFunctionFromString(EDataType eDataType, String initialValue)
+  {
+    XFunction result = XFunction.get(initialValue);
+    if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+    return result;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public String convertXFunctionToString(EDataType eDataType, Object instanceValue)
   {
     return instanceValue == null ? null : instanceValue.toString();
   }

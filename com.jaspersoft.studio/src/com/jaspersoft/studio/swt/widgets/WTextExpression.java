@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.swt.widgets;
 
@@ -16,11 +24,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.events.TraverseEvent;
-import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -36,9 +41,9 @@ import com.jaspersoft.studio.editor.expression.IExpressionContextSetter;
 import com.jaspersoft.studio.property.descriptor.expression.dialog.JRExpressionEditor;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedEvent;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.UIUtil;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 
 /**
@@ -89,16 +94,10 @@ public class WTextExpression extends Composite implements IExpressionContextSett
 	private boolean isRefreshing = false;
 
 	// Widgets
-	protected JRDesignExpression expression;
-	protected Text textExpression;
-	protected Button btnEditExpression;
-	protected Label label;
-	
-	/**
-	 * Flag used to know if the tab should be added as text (with value false) or should
-	 * produce a traverse
-	 */
-	private boolean traverseOnTab = false;
+	private JRDesignExpression expression;
+	private Text textExpression;
+	private Button btnEditExpression;
+	private Label label;
 
 	// Expression modify listeners
 	private List<ExpressionModifiedListener> listeners = new ArrayList<ExpressionModifiedListener>();
@@ -176,18 +175,14 @@ public class WTextExpression extends Composite implements IExpressionContextSett
 		this.customTextLinesNumber = linesNum;
 		setLayout(new FormLayout());
 
-		createLabelControl(textLabel, showMode);
-		createTextControl();
-		createButtonControl();
-		
-		configureWidgetsLayoutData(showMode);
+		if (textLabel != null && (showMode == LABEL_ON_LEFT || showMode == LABEL_ON_TOP)) {
+			// Create the needed label
+			label = new Label(this, SWT.NONE);
+			label.setText(textLabel);
+		} else {
+			showMode = LABEL_NONE;
+		}
 
-	}
-	
-	/**
-	 * Create the control to provide the expression
-	 */
-	protected void createTextControl(){
 		textExpression = new Text(this, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		textExpression.addVerifyListener(new VerifyListener() {
 			@Override
@@ -211,54 +206,7 @@ public class WTextExpression extends Composite implements IExpressionContextSett
 				}
 			}
 		});
-		
-		//add the traverse to allow to change widget on tab
-		textExpression.addTraverseListener(new TraverseListener() {
-			public void keyTraversed(TraverseEvent e) {
-					if (traverseOnTab && e.detail == SWT.TRAVERSE_TAB_NEXT || e.detail == SWT.TRAVERSE_TAB_PREVIOUS){
-						//the traverse on tab is enabled and the tab key is pressed
-						boolean isCtrl = e.stateMask == SWT.CTRL;
-						if (!isCtrl) {
-							//control in not pressed, set the event to true to switch control
-							e.doit = true;
-						} else {
-							//control is pressed, add a tabulation char where the cursor is
-							e.doit = false;
-							String currentValue = textExpression.getText();
-							Point selection = textExpression.getSelection();
-							String firstPart = currentValue.substring(0, selection.x);
-							String secondPart = currentValue.substring(selection.y);
-							currentValue = firstPart + '\t' + secondPart;
-							textExpression.setText(currentValue);
-							//restore the cursor position
-							oldpos = selection.x;
-							textExpression.setSelection(selection.x +1);
-						}	
-					} else {
-						//the listener is not enabled or the key is not a tab, don't do the traverse
-						e.doit = false;
-					}
-			}
-		});
-	}
-	
-	/**
-	 * Create the optional label
-	 */
-	protected void createLabelControl(String textLabel, int showMode){
-		if (textLabel != null && (showMode == LABEL_ON_LEFT || showMode == LABEL_ON_TOP)) {
-			// Create the needed label
-			label = new Label(this, SWT.NONE);
-			label.setText(textLabel);
-		} else {
-			showMode = LABEL_NONE;
-		}
-	}
-	
-	/**
-	 * Create the button to open the expression dialog
-	 */
-	protected void createButtonControl(){
+
 		btnEditExpression = new Button(this, SWT.FLAT);
 		btnEditExpression.setImage(JaspersoftStudioPlugin.getInstance().getImage(BUTTON_ICON_PATH));
 		btnEditExpression.addSelectionListener(new SelectionListener() {
@@ -280,12 +228,15 @@ public class WTextExpression extends Composite implements IExpressionContextSett
 				widgetSelected(e);
 			}
 		});
+
+		configureWidgetsLayoutData(showMode);
+
 	}
 
 	/*
 	 * Sets the layout data information for the custom widget controls.
 	 */
-	protected void configureWidgetsLayoutData(int showMode) {
+	private void configureWidgetsLayoutData(int showMode) {
 		int heightHint = UIUtil.getCharHeight(textExpression);
 		if (showMode == LABEL_ON_LEFT) {
 			// Configuration with label on left
@@ -485,23 +436,4 @@ public class WTextExpression extends Composite implements IExpressionContextSett
 		super.dispose();
 	}
 
-	/**
-	 * Set if the widget should traverse on tab or not
-	 * 
-	 * @param value true if on tab the widget should change, false to 
-	 * add a tab as text as content of the expression
-	 */
-	public void setTraverseOnTab(boolean value){
-		traverseOnTab = value;
-	}
-	
-	/**
-	 * Get if the widget should traverse on tab or not
-	 * 
-	 * @return true if on tab the widget should change, false to 
-	 * add a tab as text as content of the expression
-	 */
-	public boolean isTraverseOnTab(){
-		return traverseOnTab;
-	}
 }

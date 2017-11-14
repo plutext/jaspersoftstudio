@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.parts.band;
 
@@ -14,7 +18,6 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
@@ -30,7 +33,6 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
@@ -62,7 +64,6 @@ import com.jaspersoft.studio.model.IContainer;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.band.MBand;
 import com.jaspersoft.studio.model.command.CreateElementCommand;
-import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.style.MStyle;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
 import com.jaspersoft.studio.preferences.RulersGridPreferencePage;
@@ -218,8 +219,6 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new CloseSubeditorDeletePolicy());
 		installEditPolicy("Snap Feedback", new JSSSnapFeedBackPolicy());
-		//This edit policy is used only for the showSelection, since the resize will be handle by the 
-		//BandResizableEditPolicy
 		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new BandMoveEditPolicy() {
 			@Override
 			protected void showSelection() {
@@ -258,10 +257,10 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 			}
 
 			@Override
-			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 				Rectangle rect = ((Rectangle) constraint).getCopy();
 				rect = rect.getTranslated(-ReportPageFigure.PAGE_BORDER.left, -ReportPageFigure.PAGE_BORDER.right);
-				return super.getCreateCommand(parent, obj, rect, index, request);
+				return super.getCreateCommand(parent, obj, rect, index);
 			}
 
 			@Override
@@ -338,27 +337,18 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 			 */
 			protected IFigure getLayoutTargetFeedback(Request request) {
 				List<Object> nodes = new ArrayList<Object>();
-				Point mouseLocation = null;
 				if (request.getType().equals(RequestConstants.REQ_CREATE) && request instanceof CreateRequest) {
 					CreateRequest cbr = (CreateRequest) request;
-					mouseLocation = cbr.getLocation();
 					if (cbr.getNewObject() instanceof Collection<?>) {
 						Collection<?> c = (Collection<?>) cbr.getNewObject();
-						if (!c.isEmpty()) {
-							for(Object obj : c){
-								if (obj instanceof MStyle){
-									return null;
-								} else if (obj instanceof MField){
-									nodes.add((MField)obj);
-								}
-							}
+						if (!c.isEmpty() && c.iterator().next() instanceof MStyle){
+							return null;
 						}
 					} else {
 						nodes.add(cbr.getNewObject());
 					}
 				} else if (request instanceof ChangeBoundsRequest) {
 					ChangeBoundsRequest cbr = (ChangeBoundsRequest) request;
-					mouseLocation = cbr.getLocation();
 					@SuppressWarnings("unchecked")
 					List<EditPart> lst = cbr.getEditParts();
 					for (EditPart ep : lst)
@@ -370,28 +360,16 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 						}
 				}
 				if (targetFeedback == null) {
-					int index = -1;
-					if (mouseLocation != null){
-						IFigure bandFigure = getFigure();
-				        Point location = mouseLocation.getCopy();
-				        bandFigure.translateToRelative(location);
-				        Dimension newLocation = location.getDifference(bandFigure.getBounds().getTopLeft());
-				        index = ModelUtils.getBetweenIndex(getModel(), new Point(newLocation.width, newLocation.height));
-					}
-					targetFeedback = new ColoredLayoutPositionRectangle(BandEditPart.this, FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes, index);
-					targetFeedback.setFill(false);						
-
+					targetFeedback = new ColoredLayoutPositionRectangle(FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
+					targetFeedback.setFill(false);
 					IFigure hostFigure = getHostFigure();
 					Rectangle bounds = hostFigure.getBounds();
 					if (hostFigure instanceof HandleBounds)
 						bounds = ((HandleBounds) hostFigure).getHandleBounds();
 					Rectangle rect = new PrecisionRectangle(bounds);
-					double zoom = 1.0d;
-					ZoomManager zoomMgr = (ZoomManager) getViewer().getProperty(ZoomManager.class.toString());
-					if (zoomMgr != null) {
-						zoom = zoomMgr.getZoom();
-					}
-					rect.scale(zoom);
+					getHostFigure().translateToAbsolute(rect);
+					getFeedbackLayer().translateToRelative(rect);
+
 					targetFeedback.setBounds(rect);
 					addFeedback(targetFeedback);
 				}

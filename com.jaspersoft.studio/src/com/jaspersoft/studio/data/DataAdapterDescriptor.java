@@ -1,23 +1,26 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data;
 
 import java.io.Serializable;
 
+import net.sf.jasperreports.data.DataAdapter;
+import net.sf.jasperreports.engine.JRConstants;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.util.CastorUtil;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.data.customadapters.JSSCastorUtil;
 import com.jaspersoft.studio.data.ui.DefaultDataAdapterEditor;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.data.DataAdapter;
-import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JasperReportsContext;
 
 /*
  * 
@@ -31,16 +34,6 @@ public abstract class DataAdapterDescriptor implements IIconDescriptor, Serializ
 	 *
 	 */
 	public abstract DataAdapter getDataAdapter();
-	
-	/**
-	 * Get a data adapter using a specific {@link JasperReportsConfiguration} to load it.
-	 * The default implementation, to be backward compatible simple call the default getDataAdapter(),
-	 * but can be overridden by the descriptor of the data adapters that need a specific context to be 
-	 * loaded
-	 */
-	public DataAdapter getDataAdapter(JasperReportsConfiguration jConfig) {
-		return getDataAdapter();
-	}
 
 	/**
 	 * FIXME consider remove
@@ -100,8 +93,7 @@ public abstract class DataAdapterDescriptor implements IIconDescriptor, Serializ
 	 * export this data adapter too. FIXME consider remove
 	 */
 	public final String toXml(JasperReportsContext jrContext) {
-		JasperReportsConfiguration jConfig = (JasperReportsConfiguration)jrContext;
-		return JSSCastorUtil.getInstance(jConfig).writeToString(getDataAdapter(jConfig));
+		return CastorUtil.getInstance(jrContext).writeToString(getDataAdapter());
 	}
 
 	@Override
@@ -153,23 +145,4 @@ public abstract class DataAdapterDescriptor implements IIconDescriptor, Serializ
 		return true;
 	}
 
-	/**
-	 * Data Adapters can instruct UI wich languages to show when adapter is selected or if data adapter is appropriate for
-	 * a language.
-	 * 
-	 * @return null or * means any language, in case data adapter dictate the language, first language from the list will
-	 *         be used
-	 */
-	public String[] getLanguages() {
-		return null;
-	}
-
-	/**
-	 * This list will help building language list to filter data adapters or languages
-	 * 
-	 * @return null - nothing to exclude or array of languages to exclude
-	 */
-	public String[] getExcludedLanguages() {
-		return null;
-	}
 }

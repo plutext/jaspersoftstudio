@@ -9,7 +9,6 @@ import com.jaspersoft.studio.data.sql.AnalyticExprArgs;
 import com.jaspersoft.studio.data.sql.Between;
 import com.jaspersoft.studio.data.sql.Col;
 import com.jaspersoft.studio.data.sql.ColumnFull;
-import com.jaspersoft.studio.data.sql.ColumnNames;
 import com.jaspersoft.studio.data.sql.ColumnOperand;
 import com.jaspersoft.studio.data.sql.ColumnOrAlias;
 import com.jaspersoft.studio.data.sql.Comparison;
@@ -23,9 +22,6 @@ import com.jaspersoft.studio.data.sql.ExprGroup;
 import com.jaspersoft.studio.data.sql.FetchFirst;
 import com.jaspersoft.studio.data.sql.FromTable;
 import com.jaspersoft.studio.data.sql.FromTableJoin;
-import com.jaspersoft.studio.data.sql.FromValues;
-import com.jaspersoft.studio.data.sql.FromValuesColumnNames;
-import com.jaspersoft.studio.data.sql.FromValuesColumns;
 import com.jaspersoft.studio.data.sql.FullExpression;
 import com.jaspersoft.studio.data.sql.FunctionAnalytical;
 import com.jaspersoft.studio.data.sql.FunctionExtract;
@@ -74,10 +70,6 @@ import com.jaspersoft.studio.data.sql.Pivots;
 import com.jaspersoft.studio.data.sql.Plus;
 import com.jaspersoft.studio.data.sql.Prms;
 import com.jaspersoft.studio.data.sql.QueryPartitionClause;
-import com.jaspersoft.studio.data.sql.Row;
-import com.jaspersoft.studio.data.sql.RowValue;
-import com.jaspersoft.studio.data.sql.RowValues;
-import com.jaspersoft.studio.data.sql.Rows;
 import com.jaspersoft.studio.data.sql.SQLCaseOperand;
 import com.jaspersoft.studio.data.sql.SQLCaseWhens;
 import com.jaspersoft.studio.data.sql.ScalarOperand;
@@ -97,17 +89,13 @@ import com.jaspersoft.studio.data.sql.UnpivotInClauseArgs;
 import com.jaspersoft.studio.data.sql.UnpivotTable;
 import com.jaspersoft.studio.data.sql.UnsignedValue;
 import com.jaspersoft.studio.data.sql.UsingCols;
-import com.jaspersoft.studio.data.sql.Values;
 import com.jaspersoft.studio.data.sql.WhenList;
 import com.jaspersoft.studio.data.sql.WindowingClause;
 import com.jaspersoft.studio.data.sql.WindowingClauseBetween;
 import com.jaspersoft.studio.data.sql.WindowingClauseOperandFollowing;
 import com.jaspersoft.studio.data.sql.WindowingClauseOperandPreceding;
-import com.jaspersoft.studio.data.sql.WithColumns;
-import com.jaspersoft.studio.data.sql.WithQuery;
 import com.jaspersoft.studio.data.sql.XExpr;
 import com.jaspersoft.studio.data.sql.XFunction;
-import com.jaspersoft.studio.data.sql.abc;
 import com.jaspersoft.studio.data.sql.pcols;
 import com.jaspersoft.studio.data.sql.pvcs;
 import com.jaspersoft.studio.data.sql.tbls;
@@ -135,20 +123,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * @generated
    */
   private EClass modelEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass withQueryEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass withColumnsEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -254,69 +228,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * @generated
    */
   private EClass tableOrAliasEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass fromValuesEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass fromValuesColumnsEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass fromValuesColumnNamesEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass columnNamesEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass valuesEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass rowsEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass rowEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass rowValuesEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass rowValueEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -771,13 +682,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EClass abcEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   private EClass unipivotInClauseEClass = null;
 
   /**
@@ -883,14 +787,14 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum xFunctionEEnum = null;
+  private EEnum extracT_VALUESEEnum = null;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  private EEnum extracT_VALUESEEnum = null;
+  private EEnum xFunctionEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -970,79 +874,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getModel_Wq()
-  {
-    return (EReference)modelEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getModel_Query()
   {
-    return (EReference)modelEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getWithQuery()
-  {
-    return withQueryEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getWithQuery_W()
-  {
-    return (EAttribute)withQueryEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getWithQuery_Wname()
-  {
-    return (EAttribute)withQueryEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getWithQuery_WithCols()
-  {
-    return (EReference)withQueryEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getWithQuery_Query()
-  {
-    return (EReference)withQueryEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getWithColumns()
-  {
-    return withColumnsEClass;
+    return (EReference)modelEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -1560,7 +1394,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTableOrAlias_Values()
+  public EReference getTableOrAlias_Pivot()
   {
     return (EReference)tableOrAliasEClass.getEStructuralFeatures().get(2);
   }
@@ -1570,7 +1404,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTableOrAlias_Pivot()
+  public EReference getTableOrAlias_Unpivot()
   {
     return (EReference)tableOrAliasEClass.getEStructuralFeatures().get(3);
   }
@@ -1580,19 +1414,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getTableOrAlias_Unpivot()
-  {
-    return (EReference)tableOrAliasEClass.getEStructuralFeatures().get(4);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EAttribute getTableOrAlias_Alias()
   {
-    return (EAttribute)tableOrAliasEClass.getEStructuralFeatures().get(5);
+    return (EAttribute)tableOrAliasEClass.getEStructuralFeatures().get(4);
   }
 
   /**
@@ -1602,187 +1426,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    */
   public EReference getTableOrAlias_TblAlias()
   {
-    return (EReference)tableOrAliasEClass.getEStructuralFeatures().get(6);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getFromValues()
-  {
-    return fromValuesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getFromValues_Values()
-  {
-    return (EReference)fromValuesEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getFromValues_C()
-  {
-    return (EReference)fromValuesEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getFromValuesColumns()
-  {
-    return fromValuesColumnsEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getFromValuesColumns_FvCols()
-  {
-    return (EReference)fromValuesColumnsEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getFromValuesColumnNames()
-  {
-    return fromValuesColumnNamesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getColumnNames()
-  {
-    return columnNamesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getColumnNames_ColName()
-  {
-    return (EAttribute)columnNamesEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getValues()
-  {
-    return valuesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getValues_Rows()
-  {
-    return (EReference)valuesEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getRows()
-  {
-    return rowsEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getRows_Entries()
-  {
-    return (EReference)rowsEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getRow()
-  {
-    return rowEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getRow_RowValues()
-  {
-    return (EReference)rowEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getRowValues()
-  {
-    return rowValuesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getRowValues_Entries()
-  {
-    return (EReference)rowValuesEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getRowValue()
-  {
-    return rowValueEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EAttribute getRowValue_Null()
-  {
-    return (EAttribute)rowValueEClass.getEStructuralFeatures().get(0);
+    return (EReference)tableOrAliasEClass.getEStructuralFeatures().get(5);
   }
 
   /**
@@ -3490,7 +3134,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getSQLCaseOperand_Wop()
+  public EReference getSQLCaseOperand_Expr()
   {
     return (EReference)sqlCaseOperandEClass.getEStructuralFeatures().get(0);
   }
@@ -3500,19 +3144,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getSQLCaseOperand_Expr()
-  {
-    return (EReference)sqlCaseOperandEClass.getEStructuralFeatures().get(1);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getSQLCaseOperand_When()
   {
-    return (EReference)sqlCaseOperandEClass.getEStructuralFeatures().get(2);
+    return (EReference)sqlCaseOperandEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -3540,7 +3174,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getSqlCaseWhen_Wop()
+  public EReference getSqlCaseWhen_Expr()
   {
     return (EReference)sqlCaseWhenEClass.getEStructuralFeatures().get(0);
   }
@@ -3550,7 +3184,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getSqlCaseWhen_Expr()
+  public EReference getSqlCaseWhen_Texp()
   {
     return (EReference)sqlCaseWhenEClass.getEStructuralFeatures().get(1);
   }
@@ -3560,19 +3194,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getSqlCaseWhen_Texp()
-  {
-    return (EReference)sqlCaseWhenEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EReference getSqlCaseWhen_Eexp()
   {
-    return (EReference)sqlCaseWhenEClass.getEStructuralFeatures().get(3);
+    return (EReference)sqlCaseWhenEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -3633,26 +3257,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
   public EReference getCol_Entries()
   {
     return (EReference)colEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getabc()
-  {
-    return abcEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getabc_Entries()
-  {
-    return (EReference)abcEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -3920,9 +3524,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EEnum getXFunction()
+  public EEnum getEXTRACT_VALUES()
   {
-    return xFunctionEEnum;
+    return extracT_VALUESEEnum;
   }
 
   /**
@@ -3930,9 +3534,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
    * <!-- end-user-doc -->
    * @generated
    */
-  public EEnum getEXTRACT_VALUES()
+  public EEnum getXFunction()
   {
-    return extracT_VALUESEEnum;
+    return xFunctionEEnum;
   }
 
   /**
@@ -3966,16 +3570,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
 
     // Create classes and their features
     modelEClass = createEClass(MODEL);
-    createEReference(modelEClass, MODEL__WQ);
     createEReference(modelEClass, MODEL__QUERY);
-
-    withQueryEClass = createEClass(WITH_QUERY);
-    createEAttribute(withQueryEClass, WITH_QUERY__W);
-    createEAttribute(withQueryEClass, WITH_QUERY__WNAME);
-    createEReference(withQueryEClass, WITH_QUERY__WITH_COLS);
-    createEReference(withQueryEClass, WITH_QUERY__QUERY);
-
-    withColumnsEClass = createEClass(WITH_COLUMNS);
 
     fetchFirstEClass = createEClass(FETCH_FIRST);
     createEReference(fetchFirstEClass, FETCH_FIRST__FETCH_FIRST);
@@ -4042,38 +3637,10 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     tableOrAliasEClass = createEClass(TABLE_OR_ALIAS);
     createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__TFULL);
     createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__SQ);
-    createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__VALUES);
     createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__PIVOT);
     createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__UNPIVOT);
     createEAttribute(tableOrAliasEClass, TABLE_OR_ALIAS__ALIAS);
     createEReference(tableOrAliasEClass, TABLE_OR_ALIAS__TBL_ALIAS);
-
-    fromValuesEClass = createEClass(FROM_VALUES);
-    createEReference(fromValuesEClass, FROM_VALUES__VALUES);
-    createEReference(fromValuesEClass, FROM_VALUES__C);
-
-    fromValuesColumnsEClass = createEClass(FROM_VALUES_COLUMNS);
-    createEReference(fromValuesColumnsEClass, FROM_VALUES_COLUMNS__FV_COLS);
-
-    fromValuesColumnNamesEClass = createEClass(FROM_VALUES_COLUMN_NAMES);
-
-    columnNamesEClass = createEClass(COLUMN_NAMES);
-    createEAttribute(columnNamesEClass, COLUMN_NAMES__COL_NAME);
-
-    valuesEClass = createEClass(VALUES);
-    createEReference(valuesEClass, VALUES__ROWS);
-
-    rowsEClass = createEClass(ROWS);
-    createEReference(rowsEClass, ROWS__ENTRIES);
-
-    rowEClass = createEClass(ROW);
-    createEReference(rowEClass, ROW__ROW_VALUES);
-
-    rowValuesEClass = createEClass(ROW_VALUES);
-    createEReference(rowValuesEClass, ROW_VALUES__ENTRIES);
-
-    rowValueEClass = createEClass(ROW_VALUE);
-    createEAttribute(rowValueEClass, ROW_VALUE__NULL);
 
     pivotTableEClass = createEClass(PIVOT_TABLE);
     createEReference(pivotTableEClass, PIVOT_TABLE__PFUN);
@@ -4303,14 +3870,12 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     createEAttribute(scalarOperandEClass, SCALAR_OPERAND__SOINT);
 
     sqlCaseOperandEClass = createEClass(SQL_CASE_OPERAND);
-    createEReference(sqlCaseOperandEClass, SQL_CASE_OPERAND__WOP);
     createEReference(sqlCaseOperandEClass, SQL_CASE_OPERAND__EXPR);
     createEReference(sqlCaseOperandEClass, SQL_CASE_OPERAND__WHEN);
 
     sqlCaseWhensEClass = createEClass(SQL_CASE_WHENS);
 
     sqlCaseWhenEClass = createEClass(SQL_CASE_WHEN);
-    createEReference(sqlCaseWhenEClass, SQL_CASE_WHEN__WOP);
     createEReference(sqlCaseWhenEClass, SQL_CASE_WHEN__EXPR);
     createEReference(sqlCaseWhenEClass, SQL_CASE_WHEN__TEXP);
     createEReference(sqlCaseWhenEClass, SQL_CASE_WHEN__EEXP);
@@ -4323,9 +3888,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
 
     colEClass = createEClass(COL);
     createEReference(colEClass, COL__ENTRIES);
-
-    abcEClass = createEClass(ABC);
-    createEReference(abcEClass, ABC__ENTRIES);
 
     unipivotInClauseEClass = createEClass(UNIPIVOT_IN_CLAUSE);
     createEAttribute(unipivotInClauseEClass, UNIPIVOT_IN_CLAUSE__OP);
@@ -4369,8 +3931,8 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     createEReference(whenListEClass, WHEN_LIST__ENTRIES);
 
     // Create enums
-    xFunctionEEnum = createEEnum(XFUNCTION);
     extracT_VALUESEEnum = createEEnum(EXTRACT_VALUES);
+    xFunctionEEnum = createEEnum(XFUNCTION);
   }
 
   /**
@@ -4407,10 +3969,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     columnOrAliasEClass.getESuperTypes().add(this.getOrColumn());
     columnFullEClass.getESuperTypes().add(this.getPivotForClause());
     fromTableEClass.getESuperTypes().add(this.getOrTable());
-    usingColsEClass.getESuperTypes().add(this.getWithColumns());
-    columnNamesEClass.getESuperTypes().add(this.getFromValuesColumnNames());
-    rowEClass.getESuperTypes().add(this.getRows());
-    rowValueEClass.getESuperTypes().add(this.getRowValues());
     unpivotInClauseArgEClass.getESuperTypes().add(this.getUnpivotInClauseArgs());
     pivotsEClass.getESuperTypes().add(this.getPivotColumns());
     pivotColEClass.getESuperTypes().add(this.getPivotFunction());
@@ -4431,11 +3989,9 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     analyticExprArgsEClass.getESuperTypes().add(this.getQueryPartitionClause());
     analyticExprArgEClass.getESuperTypes().add(this.getAnalyticExprArgs());
     opFunctionArgOperandEClass.getESuperTypes().add(this.getOpFunctionArg());
-    scalarOperandEClass.getESuperTypes().add(this.getRowValue());
     scalarOperandEClass.getESuperTypes().add(this.getOperandList());
     sqlCaseWhenEClass.getESuperTypes().add(this.getSQLCaseWhens());
     colEClass.getESuperTypes().add(this.getColumnFull());
-    abcEClass.getESuperTypes().add(this.getFromValuesColumnNames());
     unipivotInClauseEClass.getESuperTypes().add(this.getUnpivotInClause());
     uicargsEClass.getESuperTypes().add(this.getUnpivotInClauseArgs());
     pvcsEClass.getESuperTypes().add(this.getPivots());
@@ -4454,27 +4010,18 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
 
     // Initialize classes and features; add operations and parameters
     initEClass(modelEClass, Model.class, "Model", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getModel_Wq(), this.getWithQuery(), null, "wq", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getModel_Query(), this.getSelectQuery(), null, "query", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(withQueryEClass, WithQuery.class, "WithQuery", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getWithQuery_W(), ecorePackage.getEString(), "w", null, 0, 1, WithQuery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getWithQuery_Wname(), ecorePackage.getEString(), "wname", null, 0, 1, WithQuery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getWithQuery_WithCols(), this.getWithColumns(), null, "withCols", null, 0, 1, WithQuery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getWithQuery_Query(), this.getSelectQuery(), null, "query", null, 0, 1, WithQuery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(withColumnsEClass, WithColumns.class, "WithColumns", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(fetchFirstEClass, FetchFirst.class, "FetchFirst", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getFetchFirst_FetchFirst(), this.getUnsignedValue(), null, "fetchFirst", null, 0, 1, FetchFirst.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getFetchFirst_Row(), ecorePackage.getEString(), "row", null, 0, 1, FetchFirst.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(offsetEClass, Offset.class, "Offset", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getOffset_Offset(), ecorePackage.getELongObject(), "offset", null, 0, 1, Offset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOffset_Offset(), ecorePackage.getEIntegerObject(), "offset", null, 0, 1, Offset.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(limitEClass, Limit.class, "Limit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getLimit_L1(), ecorePackage.getELongObject(), "l1", null, 0, 1, Limit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getLimit_L2(), ecorePackage.getELongObject(), "l2", null, 0, 1, Limit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLimit_L1(), ecorePackage.getEIntegerObject(), "l1", null, 0, 1, Limit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getLimit_L2(), ecorePackage.getEIntegerObject(), "l2", null, 0, 1, Limit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(selectQueryEClass, SelectQuery.class, "SelectQuery", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -4530,38 +4077,10 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     initEClass(tableOrAliasEClass, TableOrAlias.class, "TableOrAlias", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getTableOrAlias_Tfull(), this.getTableFull(), null, "tfull", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTableOrAlias_Sq(), this.getSubQueryOperand(), null, "sq", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getTableOrAlias_Values(), this.getFromValues(), null, "values", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTableOrAlias_Pivot(), this.getPivotTable(), null, "pivot", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTableOrAlias_Unpivot(), this.getUnpivotTable(), null, "unpivot", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getTableOrAlias_Alias(), ecorePackage.getEString(), "alias", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getTableOrAlias_TblAlias(), this.getDbObjectName(), null, "tblAlias", null, 0, 1, TableOrAlias.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(fromValuesEClass, FromValues.class, "FromValues", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getFromValues_Values(), this.getValues(), null, "values", null, 0, 1, FromValues.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getFromValues_C(), this.getFromValuesColumns(), null, "c", null, 0, 1, FromValues.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(fromValuesColumnsEClass, FromValuesColumns.class, "FromValuesColumns", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getFromValuesColumns_FvCols(), this.getFromValuesColumnNames(), null, "fvCols", null, 0, 1, FromValuesColumns.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(fromValuesColumnNamesEClass, FromValuesColumnNames.class, "FromValuesColumnNames", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-    initEClass(columnNamesEClass, ColumnNames.class, "ColumnNames", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getColumnNames_ColName(), ecorePackage.getEString(), "colName", null, 0, 1, ColumnNames.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(valuesEClass, Values.class, "Values", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getValues_Rows(), this.getRows(), null, "rows", null, 0, 1, Values.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(rowsEClass, Rows.class, "Rows", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRows_Entries(), this.getRow(), null, "entries", null, 0, -1, Rows.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(rowEClass, Row.class, "Row", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRow_RowValues(), this.getRowValues(), null, "rowValues", null, 0, 1, Row.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(rowValuesEClass, RowValues.class, "RowValues", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getRowValues_Entries(), this.getRowValue(), null, "entries", null, 0, -1, RowValues.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(rowValueEClass, RowValue.class, "RowValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getRowValue_Null(), ecorePackage.getEString(), "null", null, 0, 1, RowValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(pivotTableEClass, PivotTable.class, "PivotTable", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getPivotTable_Pfun(), this.getPivotFunctions(), null, "pfun", null, 0, 1, PivotTable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4612,7 +4131,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
 
     initEClass(orderByColumnFullEClass, OrderByColumnFull.class, "OrderByColumnFull", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOrderByColumnFull_ColOrder(), this.getColumnFull(), null, "colOrder", null, 0, 1, OrderByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOrderByColumnFull_ColOrderInt(), ecorePackage.getELongObject(), "colOrderInt", null, 0, 1, OrderByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOrderByColumnFull_ColOrderInt(), ecorePackage.getEIntegerObject(), "colOrderInt", null, 0, 1, OrderByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOrderByColumnFull_Direction(), ecorePackage.getEString(), "direction", null, 0, 1, OrderByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(orGroupByColumnEClass, OrGroupByColumn.class, "OrGroupByColumn", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -4621,7 +4140,7 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     initEClass(groupByColumnFullEClass, GroupByColumnFull.class, "GroupByColumnFull", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getGroupByColumnFull_ColGrBy(), this.getColumnFull(), null, "colGrBy", null, 0, 1, GroupByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getGroupByColumnFull_GbFunction(), this.getOpFunction(), null, "gbFunction", null, 0, 1, GroupByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getGroupByColumnFull_GrByInt(), ecorePackage.getELongObject(), "grByInt", null, 0, 1, GroupByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getGroupByColumnFull_GrByInt(), ecorePackage.getEIntegerObject(), "grByInt", null, 0, 1, GroupByColumnFull.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(orExprEClass, OrExpr.class, "OrExpr", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOrExpr_Entries(), this.getFullExpression(), null, "entries", null, 0, -1, OrExpr.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4763,8 +4282,8 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     initEClass(opFunctionCastEClass, OpFunctionCast.class, "OpFunctionCast", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOpFunctionCast_Op(), this.getOperands(), null, "op", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOpFunctionCast_Type(), ecorePackage.getEString(), "type", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOpFunctionCast_P(), ecorePackage.getELongObject(), "p", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getOpFunctionCast_P2(), ecorePackage.getELongObject(), "p2", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOpFunctionCast_P(), ecorePackage.getEIntegerObject(), "p", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOpFunctionCast_P2(), ecorePackage.getEIntegerObject(), "p2", null, 0, 1, OpFunctionCast.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(opFunctionArgAgregateEClass, OpFunctionArgAgregate.class, "OpFunctionArgAgregate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -4787,33 +4306,28 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     initEAttribute(getScalarOperand_Sodate(), ecorePackage.getEString(), "sodate", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getScalarOperand_Sotime(), ecorePackage.getEString(), "sotime", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getScalarOperand_Sodt(), ecorePackage.getEString(), "sodt", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getScalarOperand_SoUInt(), ecorePackage.getELongObject(), "soUInt", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getScalarOperand_Soint(), ecorePackage.getELongObject(), "soint", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getScalarOperand_SoUInt(), ecorePackage.getEIntegerObject(), "soUInt", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getScalarOperand_Soint(), ecorePackage.getEIntegerObject(), "soint", null, 0, 1, ScalarOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(sqlCaseOperandEClass, SQLCaseOperand.class, "SQLCaseOperand", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getSQLCaseOperand_Wop(), this.getOperands(), null, "wop", null, 0, 1, SQLCaseOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSQLCaseOperand_Expr(), this.getOrExpr(), null, "expr", null, 0, 1, SQLCaseOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSQLCaseOperand_When(), this.getSQLCaseWhens(), null, "when", null, 0, 1, SQLCaseOperand.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(sqlCaseWhensEClass, SQLCaseWhens.class, "SQLCaseWhens", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(sqlCaseWhenEClass, SqlCaseWhen.class, "SqlCaseWhen", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getSqlCaseWhen_Wop(), this.getOperands(), null, "wop", null, 0, 1, SqlCaseWhen.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSqlCaseWhen_Expr(), this.getOrExpr(), null, "expr", null, 0, 1, SqlCaseWhen.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSqlCaseWhen_Texp(), this.getOperands(), null, "texp", null, 0, 1, SqlCaseWhen.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getSqlCaseWhen_Eexp(), this.getOperands(), null, "eexp", null, 0, 1, SqlCaseWhen.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(integerValueEClass, IntegerValue.class, "IntegerValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getIntegerValue_Integer(), ecorePackage.getELongObject(), "integer", null, 0, 1, IntegerValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getIntegerValue_Integer(), ecorePackage.getEIntegerObject(), "integer", null, 0, 1, IntegerValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(unsignedValueEClass, UnsignedValue.class, "UnsignedValue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getUnsignedValue_Integer(), ecorePackage.getELongObject(), "integer", null, 0, 1, UnsignedValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getUnsignedValue_Integer(), ecorePackage.getEIntegerObject(), "integer", null, 0, 1, UnsignedValue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(colEClass, Col.class, "Col", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getCol_Entries(), this.getDbObjectName(), null, "entries", null, 0, -1, Col.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(abcEClass, abc.class, "abc", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getabc_Entries(), this.getColumnNames(), null, "entries", null, 0, -1, abc.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(unipivotInClauseEClass, UnipivotInClause.class, "UnipivotInClause", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getUnipivotInClause_Op(), ecorePackage.getEString(), "op", null, 0, 1, UnipivotInClause.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -4857,20 +4371,6 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     initEReference(getWhenList_Entries(), this.getSqlCaseWhen(), null, "entries", null, 0, -1, WhenList.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     // Initialize enums and add enum literals
-    initEEnum(xFunctionEEnum, XFunction.class, "XFunction");
-    addEEnumLiteral(xFunctionEEnum, XFunction.XIN);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XNOTIN);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XEQ);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XNOTEQ);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XLS);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XLSR);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XGTL);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XGT);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XBWN);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNC);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNL);
-    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNR);
-
     initEEnum(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.class, "EXTRACT_VALUES");
     addEEnumLiteral(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.MS);
     addEEnumLiteral(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.S);
@@ -4892,6 +4392,20 @@ public class SqlPackageImpl extends EPackageImpl implements SqlPackage
     addEEnumLiteral(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.DAYMIN);
     addEEnumLiteral(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.DAYH);
     addEEnumLiteral(extracT_VALUESEEnum, com.jaspersoft.studio.data.sql.EXTRACT_VALUES.YEAR_MONTH);
+
+    initEEnum(xFunctionEEnum, XFunction.class, "XFunction");
+    addEEnumLiteral(xFunctionEEnum, XFunction.XIN);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XNOTIN);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XEQ);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XNOTEQ);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XLS);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XGT);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XLSR);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XGTL);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XBWN);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNC);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNL);
+    addEEnumLiteral(xFunctionEEnum, XFunction.XBWNR);
 
     // Create resource
     createResource(eNS_URI);

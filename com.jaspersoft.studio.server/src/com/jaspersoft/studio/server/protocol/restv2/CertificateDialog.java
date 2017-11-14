@@ -1,12 +1,15 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,11 +43,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
 import com.jaspersoft.studio.server.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 
 import jersey.repackaged.com.google.common.collect.Lists;
 import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class CertificateDialog extends ATitledDialog {
 	private X509Certificate client;
@@ -53,8 +56,9 @@ public class CertificateDialog extends ATitledDialog {
 	protected TableViewer viewer;
 
 	public CertificateDialog(Shell parentShell, String message, X509Certificate client, X509Certificate[] chain) {
-		super(parentShell, SWT.CLOSE | SWT.TITLE | SWT.BORDER | SWT.OK | SWT.APPLICATION_MODAL, false);
+		super(parentShell);
 		setTitle(Messages.CertificateDialog_0);
+		setDefaultSize(550, 500);
 		this.client = client;
 		this.message = message;
 		this.chain = chain;
@@ -63,7 +67,7 @@ public class CertificateDialog extends ATitledDialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, Messages.CertificateDialog_1, true);
-		createButton(parent, IDialogConstants.CANCEL_ID, Messages.CertificatesDialog_2, false);
+		createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
 	}
 
 	@Override
@@ -85,7 +89,6 @@ public class CertificateDialog extends ATitledDialog {
 		Table table = viewer.getTable();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.heightHint = 70;
-		gd.widthHint = 500;
 		table.setLayoutData(gd);
 
 		final StyledText cTxt = new StyledText(cmp, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
@@ -93,10 +96,7 @@ public class CertificateDialog extends ATitledDialog {
 		cTxt.setLeftMargin(3);
 		cTxt.setTopMargin(3);
 		cTxt.setLineSpacing(1);
-		gd = new GridData(GridData.FILL_BOTH);
-		gd.widthHint = 500;
-		gd.heightHint = 400;
-		cTxt.setLayoutData(gd);
+		cTxt.setLayoutData(new GridData(GridData.FILL_BOTH));
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -124,26 +124,16 @@ public class CertificateDialog extends ATitledDialog {
 		lbl1.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
 
-	public static CertificateLabelProvider getLabelProvider() {
-		return new CertificateLabelProvider();
-	}
-
-	public static class CertificateLabelProvider extends ColumnLabelProvider {
+	class CertificateLabelProvider extends ColumnLabelProvider {
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof X509Certificate)
-				return ((X509Certificate) element).getSubjectDN().getName();
-			else if (element instanceof Key)
-				return "Key";
-			else if (element != null)
-				return element.toString();
-			return "NULL";
+			return ((X509Certificate) element).getSubjectDN().getName();
 		}
 
 	}
 
-	public static StyledString getStyledToolTip(X509Certificate cert) {
+	static StyledString getStyledToolTip(X509Certificate cert) {
 		StyledString ss = new StyledString();
 		if (cert == null)
 			return ss;

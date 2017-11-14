@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.utils.jasper;
 
@@ -23,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.http.client.ClientProtocolException;
@@ -31,46 +36,34 @@ import org.apache.http.client.fluent.Request;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import com.jaspersoft.studio.ExternalStylesManager;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.data.customadapters.JSSCastorUtil;
-import com.jaspersoft.studio.jasper.JSSReportConverter;
-import com.jaspersoft.studio.jasper.LazyImageConverter;
 import com.jaspersoft.studio.model.MGraphicElement;
-import com.jaspersoft.studio.model.style.MStyleTemplate;
 import com.jaspersoft.studio.preferences.fonts.FontsPreferencePage;
 import com.jaspersoft.studio.preferences.fonts.utils.FontUtils;
 import com.jaspersoft.studio.prm.ParameterSet;
 import com.jaspersoft.studio.prm.ParameterSetProvider;
-import com.jaspersoft.studio.property.JSSStyleResolver;
 import com.jaspersoft.studio.utils.ExpressionUtil;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
-import com.jaspersoft.studio.widgets.framework.manager.WidgetsDefinitionManager;
 
 import net.sf.jasperreports.data.AbstractClasspathAwareDataAdapterService;
-import net.sf.jasperreports.data.BuiltinDataFileServiceFactory;
-import net.sf.jasperreports.data.DataAdapterParameterContributorFactory;
 import net.sf.jasperreports.eclipse.IDisposeListener;
 import net.sf.jasperreports.eclipse.MScopedPreferenceStore;
 import net.sf.jasperreports.eclipse.classpath.JavaProjectClassLoader;
 import net.sf.jasperreports.eclipse.util.FilePrefUtil;
 import net.sf.jasperreports.eclipse.util.FileUtils;
 import net.sf.jasperreports.eclipse.util.HttpUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.eclipse.util.query.EmptyQueryExecuterFactoryBundle;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRReportTemplate;
 import net.sf.jasperreports.engine.JRRuntimeException;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.component.ComponentsBundle;
 import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignReportTemplate;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.fonts.FontExtensionsCollector;
 import net.sf.jasperreports.engine.fonts.FontFamily;
@@ -89,36 +82,30 @@ import net.sf.jasperreports.repo.FileRepositoryPersistenceServiceFactory;
 import net.sf.jasperreports.repo.FileRepositoryService;
 import net.sf.jasperreports.repo.PersistenceServiceFactory;
 import net.sf.jasperreports.repo.RepositoryService;
-import net.sf.jasperreports.util.CastorMapping;
-import net.sf.jasperreports.utils.JRExtensionsUtils;
 
 public class JasperReportsConfiguration extends LocalJasperReportsContext implements JasperReportsContext {
 
+	// public static final IScopeContext INSTANCE_SCOPE = new InstanceScope();
 	public static final String KEY_JASPERDESIGN = "JasperDesign";
-
-	public static final String PROPERTY_JRPROPERTY_PREFIX = "ireport.jrproperty.";
-
 	public static final String KEY_JRPARAMETERS = "KEY_PARAMETERS";
 
-	/**
-	 * Key used to store the drawer used to paint the JRElements, it is stored in
-	 * the configuration to be easily accessible
-	 */
-	public static final String KEY_DRAWER = "REPORT_DRAWER";
-
-	/**
-	 * Key used to store the report converter used to paint the JRElements, it is
-	 * stored in the configuration to be easily accessible
-	 */
-	public static final String KEY_CONVERTER = "REPORT_CONVERTER";
-
-	/**
-	 * Key of the event that must be fired on the {@link JasperReportsConfiguration}
-	 * to notify that a physical resource not available before was loaded and can be
-	 * used. Doing this we can refresh some resources on the editor (ie image &
-	 * styles) when new resource are available
-	 */
-	public static final String RESOURCE_LOADED = "RESOURCE_LOADED";
+	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);;
+	private ClasspathListener classpathlistener;
+	private PreferenceListener preferenceListener;
+	// private IPreferencesService service;
+	private String qualifier;
+	// private String[] lookupOrders;
+	// private IScopeContext[] contexts;
+	private String[] fontList;
+	private boolean refreshFonts = true;
+	private boolean refreshBundles = true;
+	private boolean refreshMessageProviderFactory = true;
+	private boolean refreshFunctionsBundles = true;
+	private FontExtensionsCollector lst;
+	private JavaProjectClassLoader javaclassloader;
+	private List<ComponentsBundle> bundles;
+	private List<FunctionsBundle> functionsBundles;
+	private MessageProviderFactory messageProviderFactory;
 
 	/**
 	 * The key which identified the file being edited
@@ -131,11 +118,11 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 
 		public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
 			String property = event.getProperty();
-			if (property.equals(FontsPreferencePage.FPP_FONT_LIST)) {
-				refreshFonts();
+			if (property.equals(FontsPreferencePage.FPP_FONT_LIST)
+					|| property.equals(FilePrefUtil.NET_SF_JASPERREPORTS_JRPROPERTIES)) {
+				refreshFonts = true;
 				refreshBundles = true;
-			} else if (property.equals(FilePrefUtil.NET_SF_JASPERREPORTS_JRPROPERTIES)) {
-				refreshBundles = true;
+				fontList = null;
 				isPropsCached = false;
 				getProperties();
 				qExecutors = null;
@@ -147,44 +134,6 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			}
 			propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, "preferences", null, event));
 		}
-	}
-
-	/**
-	 * When an event of resource loaded happen it rebuild the extrenral styles in
-	 * the report drawer and trigger a refresh of the editor
-	 * 
-	 * @author Orlandin Marco
-	 *
-	 */
-	private final class ResourceLoadedListener implements PropertyChangeListener {
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(RESOURCE_LOADED)) {
-				// clear the image cache
-				LazyImageConverter.getInstance().removeCachedImages(JasperReportsConfiguration.this);
-				// clear the style cache of this configuration, since a resource could be
-				// changed for it
-				// and styles need to be loaded another time
-				ExternalStylesManager.removeCachedStyles(JasperReportsConfiguration.this);
-				// Not sure if the resource is a style, so this call will regenerate first the
-				// styles
-				// and trigger a complete refresh of the editor. Doing so it will cover every
-				// case of
-				// late loading of a resource
-				refreshCachedStyles();
-
-				// Fire an event to the template style to ask an update of the nodes
-				JRReportTemplate[] templates = getJasperDesign().getTemplates();
-				if (templates != null) {
-					for (int i = 0; i < templates.length; i++) {
-						((JRDesignReportTemplate) templates[i]).getEventSupport()
-								.firePropertyChange(MStyleTemplate.FORCE_UPDATE_CHILDREN, null, null);
-					}
-				}
-			}
-		}
-
 	}
 
 	private class ClasspathListener implements PropertyChangeListener {
@@ -201,18 +150,12 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			fontList = null;
 			ExpressionUtil.removeAllReportInterpreters(JasperReportsConfiguration.this);
 			propertyChangeSupport.firePropertyChange(new PropertyChangeEvent(this, "classpath", null, arg0));
-
-			castorBundles = null;
-			// trigger the reload of mappings
-			getExtensions(CastorMapping.class);
 			// try {
-			// DefaultExtensionsRegistry extensionsRegistry = new
-			// DefaultExtensionsRegistry();
+			// DefaultExtensionsRegistry extensionsRegistry = new DefaultExtensionsRegistry();
 			// ExtensionsEnvironment.setSystemExtensionsRegistry(extensionsRegistry);
 			// } catch (Throwable e) {
 			// JaspersoftStudioPlugin.getInstance().logError(
-			// "Cannot complete operations successfully after a classpath change occurred.",
-			// e);
+			// "Cannot complete operations successfully after a classpath change occurred.", e);
 			// }
 			// Clear the old extensions
 			// JDTUtils.clearJRRegistry(classLoader);
@@ -223,36 +166,13 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 					element.getEventSupport().firePropertyChange(MGraphicElement.FORCE_GRAPHICAL_REFRESH, true, false);
 				}
 			}
+
 		}
 	}
 
-	private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-	private ClasspathListener classpathlistener;
-	private PreferenceListener preferenceListener;
-	private ResourceLoadedListener resourceLoadedListener;
-	private String qualifier;
-	private String[] fontList;
-	private boolean refreshFonts = true;
-	private boolean refreshBundles = true;
-	private boolean refreshMessageProviderFactory = true;
-	private boolean refreshFunctionsBundles = true;
-	private FontExtensionsCollector lst;
-	private JavaProjectClassLoader javaclassloader;
-	private List<ComponentsBundle> bundles;
-	private List<FunctionsBundle> functionsBundles;
-	private List<CastorMapping> castorBundles;
-	private MessageProviderFactory messageProviderFactory;
-	private static JasperReportsConfiguration instance;
-	private List<RepositoryService> repositoryServices;
-	private List<JRQueryExecuterFactoryBundle> qExecutors;
-	private Map<Object, Object> map;
-	private MScopedPreferenceStore pstore;
-	private List<IDisposeListener> toDispose;
-	private ClassLoader classLoader;
-	private boolean isPropsCached = false;
-	private ParameterSetProvider prmProvider;
-
-	protected JSSStyleResolver resolver;
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return propertyChangeSupport;
+	}
 
 	/**
 	 * @param parent
@@ -261,15 +181,12 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	public JasperReportsConfiguration(JasperReportsContext parent, IFile file) {
 		super(parent);
 		init(file);
-		resolver = new JSSStyleResolver(this);
 	}
+
+	private MScopedPreferenceStore pstore;
 
 	public ScopedPreferenceStore getPrefStore() {
 		return pstore;
-	}
-
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return propertyChangeSupport;
 	}
 
 	public void init(IFile file) {
@@ -289,10 +206,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			project = file.getProject();
 			put(FileUtils.KEY_IPROJECT, project);
 			if (project != null) {
-				// lookupOrders = new String[] { ResourceScope.SCOPE, ProjectScope.SCOPE,
-				// InstanceScope.SCOPE };
-				// contexts = new IScopeContext[] { new ResourceScope(file), new
-				// ProjectScope(project), INSTANCE_SCOPE };
+				// lookupOrders = new String[] { ResourceScope.SCOPE, ProjectScope.SCOPE, InstanceScope.SCOPE };
+				// contexts = new IScopeContext[] { new ResourceScope(file), new ProjectScope(project), INSTANCE_SCOPE };
 			}
 			initRepositoryService(file);
 		} else {
@@ -301,16 +216,10 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		}
 		// file changed, reset properties
 		isPropsCached = false;
-
 		// service.setDefaultLookupOrder(qualifier, null, lookupOrders);
 		if (preferenceListener == null) {
 			preferenceListener = new PreferenceListener();
 			JaspersoftStudioPlugin.getInstance().addPreferenceListener(preferenceListener);
-		}
-
-		if (resourceLoadedListener == null) {
-			resourceLoadedListener = new ResourceLoadedListener();
-			getPropertyChangeSupport().addPropertyChangeListener(resourceLoadedListener);
 		}
 	}
 
@@ -401,11 +310,7 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 
 	public void dispose() {
 		ExpressionUtil.removeAllReportInterpreters(this);
-		ExternalStylesManager.removeCachedStyles(this);
-		LazyImageConverter.getInstance().removeCachedImages(this);
-		WidgetsDefinitionManager.disposedConfiguration(this);
 		JaspersoftStudioPlugin.getInstance().removePreferenceListener(preferenceListener);
-		getPropertyChangeSupport().removePropertyChangeListener(resourceLoadedListener);
 		if (javaclassloader != null)
 			javaclassloader.removeClasspathListener(classpathlistener);
 		for (PropertyChangeListener l : Arrays.asList(propertyChangeSupport.getPropertyChangeListeners())) {
@@ -415,6 +320,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			for (IDisposeListener d : toDispose)
 				d.dispose();
 	}
+
+	private List<IDisposeListener> toDispose;
 
 	public void addDisposeListener(IDisposeListener listener) {
 		if (toDispose == null)
@@ -440,6 +347,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		removeValue(key);
 	}
 
+	private ClassLoader classLoader;
+
 	public ClassLoader getClassLoader() {
 		return classLoader;
 	}
@@ -454,6 +363,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		else
 			put(KEY_JASPERDESIGN, jd);
 	}
+
+	private ParameterSetProvider prmProvider;
 
 	public void setJRParameters(Map<String, Object> value) {
 		put(KEY_JRPARAMETERS, value);
@@ -487,8 +398,7 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		if (smap != null && !smap.isEmpty())
 			propmap.putAll(smap);
 		setPropertiesMap(propmap);
-		// get properties from eclipse stored jr properties (eclipse, project, file
-		// level)
+		// get properties from eclipse stored jr properties (eclipse, project, file level)
 		Properties props = getJRProperties();
 		for (Object key : props.keySet()) {
 			if (!(key instanceof String))
@@ -509,6 +419,9 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		return propmap;
 	}
 
+	private boolean isPropsCached = false;
+	public static final String PROPERTY_JRPROPERTY_PREFIX = "ireport.jrproperty.";
+
 	private Properties getJRProperties() {
 		Properties props = null;
 		try {
@@ -526,10 +439,7 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	@Override
 	public String getProperty(String key) {
 		pstore.setWithDefault(false);
-		String val = Platform.getPreferencesService().get(key, null, pstore.getPreferenceNodes(true));
-
-		// pstore.getString(key);// Misc.nullIfEmpty(pstore.getString(key));
-
+		String val = Misc.nullIfEmpty(pstore.getString(key));
 		pstore.setWithDefault(true);
 		if (val != null)
 			return val;
@@ -603,9 +513,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 
 	public Boolean getPropertyBooleanDef(String key, boolean def) {
 		Boolean p = getPropertyBoolean(key);
-		if (p == null) {
+		if (p == null)
 			p = pstore.getDefaultBoolean(key);
-		}
 		if (p == null)
 			return def;
 		return p;
@@ -690,9 +599,8 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	}
 
 	/**
-	 * Return the font extension both by resolving the property of the current
-	 * project and from the commons extension. If it is available instead of request
-	 * the extension from the superclass it search it in the common cache
+	 * Return the font extension both by resolving the property of the current project and from the commons extension. If
+	 * it is available instead of request the extension from the superclass it search it in the common cache
 	 * 
 	 * @return a not null font extension
 	 */
@@ -709,6 +617,10 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	protected void readFonts() {
 		if (refreshFonts) {
 			lst = new FontExtensionsCollector();
+			String strprop = getProperty(FontsPreferencePage.FPP_FONT_LIST);
+			if (strprop != null)
+				SimpleFontExtensionHelper.getInstance().loadFontExtensions(this, new ByteArrayInputStream(strprop.getBytes()),
+						lst);
 
 			List<FontFamily> superlist = super.getExtensions(FontFamily.class);
 			if (superlist != null) {
@@ -722,40 +634,13 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 					if (f != null)
 						lst.getFontSets().add(f);
 			}
-
-			String strprop = getProperty(FontsPreferencePage.FPP_FONT_LIST);
-			if (strprop != null)
-				SimpleFontExtensionHelper.getInstance().loadFontExtensions(this,
-						new ByteArrayInputStream(strprop.getBytes()), lst, true);
-
 			refreshFonts = false;
 		}
 	}
 
 	/**
-	 * Refresh the list of fonts loaded
-	 */
-	public void refreshFonts() {
-		refreshFonts = true;
-		fontList = null;
-		getFontList();
-		// it is not necessary to call the read fonts since the getFontList will
-		// indirectly call it
-		// readFonts();
-	}
-
-	public synchronized String[] getFontList() {
-		if (refreshFonts || fontList == null) {
-			refreshFonts = true;
-			fontList = FontUtils.stringToItems(ModelUtils.getFontNames(this));
-		}
-		return fontList;
-	}
-
-	/**
-	 * Return the components extension both by resolving the property of the current
-	 * project and from the commons extension. If it is available instead of request
-	 * the extension from the superclass it search it in the common cache
+	 * Return the components extension both by resolving the property of the current project and from the commons
+	 * extension. If it is available instead of request the extension from the superclass it search it in the common cache
 	 * 
 	 * @return a not null components extension
 	 */
@@ -773,37 +658,23 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	}
 
 	/**
-	 * Return the functions extension both by resolving the property of the current
-	 * project and from the commons extension. If it is available instead of request
-	 * the extension from the superclass it search it in the common cache
+	 * Return the functions extension both by resolving the property of the current project and from the commons
+	 * extension. If it is available instead of request the extension from the superclass it search it in the common cache
 	 * 
 	 * @return a not null functions extension
 	 */
 	private List<FunctionsBundle> getExtensionFunctions() {
 		if (functionsBundles == null || refreshFunctionsBundles) {
-			Set<FunctionsBundle> fBundlesSet = new LinkedHashSet<FunctionsBundle>(
-					JRExtensionsUtils.getReloadedExtensions(FunctionsBundle.class, "functions"));
+			// We need to be sure that the resource bundles are fresh new
+			// NOTE: Let's use this for now as quick solution, in case of
+			// bad performances we'll have to fix this approach
+			ResourceBundle.clearCache(getClassLoader());
+			functionsBundles = super.getExtensions(FunctionsBundle.class);
+			Set<FunctionsBundle> fBundlesSet = new LinkedHashSet<FunctionsBundle>(functionsBundles);
 			functionsBundles = new ArrayList<FunctionsBundle>(fBundlesSet);
 			refreshFunctionsBundles = false;
 		}
 		return functionsBundles;
-	}
-
-	/**
-	 * Return the castor extension both by resolving the property of the current
-	 * project and from the commons extension. If it is available instead of request
-	 * the extension from the superclass it search it in the common cache
-	 * 
-	 * @return a not null functions extension
-	 */
-	private List<CastorMapping> getExtensionCastors() {
-		if (castorBundles == null) {
-			JSSCastorUtil.clearCache(this);
-			Set<CastorMapping> fBundlesSet = new LinkedHashSet<CastorMapping>(
-					JRExtensionsUtils.getReloadedExtensions(CastorMapping.class, "castor.mapping"));
-			castorBundles = (List<CastorMapping>) new ArrayList<CastorMapping>(fBundlesSet);
-		}
-		return castorBundles;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -820,8 +691,6 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 				result = (List<T>) getExtensionFonts();
 			} else if (extensionType == FontSet.class) {
 				result = (List<T>) getExtensionFontSets();
-			} else if (extensionType == CastorMapping.class) {
-				result = (List<T>) getExtensionCastors();
 			} else if (extensionType == ComponentsBundle.class) {
 				result = (List<T>) getExtensionComponents();
 			} else if (extensionType == FunctionsBundle.class) {
@@ -847,14 +716,6 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			} else {
 				try {
 					result = super.getExtensions(extensionType);
-					if (result != null) {
-						List<T> toDel = new ArrayList<T>();
-						for (T item : result)
-							if (item.getClass().getName().equals(BuiltinDataFileServiceFactory.class.getName())
-									|| item instanceof DataAdapterParameterContributorFactory)
-								toDel.add(item);
-						result.removeAll(toDel);
-					}
 				} catch (Throwable e) {
 					e.printStackTrace();
 				}
@@ -862,24 +723,17 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		} finally {
 			Thread.currentThread().setContextClassLoader(oldCL);
 		}
-		if (result != null && result.indexOf(null) >= 0) {
-			// this theoretically should not happen, but practically, we have it sometimes
-			try {
-				result.removeAll(Collections.singleton(null));
-			} catch (UnsupportedOperationException e) {
-				result = new ArrayList<T>(result);
-				result.removeAll(Collections.singleton(null));
-			}
-		}
 		return result;
 	}
 
 	/*
 	 * private <T> List<T> getCachedExtension(Class<T> extensionType){ if (parent ==
-	 * DefaultJasperReportsContext.getInstance()){ Object cache =
-	 * extensionCache.get(extensionType); if (cache != null ) return
-	 * (List<T>)parent; }
+	 * DefaultJasperReportsContext.getInstance()){ Object cache = extensionCache.get(extensionType); if (cache != null )
+	 * return (List<T>)parent; }
 	 */
+
+	private List<JRQueryExecuterFactoryBundle> qExecutors;
+	private Map<Object, Object> map;
 
 	public Map<Object, Object> getMap() {
 		if (map == null)
@@ -887,9 +741,14 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		return map;
 	}
 
+	public String[] getFontList() {
+		if (fontList == null)
+			fontList = FontUtils.stringToItems(ModelUtils.getFontNames(this));
+		return fontList;
+	}
+
 	/**
-	 * @return a default {@link JasperReportsConfiguration} instance, based on the
-	 *         {@link DefaultJasperReportsContext}.
+	 * @return a default {@link JasperReportsConfiguration} instance, based on the {@link DefaultJasperReportsContext}.
 	 */
 	public static JasperReportsConfiguration getDefaultJRConfig() {
 		return new JasperReportsConfiguration(DefaultJasperReportsContext.getInstance(), null);
@@ -899,9 +758,11 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 		return new JasperReportsConfiguration(DefaultJasperReportsContext.getInstance(), f);
 	}
 
+	private static JasperReportsConfiguration instance;
+	private List<RepositoryService> repositoryServices;
+
 	/**
-	 * @return a default {@link JasperReportsConfiguration} instance, based on the
-	 *         {@link DefaultJasperReportsContext}.
+	 * @return a default {@link JasperReportsConfiguration} instance, based on the {@link DefaultJasperReportsContext}.
 	 */
 	public static JasperReportsConfiguration getDefaultInstance() {
 		if (instance == null)
@@ -918,13 +779,12 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 			localRepositoryService = new DefaultRepositoryService(this) {
 				@Override
 				public InputStream getInputStream(String uri) {
-					if (Misc.isNullOrEmpty(uri) || uri.startsWith("repo:"))
+					if (Misc.isNullOrEmpty(uri))
 						return null;
 					try {
 						URL url = JRResourcesUtil.createURL(uri, urlHandlerFactory);
 						if (url != null) {
-							if (url.getProtocol().toLowerCase().equals("http")
-									|| url.getProtocol().toLowerCase().equals("https")) {
+							if (url.getProtocol().toLowerCase().equals("http") || url.getProtocol().toLowerCase().equals("https")) {
 								try {
 									URI uuri = url.toURI();
 									Executor exec = Executor.newInstance();
@@ -936,11 +796,11 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 								} catch (URISyntaxException e) {
 									e.printStackTrace();
 								} catch (ClientProtocolException e) {
-									new JRException(JRLoader.EXCEPTION_MESSAGE_KEY_INPUT_STREAM_FROM_URL_OPEN_ERROR,
-											new Object[] { url }, e);
+									new JRException(JRLoader.EXCEPTION_MESSAGE_KEY_INPUT_STREAM_FROM_URL_OPEN_ERROR, new Object[] { url },
+											e);
 								} catch (IOException e) {
-									new JRException(JRLoader.EXCEPTION_MESSAGE_KEY_INPUT_STREAM_FROM_URL_OPEN_ERROR,
-											new Object[] { url }, e);
+									new JRException(JRLoader.EXCEPTION_MESSAGE_KEY_INPUT_STREAM_FROM_URL_OPEN_ERROR, new Object[] { url },
+											e);
 								}
 
 							}
@@ -972,48 +832,6 @@ public class JasperReportsConfiguration extends LocalJasperReportsContext implem
 	 */
 	public IFile getAssociatedReportFile() {
 		return (IFile) get(FileUtils.KEY_FILE);
-	}
-
-	/**
-	 * Force the reload of the styles for jasperreports, should be called when an
-	 * used external style change, this will discard all the loaded styles and
-	 * reload them another time. Then it trigger the repaint of every element in the
-	 * report
-	 */
-	public void refreshCachedStyles() {
-		JSSReportConverter reportConverter = getReportConverter();
-		if (reportConverter != null) {
-			reportConverter.refreshCachedStyles();
-			JasperDesign design = getJasperDesign();
-			PropertyChangeEvent changeEvent = new PropertyChangeEvent(design, MGraphicElement.FORCE_GRAPHICAL_REFRESH,
-					false, true);
-			for (JRDesignElement element : ModelUtils.getAllElements(design)) {
-				element.getEventSupport().firePropertyChange(changeEvent);
-			}
-		}
-	}
-
-	/**
-	 * Return the report converter used to paint the report elements
-	 * 
-	 * @return return the current report converter or null if it can't be resolved
-	 */
-	public JSSReportConverter getReportConverter() {
-		Object converter = get(JasperReportsConfiguration.KEY_CONVERTER);
-		if (converter instanceof JSSReportConverter) {
-			return (JSSReportConverter) converter;
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Return the style resolver for the current report
-	 * 
-	 * @return a not null {@link JSSStyleResolver}
-	 */
-	public JSSStyleResolver getStyleResolver() {
-		return resolver;
 	}
 
 }

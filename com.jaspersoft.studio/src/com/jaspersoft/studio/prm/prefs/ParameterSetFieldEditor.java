@@ -1,12 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.prm.prefs;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -16,12 +21,14 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64Encoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 import com.jaspersoft.studio.help.TableHelpListener;
 import com.jaspersoft.studio.messages.Messages;
@@ -31,10 +38,6 @@ import com.jaspersoft.studio.prm.ParameterSetProvider;
 import com.jaspersoft.studio.prm.dialog.ParameterSetDialog;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-
 public class ParameterSetFieldEditor extends TableFieldEditor {
 
 	protected Button editButton;
@@ -43,15 +46,8 @@ public class ParameterSetFieldEditor extends TableFieldEditor {
 		super();
 	}
 
-	public ParameterSetFieldEditor(String name, Composite parent) {
-		super(name, "", new String[] { Messages.ParameterSetFieldEditor_0 }, new int[] { 150 }, parent);
-	}
-
-	@Override
-	protected void adjustForNumColumns(int numColumns) {
-		super.adjustForNumColumns(numColumns);
-		((GridData) getLabelControl().getLayoutData()).exclude = true;
-		getLabelControl().setVisible(false);
+	public ParameterSetFieldEditor(String name, String labelText, Composite parent) {
+		super(name, labelText, new String[] { Messages.ParameterSetFieldEditor_0 }, new int[] { 150 }, parent);
 	}
 
 	@Override
@@ -98,11 +94,7 @@ public class ParameterSetFieldEditor extends TableFieldEditor {
 			ParameterSet pset = (ParameterSet) it.getData(ParameterSet.PARAMETER_SET);
 			ParameterSetProvider.storeParameterSet(pset, pstore);
 		}
-		try {
-			pstore.setValue(ParameterSet.PARAMETER_SETS, Misc.encodeBase64String(str, FileUtils.LATIN1_ENCODING));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		pstore.setValue(ParameterSet.PARAMETER_SETS, new Base64Encoder(str).processString());
 		removed.clear();
 	}
 
@@ -116,8 +108,8 @@ public class ParameterSetFieldEditor extends TableFieldEditor {
 			String str = getPreferenceStore().getString(ParameterSet.PARAMETER_SETS);
 			if (str != null) {
 				try {
-					str = Misc.decodeBase64String(str, FileUtils.LATIN1_ENCODING);
-				} catch (IOException e) {
+					str = new Base64Decoder(str).processString();
+				} catch (Base64FormatException e) {
 					e.printStackTrace();
 					return;
 				}

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.control;
 
@@ -9,6 +13,9 @@ import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -18,10 +25,9 @@ import org.eclipse.swt.widgets.Label;
 import com.jaspersoft.studio.editor.preview.input.IDataInput;
 import com.jaspersoft.studio.editor.preview.input.IParameter;
 import com.jaspersoft.studio.editor.preview.view.APreview;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.UIUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public abstract class AVParameters extends APreview {
 
@@ -103,6 +109,7 @@ public abstract class AVParameters extends APreview {
 		scompo.setExpandHorizontal(true);
 		scompo.setExpandVertical(true);
 		scompo.setAlwaysShowScrollBars(false);
+		scompo.setMinSize(parent.getSize());
 
 		composite = new Composite(scompo, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -113,21 +120,25 @@ public abstract class AVParameters extends APreview {
 		composite.setBackground(parent.getBackground());
 		composite.setBackgroundMode(SWT.INHERIT_FORCE);
 		scompo.setContent(composite);
+		composite.addControlListener(new ControlListener() {
 
+			@Override
+			public void controlResized(ControlEvent e) {
+				int w = scompo.getClientArea().width;
+				Point csize = composite.computeSize(w, SWT.DEFAULT, true);
+
+				composite.setSize(w, Math.max(csize.y, composite.getSize().y));
+				composite.layout();
+				scompo.setMinHeight(composite.getSize().y);
+
+				// setScrollbarMinHeight();
+			}
+
+			@Override
+			public void controlMoved(ControlEvent e) {
+
+			}
+		});
 		return scompo;
-	}
-	
-	protected void refreshControl() {
-		composite.pack();		
-		scompo.setVisible(true);
-		scompo.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-		scompo.pack();
-		scompo.getParent().layout();
-	}
-	
-	@Override
-	public Control getControl() {
-		refreshControl();
-		return super.getControl();
 	}
 }

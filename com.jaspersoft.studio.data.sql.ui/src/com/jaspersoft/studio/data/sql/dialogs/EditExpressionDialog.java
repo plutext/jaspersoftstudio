@@ -1,12 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.dialogs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.PojoObservables;
@@ -28,7 +38,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.messages.Messages;
 import com.jaspersoft.studio.data.sql.model.enums.Operator;
 import com.jaspersoft.studio.data.sql.model.query.AMKeyword;
@@ -36,18 +45,15 @@ import com.jaspersoft.studio.data.sql.model.query.expression.MExpression;
 import com.jaspersoft.studio.data.sql.model.query.operand.AOperand;
 import com.jaspersoft.studio.data.sql.widgets.Factory;
 
-import net.sf.jasperreports.eclipse.ui.ATitledDialog;
-
 public class EditExpressionDialog extends ATitledDialog {
 	private MExpression value;
-	private AQueryDesigner designer;
 
-	public EditExpressionDialog(Shell parentShell, AQueryDesigner designer) {
+	public EditExpressionDialog(Shell parentShell) {
 		super(parentShell);
-		this.designer = designer;
 		setTitle(Messages.EditExpressionDialog_0);
-		setDescription(
-				Messages.EditExpressionDialog_1 + Messages.EditExpressionDialog_2 + Messages.EditExpressionDialog_3);
+		setDescription(Messages.EditExpressionDialog_1
+				+ Messages.EditExpressionDialog_2
+				+ Messages.EditExpressionDialog_3);
 	}
 
 	public void setValue(MExpression value) {
@@ -104,7 +110,8 @@ public class EditExpressionDialog extends ATitledDialog {
 
 			new Label(c, SWT.NONE).setText(Messages.EditExpressionDialog_5);
 
-			bindingContext.bindValue(SWTObservables.observeSelection(prevoperator),
+			bindingContext.bindValue(
+					SWTObservables.observeSelection(prevoperator),
 					PojoObservables.observeValue(this, "prevcond")); //$NON-NLS-1$
 		} else {
 			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -112,9 +119,10 @@ public class EditExpressionDialog extends ATitledDialog {
 			new Label(cmp, SWT.NONE).setLayoutData(gd);
 		}
 
-		Control w = Factory.createWidget(cmp, operands, 0, value, designer);
-		GridData gd = new GridData(
-				GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_END);
+		Control w = Factory.createWidget(cmp, operands, 0, value);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL
+				| GridData.VERTICAL_ALIGN_BEGINNING
+				| GridData.HORIZONTAL_ALIGN_END);
 		gd.widthHint = 250;
 		w.setLayoutData(gd);
 
@@ -149,9 +157,6 @@ public class EditExpressionDialog extends ATitledDialog {
 	private Map<String, Composite> map = new HashMap<String, Composite>();
 	private Composite rcmp;
 	private StackLayout stackLayout;
-	private Button opDel;
-	private Button opEdit;
-	private List inlist;
 
 	private void showRight() {
 		Composite cmp = map.get(getOperator());
@@ -167,26 +172,31 @@ public class EditExpressionDialog extends ATitledDialog {
 				layout.marginWidth = 0;
 				cmp.setLayout(layout);
 
-				Control w = Factory.createWidget(cmp, operands, 1, value, designer);
-				GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
+				Control w = Factory.createWidget(cmp, operands, 1, value);
+				GridData gd = new GridData(GridData.FILL_HORIZONTAL
+						| GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
-			} else if (op.getNrOperands() == 3 && (op == Operator.BETWEEN || op == Operator.NOTBETWEEN)) {
+			} else if (op.getNrOperands() == 3
+					&& (op == Operator.BETWEEN || op == Operator.NOTBETWEEN)) {
 				cmp = new Composite(rcmp, SWT.NONE);
 				GridLayout layout = new GridLayout(3, false);
 				layout.marginHeight = 0;
 				layout.marginWidth = 0;
 				cmp.setLayout(layout);
 
-				Control w = Factory.createWidget(cmp, operands, 1, value, designer);
-				GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
+				Control w = Factory.createWidget(cmp, operands, 1, value);
+				GridData gd = new GridData(GridData.FILL_HORIZONTAL
+						| GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
 
-				new Label(cmp, SWT.NONE).setText(Messages.EditExpressionDialog_6);
+				new Label(cmp, SWT.NONE)
+						.setText(Messages.EditExpressionDialog_6);
 
-				w = Factory.createWidget(cmp, operands, 2, value, designer);
-				gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
+				w = Factory.createWidget(cmp, operands, 2, value);
+				gd = new GridData(GridData.FILL_HORIZONTAL
+						| GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
 			} else {
@@ -204,7 +214,8 @@ public class EditExpressionDialog extends ATitledDialog {
 	}
 
 	protected void createInList(Composite cmp) {
-		inlist = new List(cmp, SWT.MULTI | SWT.READ_ONLY | SWT.BORDER);
+		final List inlist = new List(cmp, SWT.MULTI | SWT.READ_ONLY
+				| SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.verticalSpan = 3;
 		gd.widthHint = 250;
@@ -221,22 +232,23 @@ public class EditExpressionDialog extends ATitledDialog {
 			}
 		});
 
-		opEdit = new Button(cmp, SWT.PUSH);
-		opEdit.setText(Messages.EditExpressionDialog_8);
+		op3 = new Button(cmp, SWT.PUSH);
+		op3.setText(Messages.EditExpressionDialog_8);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		opEdit.setLayoutData(gd);
-		opEdit.addSelectionListener(new SelectionAdapter() {
+		op3.setLayoutData(gd);
+		op3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				handleEditInList(inlist);
 			}
 		});
 
-		opDel = new Button(cmp, SWT.PUSH);
-		opDel.setText(Messages.EditExpressionDialog_9);
-		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		opDel.setLayoutData(gd);
-		opDel.addSelectionListener(new SelectionAdapter() {
+		op3 = new Button(cmp, SWT.PUSH);
+		op3.setText(Messages.EditExpressionDialog_9);
+		gd = new GridData(GridData.FILL_HORIZONTAL
+				| GridData.VERTICAL_ALIGN_BEGINNING);
+		op3.setLayoutData(gd);
+		op3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				int index = inlist.getSelectionIndex() + 1;
@@ -244,12 +256,6 @@ public class EditExpressionDialog extends ATitledDialog {
 					operands.remove(index);
 					showInList(inlist);
 				}
-			}
-		});
-		inlist.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				setupListButtons();
 			}
 		});
 		inlist.addMouseListener(new MouseListener() {
@@ -271,18 +277,11 @@ public class EditExpressionDialog extends ATitledDialog {
 		});
 
 		showInList(inlist);
-		setupListButtons();
-	}
-
-	private void setupListButtons() {
-		boolean canEdit = inlist.getSelectionCount() > 0;
-		opEdit.setEnabled(canEdit);
-		opDel.setEnabled(canEdit);
 	}
 
 	private void handleAddInList(List inlist) {
 		int index = Math.max(0, inlist.getSelectionIndex());
-		OperandDialog dialog = new OperandDialog(getShell(), designer);
+		OperandDialog dialog = new OperandDialog(getShell());
 		ArrayList<AOperand> ops = new ArrayList<AOperand>(operands);
 		if (index < ops.size())
 			ops.add(index, Factory.getDefaultOperand(value));
@@ -302,7 +301,7 @@ public class EditExpressionDialog extends ATitledDialog {
 	private void handleEditInList(List inlist) {
 		int index = inlist.getSelectionIndex() + 1;
 		if (index >= 0 && index < operands.size()) {
-			OperandDialog dialog = new OperandDialog(getShell(), designer);
+			OperandDialog dialog = new OperandDialog(getShell());
 			dialog.setValues(value, new ArrayList<AOperand>(operands), index);
 			if (dialog.open() == Dialog.OK) {
 				operands.set(index, dialog.getOperand());

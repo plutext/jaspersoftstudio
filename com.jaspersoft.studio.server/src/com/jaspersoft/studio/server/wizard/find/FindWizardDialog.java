@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.find;
 
@@ -24,16 +32,13 @@ public final class FindWizardDialog extends WizardDialog {
 	}
 
 	@Override
-	public void run(boolean fork, boolean cancelable, final IRunnableWithProgress runnable)
-			throws InvocationTargetException, InterruptedException {
+	public void run(boolean fork, boolean cancelable, final IRunnableWithProgress runnable) throws InvocationTargetException, InterruptedException {
 		ProgressMonitorPart mpart = (ProgressMonitorPart) getProgressMonitor();
 		mpart.setVisible(true);
 		try {
 
 			ModalContext.run(runnable, fork, getProgressMonitor(), getShell().getDisplay());
 		} finally {
-			if (mpart.isDisposed())
-				return;
 			mpart.done();
 			mpart.setVisible(false);
 		}

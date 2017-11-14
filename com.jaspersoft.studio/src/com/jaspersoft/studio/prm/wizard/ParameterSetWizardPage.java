@@ -1,10 +1,12 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.prm.wizard;
-
-import java.io.IOException;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -15,14 +17,14 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.List;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.prm.ParameterSet;
 import com.jaspersoft.studio.prm.ParameterSetProvider;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class ParameterSetWizardPage extends WizardPage {
 	private JasperReportsConfiguration jConfig;
@@ -64,8 +66,8 @@ public class ParameterSetWizardPage extends WizardPage {
 		String str = jConfig.getProperty(ParameterSet.PARAMETER_SETS);
 		if (str != null) {
 			try {
-				str = net.sf.jasperreports.eclipse.util.Misc.decodeBase64String(str, FileUtils.LATIN1_ENCODING);
-			} catch (IOException e) {
+				str = new Base64Decoder(str).processString();
+			} catch (Base64FormatException e) {
 				e.printStackTrace();
 				return;
 			}
