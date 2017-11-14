@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.utils;
 
@@ -50,10 +58,10 @@ public class RecentExpressions {
 	 * @param expression the expression string to add
 	 */
 	public static void addNewExpression(String expression){
-		if(recentExpressions.contains(expression)){
-			recentExpressions.remove(expression);			
+		if(!recentExpressions.contains(expression)){
+			recentExpressions.remove(expression);
+			recentExpressions.add(expression);
 		}
-		recentExpressions.add(0, expression);
 	}
 	
 	/**

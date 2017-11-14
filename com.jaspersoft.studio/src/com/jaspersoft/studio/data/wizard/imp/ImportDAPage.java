@@ -1,10 +1,13 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.wizard.imp;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,7 +32,6 @@ import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.DataAdapterManager;
 import com.jaspersoft.studio.data.storage.ADataAdapterStorage;
-import com.jaspersoft.studio.data.storage.FileDataAdapterStorage;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
 
@@ -73,13 +75,7 @@ public class ImportDAPage extends JSSHelpWizardPage {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection s = (IStructuredSelection) viewer.getSelection();
 				setPageComplete(!s.isEmpty());
-				selection = new ArrayList<DataAdapterDescriptor>();
-				for (Object obj : s.toList()) {
-					if (obj instanceof DataAdapterDescriptor)
-						selection.add((DataAdapterDescriptor) obj);
-					else if (obj instanceof ADataAdapterStorage)
-						selection.addAll(((ADataAdapterStorage) obj).getDataAdapterDescriptors());
-				}
+				selection = (List<DataAdapterDescriptor>) s.toList();
 			}
 		});
 

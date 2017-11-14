@@ -1,5 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.propexpr.dialog;
 
@@ -11,11 +20,6 @@ import com.jaspersoft.studio.property.descriptor.propexpr.PropertyExpressionsDTO
 public class JRPropertyExpressionEditor extends Wizard {
 	private PropertyExpressionsDTO value;
 	private JRPropertyExpressionPage page0;
-	private boolean showExpression = true;
-
-	public void setShowExpression(boolean showExpression) {
-		this.showExpression = showExpression;
-	}
 
 	public PropertyExpressionsDTO getValue() {
 		if (page0 != null)
@@ -39,7 +43,6 @@ public class JRPropertyExpressionEditor extends Wizard {
 	public void addPages() {
 		page0 = new JRPropertyExpressionPage("jrproperties"); //$NON-NLS-1$
 		page0.setValue(value);
-		page0.setShowExpression(showExpression);
 		addPage(page0);
 	}
 

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.ui;
 
@@ -28,29 +32,25 @@ import com.jaspersoft.studio.data.designer.UndoRedoImpl;
 import com.jaspersoft.studio.data.fields.IFieldsProvider;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.fonts.utils.FontUtils;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.wizards.JSSWizardRunnablePage;
 
 import net.sf.jasperreports.data.DataAdapterService;
 import net.sf.jasperreports.data.DataAdapterServiceUtil;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 
 /**
- * This is an abstract implementation of the (almost) most simple editor that
- * can be provided by an adapter. The other type of editor could be just a
- * composite, made to provide information of what will happen while pressing
- * next in the wizard page in which it is displayed.
+ * This is an abstract implementation of the (almost) most simple editor that can be provided by an adapter. The other
+ * type of editor could be just a composite, made to provide information of what will happen while pressing next in the
+ * wizard page in which it is displayed.
  * 
- * This abstract wizard creates just a composite in which there is a simple
- * label and and a textfield.
+ * This abstract wizard creates just a composite in which there is a simple label and and a textfield.
  * 
  * @author gtoffoli
  * 
@@ -58,9 +58,8 @@ import net.sf.jasperreports.engine.design.JRDesignQuery;
 public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorComposite {
 
 	/**
-	 * Question return code. This variable is used across a thread UI and
-	 * background process thread. We assume there will never pop up two
-	 * identical questions at the same time.
+	 * Question return code. This variable is used across a thread UI and background process thread. We assume there will
+	 * never pop up two identical questions at the same time.
 	 */
 	private int questionReturnCode = SWT.OK;
 
@@ -86,11 +85,10 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 	protected StyledText styledText = null;
 
 	/**
-	 * A simple title to be used to say something like: "Write a query in
-	 * SQL..."
+	 * A simple title to be used to say something like: "Write a query in SQL..."
 	 */
 	private String title = null;
-
+	
 	private DataAdapterService das;
 
 	public SimpleQueryWizardDataEditorComposite(Composite parent, WizardPage page, String lang) {
@@ -112,18 +110,16 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 	}
 
 	/**
-	 * Initializes additional information that are supposed to be sub-class
-	 * specific and executed in the constructor before the main composite
-	 * content creation. This method is called before
-	 * {@link #createCompositeContent()}.
+	 * Initializes additional information that are supposed to be sub-class specific and executed in the constructor
+	 * before the main composite content creation. This method is called before {@link #createCompositeContent()}.
 	 */
 	protected void init() {
 		// do nothig - default behavior
 	}
 
 	/**
-	 * Sets layout and creates the content of the main composite. Created
-	 * widgets should use <code>this</code> as parent composite.
+	 * Sets layout and creates the content of the main composite. Created widgets should use <code>this</code> as parent
+	 * composite.
 	 */
 	protected void createCompositeContent() {
 		setLayout(new FormLayout());
@@ -177,7 +173,7 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 
 	/**
 	 * @param title
-	 *            the title to set
+	 *          the title to set
 	 */
 	public void setTitle(String title) {
 		this.title = title;
@@ -197,7 +193,7 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 
 	/**
 	 * @param queryLanguage
-	 *            the queryLanguage to set
+	 *          the queryLanguage to set
 	 */
 	public void setQueryLanguage(String queryLanguage) {
 		this.queryLanguage = queryLanguage;
@@ -206,24 +202,22 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 	/**
 	 * Return the fields.
 	 * 
-	 * If the dataAdapterDescriptor implements IFieldsProvider, this interface
-	 * is used to get the fields automatically.
+	 * If the dataAdapterDescriptor implements IFieldsProvider, this interface is used to get the fields automatically.
 	 * 
-	 * This method is invoked on a thread which is not in the UI event thread,
-	 * so no UI update should be performed without using a proper async thread.
+	 * This method is invoked on a thread which is not in the UI event thread, so no UI update should be performed without
+	 * using a proper async thread.
 	 * 
-	 * return the result of IFieldsProvider.getFields() or an empty list of
-	 * JRField is the DataAdapterDescriptor does not implement the
-	 * IFieldsProvider interface.
+	 * return the result of IFieldsProvider.getFields() or an empty list of JRField is the DataAdapterDescriptor does not
+	 * implement the IFieldsProvider interface.
 	 */
 	public List<JRDesignField> readFields() throws Exception {
 		List<JRDesignField> fields = null;
 		if (getDataAdapterDescriptor() != null && getDataAdapterDescriptor() instanceof IFieldsProvider) {
 			questionReturnCode = SWT.OK;
 			JasperReportsConfiguration jContext = getJasperReportsConfiguration();
-			das = DataAdapterServiceUtil.getInstance(new ParameterContributorContext(jContext, null, null))
-					.getService(getDataAdapterDescriptor().getDataAdapter());
-
+			das = DataAdapterServiceUtil.getInstance(jContext).getService(
+					getDataAdapterDescriptor().getDataAdapter());
+			
 			try {
 				JRDesignDataset tmpDataset = getDataset();
 				if (tmpDataset.getQuery().getText() == null || tmpDataset.getQuery().getText().trim().length() == 0) {
@@ -232,8 +226,7 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 						@Override
 						public void run() {
 
-							MessageBox dialog = new MessageBox(UIUtils.getShell(),
-									SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+							MessageBox dialog = new MessageBox(UIUtils.getShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 							dialog.setText(Messages.SimpleQueryWizardDataEditorComposite_noQueryProvidedTitle);
 							dialog.setMessage(Messages.SimpleQueryWizardDataEditorComposite_noQueryProvidedText);
 							questionReturnCode = dialog.open();
@@ -251,12 +244,9 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 				Display.getDefault().syncExec(new Runnable() {
 					@Override
 					public void run() {
-						// Cleanup of the error. JRException are a very low
-						// meaningful exception when working
-						// with data, what the user is interested into is the
-						// underline error (i.e. an SQL error).
-						// That's why we rise the real cause, if any instead of
-						// rising the high-level exception...
+						// Cleanup of the error. JRException are a very low meaningful exception when working
+						// with data, what the user is interested into is the underline error (i.e. an SQL error).
+						// That's why we rise the real cause, if any instead of rising the high-level exception...
 						String errorMsg = ex.getMessage();
 						if (ex.getCause() != null && ex.getCause() instanceof Exception) {
 							errorMsg = ex.getCause().getMessage();
@@ -279,20 +269,18 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 		return Misc.nvl(fields, new ArrayList<JRDesignField>());
 
 	}
-
+	
 	@Override
 	public void abortOperationOccured() {
-		if (das != null) {
+		if(das!=null){
 			das.dispose();
 		}
 	}
 
 	/**
-	 * Convenient way to crate a dataset object to be passed to the
-	 * IFieldsProvider.getFields method
+	 * Convenient way to crate a dataset object to be passed to the IFieldsProvider.getFields method
 	 * 
-	 * @return JRDesignDataset return a dataset with the proper query and
-	 *         language set...
+	 * @return JRDesignDataset return a dataset with the proper query and language set...
 	 */
 	public JRDesignDataset getDataset() {
 		if (dataset == null) {
@@ -315,7 +303,7 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 
 	/**
 	 * @param dataAdapterDescriptor
-	 *            the dataAdapterDescriptor to set
+	 *          the dataAdapterDescriptor to set
 	 */
 	public void setDataAdapterDescriptor(DataAdapterDescriptor dataAdapterDescriptor) {
 		this.dataAdapterDescriptor = dataAdapterDescriptor;
@@ -323,13 +311,6 @@ public class SimpleQueryWizardDataEditorComposite extends AWizardDataEditorCompo
 
 	@Override
 	public List<JRDesignParameter> readParameters() throws Exception {
-		if (dataset != null) {
-			List<JRDesignParameter> prms = new ArrayList<JRDesignParameter>();
-			for (JRParameter p : dataset.getParametersList())
-				if (!p.isSystemDefined())
-					prms.add((JRDesignParameter) p);
-			return prms;
-		}
 		return null;
 	}
 }

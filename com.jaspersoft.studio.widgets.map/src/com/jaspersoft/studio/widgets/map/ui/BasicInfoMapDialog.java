@@ -1,12 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (c) 2014 Massimo Rabbi.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Massimo Rabbi <mrabbi@users.sourceforge.net> - initial API and implementation
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.map.ui;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.Util;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -36,7 +41,6 @@ import com.jaspersoft.studio.widgets.map.support.GMapUtils;
 import com.jaspersoft.studio.widgets.map.support.JavaMapSupport;
 
 import net.sf.jasperreports.eclipse.ui.util.PersistentLocationDialog;
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 /**
  * This dialog allows to configure the basic details of a map: its center, the
@@ -78,7 +82,7 @@ public class BasicInfoMapDialog extends PersistentLocationDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		
+
 		createContent(container);
 
 		return container;
@@ -125,11 +129,6 @@ public class BasicInfoMapDialog extends PersistentLocationDialog {
 			}
 		});
 		findBtn.setCursor(UIUtils.getDisplay().getSystemCursor(SWT.CURSOR_HAND));
-		
-		if(Util.isLinux()){
-			Composite warningCmp = MapUIUtils.createLinuxWarningText(mainCmp);
-			warningCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,3,1));
-		}
 
 		map = new MapTile(mainCmp, SWT.BORDER);
 		map.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));

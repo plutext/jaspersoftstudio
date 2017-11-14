@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.report;
 
@@ -55,7 +59,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
@@ -73,10 +76,8 @@ import com.jaspersoft.studio.background.action.BackgroundFitAction;
 import com.jaspersoft.studio.background.action.BackgroundKeepRatioAction;
 import com.jaspersoft.studio.background.action.BackgroundTransparencyAction;
 import com.jaspersoft.studio.callout.action.CreatePinAction;
-import com.jaspersoft.studio.editor.AbstractJRXMLEditor;
 import com.jaspersoft.studio.editor.IGraphicalEditor;
 import com.jaspersoft.studio.editor.ZoomActualAction;
-import com.jaspersoft.studio.editor.action.BindElementsAction;
 import com.jaspersoft.studio.editor.action.CustomDeleteAction;
 import com.jaspersoft.studio.editor.action.EncloseIntoFrameAction;
 import com.jaspersoft.studio.editor.action.HideElementsAction;
@@ -86,7 +87,6 @@ import com.jaspersoft.studio.editor.action.MoveGroupDownAction;
 import com.jaspersoft.studio.editor.action.MoveGroupUpAction;
 import com.jaspersoft.studio.editor.action.OpenEditorAction;
 import com.jaspersoft.studio.editor.action.ShowPropertyViewAction;
-import com.jaspersoft.studio.editor.action.UnBindElementsAction;
 import com.jaspersoft.studio.editor.action.align.Align2BorderAction;
 import com.jaspersoft.studio.editor.action.align.Align2Element;
 import com.jaspersoft.studio.editor.action.band.MaximizeContainerAction;
@@ -130,6 +130,7 @@ import com.jaspersoft.studio.editor.outline.JDReportOutlineView;
 import com.jaspersoft.studio.editor.outline.actions.ConnectToDatasetAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateConditionalStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateDatasetAction;
+import com.jaspersoft.studio.editor.outline.actions.CreateFieldAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateGroupAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateParameterAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateParameterSetAction;
@@ -138,21 +139,11 @@ import com.jaspersoft.studio.editor.outline.actions.CreateSortFieldAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateStyleTemplateAction;
 import com.jaspersoft.studio.editor.outline.actions.CreateVariableAction;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultVariablesAction;
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultsParametersAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshImageAction;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleExpression;
 import com.jaspersoft.studio.editor.outline.actions.RefreshTemplateStyleReference;
 import com.jaspersoft.studio.editor.outline.actions.ResetStyleAction;
 import com.jaspersoft.studio.editor.outline.actions.SaveStyleAsTemplateAction;
-import com.jaspersoft.studio.editor.outline.actions.SortParametersAction;
-import com.jaspersoft.studio.editor.outline.actions.SortVariablesAction;
-import com.jaspersoft.studio.editor.outline.actions.field.CreateFieldAction;
-import com.jaspersoft.studio.editor.outline.actions.field.CreateFieldsContainerAction;
-import com.jaspersoft.studio.editor.outline.actions.field.DeleteFieldsAllGroupAction;
-import com.jaspersoft.studio.editor.outline.actions.field.DeleteFieldsGroupAction;
-import com.jaspersoft.studio.editor.outline.actions.field.ShowFieldsTreeAction;
-import com.jaspersoft.studio.editor.outline.actions.field.SortFieldsAction;
 import com.jaspersoft.studio.editor.outline.page.MultiOutlineView;
 import com.jaspersoft.studio.editor.palette.JDPaletteFactory;
 import com.jaspersoft.studio.editor.palette.JSSPaletteContextMenuProvider;
@@ -181,7 +172,6 @@ import com.jaspersoft.studio.model.MRoot;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
 import com.jaspersoft.studio.preferences.RulersGridPreferencePage;
 import com.jaspersoft.studio.style.view.TemplateViewProvider;
-import com.jaspersoft.studio.utils.SelectionHelper;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
@@ -237,7 +227,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	 * Sets the model.
 	 * 
 	 * @param model
-	 *            the new model
+	 *          the new model
 	 */
 	public void setModel(INode model) {
 		this.model = model;
@@ -250,8 +240,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 			// better to check if it was disposed outside and in that case recrated it.
 			if (outlinePage.isDisposed()) {
 				// If the outline is recreated by calling the getOutlineView
-				// then the setContends it is already done so we need to do it only in the else
-				// case
+				// then the setContends it is already done so we need to do it only in the else case
 				getOutlineView();
 			} else
 				outlinePage.setContents(model);
@@ -290,29 +279,20 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.jaspersoft.studio.editor.java2d.J2DGraphicalEditorWithFlyoutPalette#
-	 * createGraphicalViewer(org.eclipse.swt. widgets .Composite)
+	 * @see com.jaspersoft.studio.editor.java2d.J2DGraphicalEditorWithFlyoutPalette#createGraphicalViewer(org.eclipse.swt.
+	 * widgets .Composite)
 	 */
 	@Override
 	protected void createGraphicalViewer(Composite parent) {
-		rulerComp = new JDRulerComposite(parent, SWT.NONE, this);
+		rulerComp = new JDRulerComposite(parent, SWT.NONE);
 		super.createGraphicalViewer(rulerComp);
 		rulerComp.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
-	}
-
-	/**
-	 * Return the ruler composite, the ruler has the possibility to layout the
-	 * complete editor area trought the layout() method
-	 */
-	public JDRulerComposite getRuler() {
-		return rulerComp;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getPaletteRoot()
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
@@ -327,9 +307,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getGraphicalControl
-	 * ()
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getGraphicalControl()
 	 */
 	@Override
 	protected Control getGraphicalControl() {
@@ -381,11 +359,10 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		GraphicalViewer graphicalViewer = getGraphicalViewer();
 		// Show Grid Action
 		Boolean isGridVisible = jrContext.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SHOWGRID, true);
-		Boolean isSnapToGuides = jrContext.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SNAPTOGUIDES,
-				true);
+		Boolean isSnapToGuides = jrContext.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SNAPTOGUIDES, true);
 		Boolean isSnapToGrid = jrContext.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SNAPTOGRID, true);
-		Boolean isSnapToGeometry = jrContext
-				.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SNAPTOGEOMETRY, true);
+		Boolean isSnapToGeometry = jrContext.getPropertyBoolean(RulersGridPreferencePage.P_PAGE_RULERGRID_SNAPTOGEOMETRY,
+				true);
 
 		int gspaceX = jrContext.getPropertyInteger(RulersGridPreferencePage.P_PAGE_RULERGRID_GRIDSPACEX, 10);
 		int gspaceY = jrContext.getPropertyInteger(RulersGridPreferencePage.P_PAGE_RULERGRID_GRIDSPACEY, 10);
@@ -447,9 +424,8 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditor#selectionChanged(org.eclipse.ui.
-	 * IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#selectionChanged(org.eclipse.ui.IWorkbenchPart,
+	 * org.eclipse.jface.viewers.ISelection)
 	 */
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -490,9 +466,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getAdapter(java.
-	 * lang.Class)
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#getAdapter(java.lang.Class)
 	 */
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
@@ -521,8 +495,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-	 * IProgressMonitor)
+	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -532,8 +505,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
-	 * initializeGraphicalViewer()
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#initializeGraphicalViewer()
 	 */
 	@Override
 	protected void initializeGraphicalViewer() {
@@ -558,12 +530,12 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		GraphicalViewer graphicalViewer = getGraphicalViewer();
 		graphicalViewer.addDropTargetListener(new JSSTemplateTransferDropTargetListener(graphicalViewer));
 		graphicalViewer.addDropTargetListener(new ReportUnitDropTargetListener(graphicalViewer));
-		graphicalViewer.addDropTargetListener(
-				new ImageResourceDropTargetListener(graphicalViewer, ResourceTransfer.getInstance()));
-		graphicalViewer.addDropTargetListener(
-				new ImageResourceDropTargetListener(graphicalViewer, FileTransfer.getInstance()));
-		graphicalViewer.addDropTargetListener(
-				new ImageResourceDropTargetListener(graphicalViewer, ImageURLTransfer.getInstance()));
+		graphicalViewer
+				.addDropTargetListener(new ImageResourceDropTargetListener(graphicalViewer, ResourceTransfer.getInstance()));
+		graphicalViewer
+				.addDropTargetListener(new ImageResourceDropTargetListener(graphicalViewer, FileTransfer.getInstance()));
+		graphicalViewer
+				.addDropTargetListener(new ImageResourceDropTargetListener(graphicalViewer, ImageURLTransfer.getInstance()));
 
 		// Load the contributed drop providers for the contributed template styles
 		List<TemplateViewProvider> dropProviders = JaspersoftStudioPlugin.getExtensionManager().getStylesViewProvider();
@@ -611,8 +583,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPalettePage()
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPalettePage()
 	 */
 	@Override
 	protected CustomPalettePage createPalettePage() {
@@ -629,8 +600,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#
-	 * createPaletteViewerProvider()
+	 * @see org.eclipse.gef.ui.parts.GraphicalEditorWithFlyoutPalette#createPaletteViewerProvider()
 	 */
 	@Override
 	protected PaletteViewerProvider createPaletteViewerProvider() {
@@ -645,20 +615,14 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 				viewer.getEditDomain().loadDefaultTool();
 				// Uncomment these lines if you want to set as default a palette
 				// with column layout and large icons.
-				// // TODO: we should replace these default suggestions not using the GEF
-				// preference
-				// // store explicitly. It would be better override the PaletteViewer creation
-				// in order
-				// // to have a custom PaletteViewerPreferences
-				// (#viewer.getPaletteViewerPreferences()).
-				// // This way we could store the preferences in our preference store (maybe the
-				// JaspersoftStudio plugin one).
-				// // For now we'll stay with this solution avoiding the user to lose previous
-				// saved preferences
+				// // TODO: we should replace these default suggestions not using the GEF preference
+				// // store explicitly. It would be better override the PaletteViewer creation in order
+				// // to have a custom PaletteViewerPreferences (#viewer.getPaletteViewerPreferences()).
+				// // This way we could store the preferences in our preference store (maybe the JaspersoftStudio plugin one).
+				// // For now we'll stay with this solution avoiding the user to lose previous saved preferences
 				// // regarding the palette.
 				// InternalGEFPlugin.getDefault().getPreferenceStore().setDefault(
-				// PaletteViewerPreferences.PREFERENCE_LAYOUT,
-				// PaletteViewerPreferences.LAYOUT_COLUMNS);
+				// PaletteViewerPreferences.PREFERENCE_LAYOUT, PaletteViewerPreferences.LAYOUT_COLUMNS);
 				// InternalGEFPlugin.getDefault().getPreferenceStore().setDefault(
 				// PaletteViewerPreferences.PREFERENCE_COLUMNS_ICON_SIZE,true);
 			}
@@ -682,8 +646,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	}
 
 	/**
-	 * Create the contextual action to add stuff to the datasets (fields, variables)
-	 * and to create styles.
+	 * Create the contextual action to add stuff to the datasets (fields, variables) and to create styles.
 	 */
 	protected void createDatasetAndStyleActions(ActionRegistry registry) {
 		List<String> selectionActions = getSelectionActions();
@@ -692,10 +655,6 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		registry.registerAction(action);
 		selectionActions.add(CreateFieldAction.ID);
 
-		action = new CreateFieldsContainerAction(this);
-		registry.registerAction(action);
-		selectionActions.add(CreateFieldsContainerAction.ID);
-
 		action = new CreateSortFieldAction(this);
 		registry.registerAction(action);
 		selectionActions.add(CreateSortFieldAction.ID);
@@ -703,38 +662,6 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		action = new CreateVariableAction(this);
 		registry.registerAction(action);
 		selectionActions.add(CreateVariableAction.ID);
-
-		action = new SortVariablesAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortVariablesAction.ID);
-
-		action = new SortParametersAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortParametersAction.ID);
-
-		action = new SortFieldsAction(this);
-		registry.registerAction(action);
-		selectionActions.add(SortFieldsAction.ID);
-
-		action = new ShowFieldsTreeAction(this);
-		registry.registerAction(action);
-		selectionActions.add(ShowFieldsTreeAction.ID);
-
-		action = new DeleteFieldsGroupAction(this);
-		registry.registerAction(action);
-		selectionActions.add(DeleteFieldsGroupAction.ID);
-
-		action = new DeleteFieldsAllGroupAction(this);
-		registry.registerAction(action);
-		selectionActions.add(DeleteFieldsAllGroupAction.ID);
-
-		action = new HideDefaultsParametersAction(this);
-		registry.registerAction(action);
-		selectionActions.add(HideDefaultsParametersAction.ID);
-
-		action = new HideDefaultVariablesAction(this);
-		registry.registerAction(action);
-		selectionActions.add(HideDefaultVariablesAction.ID);
 
 		action = new CreateScriptletAction(this);
 		registry.registerAction(action);
@@ -783,7 +710,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		action = new RefreshTemplateStyleReference(this);
 		registry.registerAction(action);
 		selectionActions.add(RefreshTemplateStyleReference.ID);
-
+		
 		action = new RefreshImageAction(this);
 		registry.registerAction(action);
 		selectionActions.add(RefreshImageAction.ID);
@@ -832,8 +759,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 
 		List<String> selectionActions = getSelectionActions();
 
-		// Create the custom delete action that aggregate all the messages when more
-		// elements are deleted
+		// Create the custom delete action that aggregate all the messages when more elements are deleted
 		// the old default action is replaced
 		createDeleteAction(registry);
 
@@ -1117,14 +1043,6 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 		registry.registerAction(action);
 		selectionActions.add(action.getId());
 
-		action = new BindElementsAction(this);
-		registry.registerAction(action);
-		selectionActions.add(action.getId());
-
-		action = new UnBindElementsAction(this);
-		registry.registerAction(action);
-		selectionActions.add(action.getId());
-
 		action = new CreateCompositeElementAction(this);
 		registry.registerAction(action);
 		selectionActions.add(action.getId());
@@ -1235,9 +1153,8 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	}
 
 	/**
-	 * Contributes items to the specified toolbar that is supposed to be put on the
-	 * top right of the current visual editor (i.e: ReportEditor, CrosstabEditor,
-	 * TableEditor, ListEditor).
+	 * Contributes items to the specified toolbar that is supposed to be put on the top right of the current visual editor
+	 * (i.e: ReportEditor, CrosstabEditor, TableEditor, ListEditor).
 	 * <p>
 	 * 
 	 * Default behavior contributes the following items:
@@ -1251,7 +1168,7 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 	 * Sub-classes may want to override this method to modify the toolbar.
 	 * 
 	 * @param toolbarManager
-	 *            the toolbar manager to be enriched
+	 *          the toolbar manager to be enriched
 	 */
 	public void contributeItemsToEditorTopToolbar(IToolBarManager toolbarManager) {
 		this.topToolbarManager = toolbarManager;
@@ -1282,22 +1199,5 @@ public abstract class AbstractVisualEditor extends J2DGraphicalEditorWithFlyoutP
 			node = node.getChildren().get(node.getChildren().size() - 1);
 		}
 		return node;
-	}
-
-	/**
-	 * Check if the current editor is the visible page of the multi page editor
-	 * 
-	 * @return true if the editor is visible, false otherwise
-	 */
-	public boolean isEditorVisible() {
-		IEditorPart editor = SelectionHelper.getActiveJRXMLEditor();
-		if (editor != null && editor instanceof AbstractJRXMLEditor) {
-			AbstractJRXMLEditor jrxmlEditor = (AbstractJRXMLEditor) editor;
-			IEditorPart activeEditor = jrxmlEditor.getActiveInnerEditor();
-			if (activeEditor != null) {
-				return (this == activeEditor);
-			}
-		}
-		return true;
 	}
 }

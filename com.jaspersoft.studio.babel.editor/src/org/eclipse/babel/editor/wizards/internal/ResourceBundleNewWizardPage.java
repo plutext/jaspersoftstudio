@@ -12,7 +12,6 @@
 
 package org.eclipse.babel.editor.wizards.internal;
 
-import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.eclipse.babel.editor.widgets.LocaleSelector;
@@ -22,7 +21,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -80,8 +78,8 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
 
     private LocaleSelector localeSelector;
 
-    private String defaultPath = ""; //$NON-NLS-1$
-    private String defaultRBName = "ApplicationResources"; //$NON-NLS-1$
+    private String defaultPath = "";
+    private String defaultRBName = "ApplicationResources";
 
     /**
      * Constructor for SampleNewWizardPage.
@@ -90,7 +88,7 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
      *            workbench selection
      */
     public ResourceBundleNewWizardPage(ISelection selection, String defaultPath, String defaultRBName) {
-        super("wizardPage"); //$NON-NLS-1$
+        super("wizardPage");
         setTitle(Messages.editor_wiz_title);
         setDescription(Messages.editor_wiz_desc);
         this.selection = selection;
@@ -102,7 +100,7 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
     }
     
     public ResourceBundleNewWizardPage(ISelection selection) {
-        super("wizardPage"); //$NON-NLS-1$
+        super("wizardPage");
         setTitle(Messages.editor_wiz_title);
         setDescription(Messages.editor_wiz_desc);
         this.selection = selection;
@@ -364,17 +362,17 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
      */
     protected void dialogChanged() {
         String container = getContainerName();
-        String baseName = getFileName();
+        String fileName = getFileName();
 
         if (container.length() == 0) {
             updateStatus(Messages.editor_wiz_error_container, IMessageProvider.ERROR);
             return;
         }
-        if (baseName.length() == 0) {
+        if (fileName.length() == 0) {
             updateStatus(Messages.editor_wiz_error_bundleName, IMessageProvider.ERROR);
             return;
         }
-        int dotLoc = baseName.lastIndexOf('.');
+        int dotLoc = fileName.lastIndexOf('.');
         if (dotLoc != -1) {
             updateStatus(Messages.editor_wiz_error_extension, IMessageProvider.ERROR);
             return;
@@ -397,30 +395,12 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
             return;
         }
 
-        //check if the project folder exist
-        if (!resourceExist(pathContainer.segment(0))) {
+        if (!projectExists(pathContainer.segment(0))) {
             String errormessage = Messages.editor_wiz_error_projectnotexist;
             errormessage = String.format(errormessage, pathContainer.segment(0));
             updateStatus(errormessage, IMessageProvider.ERROR); 
             return;
         }
-
-      String[] locales = getLocaleStrings();
-      for (int i = 0; i < locales.length; i++) {
-          String fileName = baseName;
-          if (locales[i].equals(ResourceBundleNewWizardPage.DEFAULT_LOCALE)) {
-              fileName += ".properties"; //$NON-NLS-1$
-          } else {
-              fileName += "_" + locales[i] + ".properties"; //$NON-NLS-1$ //$NON-NLS-2$
-          }
-          IPath resourcePath = pathContainer.append(new Path(fileName));
-          if (resourceExist(resourcePath.toString())){
-        	  String errormessage = Messages.ResourceBundleNewWizardPage_errorResourceExisting; 
-              errormessage = MessageFormat.format(errormessage, fileName);
-              updateStatus(errormessage, IMessageProvider.ERROR); 
-              return;
-          }
-      }
 
         updateStatus(null, IMessageProvider.NONE);
     }
@@ -480,19 +460,14 @@ public class ResourceBundleNewWizardPage extends HelpWizardPage {
     }
 
     /**
-     * Checks if there is a resource with the given name in the Package Explorer
+     * Checks if there is a Project with the given name in the Package Explorer
      * 
-     * @param resourceName hte name of the resource
+     * @param projectName
      * @return
      */
-     protected boolean resourceExist(String resourceName) {
+     protected boolean projectExists(String projectName) {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        Path containerNamePath = null;
-        if (resourceName.startsWith("/")){ //$NON-NLS-1$
-        	containerNamePath = new Path(resourceName);
-        } else {
-        	containerNamePath = new Path("/" + resourceName); //$NON-NLS-1$
-        }
+        Path containerNamePath = new Path("/" + projectName);
         IResource resource = root.findMember(containerNamePath);
         if (resource == null) {
             return false;

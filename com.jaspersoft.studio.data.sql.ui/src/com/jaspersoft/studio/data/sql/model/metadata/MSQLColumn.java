@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.model.metadata;
 
@@ -78,10 +86,6 @@ public class MSQLColumn extends AMSQLObject implements IDragable {
 		return super.getImagePath();
 	}
 
-	public String getUnformattedTypeName() {
-		return typeName;
-	}
-
 	public String getTypeName() {
 		return formatedType();
 	}
@@ -90,17 +94,12 @@ public class MSQLColumn extends AMSQLObject implements IDragable {
 		if (typeName == null)
 			return "";
 		String tname = "\n" + typeName;
-		if (typeName.equalsIgnoreCase("VARCHAR") || typeName.equalsIgnoreCase("CHAR")
-				|| typeName.equalsIgnoreCase("CHARACTER") || typeName.equalsIgnoreCase("NATIONAL CHARACTER")
-				|| typeName.equalsIgnoreCase("NCHAR") || typeName.equalsIgnoreCase("CHARACTER VARYING")
-				|| typeName.equalsIgnoreCase("NATIONAL CHARACTER VARYING") || typeName.equalsIgnoreCase("NVARCHAR")
-				|| typeName.equalsIgnoreCase("BIT") || typeName.equalsIgnoreCase("BIT VARYING")
-				|| typeName.equalsIgnoreCase(" TEXT") || typeName.equalsIgnoreCase("STRING")
-				|| typeName.equalsIgnoreCase("BINARY") || typeName.equalsIgnoreCase("VARBINARY")
-				|| typeName.equalsIgnoreCase("LONGVARBINARY") || typeName.equalsIgnoreCase("NVARCHAR2"))
+		if (typeName.equalsIgnoreCase("VARCHAR") || typeName.equalsIgnoreCase("CHAR") || typeName.equalsIgnoreCase("CHARACTER") || typeName.equalsIgnoreCase("NATIONAL CHARACTER")
+				|| typeName.equalsIgnoreCase("NCHAR") || typeName.equalsIgnoreCase("CHARACTER VARYING") || typeName.equalsIgnoreCase("NATIONAL CHARACTER VARYING") || typeName.equalsIgnoreCase("NVARCHAR")
+				|| typeName.equalsIgnoreCase("BIT") || typeName.equalsIgnoreCase("BIT VARYING") || typeName.equalsIgnoreCase(" TEXT") || typeName.equalsIgnoreCase("STRING")
+				|| typeName.equalsIgnoreCase("BINARY") || typeName.equalsIgnoreCase("VARBINARY") || typeName.equalsIgnoreCase("LONGVARBINARY") || typeName.equalsIgnoreCase("NVARCHAR2"))
 			tname += "(" + columnSize + ")";
-		else if (typeName.equalsIgnoreCase("NUMERIC") || typeName.equalsIgnoreCase("DECIMAL")
-				|| typeName.equalsIgnoreCase("NUMBER"))
+		else if (typeName.equalsIgnoreCase("NUMERIC") || typeName.equalsIgnoreCase("DECIMAL") || typeName.equalsIgnoreCase("NUMBER"))
 			tname += "(" + precission + ", " + scale + ")";
 		if (!nullable)
 			tname += " NOT NULL";

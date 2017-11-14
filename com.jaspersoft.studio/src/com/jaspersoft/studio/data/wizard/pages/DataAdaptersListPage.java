@@ -1,12 +1,18 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.wizard.pages;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -27,64 +33,15 @@ import org.eclipse.ui.PlatformUI;
 
 import com.jaspersoft.studio.data.DataAdapterFactory;
 import com.jaspersoft.studio.data.DataAdapterManager;
-import com.jaspersoft.studio.data.customadapters.ConfigurableDataAdapterFactory;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-import com.jaspersoft.studio.wizards.JSSWizard;
-
-import net.sf.jasperreports.data.DataAdapter;
 
 public class DataAdaptersListPage extends WizardPage {
 
-	private List<DataAdapterFactory> dataAdapterFactories = null;
+	java.util.List<DataAdapterFactory> dataAdapterFactories = null;
 
 	private TableViewer tviewer;
-	
 	private Table wtable;
-	
-	/**
-	 * Custom content provider that will avoid to show {@link ConfigurableDataAdapterFactory} which
-	 * have a {@link DataAdapter} class that can not be resolved
-	 */
-	private class DataAdapterContentProvider extends ListContentProvider{
-		
-		@Override
-		public Object[] getElements(Object inputElement) {
-			List<?> elements = null;
-			if (inputElement != null && inputElement instanceof List) {
-				elements = new ArrayList<Object>((List<?>)inputElement);
-			} else if (inputElement != null && inputElement instanceof Collection){
-				elements = new ArrayList<Object>((Collection<?>) inputElement);
-			}
-			if (elements != null) {
-				List<Object> result = new ArrayList<Object>();
-				for (Iterator<?> iter = elements.iterator(); iter.hasNext(); ) {
-				    Object element = iter.next();
-				    if (element instanceof ConfigurableDataAdapterFactory) {
-				    	ConfigurableDataAdapterFactory configurableFactory = (ConfigurableDataAdapterFactory)element;
-				    	JSSWizard wizard = (JSSWizard)getWizard();
-				    	JasperReportsConfiguration jConfig = wizard.getConfig();
-				    	if (jConfig == null) {
-				    		jConfig = JasperReportsConfiguration.getDefaultInstance();
-				    	}
-				    	try {
-				    		//test if the class can be resolved in the current configuration
-				    		configurableFactory.testExistence(jConfig);
-				    		result.add(element);
-				    	} catch (Exception ex) {
-				    	}
-				    } else {
-				    	result.add(element);
-				    }
-				}
-				return result
-						.toArray();
-			} else {
-				return new Object[0];
-			}
-		}
-	}
 
 	/**
 	 * Create the wizard.
@@ -124,7 +81,7 @@ public class DataAdaptersListPage extends WizardPage {
 		wtable.setLayout(tlayout);
 
 		tviewer = new TableViewer(wtable);
-		tviewer.setContentProvider(new DataAdapterContentProvider());
+		tviewer.setContentProvider(new ListContentProvider());
 		tviewer.setLabelProvider(new LLabelProvider());
 		tviewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
@@ -147,7 +104,7 @@ public class DataAdaptersListPage extends WizardPage {
 			}
 		});
 		updateFactoriesList();
-		tviewer.setInput(dataAdapterFactories);
+
 		if (dataAdapterFactories.size() > 0) {
 			wtable.setSelection(0);
 			setPageComplete(wtable.getSelectionCount() > 0);
@@ -157,7 +114,6 @@ public class DataAdaptersListPage extends WizardPage {
 
 	@Override
 	public boolean canFlipToNextPage() {
-		tviewer.refresh();
 		return (wtable.getSelectionCount() == 1) ? true : false;
 	}
 
@@ -172,6 +128,7 @@ public class DataAdaptersListPage extends WizardPage {
 				list.add(daf);
 		}
 		dataAdapterFactories = list;
+		tviewer.setInput(dataAdapterFactories);
 	}
 
 	public DataAdapterFactory getSelectedFactory() {

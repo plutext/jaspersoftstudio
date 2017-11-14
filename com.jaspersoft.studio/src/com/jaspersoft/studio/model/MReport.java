@@ -1,5 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -27,8 +32,6 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.band.MBand;
 import com.jaspersoft.studio.model.band.MBandGroupFooter;
 import com.jaspersoft.studio.model.band.MBandGroupHeader;
-import com.jaspersoft.studio.model.dataset.DatasetPropertyExpressionDTO;
-import com.jaspersoft.studio.model.dataset.DatasetPropertyExpressionsDTO;
 import com.jaspersoft.studio.model.dataset.MDataset;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.model.util.NodeIconDescriptor;
@@ -39,8 +42,7 @@ import com.jaspersoft.studio.property.descriptor.checkbox.CheckBoxPropertyDescri
 import com.jaspersoft.studio.property.descriptor.classname.ImportDeclarationPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptor.classname.NClassTypePropertyDescriptor;
 import com.jaspersoft.studio.property.descriptor.combo.RWComboBoxPropertyDescriptor;
-import com.jaspersoft.studio.property.descriptor.propexpr.JPropertyExpressionsDescriptor;
-import com.jaspersoft.studio.property.descriptor.propexpr.PropertyExpressionDTO;
+import com.jaspersoft.studio.property.descriptor.properties.JPropertiesPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.IntegerPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.JSSTextPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
@@ -50,12 +52,11 @@ import com.jaspersoft.studio.property.section.report.PageFormatUtils;
 import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
 import com.jaspersoft.studio.property.section.widgets.SPToolBarEnum;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.data.DataAdapterParameterContributorFactory;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.DatasetPropertyExpression;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDataset;
@@ -63,8 +64,6 @@ import net.sf.jasperreports.engine.JRGroup;
 import net.sf.jasperreports.engine.JROrigin;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.JRPropertyExpression;
-import net.sf.jasperreports.engine.design.DesignDatasetPropertyExpression;
 import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -215,12 +214,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		nameD.setCategory(Messages.common_report);
 		desc.add(nameD);
 
-		JSSTextPropertyDescriptor descD = new JSSTextPropertyDescriptor(
-				PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION, Messages.common_description);
-		nameD.setCategory(Messages.common_report);
-		descD.setDescription(Messages.common_description);
-		desc.add(descD);
-
 		NClassTypePropertyDescriptor formatFactoryClassD = new NClassTypePropertyDescriptor(
 				JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS, Messages.MReport_format_factory_class);
 		formatFactoryClassD.setDescription(Messages.MReport_format_factory_class_description);
@@ -351,12 +344,10 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		ignorePaginationD.setDescription(Messages.MReport_ignore_pagination_description);
 		desc.add(ignorePaginationD);
 
-		JPropertyExpressionsDescriptor propertiesD = new JPropertyExpressionsDescriptor(
-				JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS, Messages.MGraphicElement_property_expressions);
-		propertiesD.setDescription(Messages.MGraphicElement_property_expressions_description);
-		desc.add(propertiesD);
-		propertiesD.setHelpRefBuilder(
-				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#property")); //$NON-NLS-1$
+		JPropertiesPropertyDescriptor propertiesMapD = new JPropertiesPropertyDescriptor(MGraphicElement.PROPERTY_MAP,
+				Messages.common_properties);
+		propertiesMapD.setDescription(Messages.common_properties);
+		desc.add(propertiesMapD);
 
 		CheckBoxPropertyDescriptor createBookmarks = new CheckBoxPropertyDescriptor(PROPERY_CREATE_BOOKMARKS,
 				Messages.MReport_createBookmarksTitle);
@@ -422,8 +413,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		JasperDesign jrDesign = (JasperDesign) getValue();
 		if (id.equals(JasperDesign.PROPERTY_NAME))
 			return jrDesign.getName();
-		if (id.equals(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION))
-			return jrDesign.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
 		if (id.equals(JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS))
 			return jrDesign.getFormatFactoryClass();
 		if (id.equals(JasperDesign.PROPERTY_IMPORTS)) {
@@ -431,15 +420,17 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			String[] imports = jrDesign.getImports();
 			if (imports != null) {
 				int lenght = imports.length;
-				for (int i = 0; i < lenght; i++)
+				for (int i = 0; i < lenght; i++) {
 					res += imports[i] + ";"; //$NON-NLS-1$
+				}
 			}
 			return res;
 		}
 
 		if (id.equals(JasperDesign.PROPERTY_MAIN_DATASET)) {
-			if (mDataset == null)
+			if (mDataset == null) {
 				createDataset(jrDesign);
+			}
 			return mDataset;
 		}
 
@@ -485,21 +476,16 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			return new Boolean(jrDesign.isFloatColumnFooter());
 		if (id.equals(JasperDesign.PROPERTY_IGNORE_PAGINATION))
 			return new Boolean(jrDesign.isIgnorePagination());
-
-		if (id.equals(JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS)) {
-			JRPropertyExpression[] propertyExpressions = jrDesign.getPropertyExpressions();
-			if (propertyExpressions != null)
-				propertyExpressions = propertyExpressions.clone();
-			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDesign), getValue(),
-					ModelUtils.getExpressionContext(this));
+		if (id.equals(MGraphicElement.PROPERTY_MAP)) {
+			// to avoid duplication I remove it first
+			return (JRPropertiesMap) jrDesign.getPropertiesMap().cloneProperties();
 		}
-		if (id.equals(PROPERTY_MAP))
-			return getPropertiesMapClone(jrDesign);
 		if (id.equals(PROPERY_CREATE_BOOKMARKS)) {
 			String value = jrDesign.getPropertiesMap().getProperty(JR_CREATE_BOOKMARKS);
 			if (value == null)
 				return false;
-			return Boolean.parseBoolean(value);
+			else
+				return Boolean.parseBoolean(value);
 		}
 		if (id.equals(DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION)) {
 			JRDataset dataset = jrDesign.getMainDataset();
@@ -508,13 +494,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			return location;
 		}
 		return null;
-	}
-
-	protected JRPropertiesMap getPropertiesMapClone(JasperDesign jrElement) {
-		JRPropertiesMap propertiesMap = jrElement.getPropertiesMap();
-		if (propertiesMap != null)
-			propertiesMap = propertiesMap.cloneProperties();
-		return propertiesMap;
 	}
 
 	/*
@@ -526,8 +505,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		JasperDesign jrDesign = (JasperDesign) getValue();
 		if (id.equals(JasperDesign.PROPERTY_NAME))
 			jrDesign.setName((String) value);
-		else if (id.equals(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION))
-			jrDesign.setProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION, (String) value);
 		else if (id.equals(JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS)) {
 			if (value instanceof String && ((String) value).trim().isEmpty())
 				value = null;
@@ -598,41 +575,7 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			jrDesign.setFloatColumnFooter(((Boolean) value).booleanValue());
 		else if (id.equals(JasperDesign.PROPERTY_IGNORE_PAGINATION))
 			jrDesign.setIgnorePagination(((Boolean) value).booleanValue());
-		else if (id.equals(JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS)) {
-			if (value instanceof DatasetPropertyExpressionsDTO) {
-				DatasetPropertyExpressionsDTO dto = (DatasetPropertyExpressionsDTO) value;
-				DatasetPropertyExpression[] expr = jrDesign.getPropertyExpressions();
-				// Remove the old expression properties if any
-				if (expr != null)
-					for (DatasetPropertyExpression ex : expr)
-						jrDesign.removePropertyExpression(ex);
-				// Add the new expression properties
-				for (PropertyExpressionDTO p : dto.getProperties()) {
-					if (p.isExpression()) {
-						DesignDatasetPropertyExpression newExp = new DesignDatasetPropertyExpression();
-						newExp.setName(p.getName());
-						newExp.setValueExpression(p.getValueAsExpression());
-						newExp.setEvaluationTime(((DatasetPropertyExpressionDTO) p).getEvalTime());
-						jrDesign.addPropertyExpression((DatasetPropertyExpression) newExp);
-					}
-				}
-				// now change properties, first remove the old ones if any
-				JRPropertiesMap originalMap = jrDesign.getPropertiesMap().cloneProperties();
-				String[] names = jrDesign.getPropertiesMap().getPropertyNames();
-				for (int i = 0; i < names.length; i++) {
-					jrDesign.getPropertiesMap().removeProperty(names[i]);
-				}
-				// now add the new properties
-				for (PropertyExpressionDTO p : dto.getProperties()) {
-					if (!p.isExpression()) {
-						jrDesign.getPropertiesMap().setProperty(p.getName(), p.getValue());
-					}
-				}
-				// really important to trigger the property with source the JR object and not the node
-				// using the node could cause problem with the refresh of the advanced properties view
-				firePropertyChange(new PropertyChangeEvent(jrDesign, PROPERTY_MAP, originalMap, jrDesign.getPropertiesMap()));
-			}
-		} else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
+		else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
 			JRPropertiesMap v = (JRPropertiesMap) value;
 			String[] names = jrDesign.getPropertiesMap().getPropertyNames();
 			for (int i = 0; i < names.length; i++)

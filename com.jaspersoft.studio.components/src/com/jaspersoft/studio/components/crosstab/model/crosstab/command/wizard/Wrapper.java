@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.model.crosstab.command.wizard;
 
@@ -11,7 +19,6 @@ public class Wrapper {
 	private Object value;
 	private AgregationFunctionEnum calculation = AgregationFunctionEnum.UNIQUE;
 	private String oldExpText;
-	private String oldExpClassName;
 
 	public Wrapper(Object value) {
 		super();
@@ -19,11 +26,9 @@ public class Wrapper {
 		if (value instanceof JRDesignCrosstabColumnGroup) {
 			JRDesignCrosstabColumnGroup cg = (JRDesignCrosstabColumnGroup) value;
 			oldExpText = cg.getBucket().getExpression().getText();
-			oldExpClassName = cg.getBucket().getValueClassName();
 		} else if (value instanceof JRDesignCrosstabRowGroup) {
 			JRDesignCrosstabRowGroup rg = (JRDesignCrosstabRowGroup) value;
 			oldExpText = rg.getBucket().getExpression().getText();
-			oldExpClassName = rg.getBucket().getValueClassName();
 		}
 	}
 
@@ -53,13 +58,6 @@ public class Wrapper {
 	@Override
 	public int hashCode() {
 		return value.hashCode();
-	}
-	
-	/**
-	 * Return the class of the dataset item used to build this wrapper
-	 */
-	public String getDatasetItemClassName() {
-		return oldExpClassName;
 	}
 
 	/**

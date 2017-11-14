@@ -1,17 +1,24 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.jrexpressions.ui.support.java;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jasperreports.eclipse.util.BundleCommonUtils;
+
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.INode;
@@ -30,8 +37,6 @@ import com.jaspersoft.studio.editor.jrexpressions.ui.JRExpressionsUIPlugin;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectCategorySelectionEvent;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectCategorySelectionListener;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.StyledTextXtextAdapter2;
-
-import net.sf.jasperreports.eclipse.util.BundleCommonUtils;
 
 /**
  * Utility object that exposes some methods to work with the current editing area.
@@ -358,51 +363,18 @@ public class EditingAreaHelper {
 	/**
 	 * Inserts new text in the editing area and if specified select also 
 	 * the newly inserted text.
-	 * <p>
-	 * 
-	 * When specified the <code>moveAfterText</code> flag has precedence over the <code>selectNewText</code> one.
 	 * 
 	 * @param partialExpression the text string to enter in the editing area
-	 * @param selectNewText flag to decide if the selection of the newly inserted text must be applied
-	 * @param moveAfterText flag to decide if the cursor should be moved at the end of the inserted text
+	 * @param selectNewText applies or not the selection of the newly inserted text
 	 */
-	public void insertAtCurrentLocation(String partialExpression,boolean selectNewText,boolean moveAfterText){
-		Point currSelection = textArea.getSelection();
-		// Insert the new text in the cursor position
-		textArea.insert(partialExpression);
-		// Trick to avoid a "dirty insert effect": it appears that simply inserting/replacing
-		// with the new text leaves part of the original text selected left in the widget area.
-		textArea.redraw();
-		// Fix the selection if the old selection should be restored
-		int start=currSelection.x;
+	public void insertAtCurrentLocation(String partialExpression,boolean selectNewText){
+		int start=textArea.getSelection().x;
 		int end=start;
+		textArea.insert(partialExpression);
 		if(selectNewText){
 			end=start+partialExpression.length();
 		}
-		if(moveAfterText){
-			// after insert move cursor position after inserted text
-			int newPosition = end+partialExpression.length();
-			start=end=newPosition;
-		}
 		textArea.setSelection(start, end);
-	}
-	
-	/**
-	 * Draws a black vertical line, simulating a not-blinking cursor in the caret
-	 * offset position. Useful of control focus lost when you want to show the user
-	 * where his stuff will be inserted. 
-	 */
-	public void drawFakeCursor(){
-		int selectionStart = textArea.getSelection().x;
-		int selectionEnd = textArea.getSelection().y;
-		if(selectionStart==selectionEnd){
-			Point position = textArea.getLocationAtOffset(selectionEnd);
-			int height = textArea.getLineHeight(selectionEnd);
-			GC gc = new GC(textArea);
-			gc.setBackground(textArea.getDisplay().getSystemColor (SWT.COLOR_BLACK));
-			gc.fillRectangle(position.x, position.y, 2, height);
-			gc.dispose();
-		}
 	}
 	
 	/**
@@ -461,34 +433,5 @@ public class EditingAreaHelper {
 	 */
 	public void ignoreAutoEditStrategies(boolean ignore){
 		xtextAdapter.ignoreAutoEditStrategies(ignore);
-	}
-
-	/**
-	 * Tries to move the caret position after the next parenthesis if any.
-	 */
-	public void moveCaretToNextParenthesis() {
-		int caretOffset = textArea.getCaretOffset();
-		int textLength = textArea.getText().length();
-		String text = textArea.getText();
-		int newPosition = -1;
-		for(int i=caretOffset;i<=textLength;i++){
-			if(text.charAt(i) == '('){
-				newPosition = i+1;
-				break;
-			}
-		}
-		if(newPosition!=-1){
-			textArea.setSelection(newPosition, newPosition);
-		}
-	}
-
-	/**
-	 * Tries to move the caret position ahead of the specified number of chars.
-	 * 
-	 * @param positions the number of positions to move ahead
-	 */
-	public void moveCaretAhead(int positions) {
-		int newpos = textArea.getSelection().y + positions;
-		textArea.setSelection(newpos,newpos);
 	}
 }

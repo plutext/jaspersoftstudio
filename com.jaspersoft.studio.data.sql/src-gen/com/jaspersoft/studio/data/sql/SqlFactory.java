@@ -32,24 +32,6 @@ public interface SqlFactory extends EFactory
   Model createModel();
 
   /**
-   * Returns a new object of class '<em>With Query</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>With Query</em>'.
-   * @generated
-   */
-  WithQuery createWithQuery();
-
-  /**
-   * Returns a new object of class '<em>With Columns</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>With Columns</em>'.
-   * @generated
-   */
-  WithColumns createWithColumns();
-
-  /**
    * Returns a new object of class '<em>Fetch First</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

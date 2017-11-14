@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.model.crosstab.command.wizard;
 
@@ -48,7 +56,6 @@ import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.type.CalculationEnum;
 
 public class CrosstabWizard extends JSSWizard {
@@ -79,9 +86,10 @@ public class CrosstabWizard extends JSSWizard {
 
 	@Override
 	public void addPages() {
-		JasperDesign jd = getConfig().getJasperDesign();
-		JRDesignCrosstab jrCrosstab = (JRDesignCrosstab) new MCrosstab().createJRElement(jd);
-		crosstab = new MCrosstab(null, jrCrosstab, 1, new CrosstabManager(jrCrosstab, jd));
+		JRDesignCrosstab jrCrosstab = (JRDesignCrosstab) new MCrosstab()
+				.createJRElement(getConfig().getJasperDesign());
+		crosstab = new MCrosstab(null, jrCrosstab, 1, new CrosstabManager(
+				jrCrosstab));
 		crosstab.setJasperConfiguration(getConfig());
 
 		step1 = new WizardDatasetPage("Crosstab"){
@@ -202,7 +210,7 @@ public class CrosstabWizard extends JSSWizard {
 				try {
 					JRDesignCrosstabColumnGroup c = (JRDesignCrosstabColumnGroup) obj;
 					// c.setName(ModelUtils.getDefaultName(jdc, c.getName()));
-					CrosstabUtil.addColumnGroup(jdc, c, -1, 20 * jdc.getMeasures().length);
+					CrosstabUtil.addColumnGroup(jdc, c, -1);
 				} catch (JRException e) {
 					e.printStackTrace();
 				}
@@ -216,7 +224,7 @@ public class CrosstabWizard extends JSSWizard {
 				try {
 					JRDesignCrosstabRowGroup r = (JRDesignCrosstabRowGroup) obj;
 					// r.setName(ModelUtils.getDefaultName(jdc, r.getName()));
-					CrosstabUtil.addRowGroup(jdc, r, -1, 20 * jdc.getMeasures().length);
+					CrosstabUtil.addRowGroup(jdc, r, -1);
 				} catch (JRException e) {
 					e.printStackTrace();
 				}
@@ -232,6 +240,7 @@ public class CrosstabWizard extends JSSWizard {
 		ApplyCrosstabStyleAction applyAction = new ApplyCrosstabStyleAction(
 				step5.getSelectedStyle(), crosstab.getValue());
 		applyAction.applayStyle(getConfig().getJasperDesign());
+
 		return crosstab;
 	}
 
@@ -242,7 +251,6 @@ public class CrosstabWizard extends JSSWizard {
 			for (JRCrosstabCell c : cells) {
 				int y = 0;
 				if (c.getHeight() != null && measures.length > 0) {
-					//((JRDesignCrosstabCell)c).setHeight(20 * measures.length);
 					int h = c.getHeight() / measures.length;
 					for (int i = 0; i < measures.length; i++) {
 						JRDesignExpression exp = new JRDesignExpression();
@@ -264,18 +272,17 @@ public class CrosstabWizard extends JSSWizard {
 
 	private void setupRowGroups(JRDesignCrosstab jdc) {
 		List<JRCrosstabRowGroup> rows = jdc.getRowGroupsList();
-		for (JRCrosstabRowGroup rowGroup : rows) {
-			((JRDesignCellContents)rowGroup.getHeader()).setHeight(20 * jdc.getMeasures().length);
-			for (JRElement e : rowGroup.getHeader().getElements()) {
+		for (JRCrosstabRowGroup colGroup : rows) {
+			for (JRElement e : colGroup.getHeader().getElements()) {
 				JRDesignElement el = (JRDesignElement) e;
-				el.setWidth(rowGroup.getHeader().getWidth());
-				el.setHeight(rowGroup.getHeader().getHeight());
+				el.setWidth(colGroup.getHeader().getWidth());
+				el.setHeight(colGroup.getHeader().getHeight());
 			}
 
-			for (JRElement e : rowGroup.getTotalHeader().getElements()) {
+			for (JRElement e : colGroup.getTotalHeader().getElements()) {
 				JRDesignElement el = (JRDesignElement) e;
-				el.setWidth(rowGroup.getTotalHeader().getWidth());
-				el.setHeight(rowGroup.getTotalHeader().getHeight());
+				el.setWidth(colGroup.getTotalHeader().getWidth());
+				el.setHeight(colGroup.getTotalHeader().getHeight());
 			}
 		}
 	}
@@ -455,45 +462,18 @@ public class CrosstabWizard extends JSSWizard {
 					+ ")");
 			bucket.setValueClassName(String.class.getName());
 		} else if (function == AgregationFunctionEnum.MONTH) {
-			exp.setText("new SimpleDateFormat(\"MM\").format("
+			exp.setText("new SimpleDateFormat(\"yyyy-MM\").format("
 					+ oldExpText + ")");
 			bucket.setValueClassName(String.class.getName());
 		} else if (function == AgregationFunctionEnum.WEEK) {
-			exp.setText("new SimpleDateFormat(\"ww\").format("
+			exp.setText("new SimpleDateFormat(\"yyyy-ww\").format("
 					+ oldExpText + ")");
 			bucket.setValueClassName(String.class.getName());
 		} else if (function == AgregationFunctionEnum.DAY) {
-			exp.setText("new SimpleDateFormat(\"dd\").format("
+			exp.setText("new SimpleDateFormat(\"yyyy-MM-dd\").format("
 					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.DAY_OF_THE_WEEK) {
-			exp.setText("new SimpleDateFormat(\"u\").format("
-					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.HOUR) {
-			exp.setText("new SimpleDateFormat(\"HH\").format("
-					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.MINUTE) {
-			exp.setText("new SimpleDateFormat(\"mm\").format("
-					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.SECOND) {
-			exp.setText("new SimpleDateFormat(\"ss\").format("
-					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.MILLISECOND) {
-			exp.setText("new SimpleDateFormat(\"SSSS\").format("
-					+ oldExpText + ")");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.QUARTER) {
-			exp.setText("(Integer.parseInt(new SimpleDateFormat(\"MM\").format(" + oldExpText + "))/4)+1");
-			bucket.setValueClassName(String.class.getName());
-		} else if (function == AgregationFunctionEnum.SEMESTER) {
-			exp.setText("(Integer.parseInt(new SimpleDateFormat(\"MM\").format(" + oldExpText + "))/6)+1");
 			bucket.setValueClassName(String.class.getName());
 		}
-
 		bucket.setExpression(exp);
 	}
 

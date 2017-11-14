@@ -1,10 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.preferences.exporter;
 
+import net.sf.jasperreports.export.TextExporterConfiguration;
+import net.sf.jasperreports.export.TextReportConfiguration;
+
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
@@ -12,15 +24,11 @@ import com.jaspersoft.studio.help.HelpSystem;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.StudioPreferencePage;
 import com.jaspersoft.studio.preferences.editor.number.FloatFieldEditor;
-import com.jaspersoft.studio.preferences.editor.number.JSSIntegerFieldEditor;
 import com.jaspersoft.studio.preferences.editor.text.NStringFieldEditor;
 import com.jaspersoft.studio.preferences.editor.text.TextFieldEditor;
 import com.jaspersoft.studio.preferences.util.FieldEditorOverlayPage;
 import com.jaspersoft.studio.preferences.util.PropertiesHelper;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.export.TextExporterConfiguration;
-import net.sf.jasperreports.export.TextReportConfiguration;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * 
@@ -39,28 +47,24 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 	public void createFieldEditors() {
 		FloatFieldEditor ffe = new FloatFieldEditor(TextReportConfiguration.PROPERTY_CHARACTER_WIDTH,
 				Messages.TextExporterPreferencePage_7, getFieldEditorParent());
-		ffe.setErrorMessage("Invalid float value for field: " + Messages.TextExporterPreferencePage_7);
 		addField(ffe);
 		HelpSystem.setHelp(ffe.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ffe.getPreferenceName());
 
 		ffe = new FloatFieldEditor(TextReportConfiguration.PROPERTY_CHARACTER_HEIGHT,
 				Messages.TextExporterPreferencePage_8, getFieldEditorParent());
-		ffe.setErrorMessage("Invalid float value for field: " + Messages.TextExporterPreferencePage_8);
 		addField(ffe);
 		HelpSystem.setHelp(ffe.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ffe.getPreferenceName());
 
-		JSSIntegerFieldEditor ife = new JSSIntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_WIDTH,
+		IntegerFieldEditor ife = new IntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_WIDTH,
 				Messages.TextExporterPreferencePage_9, getFieldEditorParent());
-		ife.setErrorMessage("Invalid integer value for field: " + Messages.TextExporterPreferencePage_9);
 		addField(ife);
 		HelpSystem.setHelp(ife.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ife.getPreferenceName());
 
-		ife = new JSSIntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_HEIGHT,
-				Messages.TextExporterPreferencePage_10, getFieldEditorParent());
-		ife.setErrorMessage("Invalid integer value for field: " + Messages.TextExporterPreferencePage_10);
+		ife = new IntegerFieldEditor(TextReportConfiguration.PROPERTY_PAGE_HEIGHT, Messages.TextExporterPreferencePage_10,
+				getFieldEditorParent());
 		addField(ife);
 		HelpSystem.setHelp(ife.getTextControl(getFieldEditorParent()),
 				StudioPreferencePage.REFERENCE_PREFIX + ife.getPreferenceName());
@@ -71,10 +75,9 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 
 		TextFieldEditor te = new TextFieldEditor(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR,
 				Messages.TextExporterPreferencePage_12, true, getFieldEditorParent());
-		te.setEmptyStringAllowed(true);
 		addField(te);
-
-		// Eventually create the extensions for the page
+		
+		//Eventually create the extensions for the page
 		super.createFieldEditors();
 	}
 
@@ -83,8 +86,8 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 			// we can't store null values in the store, but for this one we have null
 			// a workaround is to remove the property for null values
 			// so we initialise the default only if no properties are initialised
-			store.setDefault(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR, Misc
-					.nvl(PropertiesHelper.DPROP.getProperty(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR), "")); //$NON-NLS-1$
+			store.setDefault(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR,
+					Misc.nvl(PropertiesHelper.DPROP.getProperty(TextExporterConfiguration.PROPERTY_PAGE_SEPARATOR), "")); //$NON-NLS-1$
 		}
 
 		store.setDefault(TextReportConfiguration.PROPERTY_CHARACTER_HEIGHT,
@@ -96,7 +99,7 @@ public class TextExporterPreferencePage extends FieldEditorOverlayPage {
 		store.setDefault(TextReportConfiguration.PROPERTY_PAGE_WIDTH,
 				Misc.nvl(PropertiesHelper.DPROP.getProperty(TextReportConfiguration.PROPERTY_PAGE_WIDTH), "0")); //$NON-NLS-1$
 
-		store.setDefault(TextExporterConfiguration.PROPERTY_LINE_SEPARATOR, "\n"); //$NON-NLS-1$
+		store.setDefault(TextExporterConfiguration.PROPERTY_LINE_SEPARATOR, "\n"); //$NON-NLS-1$ 
 	}
 
 	/*

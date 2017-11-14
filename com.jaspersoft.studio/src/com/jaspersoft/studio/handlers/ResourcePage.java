@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.handlers;
 
@@ -52,8 +60,6 @@ import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
 import com.jaspersoft.templates.TemplateBundle;
 
 import net.sf.jasperreports.eclipse.JasperReportsPlugin;
-import net.sf.jasperreports.eclipse.ui.util.RunnableOverwriteQuestion;
-import net.sf.jasperreports.eclipse.ui.util.RunnableOverwriteQuestion.RESPONSE_TYPE;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRExpression;
@@ -223,27 +229,15 @@ public class ResourcePage extends JSSHelpWizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				FileDialog fd = new FileDialog(UIUtils.getShell(), SWT.SAVE);
-			    fd.setText(Messages.ExportImageAction_saveDialogTitle);
-			    String[] filterExt = { "*.jrxml" }; //$NON-NLS-1$
-			    fd.setFileName(bundle.getLabel());
-			    fd.setFilterExtensions(filterExt);
-			    String selected = fd.open();
-			    if (selected != null){
-			    	File checkExisting = new File(selected);
-			    	boolean doIt = true;
-			    	if (checkExisting.exists()){
-			    		RESPONSE_TYPE response = RunnableOverwriteQuestion.showQuestion(Messages.ResourcePage_templateAlreadyExistTitle, Messages.ResourcePage_templateAlreadyExistMessage, false);
-			    		if (!RESPONSE_TYPE.OVERWRITE.equals(response)){
-			    			doIt = false;
-			    		}
-			    	}
-			    	if (doIt) {
-			    		pathText.setText(selected);
-				    	if (!conflictResources) {
-				    		setPageComplete(true);
-				    	}
-			    	}
-			    }
+		    fd.setText(Messages.ExportImageAction_saveDialogTitle);
+		    String[] filterExt = { "*.jrxml" }; //$NON-NLS-1$
+		    fd.setFileName(bundle.getLabel());
+		    fd.setFilterExtensions(filterExt);
+		    String selected = fd.open();
+		    if (selected != null){
+		    	pathText.setText(selected);
+		    	if (!conflictResources) setPageComplete(true);
+		    }
 			}
 		});
 		
@@ -460,7 +454,7 @@ public class ResourcePage extends JSSHelpWizardPage {
 				JRDesignImage im = (JRDesignImage) el;
 				String res = evalResourceName(im.getExpression());
 				File resFile = findFile(reportFile, res);
-				if (resFile != null) im.setExpression(new JRDesignExpression("\""+resFile.getName()+"\"")); //$NON-NLS-1$ //$NON-NLS-2$
+				if (resFile != null) im.setExpression(new JRDesignExpression("\""+resFile.getName()+"\""));
 			}
 
 			if (el instanceof JRDesignSubreport) {
@@ -469,7 +463,7 @@ public class ResourcePage extends JSSHelpWizardPage {
 				if (res.endsWith(".jasper")) { //$NON-NLS-1$
 					res = res.substring(0, res.length() - ".jasper".length()) + ".jrxml"; //$NON-NLS-1$ //$NON-NLS-2$
 					File resFile = findFile(reportFile, res);
-					sr.setExpression(new JRDesignExpression("\""+resFile.getName()+"\"")); //$NON-NLS-1$ //$NON-NLS-2$
+					sr.setExpression(new JRDesignExpression("\""+resFile.getName()+"\""));
 				}
 			}
 
@@ -480,7 +474,7 @@ public class ResourcePage extends JSSHelpWizardPage {
 			String res = evalResourceName(t.getSourceExpression());
 			if (res != null && t instanceof JRDesignReportTemplate) {
 				File resFile = findFile(reportFile, res);
-				((JRDesignReportTemplate)t).setSourceExpression(new JRDesignExpression("\""+resFile.getName()+"\"")); //$NON-NLS-1$ //$NON-NLS-2$
+				((JRDesignReportTemplate)t).setSourceExpression(new JRDesignExpression("\""+resFile.getName()+"\""));
 			}
 		}
 	}

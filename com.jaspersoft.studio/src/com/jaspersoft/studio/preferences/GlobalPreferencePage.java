@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.preferences;
 
@@ -35,10 +39,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import com.jaspersoft.studio.ConfigurationManager;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.KeyValue;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class GlobalPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	public static final String LOG_FILE = "com.jaspersoft.studio.log.file"; //$NON-NLS-1$
@@ -46,7 +50,6 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 	public static final String LOG_ENABLE = "com.jaspersoft.studio.log.enable"; //$NON-NLS-1$
 	public static final String JSS_JETTY_PORT = "com.jaspersoft.studio.jetty.port"; //$NON-NLS-1$
 	public static final String JSS_USE_SECURE_STORAGE = "com.jaspersoft.studio.secure.storage"; //$NON-NLS-1$
-	public static final String JSS_DISABLE_EXPRESSION_EVALUATION = "com.jaspersoft.studio.secure.disableExpression"; //$NON-NLS-1$
 	public static final String JSS_ENABLE_INTERNAL_CONSOLE = "com.jaspersoft.studio.jss.console"; //$NON-NLS-1$
 	public static final String JSS_USE_ALWAYS_EXTERNAL_BROWSER = "com.jaspersoft.studio.jss.browser.external"; //$NON-NLS-1$
 	private BooleanFieldEditor enableLoggers;
@@ -145,12 +148,6 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 				Messages.GlobalPreferencePage_flagDescription, getFieldEditorParent());
 		addField(useSecStorage);
 
-		BooleanFieldEditor disableExpressions = new BooleanFieldEditor(JSS_DISABLE_EXPRESSION_EVALUATION,
-				Messages.GlobalPreferencePage_disableExpression , getFieldEditorParent());
-		
-		disableExpressions.getDescriptionControl(getFieldEditorParent()).setToolTipText(Messages.GlobalPreferencePage_disableExpressionTooltip);
-		addField(disableExpressions);
-		
 		Label separator3 = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
 		separator3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 
@@ -538,7 +535,6 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 		initVars();
 		store.setDefault(JSS_JETTY_PORT, 0);
 		store.setDefault(JSS_USE_SECURE_STORAGE, false);
-		store.setDefault(JSS_DISABLE_EXPRESSION_EVALUATION, false);
 		store.setDefault(JSS_ENABLE_INTERNAL_CONSOLE, false);
 		store.setDefault(JSS_USE_ALWAYS_EXTERNAL_BROWSER, false);
 		store.setDefault(LOG_ENABLE, false);

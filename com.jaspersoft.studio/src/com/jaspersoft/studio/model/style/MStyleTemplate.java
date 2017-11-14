@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.style;
 
@@ -45,11 +49,6 @@ import net.sf.jasperreports.engine.design.JRDesignReportTemplate;
  * @author Chicu Veaceslav & Orlandin Marco
  */
 public class MStyleTemplate extends APropertyNode implements IPropertySource, ICopyable {
-	
-	/**
-	 * Annotation used on the style expression to override the original expression in studio
-	 */
-	public static final String PATH_ANNOTATION = "@path"; 
 
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 
@@ -146,16 +145,7 @@ public class MStyleTemplate extends APropertyNode implements IPropertySource, IC
 	public String getDisplayText() {
 		JRDesignReportTemplate jt = (JRDesignReportTemplate) getValue();
 		if (jt != null && jt.getSourceExpression() != null && jt.getSourceExpression().getText() != null) {
-			String expString = jt.getSourceExpression().getText();
-			int indexStartComments = expString.indexOf("/*");
-			int indexEndComments = indexStartComments != -1 ? expString.indexOf("*/", indexStartComments) : -1;
-			while (indexStartComments != -1 && indexEndComments != -1){
-				expString = expString.substring(0, indexStartComments) + expString.substring(indexEndComments + 2);
-				expString = expString.trim();
-				indexStartComments = expString.indexOf("/*");
-				indexEndComments = indexStartComments != -1 ? expString.indexOf("*/", indexStartComments) : -1;
- 			}
-			return getIconDescriptor().getTitle() + "(" + expString + ")";
+			return getIconDescriptor().getTitle() + "(" + jt.getSourceExpression().getText() + ")";
 		}
 		return getIconDescriptor().getTitle();
 	}

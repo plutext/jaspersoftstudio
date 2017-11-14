@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.editor.layout.grid;
 
 import java.text.MessageFormat;
@@ -501,7 +497,7 @@ public class JSSGridBagUIProvider implements ILayoutUIProvider{
 				str = FreeLayout.class.getName();
 			}
 			ILayout parentLayout = LayoutManager.getLayout(str);		
-			return new LayoutCommand(parent.getJasperDesign(), jrGroup, parentLayout, d);
+			return new LayoutCommand(jrGroup, parentLayout, d);
 		}
 		return null;
 	}
@@ -810,10 +806,5 @@ public class JSSGridBagUIProvider implements ILayoutUIProvider{
 			
 			modifyGuard = false;
 		}
-	}
-
-	@Override
-	public void createLayoutControls(Composite parent) {
-	
 	}
 }

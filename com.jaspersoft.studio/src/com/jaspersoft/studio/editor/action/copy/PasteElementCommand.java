@@ -1,8 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action.copy;
+
+import net.sf.jasperreports.engine.JRCloneable;
+import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
+import net.sf.jasperreports.engine.design.JRDesignElement;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
@@ -18,10 +30,6 @@ import com.jaspersoft.studio.model.dataset.command.CopyDatasetCommand;
 import com.jaspersoft.studio.model.style.MConditionalStyle;
 import com.jaspersoft.studio.model.style.MStyle;
 import com.jaspersoft.studio.model.style.command.CreateConditionalStyleCommand;
-
-import net.sf.jasperreports.engine.JRCloneable;
-import net.sf.jasperreports.engine.design.JRDesignConditionalStyle;
-import net.sf.jasperreports.engine.design.JRDesignElement;
 
 /**
  *  Command used to paste the copied models. The paste 
@@ -96,17 +104,20 @@ public class PasteElementCommand extends Command {
 						Command cmdd = new CloseSubeditorsCommand(deleteCommand, node);
 						cmd.add(cmdd);
 					}
-				}
-				if (n instanceof MGraphicElement){
+				} else if (n instanceof MGraphicElement) {
 					MGraphicElement mge = (MGraphicElement) n;
-					rect = mge.getBounds();
 					JRDesignElement de = (JRDesignElement) mge.getValue();
+					if (parent == node.getParent()) {
+						de.setX(de.getX() + 5);
+						de.setY(de.getY() + 5);
+					}
+					rect = mge.getBounds();
 					rect.setLocation(de.getX(), de.getY());
 				}
 				if (node instanceof MDataset) {
 					Command cmdc = new CopyDatasetCommand((MDataset) node, ((ANode) parent).getJasperDesign());
 					cmd.add(cmdc);
-				} else if (node instanceof MConditionalStyle) {
+				} if (node instanceof MConditionalStyle) {
 					MStyle newParent = (MStyle)parent;
 					//If the current selected node is a conditional style take
 					//its parent
@@ -115,17 +126,12 @@ public class PasteElementCommand extends Command {
 					}
 					Command cmdc = new CreateConditionalStyleCommand(newParent, (JRDesignConditionalStyle)n.getValue());
 					cmd.add(cmdc);
-				} else {
+				}	else {
 					// create command
 					Command cmdc = OutlineTreeEditPartFactory.getCreateCommand((ANode) parent, n, rect, -1);
 					if (cmdc != null) {
 						createdElement = n;
 						cmd.add(cmdc);
-						if (n instanceof MGraphicElement) {
-							MGraphicElement mge = (MGraphicElement) n;
-							FixPositionCommand fixPositionCommand = new FixPositionCommand(mge, node.getParent(), parent);
-							cmd.add(fixPositionCommand);		
-						}
 					}
 				}
 			}

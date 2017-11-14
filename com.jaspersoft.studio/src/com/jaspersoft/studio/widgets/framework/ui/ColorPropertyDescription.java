@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui;
 
@@ -27,10 +31,7 @@ import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
  * 
  * @author Orlandin Marco
  */
-public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescription<T> {
-	
-	/** Flag to specify if the support for the HTML color names is activated */
-	private boolean htmlColorNamesSupported = false;
+public class ColorPropertyDescription<T> extends TextPropertyDescription<T> {
 
 	public ColorPropertyDescription() {
 		super();
@@ -62,12 +63,11 @@ public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescr
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionEditor = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionEditor);
 
 		final WColorPicker simpleEditor = new WColorPicker(new AlfaRGB(new RGB(0, 0, 0), 0), cmp.getSecondContainer());
 		cmp.getSecondContainer().setData(simpleEditor);
-		cmp.setSimpleControlToHighlight(simpleEditor);
-		
 		simpleEditor.setHaveTransparency(isTransaprent());
 		simpleEditor.addColorSelectionListener(new ColorSelectionListener() {
 
@@ -81,6 +81,8 @@ public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescr
 		for (Control c : simpleEditor.getChildren()){
 			setupContextMenu(c, wiProp);
 		}
+
+		setupContextMenu(textExpression, wiProp);
 		cmp.switchToSecondContainer();
 		return cmp;
 	}
@@ -89,41 +91,19 @@ public class ColorPropertyDescription<T> extends AbstractExpressionPropertyDescr
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();
 		} else {
 			WColorPicker colorPicker = (WColorPicker) cmp.getSecondContainer().getData();
-			colorPicker.setHtmlColorNamesSupport(htmlColorNamesSupported);
 			String v = wip.getStaticValue();
 			if (v == null && defaultValue != null){
 				v = defaultValue.toString();
 			}
-			colorPicker.setHtmlColorNamesSupport(htmlColorNamesSupported);
-			colorPicker.setColor(WColorPicker.decodeColor(v, htmlColorNamesSupported));
+			colorPicker.setColor(new AlfaRGB(Colors.decodeHexStringAsSWTRGB(v), 0));
 			colorPicker.setToolTipText(getToolTip());
 			cmp.switchToSecondContainer();
 		}
-	}
-	
-	/**
-	 * Enables/disables the ability for the color picker to detect 
-	 * HTML color names when entered in the text box.
-	 * 
-	 * @param enabled the enablement flag
-	 */
-	public void setHtmlColorNamesSupport(boolean enabled) {
-		this.htmlColorNamesSupported = enabled;
-	}
-	
-	/**
-	 * Verifies if the html color names support is enabled.
-	 * 
-	 * @return <code>true</code> if the support is enabled, <code>false</code> otherwise
-	 */
-	public boolean isHtmlColorNamesSupportEnabled() {
-		return this.htmlColorNamesSupported;
 	}
 	
 	/**

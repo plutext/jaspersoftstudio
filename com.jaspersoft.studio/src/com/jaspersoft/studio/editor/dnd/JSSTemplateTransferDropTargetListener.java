@@ -1,12 +1,23 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.dnd;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRBand;
+import net.sf.jasperreports.engine.design.JRDesignField;
+import net.sf.jasperreports.engine.design.JRDesignImage;
+import net.sf.jasperreports.engine.design.JRDesignStaticText;
+import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -32,7 +43,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import com.jaspersoft.studio.JSSCompoundCommand;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.editor.gef.parts.FigureEditPart;
 import com.jaspersoft.studio.editor.gef.parts.band.BandEditPart;
 import com.jaspersoft.studio.editor.java2d.J2DScrollingGraphicalViewer;
 import com.jaspersoft.studio.editor.outline.part.NotDragableContainerTreeEditPart;
@@ -53,13 +63,6 @@ import com.jaspersoft.studio.model.image.command.dialog.ImageCreationDialog;
 import com.jaspersoft.studio.model.text.MStaticText;
 import com.jaspersoft.studio.model.text.MTextField;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.engine.JRBand;
-import net.sf.jasperreports.engine.design.JRDesignField;
-import net.sf.jasperreports.engine.design.JRDesignImage;
-import net.sf.jasperreports.engine.design.JRDesignStaticText;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
 
 /**
  * Custom transfer drop listener for DND operations that supports the {@link DialogEnabledCommand} commands.
@@ -289,16 +292,9 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 				List<CreateE4ObjectCommand> creationCommands = new ArrayList<CreateE4ObjectCommand>();
 				// Build a list of all the created fields
 				for (Object command : compCommand.getCommands()) {
-					if (command instanceof CompoundCommand) {
-						CompoundCommand cc = (CompoundCommand) command;
-						for (Object c : cc.getCommands()) {
-							if (c instanceof CreateE4ObjectCommand
-									&& ((CreateE4ObjectCommand) c).getChild() instanceof MField)
-								creationCommands.add((CreateE4ObjectCommand) c);
-						}
-					} else if (command instanceof CreateE4ObjectCommand && ((CreateE4ObjectCommand) command).getChild() instanceof MField){
+					if (command instanceof CreateE4ObjectCommand
+							&& ((CreateE4ObjectCommand) command).getChild() instanceof MField)
 						creationCommands.add((CreateE4ObjectCommand) command);
-					}
 				}
 				String dragMessage = null;
 				for (CreateE4ObjectCommand creatElementC : creationCommands) {
@@ -382,13 +378,16 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 	 */
 	private EditPart getContainer() {
 		EditPart target = getTargetEditPart();
-		if (target instanceof FigureEditPart) {
-			return ((FigureEditPart)target).getDropContainer();
-		} else if (target instanceof IContainer) {
-			return target;
-		} else {
-			return FigureEditPart.getParentEditPart(target);
+		if (!(target instanceof IContainer)) {
+			ANode parentModel = ((ANode) target.getModel()).getParent();
+			// This use the model for the search because every EditPart in the report has the same father.
+			for (Object actualChild : target.getParent().getChildren()) {
+				EditPart actualChildPart = (EditPart) actualChild;
+				if (parentModel == actualChildPart.getModel())
+					return actualChildPart;
+			}
 		}
+		return target;
 	}
 	
 	/**
@@ -529,7 +528,7 @@ public class JSSTemplateTransferDropTargetListener extends AbstractTransferDropT
 			} else if (getTargetEditPart() != null) {
 				final Command command = getCommand();
 
-				//createLabelForField(command);
+				createLabelForField(command);
 				final Object elementToSelect = ((CreateRequest) request).getNewObject();
 
 				ANode lockReferenceNode = null;

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.handlers;
 
@@ -10,19 +18,17 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MenuAdapter;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -31,13 +37,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.ResourceManager;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.messages.Messages;
@@ -47,16 +50,11 @@ import com.jaspersoft.studio.swt.events.ChangeListener;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
 import com.jaspersoft.studio.swt.widgets.table.MoveT2TButtons;
 import com.jaspersoft.studio.templates.DefaultTemplateProvider;
-import com.jaspersoft.studio.templates.StudioTemplateManager;
 import com.jaspersoft.studio.templates.TemplateProvider;
 import com.jaspersoft.studio.wizards.BuiltInCategories;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSWizardPage;
 import com.jaspersoft.studio.wizards.category.ReportTemplatesWizardPage;
-import com.jaspersoft.templates.TemplateBundle;
-
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 /**
  * Page of the wizard used to assign the categories to an exported report as template, 
@@ -66,28 +64,12 @@ import net.sf.jasperreports.engine.design.JasperDesign;
  *
  */
 public class CategoriesPage extends JSSWizardPage {
-	
-	private class Category {
-		
-		private String name;
-		
-		private boolean isNew;
-		
-		public Category(String name, boolean isNew){
-			this.name = name;
-			this.isNew = isNew;
-		}
-	}
+
 	
 	/**
 	 * List of available categories
 	 */
-	protected List<Category> inFields;
-	
-	/**
-	 * List of selected categories
-	 */
-	protected List<Category> outFileds;
+	protected List<String> inFields;
 	
 	/**
 	 * List of the selected categories
@@ -111,7 +93,7 @@ public class CategoriesPage extends JSSWizardPage {
 	private Combo engineCombo = null;
 	
 	/**
-	 * String of the available key for the report type selection
+	 * String of the available key for the reprot type selection
 	 */
 	protected String[] engineKeys;
 	
@@ -130,39 +112,8 @@ public class CategoriesPage extends JSSWizardPage {
 		setTitle(Messages.CategoriesPage_pageTitle);
 		setDescription(Messages.CategoriesPage_pageDescription);
 		
-		//Store the categories name already found in a set, to avoid duplicates
-		HashSet<String> foundCategories = new HashSet<String>();
-		
 		List<String> builtInCat = BuiltInCategories.getCategoriesList();
-		builtInCat = builtInCat.subList(1, builtInCat.size());
-		inFields = new ArrayList<Category>();
-		
-		for(String cat : builtInCat){
-			inFields.add(new Category(cat, false));
-			foundCategories.add(cat.toLowerCase());
-		}
-		
-		//add the custom categories
-		List<TemplateBundle> bundles = StudioTemplateManager.getInstance().getTemplateBundles();
-		for (TemplateBundle b : bundles) {
-			Object templateCategory = b.getProperty(BuiltInCategories.CATEGORY_KEY);
-			if (templateCategory != null) {
-				String[] strCategoryList = templateCategory.toString().split(ReportTemplatesWizardPage.TEMPLATE_CATEGORY_SEPARATOR); 
-				for (String cat : strCategoryList) {
-					String trimmedCategory = cat.trim();
-					if (!trimmedCategory.isEmpty()) {
-						String lowerCaseCateogry = trimmedCategory.toLowerCase();
-						if (!foundCategories.contains(lowerCaseCateogry)) {
-							String categoryLocalizedName = trimmedCategory;
-							inFields.add(new Category(categoryLocalizedName, false));
-							foundCategories.add(lowerCaseCateogry);
-						}
-					}
-				}
-			}
-		}
-		
-		outFileds = new ArrayList<Category>();
+		inFields = builtInCat.subList(1, builtInCat.size());
 	}
 	
 	private void createTopPanel(Composite parent){
@@ -239,13 +190,12 @@ public class CategoriesPage extends JSSWizardPage {
 		leftTable.setLayout(tlayout);
 		
 		final Text customCategory = new Text(leftPanel, SWT.BORDER);
-		customCategory.setToolTipText(Messages.CategoriesPage_customCatBox);
+		customCategory.setText(Messages.CategoriesPage_customCatBox);
 		customCategory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
-		final TableViewer leftTView = new TableViewer(leftTable);
+		
+		TableViewer leftTView = new TableViewer(leftTable);
 		leftTView.setContentProvider(new ListContentProvider());
 		setLabelProvider(leftTView);
-		createMenu(leftTView);
 
 		Composite bGroup = new Composite(composite, SWT.NONE);
 		bGroup.setLayout(new GridLayout(1, false));
@@ -263,33 +213,20 @@ public class CategoriesPage extends JSSWizardPage {
 		final TableViewer rightTView = new TableViewer(rightTable);
 		rightTView.setContentProvider(new ListContentProvider());
 		setLabelProvider(rightTView);
-		createMenu(rightTView);
 		
 		leftTView.setInput(inFields);
-		rightTView.setInput(outFileds);
+		rightTView.setInput(new ArrayList<String>());
 		
-		final Button addCustomButton = new Button(leftPanel, SWT.NONE);
+		Button addCustomButton = new Button(leftPanel, SWT.NONE);
 		addCustomButton.setText(Messages.CategoriesPage_addButton);
 		addCustomButton.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				inFields.add(new Category(customCategory.getText(), true));
-				customCategory.setText("");
-				leftTView.refresh();
-			}
-		});
-		addCustomButton.setEnabled(false);
-		
-		customCategory.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				String text = customCategory.getText().trim();
-				if (text.isEmpty() || isCategoryAlreadyExisting(text)){
-					addCustomButton.setEnabled(false);
-				} else {
-					addCustomButton.setEnabled(true);
-				}
+				@SuppressWarnings("unchecked")
+				List<String> input = (List<String>)rightTView.getInput();
+				input.add(customCategory.getText());
+				rightTView.refresh();
+				storeSettings();
 			}
 		});
 		
@@ -304,28 +241,6 @@ public class CategoriesPage extends JSSWizardPage {
 					storeSettings();
 			}
 		});
-	}
-	
-	/**
-	 * Check if a category already exist, excluding the case
-	 * 
-	 * @param newCategory the categoty name
-	 * @return true if it already exist, false otherwise
-	 */
-	private boolean isCategoryAlreadyExisting(String newCategory){
-		for(Category category : inFields){
-			String name = category.name;
-			if (newCategory.equalsIgnoreCase(name)){
-				return true;
-			}
-		}
-		for(Category category : outFileds){
-			String name = category.name;
-			if (newCategory.equalsIgnoreCase(name)){
-				return true;
-			}
-		}
-		return false;
 	}
 	
 	public void storeSettings()
@@ -396,56 +311,12 @@ public class CategoriesPage extends JSSWizardPage {
 		tableViewer.setLabelProvider(new LabelProvider(){
 			@Override
 			public String getText(Object element) {
-				Category category = (Category)element;
-				String name = category.name;
-				if (MessagesByKeys.hasTranslation(name)) return MessagesByKeys.getString(name);
-				else return name;
+				if (MessagesByKeys.hasTranslation(element.toString())) return MessagesByKeys.getString(element.toString());
+				else return element.toString();
 			}
 		});
 	}
 
-	protected void createMenu(final TableViewer tableViewer){
-		final Table table = tableViewer.getTable();
-		final Menu menu = new Menu(table);
-		table.setMenu(menu);
-		menu.addMenuListener(new MenuAdapter() {
-			
-	        public void menuShown(MenuEvent e)
-	        {
-	        	//remove and add every time the items (if necessary) to avoid to show the menu
-	        	//on the not deletable items
-	            MenuItem[] items = menu.getItems();
-	            for (int i = 0; i < items.length; i++)
-	            {
-	                items[i].dispose();
-	            }
-	        	
-	            final int selected = table.getSelectionIndex();
-	            final List<?> input = (List<?>)tableViewer.getInput();
-
-	            if(selected < 0 || selected >= input.size())
-	                return;
-	            
-	            Category selectedCategory = (Category)input.get(selected);
-	            if (!selectedCategory.isNew){
-	            	return;
-	            }
-	            
-	            MenuItem newItem = new MenuItem(menu, SWT.NONE);
-	            newItem.setText(Messages.common_delete);
-	            newItem.setImage(ResourceManager.getPluginImage(JaspersoftStudioPlugin.PLUGIN_ID, "/icons/resources/delete_style.gif"));
-	            newItem.addSelectionListener(new SelectionAdapter() {
-	            
-	            	@Override
-	            	public void widgetSelected(SelectionEvent e) {
-	            		input.remove(selected);
-	            		tableViewer.refresh();
-	            	}
-				});
-	        }
-		});
-	}
-	
 	@Override
 	protected String getContextName() {
 		return ContextHelpIDs.WIZARD_EXPORTED_CATEGORY;
