@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model.dataset;
 
@@ -23,7 +24,6 @@ import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.MQuery;
 import com.jaspersoft.studio.model.MReport;
-import com.jaspersoft.studio.model.field.FieldUtils;
 import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.field.MFields;
 import com.jaspersoft.studio.model.parameter.MParameterSystem;
@@ -121,11 +121,11 @@ public class MDataset extends APropertyNode implements ICopyable {
 	 * Instantiates a new m dataset.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param jrDataset
-	 *            the jr dataset
+	 *          the jr dataset
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 */
 	public MDataset(ANode parent, JRDesignDataset jrDataset, int newIndex) {
 		super(parent, newIndex);
@@ -206,7 +206,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 	 * Creates the property descriptors.
 	 * 
 	 * @param desc
-	 *            the desc
+	 *          the desc
 	 */
 	@Override
 	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
@@ -261,8 +261,8 @@ public class MDataset extends APropertyNode implements ICopyable {
 				JRDesignDataset.PROPERTY_FILTER_EXPRESSION, Messages.MDataset_filter_expression);
 		filterExpression.setDescription(Messages.MDataset_filter_expression_description);
 		desc.add(filterExpression);
-		filterExpression.setHelpRefBuilder(new HelpReferenceBuilder(
-				"net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#filterExpression")); //$NON-NLS-1$
+		filterExpression.setHelpRefBuilder(
+				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#filterExpression")); //$NON-NLS-1$
 
 		setHelpPrefix(desc, "net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#subDataset"); //$NON-NLS-1$
 	}
@@ -284,9 +284,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.
-	 * Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
 	 */
 	public Object getPropertyValue(Object id) {
 		JRDesignDataset jrDataset = (JRDesignDataset) getValue();
@@ -328,8 +326,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 			JRPropertyExpression[] propertyExpressions = jrDataset.getPropertyExpressions();
 			if (propertyExpressions != null)
 				propertyExpressions = propertyExpressions.clone();
-			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDataset), getValue(),
-					ModelUtils.getExpressionContext(this));
+			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDataset), this);
 		}
 		if (id.equals(PROPERTY_MAP))
 			return getPropertiesMapClone(jrDataset);
@@ -364,9 +361,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.
-	 * Object, java.lang.Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	public void setPropertyValue(Object id, Object value) {
 		JRDesignDataset jrDataset = (JRDesignDataset) getValue();
@@ -415,12 +410,9 @@ public class MDataset extends APropertyNode implements ICopyable {
 						jrDataset.getPropertiesMap().setProperty(p.getName(), p.getValue());
 					}
 				}
-				// really important to trigger the property with source the JR object and not
-				// the node
-				// using the node could cause problem with the refresh of the advanced
-				// properties view
-				firePropertyChange(
-						new PropertyChangeEvent(jrDataset, PROPERTY_MAP, originalMap, jrDataset.getPropertiesMap()));
+				// really important to trigger the property with source the JR object and not the node
+				// using the node could cause problem with the refresh of the advanced properties view
+				firePropertyChange(new PropertyChangeEvent(jrDataset, PROPERTY_MAP, originalMap, jrDataset.getPropertiesMap()));
 			}
 		} else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
 			JRPropertiesMap v = (JRPropertiesMap) value;
@@ -447,13 +439,11 @@ public class MDataset extends APropertyNode implements ICopyable {
 				jrDataset.getPropertiesMap()
 						.removeProperty(DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION);
 			} else {
-				jrDataset.getPropertiesMap().setProperty(
-						DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION, value.toString());
+				jrDataset.getPropertiesMap().setProperty(DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION,
+						value.toString());
 			}
-			// really important to trigger the property with source the JR object and not
-			// the node
-			// using the node could cause problem with the refresh of the advanced
-			// properties view
+			// really important to trigger the property with source the JR object and not the node
+			// using the node could cause problem with the refresh of the advanced properties view
 			firePropertyChange(new PropertyChangeEvent(jrDataset,
 					DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION, null, value));
 		}
@@ -468,7 +458,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 	 * Creates the jr dataset.
 	 * 
 	 * @param jrDesign
-	 *            the jr design
+	 *          the jr design
 	 * @return the jR design dataset
 	 */
 	public static JRDesignDataset createJRDataset(JasperReportsConfiguration jConfig, JasperDesign jrDesign) {
@@ -510,7 +500,7 @@ public class MDataset extends APropertyNode implements ICopyable {
 			children = mreport.getChildren();
 		for (INode n : children) {
 			if (n instanceof MFields) {
-				for (INode nf : FieldUtils.getFields((MFields) n)) {
+				for (INode nf : n.getChildren()) {
 					MField mfield = (MField) nf;
 					if (mfield.getValue().getName().equals(name))
 						return mfield;
@@ -543,13 +533,11 @@ public class MDataset extends APropertyNode implements ICopyable {
 	}
 
 	/**
-	 * Returns the first child that has the same class of the specified input
-	 * parameter
+	 * Returns the first child that has the same class of the specified input parameter
 	 * 
 	 * @param classType
-	 *            the class
-	 * @return the first child found with the specific class type, <code>null</code>
-	 *         otherwise
+	 *          the class
+	 * @return the first child found with the specific class type, <code>null</code> otherwise
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T getFirstChildOfType(Class<T> classType) {

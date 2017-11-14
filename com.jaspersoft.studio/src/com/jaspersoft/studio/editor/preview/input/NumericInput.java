@@ -16,8 +16,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 
 import com.jaspersoft.studio.editor.preview.view.control.VParameters;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class NumericInput extends ADataInput {
 	private Spinner num;
@@ -55,7 +54,6 @@ public class NumericInput extends ADataInput {
 
 			num = new Spinner(parent, SWT.BORDER);
 			num.addFocusListener(focusListener);
-			num.addTraverseListener(keyListener);
 			num.setToolTipText(VParameters.createToolTip(param));
 			updateInput();
 			final ModifyListener listener2 = new ModifyListener() {

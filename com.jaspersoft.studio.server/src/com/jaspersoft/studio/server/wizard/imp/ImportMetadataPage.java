@@ -4,6 +4,8 @@
  ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.imp;
 
+import net.sf.jasperreports.eclipse.ui.validator.NotEmptyFileValidator;
+
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -27,9 +29,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.studio.messages.Messages;
-
-import net.sf.jasperreports.eclipse.ui.validator.NotEmptyFileValidator;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class ImportMetadataPage extends WizardPage {
 

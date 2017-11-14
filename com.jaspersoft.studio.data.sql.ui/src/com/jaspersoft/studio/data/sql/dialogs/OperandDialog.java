@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.messages.Messages;
 import com.jaspersoft.studio.data.sql.model.query.expression.AMExpression;
 import com.jaspersoft.studio.data.sql.model.query.expression.MExpression;
@@ -26,11 +25,9 @@ public class OperandDialog extends ATitledDialog {
 	private AMExpression<?> mexpression;
 	private int index;
 	private List<AOperand> operands;
-	private AQueryDesigner designer;
 
-	protected OperandDialog(Shell parentShell, AQueryDesigner designer) {
+	protected OperandDialog(Shell parentShell) {
 		super(parentShell);
-		this.designer = designer;
 		setTitle(Messages.OperandDialog_0);
 		setDescription(Messages.OperandDialog_1);
 	}
@@ -42,9 +39,9 @@ public class OperandDialog extends ATitledDialog {
 
 		Control w = null;
 		if (mexpression instanceof MExpressionX)
-			w = Factory.createWidget(cmp, operands.get(index), designer);
+			w = Factory.createWidget(cmp, operands.get(index));
 		else if (mexpression instanceof MExpression)
-			w = Factory.createWidget(cmp, operands, index, (MExpression) mexpression, true, designer);
+			w = Factory.createWidget(cmp, operands, index, (MExpression) mexpression, true);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.widthHint = 200;
 		w.setLayoutData(gd);

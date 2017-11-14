@@ -13,6 +13,7 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.util.ItemPropertyUtil;
 import com.jaspersoft.studio.properties.view.validation.ValidationError;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.widgets.framework.IPropertyEditor;
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
 
@@ -20,7 +21,6 @@ import net.sf.jasperreports.components.items.Item;
 import net.sf.jasperreports.components.items.ItemData;
 import net.sf.jasperreports.components.items.ItemProperty;
 import net.sf.jasperreports.components.items.StandardItemProperty;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * @author Veaceslav Chicu (schicu@users.sourceforge.net)

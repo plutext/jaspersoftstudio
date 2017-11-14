@@ -144,11 +144,6 @@ public class Messages extends NLS {
 	public static String FindResourcePage_7;
 	public static String FindResourcePage_uri;
 	public static String FindResourceWizard_0;
-	public static String ICParameterContributor_2;
-	public static String ICParameterContributor_3;
-	public static String ICParameterContributor_5;
-	public static String ICParameterContributor_7;
-	public static String ICParameterContributor_9;
 	public static String ImportDataSourceInfoFromDA_DialogTitle;
 	public static String ImportDataSourceInfoFromDA_InfoLabel;
 	public static String ImportDataSourceInJSSAction_ActionText;
@@ -176,15 +171,6 @@ public class Messages extends NLS {
 	public static String JRSClasspathContainerPage_2;
 	public static String JRSPreferencesPage_0;
 	public static String JRSPreferencesPage_1;
-	public static String JRSPreferencesPage_10;
-	public static String JRSPreferencesPage_12;
-	public static String JRSPreferencesPage_13;
-	public static String JRSPreferencesPage_14;
-	public static String JRSPreferencesPage_2;
-	public static String JRSPreferencesPage_3;
-	public static String JRSPreferencesPage_5;
-	public static String JRSPreferencesPage_7;
-	public static String JRSPreferencesPage_9;
 	public static String JRSRepositoryService_4;
 	public static String JrxmlPageContent_uploadFromRepo;
 	public static String JrxmlPublishAction_0;

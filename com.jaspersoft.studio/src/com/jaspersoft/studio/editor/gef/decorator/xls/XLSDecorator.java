@@ -14,20 +14,19 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 import com.jaspersoft.studio.editor.action.xls.XLSAction;
 import com.jaspersoft.studio.editor.gef.decorator.IDecorator;
-import com.jaspersoft.studio.editor.gef.decorator.chainable.AbstractPainter;
-import com.jaspersoft.studio.editor.gef.decorator.chainable.IDecoratorInterface;
-import com.jaspersoft.studio.editor.gef.decorator.chainable.AbstractPainter.Location;
+import com.jaspersoft.studio.editor.gef.decorator.text.TextDecoratorInterface;
 import com.jaspersoft.studio.editor.gef.decorator.text.TextLocation;
+import com.jaspersoft.studio.editor.gef.decorator.text.TextLocation.Location;
 import com.jaspersoft.studio.editor.gef.figures.ComponentFigure;
 import com.jaspersoft.studio.editor.java2d.J2DUtils;
-
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.design.JRDesignElement;
 
 /**
  * Decorator for the XSL action, it also provide an interface to became a text 
@@ -35,7 +34,7 @@ import net.sf.jasperreports.engine.design.JRDesignElement;
  * @author Orlandin Marco
  *
  */
-public class XLSDecorator implements IDecorator, IDecoratorInterface {
+public class XLSDecorator implements IDecorator, TextDecoratorInterface {
 	
 	public static String START = "Start";
 	public static String END = "End";
@@ -206,9 +205,8 @@ public class XLSDecorator implements IDecorator, IDecoratorInterface {
 	}
 
 	@Override
-	public ArrayList<AbstractPainter> getDecoratorPainter(ComponentFigure fig) {
-		JRPropertiesMap mapProperties = fig.getJrElement().getPropertiesMap();
-		ArrayList<AbstractPainter> result = new ArrayList<AbstractPainter>();
+	public ArrayList<TextLocation> getText(JRPropertiesMap mapProperties) {
+		ArrayList<TextLocation> result = new ArrayList<TextLocation>();
 		String tagValue = "";
 		String startString = "";
 		String fullString = "";
@@ -243,19 +241,30 @@ public class XLSDecorator implements IDecorator, IDecoratorInterface {
 		fullString = fullString.trim();
 
 		if (startString.length() > 0) {
-			result.add(new TextLocation(Location.TopLeft, startString, JSS_TEXT_FONT, JSS_TEXT_COLOR));
+			result.add(new TextLocation(Location.TopLeft, startString));
 		}
 
 		if (endString.length() > 0) {
-			result.add(new TextLocation(Location.BottomRight, endString, JSS_TEXT_FONT, JSS_TEXT_COLOR));
+			result.add(new TextLocation(Location.BottomRight, endString));
 		}
 
 		if (fullString.length() > 0) {
-			TextLocation as = new TextLocation(Location.TopLeft, fullString, JSS_TEXT_FONT, JSS_TEXT_COLOR);
+			TextLocation as = new TextLocation(Location.TopLeft, fullString);
 			as.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 			result.add(as);
 		}
 		
 		return result;
 	}
+
+	@Override
+	public Color getColor() {
+		return JSS_TEXT_COLOR;
+	}
+
+	@Override
+	public Font getFont() {
+		return JSS_TEXT_FONT;
+	}
+
 }

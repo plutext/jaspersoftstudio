@@ -1,3 +1,7 @@
+/*******************************************************************************
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
+ ******************************************************************************/
 /**
  */
 package com.jaspersoft.studio.data.sql;
@@ -30,24 +34,6 @@ public interface SqlFactory extends EFactory
    * @generated
    */
   Model createModel();
-
-  /**
-   * Returns a new object of class '<em>With Query</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>With Query</em>'.
-   * @generated
-   */
-  WithQuery createWithQuery();
-
-  /**
-   * Returns a new object of class '<em>With Columns</em>'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return a new object of class '<em>With Columns</em>'.
-   * @generated
-   */
-  WithColumns createWithColumns();
 
   /**
    * Returns a new object of class '<em>Fetch First</em>'.

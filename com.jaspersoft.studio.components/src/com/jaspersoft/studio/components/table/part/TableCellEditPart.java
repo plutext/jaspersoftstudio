@@ -148,7 +148,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 					}
 				}
 				if (targetFeedback == null) {
-					targetFeedback = new ColoredLayoutPositionRectangle(TableCellEditPart.this, FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
+					targetFeedback = new ColoredLayoutPositionRectangle(FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
 					targetFeedback.setFill(false);
 					IFigure hostFigure = getHostFigure();
 					Rectangle bounds = hostFigure.getBounds();
@@ -171,7 +171,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 
 			@Override
 			protected Command getCreateCommand(ANode parent, Object obj,
-					Rectangle constraint, int index, Request request) {
+					Rectangle constraint, int index) {
 				if (parent instanceof MPage)
 					parent = getModel();
 				Rectangle b = getModel().getBounds();
@@ -180,7 +180,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 				constraint = new Rectangle(x, y, constraint.width,
 						constraint.height);
 
-				return super.getCreateCommand(parent, obj, constraint, index, request);
+				return super.getCreateCommand(parent, obj, constraint, index);
 			}
 			
 			/**

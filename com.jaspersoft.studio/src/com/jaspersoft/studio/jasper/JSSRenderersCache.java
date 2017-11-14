@@ -35,7 +35,7 @@ public class JSSRenderersCache extends RenderersCache {
 	 */
 	public Renderable getLoadedRenderer(ResourceRenderer resourceRenderer) throws JRException
 	{
-		Renderable renderable = LazyImageConverter.getInstance().getLazyRenderable(context, resourceRenderer.getResourceLocation());
+		Renderable renderable = LazyImageConverter.getInstance().getNonLazyRenderable(context, resourceRenderer.getResourceLocation());
 		if (renderable != null){
 			return renderable;
 		}

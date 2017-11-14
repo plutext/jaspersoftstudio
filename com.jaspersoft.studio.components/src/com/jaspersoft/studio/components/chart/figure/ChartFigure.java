@@ -19,6 +19,8 @@ import net.sf.jasperreports.engine.JRElement;
  */
 public class ChartFigure extends FrameFigure {
 	
+	private ACachedGraphics cachedGraphics = null;
+	
 	/**
 	 * Instantiates a new static text figure.
 	 */
@@ -40,8 +42,8 @@ public class ChartFigure extends FrameFigure {
 	@Override
 	protected void draw(JSSDrawVisitor drawVisitor, JRElement jrElement) {
 		if (model != null && allowsFigureDrawCache()) {
-			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)) {
+			if (cachedGraphics == null || model.hasChangedProperty()) {
+				Graphics2D oldGraphics = drawVisitor.getGraphics2d();
 				cachedGraphics = getCachedGraphics(oldGraphics);
 				drawVisitor.setGraphics2D(cachedGraphics);
 				drawVisitor.visitChart((JRChart) jrElement);

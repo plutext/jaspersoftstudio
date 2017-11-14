@@ -42,7 +42,6 @@ import com.jaspersoft.studio.widgets.map.support.BaseJavaMapSupport;
  * @author Veaceslav Chicu (schicu@users.sourceforge.net)
  * 
  */
-@Deprecated
 public class PathPickupDialog extends BasicInfoMapDialog {
 
 	private List pointsWidget;

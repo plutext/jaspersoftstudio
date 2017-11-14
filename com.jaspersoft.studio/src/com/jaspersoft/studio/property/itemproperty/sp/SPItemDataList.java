@@ -46,17 +46,15 @@ import com.jaspersoft.studio.property.itemproperty.dialog.TableItemDialog;
 import com.jaspersoft.studio.property.itemproperty.label.ItemLabelProvider;
 import com.jaspersoft.studio.property.section.AbstractSection;
 import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.components.items.Item;
 import net.sf.jasperreports.components.items.ItemData;
-import net.sf.jasperreports.components.items.ItemProperty;
 import net.sf.jasperreports.components.items.StandardItem;
 import net.sf.jasperreports.components.items.StandardItemData;
-import net.sf.jasperreports.components.map.StandardMapComponent;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.component.Component;
 import net.sf.jasperreports.engine.design.JRDesignComponentElement;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -223,15 +221,6 @@ public class SPItemDataList extends ASPropertyWidget<AItemDataListPropertyDescri
 
 	protected Map<String, Object> postCreateMap = new HashMap<String, Object>();
 
-	protected void addPostCreateCommand(String id, Object value) {
-		Object obj = pnode.getPropertyValue(id);
-		if (obj instanceof ItemProperty) {
-			if (value != null && ((ItemProperty) obj).getValueExpression() != null)
-				return;
-		}
-		postCreateMap.put(id, value);
-	}
-
 	protected void postCreateItemDialog(List<ItemData> clones) {
 		List<Command> cmds = new ArrayList<Command>();
 		for (String key : postCreateMap.keySet())
@@ -275,18 +264,14 @@ public class SPItemDataList extends ASPropertyWidget<AItemDataListPropertyDescri
 			postCreateItemDialog(new ArrayList<ItemData>(clones));
 
 		// List<ItemData> clones = JRCloneUtils.cloneList(itemDatas);
-		// StandardItemData itemData = (StandardItemData)
-		// getStandardItemData(true, tviewer, clones);
+		// StandardItemData itemData = (StandardItemData) getStandardItemData(true, tviewer, clones);
 		// if (!clones.contains(itemData))
 		// clones.add(itemData);
 		//
 		// StandardItem item = new StandardItem();
-		// for (ItemPropertyDescription<?> ipd :
-		// getDescriptor().getItemPropertyDescriptors()) {
-		// if (ipd.isMandatory() ||
-		// !Misc.isNullOrEmpty(ipd.getDefaultValueString())) {
-		// StandardItemProperty p = new StandardItemProperty(ipd.getName(),
-		// ipd.getDefaultValueString(), null);
+		// for (ItemPropertyDescription<?> ipd : getDescriptor().getItemPropertyDescriptors()) {
+		// if (ipd.isMandatory() || !Misc.isNullOrEmpty(ipd.getDefaultValueString())) {
+		// StandardItemProperty p = new StandardItemProperty(ipd.getName(), ipd.getDefaultValueString(), null);
 		// item.addItemProperty(p);
 		// StructuredSelection s = (StructuredSelection) tviewer.getSelection();
 		// if (s != null) {
@@ -301,9 +286,9 @@ public class SPItemDataList extends ASPropertyWidget<AItemDataListPropertyDescri
 	}
 
 	protected ItemDataDialog createItemDataDialog(List<ItemData> clones, StandardItemData itemData) {
-		ItemDataDialog dialog = new ItemDataDialog(UIUtils.getShell(), Messages.SPItemDataList_6,
-				Messages.SPItemDataList_7, clones, itemData,
-				(JasperReportsConfiguration) section.getJasperReportsContext(), getDescriptor(), expContext, pnode) {
+		ItemDataDialog dialog = new ItemDataDialog(UIUtils.getShell(), Messages.SPItemDataList_6, Messages.SPItemDataList_7,
+				clones, itemData, (JasperReportsConfiguration) section.getJasperReportsContext(), getDescriptor(), expContext,
+				pnode) {
 
 			@Override
 			protected AItemDialog createItemDialog() {

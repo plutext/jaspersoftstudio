@@ -80,10 +80,10 @@ public class FigurePageLayoutEditPolicy extends PageLayoutEditPolicy {
 	}
 
 	@Override
-	protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+	protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 		Rectangle rect = ((Rectangle) constraint).getCopy();
 		rect = rect.getTranslated(-ReportPageFigure.PAGE_BORDER.left, -ReportPageFigure.PAGE_BORDER.right);
-		return super.getCreateCommand(parent, obj, rect, index, request);
+		return super.getCreateCommand(parent, obj, rect, index);
 	}
 
 	@Override

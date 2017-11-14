@@ -238,13 +238,7 @@
            category="com.jaspersoft.studio.server.preferences.JRSPreferencesPage"
            class="com.jaspersoft.studio.server.preferences.TrustStorePreferencePage"
            id="com.jaspersoft.studio.server.preferences.TrustStorePreferencePage"
-           name="%truststore">
-     </page>
-     <page
-           category="com.jaspersoft.studio.server.preferences.JRSPreferencesPage"
-           class="com.jaspersoft.studio.server.preferences.KeyStorePreferencePage"
-           id="com.jaspersoft.studio.server.preferences.KeyStorePreferencePage"
-           name="%keystore">
+           name="Trust Store">
      </page>
   </extension>
   <extension
@@ -295,20 +289,6 @@
      <resourceExporter
            exporterClass="com.jaspersoft.studio.server.editor.action.exporter.ExportedServersHandler">
      </resourceExporter>
-  </extension>
-  <extension
-        point="com.jaspersoft.studio.parameterIC">
-     <parameterIC
-           ICParameterContributor="com.jaspersoft.studio.server.ic.ICParameterContributor">
-     </parameterIC>
-  </extension>
-  <extension
-        point="com.jaspersoft.studio.dynamicWidgetDefinitions">
-     <definition
-           id="com.jaspersoft.studio.server.ic.ResourcePropertyDescription"
-           widgetClass="com.jaspersoft.studio.server.ic.ResourcePropertyDescription"
-           widgetName="serverResourceBrowser">
-     </definition>
   </extension>
 
 </plugin>

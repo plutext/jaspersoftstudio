@@ -12,7 +12,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
@@ -46,14 +45,16 @@ import com.jaspersoft.studio.server.publish.wizard.page.DatasourceSelectionPage;
 import com.jaspersoft.studio.server.publish.wizard.page.FileSelectionPage;
 import com.jaspersoft.studio.server.publish.wizard.page.RUnitLocationPage;
 import com.jaspersoft.studio.server.publish.wizard.page.ResourcesPage;
-import com.jaspersoft.studio.utils.JRXMLUtils;
 import com.jaspersoft.studio.utils.SelectionHelper;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.builder.jdt.JDTUtils;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.eclipse.util.FileExtension;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 public class Publish2ServerWizard extends Wizard implements IExportWizard {
 	private JasperDesign jDesign;
@@ -67,9 +68,9 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 	private JasperReportsConfiguration jrConfig;
 
 	/**
-	 * Flag to keep track if the context was created internally to this wizard or
-	 * passed from outside. If it was created internally then it is disposed at the
-	 * end, otherwise not.
+	 * Flag to keep track if the context was created internally to this wizard
+	 * or passed from outside. If it was created internally then it is disposed
+	 * at the end, otherwise not.
 	 */
 	private boolean disposeContext = true;
 
@@ -128,8 +129,11 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 					jrConfig = JasperReportsConfiguration.getDefaultJRConfig(file);
 				else
 					jrConfig.init(file);
-				if (jDesign == null) {
-					jDesign = JRXMLUtils.getJasperDesign(jrConfig, file.getContents(), null);
+				String fext = file.getFileExtension();
+				if (jDesign == null && fext.equalsIgnoreCase(FileExtension.JRXML)
+						|| fext.equalsIgnoreCase(FileExtension.JASPER)) {
+					jDesign = new JRXmlLoader(jrConfig, JRXmlDigesterFactory.createDigester(jrConfig))
+							.loadXML(file.getContents());
 					jrConfig.setJasperDesign(jDesign);
 				}
 			}
@@ -196,10 +200,6 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 									page0.setValue(jDesign, getNode());
 									snode = page0.getSelectedNode();
 								}
-								if (snode instanceof MJrxml) {
-									canFinish = true;
-									getContainer().updateButtons();
-								}
 								if (node != snode) {
 									node = snode;
 									doFindDependentResources();
@@ -228,10 +228,6 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 				page0.setValue(jDesign, getNode());
 				return page0;
 			}
-			if (!(page0.getSelectedNode() instanceof MReportUnit)) {
-				canFinish = true;
-				return null;
-			}
 		}
 		if (page == page2) {
 			if (node instanceof MJrxml) {
@@ -256,9 +252,7 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 					monitor.beginTask(Messages.Publish2ServerWizard_MonitorName, IProgressMonitor.UNKNOWN);
 					try {
-						hasDepResources = FindResources.find(monitor, node, jDesign,
-								(IFile) jrConfig.get(FileUtils.KEY_FILE));
-
+						hasDepResources = FindResources.find(monitor, node, jDesign);
 						UIUtils.getDisplay().asyncExec(new Runnable() {
 							public void run() {
 								if (hasDepResources)
@@ -306,10 +300,7 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 					try {
 						ANode node = getNode(monitor);
 						if (node instanceof AMJrxmlContainer)
-							if (new Publish(jrConfig).publish((AMJrxmlContainer) node, jDesign,
-									monitor) == Status.CANCEL_STATUS)
-								throw new InterruptedException("Publishing canceled");
-
+							new Publish(jrConfig).publish((AMJrxmlContainer) node, jDesign, monitor);
 					} finally {
 						monitor.done();
 					}
@@ -317,12 +308,8 @@ public class Publish2ServerWizard extends Wizard implements IExportWizard {
 			});
 		} catch (InvocationTargetException e) {
 			UIUtils.showError(e.getCause());
-			return false;
 		} catch (InterruptedException e) {
-			if (e.getMessage().equals("Publishing canceled"))
-				return false;
 			UIUtils.showError(e);
-			return false;
 		}
 
 		return true;

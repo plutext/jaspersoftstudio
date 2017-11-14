@@ -52,8 +52,7 @@ import com.jaspersoft.jasperserver.dto.resources.ClientXmlaConnection;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.ResourceFactory;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class Soap2Rest {
 	public static Object getResourceContainer(ARestV2Connection rc, ResourceDescriptor rd) throws ParseException {
@@ -376,18 +375,9 @@ public class Soap2Rest {
 					// r.setUriString(rd.getUriString() + "_files/" +
 					// r.getName());
 					cr.setJrxml((ClientReferenceableFile) getResourceContainer(rc, r));
-				} else if (t.equals(ResourceDescriptor.TYPE_INPUT_CONTROL)) {
-					ClientReferenceableInputControl ic = (ClientReferenceableInputControl) getResourceContainer(rc, r);
-					String uri = ic.getUri();
-					boolean exists = false;
-					for (ClientReferenceableInputControl item : ics)
-						if (item.getUri().equals(uri)) {
-							exists = true;
-							break;
-						}
-					if (!exists)
-						ics.add(ic);
-				} else if (ResourceFactory.isFileResourceType(r) || t.equals(ResourceDescriptor.TYPE_REFERENCE)) {
+				} else if (t.equals(ResourceDescriptor.TYPE_INPUT_CONTROL))
+					ics.add((ClientReferenceableInputControl) getResourceContainer(rc, r));
+				else if (ResourceFactory.isFileResourceType(r) || t.equals(ResourceDescriptor.TYPE_REFERENCE)) {
 					icf.put(r.getName(), (ClientReferenceableFile) getResourceContainer(rc, r));
 				}
 			}

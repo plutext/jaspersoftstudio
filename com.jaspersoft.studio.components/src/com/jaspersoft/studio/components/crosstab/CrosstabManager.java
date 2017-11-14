@@ -32,17 +32,13 @@ import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabRowGroup;
 import net.sf.jasperreports.crosstabs.type.CrosstabTotalPositionEnum;
 import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class CrosstabManager {
 
 	private JRDesignCrosstab crosstab;
-	
-	private JasperDesign jDesign;
 
-	public CrosstabManager(JRDesignCrosstab crosstab, JasperDesign jd) {
+	public CrosstabManager(JRDesignCrosstab crosstab) {
 		this.crosstab = crosstab;
-		this.jDesign = jd;
 		init(crosstab);
 	}
 
@@ -256,7 +252,7 @@ public class CrosstabManager {
 				for (int i = cells.length - 1; i >= 0; i--) {
 					for (int j = cells[i].length - 1; j >= 0; j--) {
 						JRDesignCrosstabCell jrCrosstabCell = (JRDesignCrosstabCell) cells[i][j];
-						if (jrCrosstabCell != null&& jrCrosstabCell.getContents() == cell) {
+						if (jrCrosstabCell.getContents() == cell) {
 							jrCrosstabCell.setHeight(height);
 
 							for (int k = 0; k < cells[i].length; k++) {
@@ -511,7 +507,7 @@ public class CrosstabManager {
 		ILayout defaultLayout = new VerticalRowLayout();
 		for(JRCellContents cell : cellsToLayout){
 			ILayout layout = LayoutManager.getLayout(new JRPropertiesHolder[] { cell }, null, null, defaultLayout);
-			layout.layout(jDesign, cell, cell.getElements(), new Dimension(cell.getWidth(), cell.getHeight()));
+			layout.layout(cell.getElements(), new Dimension(cell.getWidth(), cell.getHeight()));
 		}
 	}
 	

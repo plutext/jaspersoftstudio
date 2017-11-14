@@ -1,3 +1,7 @@
+/*******************************************************************************
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
+ ******************************************************************************/
 /**
  */
 package com.jaspersoft.studio.data.sql.util;
@@ -78,16 +82,6 @@ public class SqlAdapterFactory extends AdapterFactoryImpl
       public Adapter caseModel(Model object)
       {
         return createModelAdapter();
-      }
-      @Override
-      public Adapter caseWithQuery(WithQuery object)
-      {
-        return createWithQueryAdapter();
-      }
-      @Override
-      public Adapter caseWithColumns(WithColumns object)
-      {
-        return createWithColumnsAdapter();
       }
       @Override
       public Adapter caseFetchFirst(FetchFirst object)
@@ -642,36 +636,6 @@ public class SqlAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createModelAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.jaspersoft.studio.data.sql.WithQuery <em>With Query</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.jaspersoft.studio.data.sql.WithQuery
-   * @generated
-   */
-  public Adapter createWithQueryAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link com.jaspersoft.studio.data.sql.WithColumns <em>With Columns</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see com.jaspersoft.studio.data.sql.WithColumns
-   * @generated
-   */
-  public Adapter createWithColumnsAdapter()
   {
     return null;
   }

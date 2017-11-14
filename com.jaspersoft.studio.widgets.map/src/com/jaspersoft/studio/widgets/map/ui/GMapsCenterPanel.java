@@ -4,7 +4,6 @@
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.map.ui;
 
-import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.FocusAdapter;
@@ -19,6 +18,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.NumberValidator;
 import com.jaspersoft.studio.widgets.map.MapActivator;
 import com.jaspersoft.studio.widgets.map.MapWidgetConstants;
@@ -28,9 +28,6 @@ import com.jaspersoft.studio.widgets.map.core.MapType;
 import com.jaspersoft.studio.widgets.map.support.BaseJavaMapSupport;
 import com.jaspersoft.studio.widgets.map.support.GMapUtils;
 import com.jaspersoft.studio.widgets.map.support.JavaMapSupport;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * This class implements the support for the Google Map component. The panel
@@ -69,11 +66,6 @@ public class GMapsCenterPanel {
 
 	protected void createContent(Composite parent, int style) {
 		createTop(parent);
-		
-		if(Util.isLinux()){
-			Composite warningCmp = MapUIUtils.createLinuxWarningText(parent);
-			warningCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1,1));
-		}
 
 		createMap(parent);
 
@@ -107,7 +99,7 @@ public class GMapsCenterPanel {
 			cmp.setLayoutData(gd);
 		}
 
-		final Text tadr = new Text(cmp, SWT.SEARCH | SWT.ICON_SEARCH | SWT.BORDER);
+		final Text tadr = new Text(cmp, SWT.SEARCH | SWT.ICON_SEARCH);
 		tadr.setMessage("Address");
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		tadr.setLayoutData(gd);
@@ -161,7 +153,7 @@ public class GMapsCenterPanel {
 		Label lbl = new Label(cmp, SWT.NONE);
 		lbl.setText("Latitude");
 
-		tlat = new Text(cmp, SWT.BORDER);
+		tlat = new Text(cmp, SWT.NONE);
 		gd = new GridData();
 		gd.widthHint = 100;
 		tlat.setLayoutData(gd);
@@ -198,7 +190,7 @@ public class GMapsCenterPanel {
 		lbl = new Label(cmp, SWT.NONE);
 		lbl.setText("Longitude");
 
-		tlon = new Text(cmp, SWT.BORDER);
+		tlon = new Text(cmp, SWT.NONE);
 		gd = new GridData();
 		gd.widthHint = 100;
 		tlon.setLayoutData(gd);

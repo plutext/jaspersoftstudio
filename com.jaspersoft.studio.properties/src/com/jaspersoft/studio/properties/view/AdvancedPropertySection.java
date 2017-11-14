@@ -6,19 +6,13 @@ package com.jaspersoft.studio.properties.view;
 
 import java.util.List;
 
-import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.PropertySheetPage;
-import org.eclipse.wb.swt.ResourceManager;
 
-import com.jaspersoft.studio.properties.Activator;
-import com.jaspersoft.studio.properties.messages.Messages;
 import com.jaspersoft.studio.properties.view.validation.ValidationError;
 
 /**
@@ -35,56 +29,12 @@ public class AdvancedPropertySection extends AbstractPropertySection {
 	protected PropertySheetPage page;
 
 	/**
-	 * Create the advanced property page, also it set a custom default action to provide a more sofisticated 
-	 * behavior that allow to reset also the children
-	 * 
 	 * @see org.eclipse.ui.views.properties.tabbed.ISection#createControls(org.eclipse.swt.widgets.Composite,
 	 *      org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
 	 */
 	public void createControls(Composite parent, final TabbedPropertySheetPage atabbedPropertySheetPage) {
 		super.createControls(parent, atabbedPropertySheetPage);
-		page = new PropertySheetPage(){
-			
-			private CustomDefaultsAction customResetAction;
-			
-			@Override
-			public void createControl(Composite parent) {
-				super.createControl(parent);
-				//create the custom default action
-				customResetAction = new CustomDefaultsAction();
-				customResetAction.setText(Messages.AdvancedPropertySection_restoreDefaultName);
-				customResetAction.setToolTipText(Messages.AdvancedPropertySection_restoreDefaultTooltip);
-				customResetAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor(Activator.PLUGIN_ID, "/images/defaults_ps.png")); //$NON-NLS-1$
-				customResetAction.setDisabledImageDescriptor(ResourceManager.getPluginImageDescriptor(Activator.PLUGIN_ID, "/images/defaults_ps_disabled.png")); //$NON-NLS-1$
-		        //create a custom contribution item that is always dirty, this will force the name of the 
-				//label to be updated on the contextual menu everytime it is opened
-				ActionContributionItem item = new ActionContributionItem(customResetAction){
-		        	@Override
-		        	public boolean isDirty() {
-		        		return true;
-		        	}
-		        };
-		        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$;
-		        menuMgr.add(item);
-		        final Menu menu = menuMgr.createContextMenu(getControl());
-		        getControl().setMenu(menu);
-
-			}
-				
-		    /**
-		     * Handles a selection change in the entry tree. Set the new selection on 
-		     * the default action
-		     *
-		     * @param selection the new selection
-		     */
-		    public void handleEntrySelection(ISelection selection) {
-		    	super.handleEntrySelection(selection);
-		    	if (customResetAction != null) {
-		    		customResetAction.setEntries(selection);
-		    	}
-		    }
-			
-		};
+		page = new PropertySheetPage();
 		page.createControl(parent);
 		GridData treeData = new GridData(GridData.FILL_BOTH);
 		page.getControl().setLayoutData(treeData);

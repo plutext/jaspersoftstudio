@@ -4,6 +4,12 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.decorator.json;
 
+import net.sf.jasperreports.eclipse.ui.ATitledDialog;
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.export.JsonMetadataReportConfiguration;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -22,13 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.MReport;
-
-import net.sf.jasperreports.eclipse.ui.ATitledDialog;
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.export.JsonMetadataReportConfiguration;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * 

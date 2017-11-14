@@ -10,7 +10,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.action.ACachedSelectionAction;
 import com.jaspersoft.studio.editor.gef.parts.ReportPageEditPart;
 import com.jaspersoft.studio.editor.gef.parts.band.BandEditPart;
@@ -26,8 +25,7 @@ public class PageFormatAction extends ACachedSelectionAction {
 	 * Constructor
 	 * 
 	 * @param diagramViewer
-	 *            the GraphicalViewer whose grid enablement and visibility
-	 *            properties are to be toggled
+	 *          the GraphicalViewer whose grid enablement and visibility properties are to be toggled
 	 */
 	public PageFormatAction(IWorkbenchPart part) {
 		super(part);
@@ -42,7 +40,6 @@ public class PageFormatAction extends ACachedSelectionAction {
 		setText(Messages.PageFormatAction_actionName);
 		setToolTipText(Messages.PageFormatAction_actionTooltip);
 		setId(ID);
-		setImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor("icons/transparent_icon.png"));
 		setEnabled(false);
 	}
 
@@ -59,16 +56,13 @@ public class PageFormatAction extends ACachedSelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if (getSelectedObjects().size() > 1)
-			return false;
-
+		if (getSelectedObjects().size()>1) return false;
+		
 		List<Object> pageEditPart = editor.getSelectionCache().getSelectionPartForType(ReportPageEditPart.class);
-		if (pageEditPart.size() > 0)
-			return true;
-
+		if (pageEditPart.size() > 0) return true;
+		
 		List<Object> bandEditParts = editor.getSelectionCache().getSelectionPartForType(BandEditPart.class);
-		if (bandEditParts.size() > 0)
-			return true;
+		if (bandEditParts.size() > 0) return true;
 
 		return false;
 	}

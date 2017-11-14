@@ -103,7 +103,6 @@ public class NewLocalePage extends Composite {
 					IMessagesBundle copy = bundleGroup.copyMessagesBundle(newLocale, source);
 					FileUtils.writeToFile(copy);
 					editor.reloadDisplayedContents(true);
-					editor.setSelectedKey(null);
 				}
 			}
 		});

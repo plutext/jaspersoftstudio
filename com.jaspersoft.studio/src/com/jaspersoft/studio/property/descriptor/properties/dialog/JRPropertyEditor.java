@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.properties.dialog;
+
+import net.sf.jasperreports.engine.JRPropertiesMap;
 
 import org.eclipse.jface.wizard.Wizard;
 
 import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.engine.JRPropertiesMap;
 
 public class JRPropertyEditor extends Wizard {
 	private JRPropertiesMap value;
@@ -26,20 +26,15 @@ public class JRPropertyEditor extends Wizard {
 		this.value = value;
 	}
 
-	private JasperReportsConfiguration jConfig;
-	private Object jrElement;
-
-	public JRPropertyEditor(JasperReportsConfiguration jConfig, Object jrElement) {
+	public JRPropertyEditor() {
 		super();
 		setWindowTitle(Messages.common_properties);
 		setNeedsProgressMonitor(false);
-		this.jConfig = jConfig;
-		this.jrElement = jrElement;
 	}
 
 	@Override
 	public void addPages() {
-		page0 = new JRPropertyPage("jrproperties", jConfig, jrElement); //$NON-NLS-1$
+		page0 = new JRPropertyPage("jrproperties"); //$NON-NLS-1$
 		page0.setValue(value);
 		addPage(page0);
 	}

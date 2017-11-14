@@ -209,11 +209,8 @@ public class CrosstabUtil {
 		jrCross.preprocess();
 	}
 	
-	public static void addColumnGroup(JRDesignCrosstab jrCross, JRDesignCrosstabColumnGroup jrRowGr, int index) throws JRException {
-		addColumnGroup(jrCross, jrRowGr, index, 20);
-	}
-	
-	public static void addColumnGroup(JRDesignCrosstab jrCross, JRDesignCrosstabColumnGroup jrRowGr, int index, int height) throws JRException {
+	public static void addColumnGroup(JRDesignCrosstab jrCross,
+			JRDesignCrosstabColumnGroup jrRowGr, int index) throws JRException {
 		if (index >= 0 && index <= jrCross.getColumnGroupsList().size())
 			jrCross.addColumnGroup(index, jrRowGr);
 		else
@@ -227,14 +224,14 @@ public class CrosstabUtil {
 			dT.setColumnTotalGroup(null);
 			dT.setRowTotalGroup(null);
 			jrCross.addCell(dT);
-			dT.setHeight(height);
+			dT.setHeight(jrRowGr.getHeight());
 			dT.setWidth(60);
 		}
 
 		JRDesignCrosstabCell dT = new JRDesignCrosstabCell();
 		dT.setColumnTotalGroup(jrRowGr.getName());
 		jrCross.addCell(dT);
-		dT.setHeight(height);
+		dT.setHeight(jrRowGr.getHeight());
 		dT.setWidth(60);
 		// for each column, we need to add the total...
 		List<JRCrosstabRowGroup> rows = jrCross.getRowGroupsList();
@@ -244,7 +241,7 @@ public class CrosstabUtil {
 				cell.setColumnTotalGroup(jrRowGr.getName());
 				cell.setRowTotalGroup(r.getName());
 				jrCross.addCell(cell);
-				cell.setHeight(height);
+				cell.setHeight(jrRowGr.getHeight());
 				cell.setWidth(60);
 				// Add some cells...
 
@@ -253,10 +250,6 @@ public class CrosstabUtil {
 	}
 	
 	public static void addRowGroup(JRDesignCrosstab jrCross, JRDesignCrosstabRowGroup jrRowGr, int index) throws JRException {
-		addRowGroup(jrCross, jrRowGr, index, 20);
-	}
-	
-	public static void addRowGroup(JRDesignCrosstab jrCross, JRDesignCrosstabRowGroup jrRowGr, int index, int height) throws JRException {
 		JRCrosstabRowGroup lastGroup = null; 
 		if (!jrCross.getRowGroupsList().isEmpty()){
 			lastGroup = jrCross.getRowGroupsList().get(jrCross.getRowGroupsList().size()-1);
@@ -272,14 +265,14 @@ public class CrosstabUtil {
 			dT.setColumnTotalGroup(null);
 			dT.setRowTotalGroup(null);
 			jrCross.addCell(dT);
-			dT.setHeight(height);
+			dT.setHeight(20);
 			dT.setWidth(jrRowGr.getWidth());
 		}
 
 		JRDesignCrosstabCell dT = new JRDesignCrosstabCell();
 		dT.setRowTotalGroup(jrRowGr.getName());
 		jrCross.addCell(dT);
-		dT.setHeight(height);
+		dT.setHeight(20);
 		if (lastGroup != null){
 			Pair<String, String> key = new Pair<String,String>(lastGroup.getName(), dT.getColumnTotalGroup());
 			JRCrosstabCell cell = jrCross.getCellsMap().get(key);
@@ -295,7 +288,7 @@ public class CrosstabUtil {
 				cell.setRowTotalGroup(jrRowGr.getName());
 				cell.setColumnTotalGroup(c.getName());
 				jrCross.addCell(cell);
-				cell.setHeight(height);
+				cell.setHeight(c.getHeight());
 				
 				if (lastGroup != null){
 					Pair<String, String> key = new Pair<String,String>(lastGroup.getName(), c.getName());

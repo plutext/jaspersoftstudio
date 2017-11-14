@@ -4,6 +4,8 @@
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.model.query.orderby;
 
+import net.sf.jasperreports.engine.JRConstants;
+
 import org.eclipse.jface.viewers.StyledString;
 
 import com.jaspersoft.studio.data.sql.model.metadata.MSQLColumn;
@@ -12,9 +14,7 @@ import com.jaspersoft.studio.data.sql.model.query.select.MSelectColumn;
 import com.jaspersoft.studio.data.sql.text2model.ConvertUtil;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.preferences.fonts.utils.FontUtils;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRConstants;
+import com.jaspersoft.studio.utils.Misc;
 
 public class MOrderByColumn extends AMOrderByMember<MSQLColumn> {
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;

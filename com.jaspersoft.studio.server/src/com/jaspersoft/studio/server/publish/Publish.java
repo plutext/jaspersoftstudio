@@ -26,13 +26,11 @@ import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.server.ServerManager;
 import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.export.AExporter;
-import com.jaspersoft.studio.server.ic.ICParameterContributor;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.model.AFileResource;
 import com.jaspersoft.studio.server.model.AMJrxmlContainer;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MFolder;
-import com.jaspersoft.studio.server.model.MInputControl;
 import com.jaspersoft.studio.server.model.MJrxml;
 import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
@@ -40,15 +38,14 @@ import com.jaspersoft.studio.server.model.server.ServerProfile;
 import com.jaspersoft.studio.server.protocol.Feature;
 import com.jaspersoft.studio.server.wizard.resource.page.selector.SelectorDatasource;
 import com.jaspersoft.studio.statistics.UsageStatisticsIDs;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.data.DataAdapterParameterContributorFactory;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileExtension;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class Publish {
@@ -92,7 +89,6 @@ public class Publish {
 			ServerManager.selectIfExists(monitor, node);
 		} catch (Exception e) {
 			UIUtils.showError(e);
-			return Status.CANCEL_STATUS;
 		}
 		return Status.OK_STATUS;
 	}
@@ -130,17 +126,14 @@ public class Publish {
 		if (mrunit != null && !jrxml.getValue().getIsReference()) {
 			ResourceDescriptor oldRU = mrunit.getValue();
 			ResourceDescriptor r = mrunit.getValue();
-			String oldType = r.getWsType();
 			try {
 				r = mrunit.getWsClient().get(monitor, mrunit.getValue(), null);
+				mrunit.setValue(r);
 			} catch (HttpResponseException e) {
 				if (e.getStatusCode() != 404)
 					throw e;
 			} catch (Exception e) {
 			}
-			if (!r.getWsType().equals(oldType))
-				throw new Exception("This Resource ID is already used by another resource type. Please rename it.");
-			mrunit.setValue(r);
 			// setup datasource
 			ResourceDescriptor ds = null;
 			for (ResourceDescriptor rd : oldRU.getChildren()) {
@@ -287,27 +280,10 @@ public class Publish {
 		}
 		for (MJrxml mjrxml : toSave) {
 			if (mjrxml.getJd() != null) {
-				if (mjrxml.getValue().isMainReport())
-					createICProperties(mjrxml.getJd(), files);
-
 				String rp = JRXmlWriterHelper.writeReport(jrConfig, mjrxml.getJd(), version);
 				if (rp != null) {
 					mjrxml.getValue().setData(Base64.encodeBase64(rp.getBytes()));
 					FileUtils.writeFile(mjrxml.getFile(), rp);
-				}
-			}
-		}
-	}
-
-	private void createICProperties(JasperDesign jd, List<?> files) {
-		for (Object mres : files) {
-			if (mres instanceof MInputControl) {
-				MInputControl mic = (MInputControl) mres;
-				if (!mic.getPublishOptions().getOverwrite(OverwriteEnum.IGNORE).equals(OverwriteEnum.IGNORE)) {
-					JRDesignParameter p = (JRDesignParameter) jd.getParametersMap().get(mic.getValue().getName());
-					if (p != null)
-						p.getPropertiesMap().setProperty(ICParameterContributor.PROPERTY_JS_INPUTCONTROL_PATH,
-								mic.getValue().getUriString());
 				}
 			}
 		}
@@ -338,17 +314,16 @@ public class Publish {
 					} catch (URISyntaxException e) {
 						UIUtils.showError(e);
 					}
-					rpt.setProperty(AExporter.PROP_USER, AExporter.encodeUsr(v));
+					rpt.setProperty(AExporter.PROP_USER, v.getUser() + (v.getOrganisation() != null ? "|" //$NON-NLS-1$
+							+ v.getOrganisation() : "")); //$NON-NLS-1$
 				}
 				ResourceDescriptor rd = node.getValue();
-				if (rd.getWsType().equals(ResourceDescriptor.TYPE_REPORTUNIT)) {
+				if (rd.getWsType().equals(ResourceDescriptor.TYPE_REPORTUNIT))
 					for (Object r : rd.getChildren())
 						if (((ResourceDescriptor) r).getWsType().equals(ResourceDescriptor.TYPE_JRXML)) {
 							rd = (ResourceDescriptor) r;
 							break;
 						}
-					createICProperties(rpt, node.getChildren());
-				}
 				rpt.setProperty(AExporter.PROP_REPORTRESOURCE, rd.getUriString());
 				if (node.getParent() instanceof MReportUnit) {
 					MReportUnit mrunit = (MReportUnit) node.getParent();

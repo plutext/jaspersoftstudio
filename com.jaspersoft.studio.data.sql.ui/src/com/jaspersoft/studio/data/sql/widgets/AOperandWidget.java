@@ -9,24 +9,17 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.model.query.operand.AOperand;
 
 public abstract class AOperandWidget<T extends AOperand> extends Composite {
 	private T value;
 	private boolean exludeField = false;
 	private Set<Class<? extends AOperand>> menuOperands;
-	protected AQueryDesigner designer;
 
-	public AOperandWidget(Composite parent, int style, T operand, AQueryDesigner designer) {
+	public AOperandWidget(Composite parent, int style, T operand) {
 		super(parent, style);
-		this.designer = designer;
 		this.value = operand;
 		createWidget(parent);
-	}
-
-	public AQueryDesigner getDesigner() {
-		return designer;
 	}
 
 	public boolean isMenuOperands(Class<? extends AOperand> op) {
@@ -43,7 +36,6 @@ public abstract class AOperandWidget<T extends AOperand> extends Composite {
 	public Set<Class<? extends AOperand>> getMenuOperands() {
 		return menuOperands;
 	}
-
 	public void setExludeField(boolean exludeField) {
 		this.exludeField = exludeField;
 	}

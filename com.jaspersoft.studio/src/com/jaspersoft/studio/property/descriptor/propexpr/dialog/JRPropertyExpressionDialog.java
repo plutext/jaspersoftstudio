@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.propexpr.dialog;
 
@@ -19,18 +20,21 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.jaspersoft.studio.editor.expression.ExpressionContext;
+import com.jaspersoft.studio.model.ANode;
+import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.dataset.DatasetPropertyExpressionDTO;
 import com.jaspersoft.studio.property.descriptor.properties.dialog.PropertyDTO;
 import com.jaspersoft.studio.property.descriptor.propexpr.PropertyExpressionDTO;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedEvent;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
 import com.jaspersoft.studio.swt.widgets.WTextExpression;
+import com.jaspersoft.studio.utils.Misc;
+import com.jaspersoft.studio.utils.ModelUtils;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.type.PropertyEvaluationTimeEnum;
-import net.sf.jasperreports.properties.PropertyMetadata;
 
 /**
  * Dialog that extend the dialog to define a property as key and value. This extension allow to use an expression as
@@ -71,7 +75,7 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 	 */
 	@Override
 	protected void initializeHints() {
-		hints = HintsPropertiesList.getElementProperties(value.getJrElement(), value.geteContext());
+		hints = HintsPropertiesList.getElementProperties(value.getPnode().getValue());
 		Collections.sort(hints);
 	}
 
@@ -85,35 +89,19 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 				if (propertiesSuggestions != null)
 					propertiesSuggestions.showOnlyElement(newtext);
 				value.setName(newtext);
-
-				if (!value.isExpression())
-					for (PropertyMetadata ed : HintsPropertiesList.getPropertiesMetadata(value.getJrElement(),
-							value.geteContext()))
-						if (ed.getName().equals(newtext) && ed.getDefaultValue() != null) {
-							tvalue.setText(ed.getDefaultValue());
-							break;
-						}
 			}
 		};
-	}
-
-	private boolean showExpression = true;
-
-	public void setShowExpression(boolean showExpression) {
-		this.showExpression = showExpression;
 	}
 
 	/**
 	 * Create the checkbox
 	 */
 	protected void createAdditionalControls(Composite parent) {
-		if (showExpression) {
-			buseexpr = new Button(parent, SWT.CHECK);
-			buseexpr.setText(Messages.JRPropertyExpressionDialog_0);
-			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-			gd.horizontalSpan = 2;
-			buseexpr.setLayoutData(gd);
-		}
+		buseexpr = new Button(parent, SWT.CHECK);
+		buseexpr.setText("Use An Expression");
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
+		buseexpr.setLayoutData(gd);
 	}
 
 	@Override
@@ -124,29 +112,27 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				synchText();
-				value.setValue(tvalue.getText());
 			}
 		});
 		vexp = createValueExpressionControl(stackComposite);
-		if (buseexpr != null)
-			buseexpr.addSelectionListener(new SelectionListener() {
+		buseexpr.addSelectionListener(new SelectionListener() {
 
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					stackLayout.topControl = buseexpr.getSelection() ? vexp : vcmp;
-					stackComposite.layout();
-					((PropertyExpressionDTO) value).setExpression(buseexpr.getSelection());
-					if (buseexpr.getSelection())
-						value.setValue(evalue.getExpression().getText());
-					else
-						value.setValue(tvalue.getText());
-				}
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				stackLayout.topControl = buseexpr.getSelection() ? vexp : vcmp;
+				stackComposite.layout();
+				((PropertyExpressionDTO) value).setExpression(buseexpr.getSelection());
+				if (buseexpr.getSelection())
+					value.setValue(evalue.getExpression().getText());
+				else
+					value.setValue(tvalue.getText());
+			}
 
-				@Override
-				public void widgetDefaultSelected(SelectionEvent e) {
-					widgetDefaultSelected(e);
-				}
-			});
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetDefaultSelected(e);
+			}
+		});
 		fillValue(value);
 		return composite;
 	}
@@ -164,7 +150,7 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 
 		if (value instanceof DatasetPropertyExpressionDTO) {
 			Label label = new Label(composite, SWT.NONE);
-			label.setText(Messages.JRPropertyExpressionDialog_1);
+			label.setText("Evaluation Time");
 
 			cevalTime = new Combo(composite, SWT.READ_ONLY);
 			cevalTime.setItems(new String[] { PropertyEvaluationTimeEnum.EARLY.getName(),
@@ -212,11 +198,16 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 	 *          value to set
 	 */
 	private void fillValue(PropertyDTO value) {
-		evalue.setExpressionContext(value.geteContext());
-		if (cprop != null)
-			cprop.setText(Misc.nvl(value.getName()));
-		if (buseexpr != null)
-			buseexpr.setSelection(value.isExpression());
+		ANode node = value.getPnode();
+		ExpressionContext ec = null;
+		if (node instanceof APropertyNode) {
+			ec = ((APropertyNode) node).getExpressionContext();
+		} else {
+			ec = ModelUtils.getElementExpressionContext(null, node);
+		}
+		evalue.setExpressionContext(ec);
+		cprop.setText(Misc.nvl(value.getName()));
+		buseexpr.setSelection(value.isExpression());
 		if (value.isExpression()) {
 			stackLayout.topControl = vexp;
 			stackComposite.layout();
@@ -227,7 +218,7 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 		evalue.setExpression(new JRDesignExpression(text));
 		if (value instanceof DatasetPropertyExpressionDTO) {
 			PropertyEvaluationTimeEnum etime = ((DatasetPropertyExpressionDTO) value).getEvalTime();
-			cevalTime.setText(etime != null ? etime.getName() : ""); //$NON-NLS-1$
+			cevalTime.setText(etime != null ? etime.getName() : "");
 		}
 	}
 
@@ -237,11 +228,11 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 	protected synchronized void synchText() {
 		if (!updating) {
 			updating = true;
-			if (buseexpr != null)
-				if (buseexpr.getSelection())
-					tvalue.setText(evalue.getText());
-				else
-					evalue.setExpression(new JRDesignExpression(tvalue.getText()));
+			if (buseexpr.getSelection()) {
+				tvalue.setText(evalue.getText());
+			} else {
+				evalue.setExpression(new JRDesignExpression(tvalue.getText()));
+			}
 			updating = false;
 		}
 	}
@@ -257,6 +248,6 @@ public class JRPropertyExpressionDialog extends JRPropertyDialog {
 		} else if (value instanceof JRExpression) {
 			return ((JRExpression) value).getText();
 		}
-		return ""; //$NON-NLS-1$
+		return "";
 	}
 }

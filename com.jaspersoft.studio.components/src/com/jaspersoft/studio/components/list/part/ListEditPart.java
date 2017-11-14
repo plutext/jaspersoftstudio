@@ -47,7 +47,6 @@ import com.jaspersoft.studio.editor.outline.OutlineTreeEditPartFactory;
 import com.jaspersoft.studio.editor.outline.editpolicy.CloseSubeditorDeletePolicy;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.MGraphicElement;
-import com.jaspersoft.studio.model.MPage;
 import com.jaspersoft.studio.model.command.CreateElementCommand;
 import com.jaspersoft.studio.preferences.RulersGridPreferencePage;
 
@@ -129,7 +128,7 @@ public class ListEditPart extends EditableFigureEditPart {
 							action.run();
 							return action.getCommand();
 						} else if (request.getNewObject() instanceof MGraphicElement) {
-							return OutlineTreeEditPartFactory.getCreateCommand((ANode) getHost().getModel(),(ANode) request.getNewObject(),constraint.getCopy(), -1, request, false);
+							return OutlineTreeEditPartFactory.getCreateCommand((ANode) getHost().getModel(),(ANode) request.getNewObject(),constraint.getCopy(), -1);
 						} else if (request.getNewObject() instanceof Collection<?>) {
 							JSSCompoundCommand cmd = new JSSCompoundCommand(null);
 							Collection<?> c = (Collection<?>) request.getNewObject();
@@ -137,7 +136,7 @@ public class ListEditPart extends EditableFigureEditPart {
 								if (obj instanceof ANode) {
 									ANode aObj = (ANode) obj;
 									cmd.setReferenceNodeIfNull(aObj);
-									cmd.add(OutlineTreeEditPartFactory .getCreateCommand((ANode) getHost().getModel(), aObj, constraint.getCopy(), -1, request, false));
+									cmd.add(OutlineTreeEditPartFactory .getCreateCommand((ANode) getHost().getModel(), aObj, constraint.getCopy(), -1));
 								}
 							}
 							return cmd;
@@ -251,15 +250,6 @@ public class ListEditPart extends EditableFigureEditPart {
 	public DragTracker getDragTracker(Request request) {
 		if (ToolUtilitiesCompatibility.isSubeditorMainElement(this)) return new SubEditorEditPartTracker(this);
 		else return new SearchParentDragTracker(this);
-	}
-	
-	@Override
-	public EditPart getDropContainer() {
-		if (getModel().getParent() instanceof MPage) {
-			return this;
-		} else {
-			return getParentEditPart(this);
-		}
 	}
 
 }

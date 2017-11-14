@@ -5,7 +5,6 @@
 package com.jaspersoft.studio.model;
 
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -79,7 +78,7 @@ public class MHyperLink extends APropertyNode {
 		propertiesD.setHelpRefBuilder(new HelpReferenceBuilder(prefix + JRDesignHyperlink.PROPERTY_HYPERLINK_PARAMETERS));
 
 		RComboBoxPropertyDescriptor linkTargetD = new RComboBoxPropertyDescriptor(
-				JRDesignHyperlink.PROPERTY_LINK_TARGET, Messages.MHyperLink_link_target, EnumHelper.getEnumNames(
+				JRDesignHyperlink.PROPERTY_HYPERLINK_TARGET, Messages.MHyperLink_link_target, EnumHelper.getEnumNames(
 						HyperlinkTargetEnum.values(), NullEnum.NULL));
 		linkTargetD.setDescription(Messages.MHyperLink_link_target_description);
 		desc.add(linkTargetD);
@@ -188,22 +187,6 @@ public class MHyperLink extends APropertyNode {
 
 	public ImageDescriptor getImagePath() {
 		return null;
-	}
-	
-	@Override
-	public Map<String, DefaultValue> getDefaultsPropertiesMap() {
-		Map<String, DefaultValue> defaultsMap = super.createDefaultsMap();
-
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_LINK_TARGET, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_LINK_TYPE, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_ANCHOR_EXPRESSION, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_PAGE_EXPRESSION, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_REFERENCE_EXPRESSION, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_TOOLTIP_EXPRESSION, new DefaultValue(null, true));
-		defaultsMap.put(JRDesignHyperlink.PROPERTY_HYPERLINK_PARAMETERS, new DefaultValue(null, true));
-
-		return defaultsMap;
 	}
 
 }

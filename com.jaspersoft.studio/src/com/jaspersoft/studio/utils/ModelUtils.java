@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.utils;
 
@@ -28,8 +29,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
 import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
-import com.jaspersoft.studio.editor.layout.ILayout;
-import com.jaspersoft.studio.editor.layout.LayoutManager;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.APropertyNode;
@@ -66,7 +65,6 @@ import net.sf.jasperreports.crosstabs.JRCrosstabColumnGroup;
 import net.sf.jasperreports.crosstabs.JRCrosstabRowGroup;
 import net.sf.jasperreports.crosstabs.design.JRDesignCellContents;
 import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.JRDataset;
@@ -81,7 +79,6 @@ import net.sf.jasperreports.engine.JRGroup;
 import net.sf.jasperreports.engine.JROrigin;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRPart;
-import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.JRPropertiesUtil;
 import net.sf.jasperreports.engine.JRPropertiesUtil.PropertySuffix;
@@ -196,29 +193,6 @@ public class ModelUtils {
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * Get the index of the element edge near the passed point
-	 * 
-	 * @param parent the container of the nodes
-	 * @param point a not null point
-	 * @return the element index just before the dropped point with the edge near to 
-	 * it, the element is resolved by the layout since the disposition follow the layout
-	 * It can return -1 if the point is not near any edge
-	 */
-	public static int getBetweenIndex(ANode parent, Point point){
-		JRPropertiesHolder holder = LayoutManager.getPropertyHolder(parent);
-		if (holder != null){
-			String layoutClassName = holder.getPropertiesMap().getProperty(ILayout.KEY);
-			if (layoutClassName != null){
-				ILayout layout = LayoutManager.getLayout(layoutClassName);
-				if (layout != null){
-					return layout.getInsertPosition(parent, point);
-				}
-			}
-		}
-		return -1;
 	}
 
 	public static org.eclipse.swt.graphics.Color getSWTColorFromAWT(java.awt.Color awtColor) {
@@ -1092,6 +1066,7 @@ public class ModelUtils {
 	static {
 		deprecatedLanguages.add("xlsx");
 		deprecatedLanguages.add("xpath2");
+		deprecatedLanguages.add("Adhoc MultiLevel".toLowerCase());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -1487,12 +1462,6 @@ public class ModelUtils {
 		}
 
 		return null;
-	}
-
-	public static ExpressionContext getExpressionContext(ANode node) {
-		if (node instanceof APropertyNode)
-			return ((APropertyNode) node).getExpressionContext();
-		return ModelUtils.getElementExpressionContext(null, node);
 	}
 
 	/**
@@ -2094,15 +2063,14 @@ public class ModelUtils {
 			return null;
 		}
 	}
-
+	
 	/**
 	 * Returns a field text expression that uses the specified name.
 	 * 
-	 * @param name
-	 *          field name
+	 * @param name field name
 	 * @return field expression
 	 */
-	public static String getNameAsField(String name) {
+	public static String getNameAsField(String name){
 		Assert.isNotNull(name);
 		return "$F{" + name + "}";
 	}
@@ -2110,53 +2078,49 @@ public class ModelUtils {
 	/**
 	 * Returns a parameter text expression that uses the specified name.
 	 * 
-	 * @param name
-	 *          parameter name
+	 * @param name parameter name
 	 * @return parameter expression
 	 */
-	public static String getNameAsParameter(String name) {
+	public static String getNameAsParameter(String name){
 		Assert.isNotNull(name);
 		return "$P{" + name + "}";
 	}
-
+	
 	/**
 	 * Returns a variable text expression that uses the specified name.
 	 * 
-	 * @param name
-	 *          variable name
+	 * @param name variable name
 	 * @return variable expression
 	 */
-	public static String getNameAsVariable(String name) {
+	public static String getNameAsVariable(String name){
 		Assert.isNotNull(name);
 		return "$V{" + name + "}";
 	}
-
+	
 	/**
 	 * Returns a resource key text expression that uses the specified name.
 	 * 
-	 * @param name
-	 *          resource key name
+	 * @param name resource key name
 	 * @return resource key expression
 	 */
-	public static String getNameAsResourceKey(String name) {
+	public static String getNameAsResourceKey(String name){
 		Assert.isNotNull(name);
 		return "$R{" + name + "}";
 	}
-
+	
 	/**
 	 * Checks if a class is assignable to another type one.
 	 * 
-	 * @param clazz
-	 *          the class object
-	 * @param className
-	 *          the name of the class to check
+	 * @param clazz the class object
+	 * @param className the name of the class to check
 	 * @return <code>true</code> if class is assignable, <code>false</code> otherwise
 	 */
 	public static boolean isClassAssignableFrom(Class<?> clazz, String className) {
-		try {
+		try{
 			Class<?> forName = Class.forName(className);
 			return clazz.isAssignableFrom(forName);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return false;
 		}
 	}

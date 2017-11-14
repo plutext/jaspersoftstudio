@@ -27,6 +27,7 @@ import com.jaspersoft.studio.editor.layout.LayoutCommand;
 import com.jaspersoft.studio.editor.layout.LayoutManager;
 import com.jaspersoft.studio.editor.layout.VerticalRowLayout;
 import com.jaspersoft.studio.model.ANode;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 
 import net.sf.jasperreports.components.table.BaseColumn;
@@ -41,7 +42,6 @@ import net.sf.jasperreports.components.table.StandardColumn;
 import net.sf.jasperreports.components.table.StandardColumnGroup;
 import net.sf.jasperreports.components.table.StandardTable;
 import net.sf.jasperreports.components.table.util.TableUtil;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.eclipse.util.Pair;
 import net.sf.jasperreports.engine.JRChild;
 import net.sf.jasperreports.engine.JRDatasetRun;
@@ -355,7 +355,7 @@ public class TableManager {
 							ILayout layout = LayoutManager.getLayout(new JRPropertiesHolder[] { cell.getKey() }, null, null, defaultLayout);
 							Dimension baseSize = new Dimension(cell.getValue(), ((DesignCell)cell.getKey()).getHeight());
 							Dimension paddedSize = LayoutManager.getPaddedSize(cell.getKey(), baseSize);
-							layout.layout(jDesign, cell.getKey(), cell.getKey().getElements(), paddedSize);
+							layout.layout(cell.getKey().getElements(), paddedSize);
 						}
 					}
 					index++;
@@ -375,7 +375,7 @@ public class TableManager {
 						setWidth((StandardBaseColumn)col, newColumnWidth);
 						for(Entry<Cell, Integer> cell : getColumnCell(col).entrySet()){
 							ILayout layout = LayoutManager.getLayout(new JRPropertiesHolder[] { cell.getKey() }, null, null, defaultLayout);
-							layout.layout(jDesign, cell.getKey(), cell.getKey().getElements(), new Dimension(cell.getValue(), ((DesignCell)cell.getKey()).getHeight()));
+							layout.layout(cell.getKey().getElements(), new Dimension(cell.getValue(), ((DesignCell)cell.getKey()).getHeight()));
 						}
 					}
 				}
@@ -421,7 +421,7 @@ public class TableManager {
 				ILayout layout = LayoutManager.getLayout(new JRPropertiesHolder[] { cell.getKey() }, null, null, defaultLayout);
 				Dimension size = new Dimension(cell.getValue(), ((DesignCell)cell.getKey()).getHeight());
 				size = LayoutManager.getPaddedSize(cell.getKey(), size);
-				LayoutCommand layoutCommand = new LayoutCommand(jDesign, cell.getKey(), layout, size);
+				LayoutCommand layoutCommand = new LayoutCommand(cell.getKey(), layout, size);
 				layoutCommands.add(layoutCommand);
 			}
 		}

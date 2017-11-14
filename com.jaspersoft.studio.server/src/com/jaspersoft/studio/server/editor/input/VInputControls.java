@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -17,15 +19,13 @@ import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescript
 import com.jaspersoft.studio.editor.preview.input.IDataInput;
 import com.jaspersoft.studio.editor.preview.input.IParameter;
 import com.jaspersoft.studio.editor.preview.view.control.AVParameters;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.editor.input.lov.ListOfValuesInput;
 import com.jaspersoft.studio.server.editor.input.query.QueryInput;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class VInputControls extends AVParameters {
 
@@ -42,7 +42,7 @@ public class VInputControls extends AVParameters {
 		inputs.add(new DateInput());
 		inputs.add(new ListOfValuesInput());
 		inputs.add(new QueryInput());
-		inputs.addAll(ReportController.inputs);
+		inputs.addAll(ReportControler.inputs);
 	}
 
 	public InputControlsManager getIcm() {
@@ -108,12 +108,13 @@ public class VInputControls extends AVParameters {
 				}
 			}
 
+		composite.pack();
+		setScrollbarMinHeight();
 		if (showEmptyParametersWarning) {
 			// setupDefaultValues();
 			setDirty(false);
 		}
 		showEmptyParametersWarning = false;
-		refreshControl();
 	}
 
 	public void setupDefaultValues(final IProgressMonitor monitor) throws Exception {

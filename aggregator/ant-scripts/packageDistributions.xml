@@ -6,8 +6,8 @@
 	<property name="dist" value="${basedir}/../product/dist"/>
 	<property name="productRootFolder" value="jaspersoftstudio" />
 	<property name="productVersionFile" value="buildversion.properties" />
-	<property name="jre.location.linux32" value="features/jre.linux.gtk.x86.feature_1.8.0.u151/jre/bin" />
-	<property name="jre.location.linux64" value="features/jre.linux.gtk.x86_64.feature_1.8.0.u151/jre/bin" />
+	<property name="jre.location.linux32" value="features/jre.linux.gtk.x86.feature_1.8.0.u121/jre/bin" />
+	<property name="jre.location.linux64" value="features/jre.linux.gtk.x86_64.feature_1.8.0.u121/jre/bin" />
 	<!-- import properties for mac machine producing the DMG -->
 	<property file="authenticationInfo.properties"/>
 
@@ -48,7 +48,7 @@
 		<!-- create zip file -->
 		<zip destfile="${dist}/${jss.win32.x86.zipfile}">
 			<fileset dir="${dirlocation.win32.x86}" excludes="**/_MACOSX, **/.DS_Store"/>
-		</zip>
+		</zip>		
 
 		<taskdef name="nsisant" classname="net.sf.nsisant.Task" classpath="${jssRcpProductFolderPath}/lib/nsisant-1.1.jar" />
 		<nsisant script="${jssRcpProductFolderPath}/resources/JaspersoftStudioInstaller.nsi">

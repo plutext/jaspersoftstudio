@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.plugin;
 
@@ -28,15 +29,12 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterFactory;
 import com.jaspersoft.studio.data.DataAdapterManager;
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
-import com.jaspersoft.studio.data.designer.IParameterICContributor;
 import com.jaspersoft.studio.data.jdbc.JDBCDriverDefinition;
 import com.jaspersoft.studio.data.jdbc.JDBCDriverDefinitionsContainer;
 import com.jaspersoft.studio.editor.IEditorContributor;
@@ -58,12 +56,11 @@ import com.jaspersoft.studio.swt.widgets.WHyperlink;
 import com.jaspersoft.studio.swt.widgets.WHyperlink.UIElement;
 import com.jaspersoft.studio.templates.TemplateProvider;
 import com.jaspersoft.studio.utils.AContributorAction;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class ExtensionManager {
@@ -99,7 +96,6 @@ public class ExtensionManager {
 			}
 		}
 	};
-	private List<IParameterICContributor> prmICContributors = new ArrayList<IParameterICContributor>();
 
 	public void init() {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()
@@ -145,26 +141,6 @@ public class ExtensionManager {
 		}
 
 		DataAdapterManager.getPreferencesStorage();
-	}
-
-	public void createParameterICUI(Composite parent, JRDesignParameter prm, AQueryDesigner designer) {
-		IConfigurationElement[] config = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(JaspersoftStudioPlugin.PLUGIN_ID, "parameterIC"); //$NON-NLS-1$
-		prmICContributors.clear();
-		for (IConfigurationElement e : config) {
-			try {
-				prmICContributors.add((IParameterICContributor) e.createExecutableExtension("ICParameterContributor")); //$NON-NLS-1$
-			} catch (CoreException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
-		for (IParameterICContributor pic : prmICContributors)
-			pic.createUI(parent, prm, designer);
-	}
-
-	public void refreshICUI(JRDesignParameter prm) {
-		for (IParameterICContributor pic : prmICContributors)
-			pic.refresh(prm);
 	}
 
 	public List<IRepositoryViewProvider> getRepositoryProviders() {
@@ -622,15 +598,6 @@ public class ExtensionManager {
 		}
 		return null;
 	}
-	
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		for (IComponentFactory f : getPrioritizedFactoryList(model)) {
-			EditPart c = f.createTreeEditPart(context, model);
-			if (c != null)
-				return c;
-		}
-		return null;
-	}
 
 	public List<Action> getActions(WorkbenchPart part) {
 		List<Action> lst = new ArrayList<Action>();
@@ -659,11 +626,6 @@ public class ExtensionManager {
 				return n;
 		}
 		return null;
-	}
-
-	public void onInitContext(JasperReportsConfiguration jConfig) {
-		for (IEditorContributor f : eContributor)
-			f.onInitContext(jConfig);
 	}
 
 	public void onLoad(JasperDesign jd, EditorPart editor) {

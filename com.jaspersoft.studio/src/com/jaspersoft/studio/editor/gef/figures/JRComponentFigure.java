@@ -29,15 +29,13 @@ public class JRComponentFigure extends FrameFigure {
 			//fallback, used the default draw method
 			drawVisitor.visitComponentElement((JRComponentElement) jrElement);
 			return;
-		} else {
+		} else if (cachedGraphics == null || model.hasChangedProperty()){
+			model.setChangedProperty(false);
 			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)){
-				model.setChangedProperty(false);
-				cachedGraphics = getCachedGraphics(oldGraphics);
-				drawVisitor.setGraphics2D(cachedGraphics);
-				drawVisitor.visitComponentElement((JRComponentElement) jrElement);
-				drawVisitor.setGraphics2D(oldGraphics);
-			}
+			cachedGraphics = getCachedGraphics(oldGraphics);
+			drawVisitor.setGraphics2D(cachedGraphics);
+			drawVisitor.visitComponentElement((JRComponentElement) jrElement);
+			drawVisitor.setGraphics2D(oldGraphics);
 		}
 		cachedGraphics.setGraphics(drawVisitor.getGraphics2d());
 		cachedGraphics.paintCache();

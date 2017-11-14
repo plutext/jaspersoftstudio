@@ -4,19 +4,18 @@
  ******************************************************************************/
 package com.jaspersoft.studio.model.variable.command;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRVariable;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignVariable;
+
 import org.eclipse.gef.commands.Command;
 
-import com.jaspersoft.studio.editor.outline.actions.HideDefaultVariablesAction;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.variable.MVariable;
 import com.jaspersoft.studio.model.variable.MVariables;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRVariable;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignVariable;
 
 /*
  * /* The Class ReorderVariableCommand.
@@ -37,11 +36,11 @@ public class ReorderVariableCommand extends Command {
 	 * Instantiates a new reorder variable command.
 	 * 
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 */
 	public ReorderVariableCommand(MVariable child, MVariables parent, int newIndex) {
 		super(Messages.common_reorder_elements);
@@ -51,15 +50,6 @@ public class ReorderVariableCommand extends Command {
 		this.jrVariable = (JRDesignVariable) child.getValue();
 	}
 
-	public ReorderVariableCommand(JRDesignVariable child, JRDesignDataset jrDataset,
-			JasperReportsConfiguration jrContext, int newIndex) {
-		super(Messages.common_reorder_elements);
-		this.jrContext = jrContext;
-		this.newIndex = Math.max(0, newIndex);
-		this.jrDataset = jrDataset;
-		this.jrVariable = child;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -67,7 +57,7 @@ public class ReorderVariableCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		oldIndex = jrDataset.getVariablesList().indexOf(jrVariable);
+		oldIndex = jrDataset.getParametersList().indexOf(jrVariable);
 
 		try {
 			int i = 0;
@@ -77,10 +67,8 @@ public class ReorderVariableCommand extends Command {
 				else
 					break;
 			}
-			boolean showDefaults = jrContext != null
-					? jrContext.getPropertyBoolean(DesignerPreferencePage.P_SHOW_VARIABLES_DEFAULTS, Boolean.TRUE)
-					: true;
-			showDefaults = showDefaults && !HideDefaultVariablesAction.areDefaultVariablesHidden(jrContext);
+			boolean showDefaults = jrContext != null ? jrContext.getPropertyBoolean(
+					DesignerPreferencePage.P_SHOW_VARIABLES_DEFAULTS, Boolean.TRUE) : true;
 			if (!showDefaults)
 				newIndex += i;
 			newIndex = Math.max(newIndex, i);

@@ -57,10 +57,6 @@ import com.jaspersoft.studio.model.parameter.command.DeleteParameterCommand;
 import com.jaspersoft.studio.model.parameter.command.ReplaceAllParametersCommand;
 import com.jaspersoft.studio.model.sortfield.command.ReplaceAllSortFieldsCommand;
 import com.jaspersoft.studio.property.SetValueCommand;
-import com.jaspersoft.studio.property.dataset.fields.FieldsTable;
-import com.jaspersoft.studio.property.dataset.preview.DataPreviewTable;
-import com.jaspersoft.studio.property.dataset.prm.ParametersTable;
-import com.jaspersoft.studio.property.dataset.sort.SortFieldsTable;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedEvent;
 import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
 import com.jaspersoft.studio.swt.widgets.CSashForm;
@@ -126,12 +122,10 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 
 	@Override
 	protected boolean canHandleShellCloseEvent() {
-		// Create the commands to check if there are changes and popup the
-		// dialog
+		// Create the commands to check if there are changes and popup the dialog
 		// only if there commands to execute
 		createCommand();
-		// command is never null after createCommand, but if empty its
-		// canExecute will return false
+		// command is never null after createCommand, but if empty its canExecute will return false
 		if (!command.canExecute())
 			return true;
 		return UIUtils.showConfirmation(Messages.DatasetDialog_0, Messages.DatasetDialog_1);
@@ -162,8 +156,8 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	}
 
 	/**
-	 * Set the root control of the wizard, and also add a listener to do the perform
-	 * help action and set the context of the top control.
+	 * Set the root control of the wizard, and also add a listener to do the perform help action and set the context of
+	 * the top control.
 	 */
 	protected void setHelpControl(Control newControl) {
 		newControl.addListener(SWT.Help, new Listener() {
@@ -175,8 +169,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	};
 
 	/**
-	 * Set and show the help data if a context, that bind this wizard with the data,
-	 * is provided
+	 * Set and show the help data if a context, that bind this wizard with the data, is provided
 	 */
 	public void performHelp() {
 		String child = dataquery.getContextHelpId();
@@ -346,7 +339,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 		CTabItem bptab = new CTabItem(tabFolder, SWT.NONE);
 		bptab.setText(Messages.DatasetDialog_ParametersTab);
 
-		ptable = new ParametersTable(tabFolder, newdataset, background, mdataset.isMainDataset(), mdataset);
+		ptable = new ParametersTable(tabFolder, newdataset, background, mdataset.isMainDataset());
 
 		ptable.getPropertyChangeSupport().addPropertyChangeListener(prmListener);
 		bptab.setControl(ptable.getControl());
@@ -360,8 +353,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 			mroot.setJasperConfiguration(jConfig);
 			MReport mrep = new MReport(mroot, jConfig);
 			MDataset mdts = new MDataset(mrep, newdataset, -1);
-			MParameters<?> mprms = new MParameters<JRDesignDataset>(mdts, newdataset,
-					JRDesignDataset.PROPERTY_PARAMETERS);
+			MParameters<?> mprms = new MParameters<JRDesignDataset>(mdts, newdataset, JRDesignDataset.PROPERTY_PARAMETERS);
 			MParameter mprm = new MParameter(mprms, (JRDesignParameter) arg0.getSource(), -1);
 			List<Command> cmds = JaspersoftStudioPlugin.getPostSetValueManager().postSetValue(mprm,
 					JRDesignParameter.PROPERTY_NAME, arg0.getNewValue(), arg0.getOldValue());
@@ -425,8 +417,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 
 	public void createCommand() {
 		JRDesignDataset ds = (JRDesignDataset) (mdataset.getParent() == null
-				? mdataset.getJasperConfiguration().getJasperDesign().getMainDesignDataset()
-				: mdataset.getValue());
+				? mdataset.getJasperConfiguration().getJasperDesign().getMainDesignDataset() : mdataset.getValue());
 		command = new JSSCompoundCommand(mdataset.getMreport());
 
 		String lang = newdataset.getQuery().getLanguage();
@@ -471,12 +462,8 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 				if (newf.getName().equals(f.getName())) {
 					MField mfield = mdataset.getField(newf.getName());
 					if (mfield != null) {
-						addSetValueCommand(command, JRDesignField.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(),
-								mfield);
+						addSetValueCommand(command, JRDesignField.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(), mfield);
 						addSetValueCommand(command, JRDesignField.PROPERTY_DESCRIPTION, newf.getDescription(), mfield);
-						addSetValueCommand(command, JRDesignField.PROPERTY_PROPERTY_EXPRESSIONS,
-								newf.getPropertyExpressionsList(), mfield);
-						addSetValueCommand(command, MField.PROPERTY_MAP, newf.getPropertiesMap(), mfield);
 					}
 					notexists = false;
 				} else if (mapfields.containsValue(newf)) {
@@ -489,12 +476,8 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 					}
 					if (mfield != null) {
 						addSetValueCommand(command, JRDesignField.PROPERTY_NAME, newf.getName(), mfield);
-						addSetValueCommand(command, JRDesignField.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(),
-								mfield);
+						addSetValueCommand(command, JRDesignField.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(), mfield);
 						addSetValueCommand(command, JRDesignField.PROPERTY_DESCRIPTION, newf.getDescription(), mfield);
-						addSetValueCommand(command, JRDesignField.PROPERTY_PROPERTY_EXPRESSIONS,
-								newf.getPropertyExpressionsList(), mfield);
-						addSetValueCommand(command, MField.PROPERTY_MAP, newf.getPropertiesMap(), mfield);
 					}
 					notexists = false;
 				}
@@ -550,23 +533,14 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 				continue;
 			boolean notexists = true;
 			for (JRParameter f : oldparams) {
-				JRDesignParameter prm = (JRDesignParameter) newdataset.getParametersMap().get(newf.getName());
-				if (prm == null)
-					break;
 				if (newf.getName().equals(f.getName())) {
 					MParameterSystem mparam = mdataset.getParamater(newf.getName());
 					if (mparam != null) {
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_VALUE_CLASS_NAME,
-								prm.getValueClassName(), mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_DESCRIPTION, prm.getDescription(),
-								mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(), mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_DESCRIPTION, newf.getDescription(), mparam);
 						addSetValueCommand(command, JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION,
-								prm.getDefaultValueExpression(), mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_FOR_PROMPTING, prm.isForPrompting(),
-								mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_EVALUATION_TIME, prm.getEvaluationTime(),
-								mparam);
-						addSetValueCommand(command, MParameter.PROPERTY_MAP, prm.getPropertiesMap(), mparam);
+								newf.getDefaultValueExpression(), mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_FOR_PROMPTING, newf.isForPrompting(), mparam);
 					}
 					notexists = false;
 				} else if (mapparam.containsValue(newf)) {
@@ -577,20 +551,13 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 							break;
 						}
 					}
-
 					if (mparam != null) {
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_NAME, prm.getName(), mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_VALUE_CLASS_NAME,
-								prm.getValueClassName(), mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_DESCRIPTION, prm.getDescription(),
-								mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_NAME, newf.getName(), mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_VALUE_CLASS_NAME, newf.getValueClassName(), mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_DESCRIPTION, newf.getDescription(), mparam);
 						addSetValueCommand(command, JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION,
-								prm.getDefaultValueExpression(), mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_EVALUATION_TIME, prm.getEvaluationTime(),
-								mparam);
-						addSetValueCommand(command, JRDesignParameter.PROPERTY_FOR_PROMPTING, prm.isForPrompting(),
-								mparam);
-						addSetValueCommand(command, MParameter.PROPERTY_MAP, prm.getPropertiesMap(), mparam);
+								newf.getDefaultValueExpression(), mparam);
+						addSetValueCommand(command, JRDesignParameter.PROPERTY_FOR_PROMPTING, newf.isForPrompting(), mparam);
 					}
 					notexists = false;
 				}
@@ -598,7 +565,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 					break;
 			}
 			if (notexists)
-				command.add(new CreateParameterCommand(ds, newf, jConfig, -1));
+				command.add(new CreateParameterCommand(ds, newf, -1));
 		}
 
 		// handle parameters for a possible reorder
@@ -615,17 +582,17 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	}
 
 	/**
-	 * Create a new setvalue command, but only if the old value and the new value
-	 * are different. If created the command is added to the compound command
+	 * Create a new setvalue command, but only if the old value and the new value are different. If created the command is
+	 * added to the compound command
 	 * 
 	 * @param cc
-	 *            the compound command
+	 *          the compound command
 	 * @param property
-	 *            the property the set value command will set
+	 *          the property the set value command will set
 	 * @param value
-	 *            the new value of the property
+	 *          the new value of the property
 	 * @param target
-	 *            the target of the set
+	 *          the target of the set
 	 */
 	private void addSetValueCommand(JSSCompoundCommand cc, String property, Object value, IPropertySource target) {
 		if (!extendedEquals(value, target.getPropertyValue(property))) {
@@ -638,13 +605,13 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	}
 
 	/**
-	 * Used to compare two values. Since some JR Objects used inside here dosen't
-	 * support the equals method, this one apply some special cases for that objects
+	 * Used to compare two values. Since some JR Objects used inside here dosen't support the equals method, this one
+	 * apply some special cases for that objects
 	 * 
 	 * @param value1
-	 *            the first value to compare, can be null
+	 *          the first value to compare, can be null
 	 * @param value2
-	 *            the second value to compare, can be null
+	 *          the second value to compare, can be null
 	 * @return true if the two objects are equals, false otherwise
 	 */
 	private boolean extendedEquals(Object value1, Object value2) {
@@ -671,8 +638,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.jaspersoft.studio.data.IDataPreviewInfoProvider#
-	 * getJasperReportsConfig()
+	 * @see com.jaspersoft.studio.data.IDataPreviewInfoProvider#getJasperReportsConfig()
 	 */
 	public JasperReportsConfiguration getJasperReportsConfig() {
 		return this.jConfig;
@@ -681,8 +647,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.jaspersoft.studio.data.IDataPreviewInfoProvider#
-	 * getDataAdapterDescriptor()
+	 * @see com.jaspersoft.studio.data.IDataPreviewInfoProvider#getDataAdapterDescriptor()
 	 */
 	public DataAdapterDescriptor getDataAdapterDescriptor() {
 		return this.dataquery.getDataAdapter();
@@ -700,8 +665,7 @@ public class DatasetDialog extends PersistentLocationFormDialog implements IFiel
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * com.jaspersoft.studio.data.IDataPreviewInfoProvider#getFieldsForPreview()
+	 * @see com.jaspersoft.studio.data.IDataPreviewInfoProvider#getFieldsForPreview()
 	 */
 	public List<JRDesignField> getFieldsForPreview() {
 		return this.getCurrentFields();

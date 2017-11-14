@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
-
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-
-import net.sf.jasperreports.util.Base64Util;
+import org.w3c.tools.codec.Base64Decoder;
+import org.w3c.tools.codec.Base64Encoder;
+import org.w3c.tools.codec.Base64FormatException;
 
 /**
  * Class used to encrypt and decrypt strings
@@ -88,11 +88,15 @@ public class Encrypter {
 
 			// Decode using utf-8
 			return new String(utf8, "UTF8");
+		} catch (Base64FormatException e) {
+			e.printStackTrace();
 		} catch (javax.crypto.BadPaddingException e) {
 			e.printStackTrace();
 		} catch (IllegalBlockSizeException e) {
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (java.io.IOException e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -101,17 +105,19 @@ public class Encrypter {
 	private String encodeBase64(byte[] bytes) {
 		try {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			Base64Util.encode(new ByteArrayInputStream(bytes), os);
+			Base64Encoder encoder = new org.w3c.tools.codec.Base64Encoder(new ByteArrayInputStream(bytes), os);
+			encoder.process();
 			return os.toString();
 		} catch (IOException ex) {
 		}
 		return null;
 	}
 
-	private byte[] decodeBase64(String s) {
+	private byte[] decodeBase64(String s) throws Base64FormatException {
 		try {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			Base64Util.decode(new ByteArrayInputStream(s.getBytes()), os);
+			Base64Decoder encoder = new org.w3c.tools.codec.Base64Decoder(new ByteArrayInputStream(s.getBytes()), os);
+			encoder.process();
 			return os.toByteArray();
 		} catch (IOException ex) {
 		}

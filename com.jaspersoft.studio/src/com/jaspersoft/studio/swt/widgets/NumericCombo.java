@@ -68,12 +68,12 @@ public class NumericCombo extends Composite {
 	/**
 	 * The minimum value accepted
 	 */
-	private Double minimum = 0d;
+	private double minimum = 0;
 	
 	/**
 	 * The maximum value accepted
 	 */
-	private Double maximum = Double.MAX_VALUE;
+	private double maximum = Double.MAX_VALUE;
 	
 	/**
 	 * Flag used to know if the null value is accepted or not
@@ -89,11 +89,6 @@ public class NumericCombo extends Composite {
 	 * Store the original color of the widget
 	 */
 	private Color currentColor = null;
-	
-	/**
-	 * Flag used to know if the trailing zeroes after the decimal separator should be removed or not
-	 */
-	private boolean removeTrailZeroes = false;
 	
 	/**
 	 * Formatter for the number
@@ -288,8 +283,8 @@ public class NumericCombo extends Composite {
 	 *            current maximum
 	 * 
 	 */
-	public void setMinimum(Double min){
-		if (min == null || maximum == null || min < maximum){
+	public void setMinimum(double min){
+		if (min < maximum){
 			this.minimum = min;
 		}
 	}
@@ -304,8 +299,8 @@ public class NumericCombo extends Composite {
 	 *            current minimum
 	 * 
 	 */
-	public void setMaximum(Double max){
-		if (max == null || minimum == null || max > minimum){
+	public void setMaximum(double max){
+		if (max > minimum){
 			this.maximum = max;
 		}
 	}
@@ -359,34 +354,10 @@ public class NumericCombo extends Composite {
 	 * @param minimum the new minimum value
 	 * @param maximum the new maximum value
 	 */
-	public void setValues(Number selection, Number minimum, Number maximum) {
-		this.setMinimum(minimum != null ? minimum.doubleValue() : null);
-		this.setMaximum(maximum != null ? maximum.doubleValue() : null);
+	public void setValues(Number selection, int minimum, int maximum) {
+		this.setMinimum(minimum);
+		this.setMaximum(maximum);
 		setValue(selection);
-	}
-	
-	/**
-	 * Method that convert the number value to a string. The perfect place to do this
-	 * could be the formatter, but since the format method is final we do this workaround
-	 * to allow custom implementation
-	 * 
-	 * @param value the number to format, must be not null
-	 * @return the number as a string
-	 */
-	protected String formatNumber(Number value){
-		String result;
-		if (value instanceof Float){
-			//When using a decimal format there is a conversion error done passing from float to double
-			//explained here (http://programmingjungle.blogspot.it/2013/03/float-to-double-conversion-in-java.html)
-			//Doing this will avoid the conversion error
-			result = formatter.format(Double.parseDouble(value.toString()));
-		} else {
-			result = formatter.format(value);
-		}
-		if (removeTrailZeroes && result.indexOf(ValidatedDecimalFormat.DECIMAL_SEPARATOR) != -1){
-			result = result.replaceAll("0*$", "").replaceAll(ValidatedDecimalFormat.PATTERN_DECIMAL_SEPARATOR + "$", "");
-		}
-		return result;
 	}
 	
 	/**
@@ -396,14 +367,14 @@ public class NumericCombo extends Composite {
 	 * 
 	 * @param newValue the first value
 	 * @param storedValue the second value
-	 * @return  true if the values have the same textual representation, false otherwise
+	 * @return  true if the values have the same textual rappresentation, false otherwise
 	 */
 	protected boolean hasSameValue(Number newValue, Number storedValue){
 		if (ModelUtils.safeEquals(newValue, storedValue)) return true;
 		String newFormat = null;
-		if (newValue != null) newFormat = formatNumber(newValue);
+		if (newValue != null) newFormat = formatter.format(newValue);
 		String storedFormat = null;
-		if (storedValue != null) storedFormat = formatNumber(storedValue);
+		if (storedValue != null) storedFormat = formatter.format(storedValue);
 		return ModelUtils.safeEquals(newFormat, storedFormat);
 	}
 	
@@ -449,14 +420,14 @@ public class NumericCombo extends Composite {
 	protected void setValue(Number selection, boolean formatText) {
 		this.checkWidget();
 		if (selection != null){	
-			if (minimum != null && selection.doubleValue() < minimum) {
+			if (selection.doubleValue() < minimum) {
 				selection = this.minimum;
-			} else if (maximum != null && selection.doubleValue() > maximum) {
+			} else if (selection.doubleValue() > maximum) {
 				selection = this.maximum;
 			}
 			storedValue = selection;
 			if (formatText) {
-				setText(formatNumber(selection));
+				setText(formatter.format(selection));
 			} else {
 				setText(selection.toString());
 			}
@@ -466,7 +437,7 @@ public class NumericCombo extends Composite {
 				storedValue = null;
 				if (defaultValue != null){
 					if (formatText) {
-						setText(formatNumber(defaultValue));
+						setText(formatter.format(defaultValue));
 					} else {
 						setText(defaultValue.toString());
 					}
@@ -528,8 +499,7 @@ public class NumericCombo extends Composite {
 		} else {
 			try {			
 				Number newValue = formatter.parse(work);
-				if ((minimum != null && newValue.doubleValue() < minimum) || 
-							(maximum != null && newValue.doubleValue() > maximum)) return false;
+				if (newValue.doubleValue() < minimum || newValue.doubleValue() > maximum) return false;
 				storedValue = newValue;
 			} catch (ParseException nfe) {
 				return false;
@@ -580,8 +550,7 @@ public class NumericCombo extends Composite {
 		} else {
 			try {			
 				Number newValue = formatter.parse(work);
-				if ((minimum != null && newValue.doubleValue() < minimum) || 
-							( maximum != null && newValue.doubleValue() > maximum)) return false;
+				if (newValue.doubleValue() < minimum || newValue.doubleValue() > maximum) return false;
 				storedValue = newValue;
 			} catch (ParseException nfe) {
 				return false;
@@ -680,7 +649,7 @@ public class NumericCombo extends Composite {
 			if (defaultValue != null){
 				defaultMin = defaultValue.intValue();
 			}
-			if (minimum != null && minimum > defaultMin) defaultMin = minimum;
+			if (minimum > defaultMin) defaultMin = minimum;
 			storedValue = new Double(defaultMin);
 		}
 		double newValue = storedValue.doubleValue() + increamentStep;
@@ -699,7 +668,7 @@ public class NumericCombo extends Composite {
 			if (defaultValue != null){
 				defaultMin = defaultValue.intValue();
 			}
-			if (minimum != null && minimum > defaultMin) defaultMin = minimum;
+			if (minimum > defaultMin) defaultMin = minimum;
 			storedValue = new Double(defaultMin);
 			setValue(storedValue, true);
 		} else {
@@ -808,16 +777,6 @@ public class NumericCombo extends Composite {
 			setValue(Double.parseDouble(getItem(index)));
 		}
 		addComboSelectionListener(selectionNotifier);
-	}
-	
-	/**
-	 * Set the flag to know if the trailing zeroes after the decimal separator should be removed or not.
-	 * By default they are not removed
-	 * 
-	 * @param value true to remove the zeroes, false otherwise
-	 */
-	public void setRemoveTrailZeroes(boolean value){
-		this.removeTrailZeroes = value;
 	}
 	
 	//THE FOLLOWING METHODS RECRATE SOME API OF THE COMBO AND CALL THEM ON

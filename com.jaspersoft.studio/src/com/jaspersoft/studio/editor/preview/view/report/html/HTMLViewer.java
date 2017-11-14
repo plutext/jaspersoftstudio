@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report.html;
 
@@ -21,7 +22,7 @@ import com.jaspersoft.studio.editor.preview.actions.export.ExportMenuAction;
 import com.jaspersoft.studio.editor.preview.actions.export.html.ExportAsLHtmlAction;
 import com.jaspersoft.studio.editor.preview.stats.Statistics;
 import com.jaspersoft.studio.editor.preview.view.IPreferencePage;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.editor.preview.view.report.ExportMenu;
 import com.jaspersoft.studio.editor.preview.view.report.IJRPrintable;
 import com.jaspersoft.studio.preferences.exporter.HTMLExporterPreferencePage;
@@ -29,15 +30,6 @@ import com.jaspersoft.studio.utils.Callback;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 public class HTMLViewer extends ABrowserViewer implements IJRPrintable, IPreferencePage {
-
-	private JasperPrint jrprint;
-
-	@Override
-	public JasperPrint getJrPrint() {
-		return jrprint;
-	}
-
-	private ReportViewer rptviewer;
 
 	public HTMLViewer(Composite parent, JasperReportsConfiguration jContext) {
 		super(parent, jContext);
@@ -60,12 +52,8 @@ public class HTMLViewer extends ABrowserViewer implements IJRPrintable, IPrefere
 		}
 	}
 
-	@Override
-	protected int getUrlWidth(Control control) {
-		// Add the calculation of the toolbar width depending on the available size on the parent
-		// minus 130 to leave space to the refresh action and export action
-		return control.getParent().getSize().x - 130;
-	}
+	private JasperPrint jrprint;
+	private ReportViewer rptviewer;
 
 	public void setJRPRint(Statistics stats, JasperPrint jrprint) throws Exception {
 		setJRPRint(stats, jrprint, false);
@@ -78,13 +66,13 @@ public class HTMLViewer extends ABrowserViewer implements IJRPrintable, IPrefere
 				tmpFile = File.createTempFile("report", getExtension(), getTmpPath());
 
 			AExportAction exp = createExporter(rptviewer);
-			stats.startCount(ReportController.ST_EXPORTTIME);
+			stats.startCount(ReportControler.ST_EXPORTTIME);
 			exp.preview(tmpFile, new Callback<File>() {
 
 				@Override
 				public void completed(File value) {
-					stats.endCount(ReportController.ST_EXPORTTIME);
-					stats.setValue(ReportController.ST_REPORTSIZE, tmpFile.length());
+					stats.endCount(ReportControler.ST_EXPORTTIME);
+					stats.setValue(ReportControler.ST_REPORTSIZE, tmpFile.length());
 
 					try {
 						setURL(tmpFile.toURI().toASCIIString());

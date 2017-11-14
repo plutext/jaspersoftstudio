@@ -34,14 +34,10 @@ public class BigNumericInput extends ADataInput {
 
 	public boolean isForType(Class<?> valueClass) {
 		return Number.class.isAssignableFrom(valueClass);
-		// return (Long.class.isAssignableFrom(valueClass) ||
-		// BigInteger.class.isAssignableFrom(valueClass)
-		// || BigDecimal.class.isAssignableFrom(valueClass) ||
-		// Float.class.isAssignableFrom(valueClass)
-		// || Double.class.isAssignableFrom(valueClass) ||
-		// Integer.class.isAssignableFrom(valueClass)
-		// || Short.class.isAssignableFrom(valueClass) ||
-		// Byte.class.isAssignableFrom(valueClass) || Number.class
+		// return (Long.class.isAssignableFrom(valueClass) || BigInteger.class.isAssignableFrom(valueClass)
+		// || BigDecimal.class.isAssignableFrom(valueClass) || Float.class.isAssignableFrom(valueClass)
+		// || Double.class.isAssignableFrom(valueClass) || Integer.class.isAssignableFrom(valueClass)
+		// || Short.class.isAssignableFrom(valueClass) || Byte.class.isAssignableFrom(valueClass) || Number.class
 		// .isAssignableFrom(valueClass));
 	}
 
@@ -57,7 +53,6 @@ public class BigNumericInput extends ADataInput {
 
 			num.setToolTipText(VParameters.createToolTip(param));
 			num.addFocusListener(focusListener);
-			num.addTraverseListener(keyListener);
 			updateInput();
 			num.addListener(SWT.Verify, new Listener() {
 
@@ -128,8 +123,6 @@ public class BigNumericInput extends ADataInput {
 
 				public void modifyText(ModifyEvent e) {
 					try {
-						if (refresh)
-							return;
 						updateModel(getNumber(num.getText()));
 					} catch (NumberFormatException ne) {
 					}
@@ -186,37 +179,20 @@ public class BigNumericInput extends ADataInput {
 		return null;
 	}
 
-	private boolean refresh = false;
-
 	public void updateInput() {
 		if (num.isDisposed())
 			return;
 		Object value = params.get(param.getName());
 		if (value != null && value instanceof String)
 			value = getNumber((String) value);
-		try {
-			refresh = true;
-			if (value != null && value instanceof Number)
-				num.setText(getNumber((Number) value));
-			else
-				num.setText("");
-		} finally {
-			refresh = false;
-		}
-		setDecoratorNullable(param);
-	}
-
-	public static String getNumber(Number value) {
-		if (value == null)
-			return "";
-		String t = value.toString();
-		if (value instanceof BigDecimal) {
+		if (value != null && value instanceof Number) {
 			NumberFormat nformat = NumberFormat.getInstance(Locale.US);
 			nformat.setGroupingUsed(false);
 			nformat.setMaximumFractionDigits(Integer.MAX_VALUE);
-			t = nformat.format(value);
-		}
-		return t;
+			num.setText(nformat.format(value));
+		} else
+			num.setText("");
+		setDecoratorNullable(param);
 	}
 
 	public static Number getNumber(String number, String type) {
