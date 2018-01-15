@@ -1,18 +1,19 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.reader;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -22,8 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.adapter.DataAdapterParameterContributorFactory;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
-import com.jaspersoft.studio.utils.ExpressionUtil;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
@@ -35,7 +35,6 @@ import net.sf.jasperreports.eclipse.builder.Markers;
 import net.sf.jasperreports.eclipse.builder.jdt.JRErrorHandler;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRGroup;
@@ -44,9 +43,9 @@ import net.sf.jasperreports.engine.JRScriptlet;
 import net.sf.jasperreports.engine.JRSortField;
 import net.sf.jasperreports.engine.JRVariable;
 import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.ReportContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignGroup;
@@ -54,8 +53,6 @@ import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JRDesignVariable;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.fill.JRFiller;
-import net.sf.jasperreports.engine.fill.ReportFiller;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
@@ -103,10 +100,8 @@ public class DatasetReader {
 			JasperReportsConfiguration jConfig, List<String> columns) throws JRException {
 		// 2. Set query information
 		JRDesignQuery query = new JRDesignQuery();
-		if (designDataset.getQuery() != null) {
-			query.setLanguage(designDataset.getQuery().getLanguage());
-			query.setText(designDataset.getQuery().getText());
-		}
+		query.setLanguage(designDataset.getQuery().getLanguage());
+		query.setText(designDataset.getQuery().getText());
 		dataJD.setQuery(query);
 		// and the report language to the actual report one
 		dataJD.setLanguage(jConfig.getJasperDesign().getLanguage());
@@ -205,15 +200,8 @@ public class DatasetReader {
 			jrobj = compiler.compileReport(jConfig, dataJD);
 			if (jrobj == null) {
 				IMarker[] markers = f.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-				if (!Misc.isNullOrEmpty(markers)) {
-					Set<String> set = new LinkedHashSet<String>();
-					for (IMarker m : markers)
-						set.add(m.getAttribute(IMarker.MESSAGE).toString());
-					String str = "";
-					for (String s : set)
-						str += s + "\n";
-					UIUtils.showError(new Exception(str));
-				}
+				for (IMarker m : markers)
+					UIUtils.showError(new Exception(m.getAttribute(IMarker.MESSAGE).toString()));
 				return null;
 			}
 		} else
@@ -229,7 +217,7 @@ public class DatasetReader {
 			// likely "default" value.
 			hm.putAll(jConfig.getJRParameters());
 		}
-		hm = ReportController.resetParameters(hm, jConfig);
+		hm = ReportControler.resetParameters(hm, jConfig);
 		if (maxRecords > 0) {
 			hm.put(JRDesignParameter.REPORT_MAX_COUNT, maxRecords);
 		} else {
@@ -238,32 +226,23 @@ public class DatasetReader {
 		return hm;
 	}
 
-	private ReportFiller rf;
-
-	public JasperPrint fillReport(JasperReportsConfiguration jConfig, JRDesignDataset designDataset,
+	public static JasperPrint fillReport(JasperReportsConfiguration jConfig, JRDesignDataset designDataset,
 			DataAdapterDescriptor dataAdapterDesc, JasperReport jrobj, Map<String, Object> hm) throws JRException {
+		if (dataAdapterDesc != null)
+			hm.put(DataAdapterParameterContributorFactory.PARAMETER_DATA_ADAPTER, dataAdapterDesc.getDataAdapter());
 		DataAdapterService das = null;
 		try {
-			if (dataAdapterDesc != null) {
-				hm.put(DataAdapterParameterContributorFactory.PARAMETER_DATA_ADAPTER, dataAdapterDesc.getDataAdapter());
-				ReportContext rc = (ReportContext) hm.get(JRParameter.REPORT_CONTEXT);
-				if (rc == null || !rc.containsParameter(DataCacheHandler.PARAMETER_DATA_CACHE_HANDLER)) {
-					das = DataAdapterServiceUtil
-							.getInstance(new ParameterContributorContext(jConfig, designDataset, hm))
-							.getService(dataAdapterDesc.getDataAdapter());
-					das.contributeParameters(hm);
-				}
+			ReportContext rc = (ReportContext) hm.get(JRParameter.REPORT_CONTEXT);
+			if (rc == null || !rc.containsParameter(DataCacheHandler.PARAMETER_DATA_CACHE_HANDLER)) {
+				das = DataAdapterServiceUtil.getInstance(jConfig).getService(dataAdapterDesc.getDataAdapter());
+				das.contributeParameters(hm);
 			}
-			ModelUtils.replacePropertiesMap(designDataset.getPropertiesMap(),
-					jrobj.getMainDataset().getPropertiesMap());
+			ModelUtils.replacePropertiesMap(designDataset.getPropertiesMap(), jrobj.getMainDataset().getPropertiesMap());
 
 			JaspersoftStudioPlugin.getExtensionManager().onRun(jConfig, jrobj, hm);
 
 			// 9. Fill the report
-
-			rf = JRFiller.createReportFiller(jConfig, jrobj);
-
-			return rf.fill(hm);
+			return JasperFillManager.getInstance(jConfig).fill(jrobj, hm);
 		} finally {
 			if (das != null)
 				das.dispose();
@@ -286,7 +265,7 @@ public class DatasetReader {
 	 * </ol>
 	 * 
 	 * @param jConfig
-	 *            the configuration instance
+	 *          the configuration instance
 	 */
 	public void start(JasperReportsConfiguration jConfig) {
 		// Temporary replace the class loader to get the "report" one.
@@ -320,10 +299,6 @@ public class DatasetReader {
 
 			// 7. Prepare parameters
 			hm = prepareParameters(jConfig, maxRecords);
-			if (recalcParameters) {
-				ExpressionUtil.initBuiltInParameters(jConfig, jrobj);
-				recalcParameters = false;
-			}
 			hm.put(DataPreviewScriptlet.PARAM_COLUMNS, columns);
 			hm.put(DataPreviewScriptlet.PARAM_LISTENERS, listeners);
 			rc = (ReportContext) hm.get(JRParameter.REPORT_CONTEXT);
@@ -356,16 +331,9 @@ public class DatasetReader {
 	 */
 	public void stop() {
 		if (running) {
-			if (rf != null)
-				try {
-					rf.cancelFill();
-				} catch (JRException e) {
-					e.printStackTrace();
-				}
 			for (DatasetReaderListener l : listeners) {
 				// Invalidating the listener will cause the running scriptlet
-				// to launch a JRScriptletException, that will abort the running
-				// report.
+				// to launch a JRScriptletException, that will abort the running report.
 				l.invalidate();
 			}
 		}
@@ -393,40 +361,9 @@ public class DatasetReader {
 		return designDataset;
 	}
 
-	private boolean recalcParameters = false;
-
 	public void setDesignDataset(JRDesignDataset designDataset) {
 		this.designDataset = designDataset;
-
-		designDataset.getEventSupport().addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals(JRDesignDataset.PROPERTY_PARAMETERS)) {
-					recalcParameters = true;
-					listenParameters();
-				}
-			}
-		});
-
-		listenParameters();
 	}
-
-	private void listenParameters() {
-		for (JRParameter p : designDataset.getParameters()) {
-			((JRDesignParameter) p).getEventSupport().removePropertyChangeListener(dveListener);
-			((JRDesignParameter) p).getEventSupport().addPropertyChangeListener(dveListener);
-		}
-	}
-
-	private PropertyChangeListener dveListener = new PropertyChangeListener() {
-
-		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION))
-				recalcParameters = true;
-		}
-	};
 
 	public int getMaxRecords() {
 		return maxRecords;
@@ -439,30 +376,29 @@ public class DatasetReader {
 	/* Listener methods */
 
 	/**
-	 * Adds a new {@link DatasetReaderListener} to the list of listeners that will
-	 * be notified when a read event on the dataset occurs.
+	 * Adds a new {@link DatasetReaderListener} to the list of listeners that will be notified when a read event on the
+	 * dataset occurs.
 	 * 
 	 * @param listener
-	 *            the listener to add
+	 *          the listener to add
 	 */
 	public void addDatasetReaderListener(DatasetReaderListener listener) {
 		listeners.add(listener);
 	}
 
 	/**
-	 * Removes the specified {@link DatasetReaderListener} from the list of
-	 * listeners that will be notified when a read event on the dataset occurs.
+	 * Removes the specified {@link DatasetReaderListener} from the list of listeners that will be notified when a read
+	 * event on the dataset occurs.
 	 * 
 	 * @param listener
-	 *            the listener to remove
+	 *          the listener to remove
 	 */
 	public void removeDatasetReaderListener(DatasetReaderListener listener) {
 		listeners.remove(listener);
 	}
 
 	/**
-	 * @return <code>true</code> if the dataset reader is running,
-	 *         <code>false</code> otherwise
+	 * @return <code>true</code> if the dataset reader is running, <code>false</code> otherwise
 	 */
 	public boolean isRunning() {
 		return this.running;

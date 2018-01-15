@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.part;
 
@@ -134,7 +142,7 @@ public class CrosstabCellEditPart extends ACrosstabCellEditPart {
 				getLayoutTargetFeedback(request);
 			}
 
-			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 				if (parent instanceof MPage)
 					parent = getModel();
 				Rectangle b = getModel().getBounds();
@@ -142,7 +150,7 @@ public class CrosstabCellEditPart extends ACrosstabCellEditPart {
 				int y = constraint.y - b.y - ReportPageFigure.PAGE_BORDER.top;
 				constraint = new Rectangle(x, y, constraint.width, constraint.height);
 
-				return super.getCreateCommand(parent, obj, constraint, index, request);
+				return super.getCreateCommand(parent, obj, constraint, index);
 			}
 			
 			/**
@@ -178,7 +186,6 @@ public class CrosstabCellEditPart extends ACrosstabCellEditPart {
 					MGraphicElement cmodel = (MGraphicElement) child.getModel();
 					MCell cparent = (MCell) cmodel.getParent();
 					if (cparent == getModel()) {
-						//case when an element is moved inside the same cell
 						SetPageConstraintCommand cmd = new SetPageConstraintCommand();
 						MGraphicElement model = (MGraphicElement) child.getModel();
 						Rectangle r = model.getBounds();
@@ -190,8 +197,7 @@ public class CrosstabCellEditPart extends ACrosstabCellEditPart {
 						cmd.setContext(getModel(), (ANode) child.getModel(), rect);
 
 						return cmd;
-					} else if (cparent != null){
-						//case when an element is moved from a cell to another
+					} else {
 						//Return a CompoundCommand, because the JSSCompoundCommand will be created by the getAddCommand method
 						CompoundCommand c = new CompoundCommand();
 						c.add(new OrphanElementCommand(cparent, cmodel));

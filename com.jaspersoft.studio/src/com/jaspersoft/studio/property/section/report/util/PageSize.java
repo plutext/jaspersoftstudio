@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.report.util;
 
@@ -31,37 +39,37 @@ public class PageSize {
 	public static final Point LEGAL = new Point(612, 1008);
 
 	/** This is the a0 format */
-	public static final Point A0 = new Point(2384, 3370);
+	public static final Point A0 = new Point(2380, 3368);
 
 	/** This is the a1 format */
-	public static final Point A1 = new Point(1684 , 2384);
+	public static final Point A1 = new Point(1684, 2380);
 
 	/** This is the a2 format */
-	public static final Point A2 = new Point(1191 , 1684);
+	public static final Point A2 = new Point(1190, 1684);
 
 	/** This is the a3 format */
-	public static final Point A3 = new Point(842 , 1191);
+	public static final Point A3 = new Point(842, 1190);
 
 	/** This is the a4 format */
 	public static final Point A4 = new Point(595, 842);
 
 	/** This is the a5 format */
-	public static final Point A5 = new Point(420 , 595);
+	public static final Point A5 = new Point(421, 595);
 
 	/** This is the a6 format */
-	public static final Point A6 = new Point(298 , 420);
+	public static final Point A6 = new Point(297, 421);
 
 	/** This is the a7 format */
-	public static final Point A7 = new Point(210 , 298);
+	public static final Point A7 = new Point(210, 297);
 
 	/** This is the a8 format */
-	public static final Point A8 = new Point(147 , 210);
+	public static final Point A8 = new Point(148, 210);
 
 	/** This is the a9 format */
-	public static final Point A9 = new Point(105 , 147);
+	public static final Point A9 = new Point(105, 148);
 
 	/** This is the a10 format */
-	public static final Point A10 = new Point(74 , 105);
+	public static final Point A10 = new Point(74, 105);
 
 	/** This is the b0 format */
 	public static final Point B0 = new Point(2836, 4008);

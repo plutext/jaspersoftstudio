@@ -1,16 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.input;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
-
-import com.jaspersoft.studio.editor.preview.PreviewContainer;
 
 public interface IDataInput {
 	public boolean isForType(Class<?> valueClass);
@@ -38,18 +39,5 @@ public interface IDataInput {
 	public boolean isRemoved();
 
 	public void setDirty(boolean dirty);
-
-	public void setPcontainer(PreviewContainer pcontainer);
-
-	/**
-	 * Method that should called when one of the parameter changed value to
-	 * allow the other parameters to update their value. This is used because
-	 * some parameters could depend from the others
-	 * 
-	 * @param evt
-	 *            the event contains the name of the parameter that changed
-	 *            value
-	 */
-	public void parameterChanged(PropertyChangeEvent evt);
 
 }

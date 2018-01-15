@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.dataset.descriptor;
 
@@ -39,13 +47,15 @@ public class MainDatasetSection extends AbstractSection {
 		super.createControls(parent, tabbedPropertySheetPage);
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		Composite group = getWidgetFactory().createSection(parent, Messages.ReportSection_Dataset_Label, true, 2);
+		gd.horizontalSpan = 2;
+		Composite group = getWidgetFactory().createSection(parent, Messages.ReportSection_Dataset_Label, true, 3);
 		section = (ExpandableComposite)group.getParent();
 		group.setLayoutData(gd);
 
-		group.setLayout(new GridLayout(2, false));
+		group.setLayout(new GridLayout(3, false));
 
 		gd = new GridData();
+		gd.horizontalSpan = 2;
 		createWidget4Property(group, JRDesignDataset.PROPERTY_WHEN_RESOURCE_MISSING_TYPE).getControl().setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);

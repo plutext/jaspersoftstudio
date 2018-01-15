@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.model;
 
@@ -62,6 +70,7 @@ import com.jaspersoft.studio.property.descriptors.SpinnerPropertyDescriptor;
 import com.jaspersoft.studio.utils.AlfaRGB;
 import com.jaspersoft.studio.utils.Colors;
 import com.jaspersoft.studio.utils.EnumHelper;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.charts.JRCategorySeries;
 import net.sf.jasperreports.charts.design.JRDesignBar3DPlot;
@@ -92,7 +101,6 @@ import net.sf.jasperreports.charts.design.JRDesignXyzSeries;
 import net.sf.jasperreports.charts.type.EdgeEnum;
 import net.sf.jasperreports.charts.type.TimePeriodEnum;
 import net.sf.jasperreports.charts.type.ValueLocationEnum;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRChart;
 import net.sf.jasperreports.engine.JRChartPlot;
 import net.sf.jasperreports.engine.JRConstants;
@@ -440,7 +448,7 @@ public class MChart extends MGraphicElementLineBox
 		if (id.equals(CHART_PROPERTY_CUSTOMIZER)) {
 			PropertyExpressionsDTO dto = (PropertyExpressionsDTO) super.getPropertyValue(
 					JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS);
-			return new CustomizerPropertyExpressionsDTO(dto, this);
+			return new CustomizerPropertyExpressionsDTO(dto);
 		}
 		if (id.equals(JRBaseChart.PROPERTY_TITLE_POSITION))
 			return titlePositionD.getIntValue(jrElement.getTitlePositionValue());

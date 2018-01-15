@@ -1,5 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.propexpr.dialog;
 
@@ -32,8 +37,9 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.property.descriptor.properties.dialog.PropertyDTO;
 import com.jaspersoft.studio.property.infoList.ElementDescription;
 import com.jaspersoft.studio.property.infoList.SelectableComposite;
+import com.jaspersoft.studio.utils.Misc;
 
-import net.sf.jasperreports.eclipse.util.Misc;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 /**
  * 
@@ -66,7 +72,7 @@ public class JRPropertyDialog extends Dialog {
 	 * List of special properties that the user can easily select
 	 */
 	protected List<ElementDescription> hints;
-	protected boolean showPropertyName = true;
+
 	/**
 	 * Composite with a stack layout where the value control is placed, other controls can be placed here and hidden using
 	 * the layout
@@ -84,16 +90,6 @@ public class JRPropertyDialog extends Dialog {
 		super(parentShell);
 	}
 
-	public void setShowPropertyName(boolean showPropertyName) {
-		this.showPropertyName = showPropertyName;
-	}
-
-	private String title = Messages.JRPropertyDialog_shellTitle;
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -101,7 +97,7 @@ public class JRPropertyDialog extends Dialog {
 	 */
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText(title);
+		newShell.setText(Messages.JRPropertyDialog_shellTitle);
 	}
 
 	@Override
@@ -139,27 +135,18 @@ public class JRPropertyDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
 		composite.setLayout(new GridLayout(2, false));
+		Label label = new Label(composite, SWT.NONE);
+		label.setText(Messages.JRPropertyDialog_propName);
 
-		List<ElementDescription> h = null;
-		if (showPropertyName) {
-			Label label = new Label(composite, SWT.NONE);
-			label.setText(Messages.JRPropertyDialog_propName);
+		cprop = new Combo(composite, SWT.BORDER);
+		cprop.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
-			h = getHints();
-
-			cprop = new Combo(composite, SWT.BORDER);
-			GridData gd = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
-			gd.widthHint = 300;
-			cprop.setLayoutData(gd);
-
-			if (h != null) {
-				List<String> comboItems = new ArrayList<String>();
-				for (ElementDescription hint : h)
-					comboItems.add(hint.getName());
-				cprop.setItems(comboItems.toArray(new String[comboItems.size()]));
-			}
-			cprop.addModifyListener(getModifyListener());
+		List<String> comboItems = new ArrayList<String>();
+		for (ElementDescription hint : getHints()) {
+			comboItems.add(hint.getName());
 		}
+		cprop.setItems(comboItems.toArray(new String[comboItems.size()]));
+		cprop.addModifyListener(getModifyListener());
 
 		createAdditionalControls(composite);
 
@@ -174,8 +161,7 @@ public class JRPropertyDialog extends Dialog {
 		stackLayout.topControl = vcmp;
 
 		fillValue(value);
-		if (showPropertyName && !Misc.isNullOrEmpty(h))
-			createSpecialProperties(composite);
+		createSpecialProperties(composite);
 		return composite;
 	}
 
@@ -183,7 +169,7 @@ public class JRPropertyDialog extends Dialog {
 	 * Generate the properties hints
 	 */
 	protected void initializeHints() {
-		hints = HintsPropertiesList.getElementProperties(value.getJrElement(), value.geteContext());
+		hints = HintsPropertiesList.getElementProperties(JasperDesign.class);
 		Collections.sort(hints);
 	}
 
@@ -263,8 +249,8 @@ public class JRPropertyDialog extends Dialog {
 		Composite composite = new Composite(cmp, SWT.NONE);
 		composite.setLayout(new GridLayout());
 
-		// Label label = new Label(composite, SWT.NONE);
-		// label.setText(Messages.JRPropertyDialog_propValue);
+		Label label = new Label(composite, SWT.NONE);
+		label.setText(Messages.JRPropertyDialog_propValue);
 
 		tvalue = new Text(composite, SWT.BORDER);
 		tvalue.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
@@ -284,8 +270,7 @@ public class JRPropertyDialog extends Dialog {
 	}
 
 	private void fillValue(PropertyDTO value) {
-		if (cprop != null)
-			cprop.setText(Misc.nvl(value.getName()));
+		cprop.setText(Misc.nvl(value.getName()));
 		tvalue.setText(getValueText(value.getValue()));
 	}
 

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.table.part;
 
@@ -148,7 +156,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 					}
 				}
 				if (targetFeedback == null) {
-					targetFeedback = new ColoredLayoutPositionRectangle(TableCellEditPart.this, FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
+					targetFeedback = new ColoredLayoutPositionRectangle(FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
 					targetFeedback.setFill(false);
 					IFigure hostFigure = getHostFigure();
 					Rectangle bounds = hostFigure.getBounds();
@@ -171,7 +179,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 
 			@Override
 			protected Command getCreateCommand(ANode parent, Object obj,
-					Rectangle constraint, int index, Request request) {
+					Rectangle constraint, int index) {
 				if (parent instanceof MPage)
 					parent = getModel();
 				Rectangle b = getModel().getBounds();
@@ -180,7 +188,7 @@ public class TableCellEditPart extends APrefFigureEditPart implements IContainer
 				constraint = new Rectangle(x, y, constraint.width,
 						constraint.height);
 
-				return super.getCreateCommand(parent, obj, constraint, index, request);
+				return super.getCreateCommand(parent, obj, constraint, index);
 			}
 			
 			/**

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.control;
 
@@ -25,7 +29,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import com.jaspersoft.studio.editor.preview.actions.export.AExportAction;
 import com.jaspersoft.studio.editor.preview.input.IParameter;
-import com.jaspersoft.studio.editor.preview.input.PropertyChangeNotifier;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.messages.MessagesByKeys;
 import com.jaspersoft.studio.preferences.editor.pages.Pages;
@@ -45,8 +48,8 @@ public class VReportParameters extends VParameters {
 	private Button btAll;
 	private Pages pages;
 
-	public VReportParameters(Composite parent, JasperReportsConfiguration jContext, PropertyChangeNotifier propertyChangeNotifier) {
-		super(parent, jContext, propertyChangeNotifier);
+	public VReportParameters(Composite parent, JasperReportsConfiguration jContext) {
+		super(parent, jContext);
 		isSystem = true;
 	}
 
@@ -62,7 +65,7 @@ public class VReportParameters extends VParameters {
 	}
 
 	@Override
-	protected void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
+	public void createInputControls(List<JRParameter> prompts, Map<String, Object> params) {
 		super.createInputControls(prompts, params);
 
 		createVerticalSeprator(false);
@@ -126,8 +129,8 @@ public class VReportParameters extends VParameters {
 			pageTo.setEnabled(true);
 		} else
 			btAll.setSelection(true);
-		
-		refreshControl();
+
+		composite.layout();
 	}
 
 	private void createPage(Group container) {
@@ -224,7 +227,7 @@ public class VReportParameters extends VParameters {
 			to = from;
 		return Integer.toString(from) + ";" + Integer.toString(to); //$NON-NLS-1$
 	}
-	
+
 	class OffsetModifyListener implements ModifyListener {
 		private Text txt;
 		private String property;

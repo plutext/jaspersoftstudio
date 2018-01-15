@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.report.util;
 
@@ -14,33 +22,34 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import com.jaspersoft.studio.swt.widgets.NullableSpinner;
-
+import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 /**
- * Couple of widget composed from a nullable spinner to set a numeric value and
- * a combo to select a measure unit
+ * Couple of widget composed from a nullable spinner to set a numeric value
+ * and a combo to select a measure unit
  */
 public class ValueUnitsWidget {
 
 	private Unit unit;
-
+	
 	private Unit maxPixels;
-
+	
 	private Combo unitc;
-
+	
 	private NullableSpinner val;
-
-	private ValidatedMeasureUnitFormat spinnerValidator = new ValidatedMeasureUnitFormat(Unit.PX);
-
+	
+	private SpinerSelectionListener spinerSelection;
+	
+	public ValidatedMeasureUnitFormat spinnerValidator = new ValidatedMeasureUnitFormat(Unit.PX);
+	
 	private final class SpinerSelectionListener extends SelectionAdapter {
-		@Override
 		public void widgetSelected(SelectionEvent e) {
 			unit.setValue(val.getValueAsFloat(), Unit.getUnits()[unitc.getSelectionIndex()]);
 		}
 	}
 
-	public ValueUnitsWidget() {
-		unit = new Unit(0, Unit.PX);
-		maxPixels = new Unit(Integer.MAX_VALUE, Unit.PX);
+	public ValueUnitsWidget(JasperReportsConfiguration jConfig) {
+		unit = new Unit(0, Unit.PX, jConfig);
+		maxPixels = new Unit(Integer.MAX_VALUE, Unit.PX, jConfig);
 	}
 
 	public void createComponent(Composite parent, String label, String toolTip) {
@@ -57,7 +66,7 @@ public class ValueUnitsWidget {
 		unitc = new Combo(parent, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
 		unitc.setItems(Unit.getUnits());
 		unitc.addSelectionListener(new SelectionAdapter() {
-			@Override
+
 			public void widgetSelected(SelectionEvent e) {
 				String u = Unit.getUnits()[unitc.getSelectionIndex()];
 				if (unit.setUnit(u)) {
@@ -66,7 +75,8 @@ public class ValueUnitsWidget {
 			}
 		});
 
-		val.addSelectionListener(new SpinerSelectionListener());
+		spinerSelection = new SpinerSelectionListener();
+		val.addSelectionListener(spinerSelection);
 
 		unitc.select(0);
 		setSpinerValue(unit.getUnit());

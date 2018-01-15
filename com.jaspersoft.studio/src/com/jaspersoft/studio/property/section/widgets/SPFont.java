@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;
@@ -14,9 +16,10 @@ import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -28,7 +31,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.wb.swt.ResourceManager;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.messages.Messages;
@@ -36,25 +38,16 @@ import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.DefaultValue;
 import com.jaspersoft.studio.model.text.MFont;
 import com.jaspersoft.studio.preferences.fonts.FontsPreferencePage;
-import com.jaspersoft.studio.property.combomenu.ComboItem;
-import com.jaspersoft.studio.property.combomenu.ComboItemAction;
-import com.jaspersoft.studio.property.combomenu.ComboItemSeparator;
-import com.jaspersoft.studio.property.combomenu.WritableComboMenuViewer;
-import com.jaspersoft.studio.property.combomenu.WritableComboTableViewer;
+import com.jaspersoft.studio.preferences.fonts.utils.FontUtils;
 import com.jaspersoft.studio.property.descriptor.combo.FontNamePropertyDescriptor;
 import com.jaspersoft.studio.property.descriptor.combo.RWComboBoxPropertyDescriptor;
 import com.jaspersoft.studio.property.section.AbstractSection;
-import com.jaspersoft.studio.swt.widgets.NumericTableCombo;
-import com.jaspersoft.studio.utils.ImageUtils;
-import com.jaspersoft.studio.utils.ModelUtils;
-import com.jaspersoft.studio.utils.UIUtil;
+import com.jaspersoft.studio.swt.widgets.NumericCombo;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.engine.JRFont;
 import net.sf.jasperreports.engine.base.JRBaseFont;
 import net.sf.jasperreports.engine.base.JRBaseStyle;
 import net.sf.jasperreports.engine.design.JRDesignFont;
-import net.sf.jasperreports.engine.fonts.FontUtil;
 import net.sf.jasperreports.engine.util.StyleResolver;
 
 /**
@@ -69,7 +62,7 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 		public void propertyChange(org.eclipse.jface.util.PropertyChangeEvent event) {
 			if (event.getProperty().equals(FontsPreferencePage.FPP_FONT_LIST)) {
 				if (parentNode != null)
-					refreshFont();
+					fontName.setItems(parentNode.getJasperConfiguration().getFontList());
 			}
 		}
 	}
@@ -79,12 +72,12 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 	/**
 	 * The combo popup with the font names
 	 */
-	private WritableComboTableViewer fontName;
+	private Combo fontName;
 
 	/**
 	 * The combo with the font size
 	 */
-	private NumericTableCombo fontSize;
+	private NumericCombo fontSize;
 
 	/**
 	 * Buttom for the attribute bold
@@ -181,7 +174,7 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 	 * @author Orlandin Marco
 	 * 
 	 */
-	private class SPChartButtom<T extends IPropertyDescriptor> extends SPFontSize<T> {
+	private class SPChartButtom<T extends IPropertyDescriptor> extends SPButton<T> {
 
 
 		public SPChartButtom(Composite parent, AbstractSection section, T pDescriptor, APropertyNode fontValue,
@@ -201,9 +194,9 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 				newValue = currentFont;
 				Float plus = null;
 				if (increment) {
-					plus = (float) (Math.round((new Float(newValue) / 100) * SPFontSize.factor) + 1);
+					plus = (float) (Math.round((new Float(newValue) / 100) * SPButton.factor) + 1);
 				} else {
-					plus = (float) (Math.round((new Float(newValue) / 100) * -SPFontSize.factor) - 1);
+					plus = (float) (Math.round((new Float(newValue) / 100) * -SPButton.factor) - 1);
 				}
 				if ((newValue + plus) > 99) {
 					newValue = 99f;
@@ -232,34 +225,6 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 		return 0;
 	}
 
-	
-	protected void refreshFont() {
-		if (parentNode == null)
-			return;
-		List<String[]> fontsList = ModelUtils.getFontNames(parentNode.getJasperConfiguration());
-		List<ComboItem> itemsList = new ArrayList<ComboItem>();
-		int i = 0;
-		FontUtil util = FontUtil.getInstance(parentNode.getJasperConfiguration());
-		for (int index = 0; index < fontsList.size(); index++) {
-			String[] fonts = fontsList.get(index);
-			for (String element : fonts) {
-				Image resolvedImage = ResourceManager.getImage(element);
-				if (resolvedImage == null){
-					resolvedImage = new Image(UIUtils.getDisplay(), ImageUtils.convertToSWT(SPFontNamePopUp.createFontImage(element, util)));
-					ResourceManager.addImage(element, resolvedImage);
-				}
-				itemsList.add(new ComboItem(element, true, resolvedImage, i, element, element));
-				i++;
-			}
-			if (index + 1 != fontsList.size() && fonts.length > 0) {
-				itemsList.add(new ComboItemSeparator(i));
-				i++;
-			}
-		}
-		fontName.setItems(itemsList);
-	}
-
-	
 	protected void createComponent(Composite parent) {
 		mainContainer = new Composite(parent, SWT.NONE);
 		GridLayout mainContainerLayout = new GridLayout(1, false);
@@ -274,20 +239,28 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 		group = section.getWidgetFactory().createSection(mainContainer, pDescriptor.getDisplayName(), true, 3);
 		group.getParent().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		final FontNamePropertyDescriptor pd = (FontNamePropertyDescriptor) mfont.getPropertyDescriptor(JRBaseStyle.PROPERTY_FONT_NAME);
-		fontName = new WritableComboTableViewer(group, WritableComboMenuViewer.NO_IMAGE | SWT.RIGHT_TO_LEFT);
+		final FontNamePropertyDescriptor pd = (FontNamePropertyDescriptor) mfont
+				.getPropertyDescriptor(JRBaseStyle.PROPERTY_FONT_NAME);
+		fontName = new Combo(group, SWT.NONE);
 		fontName.setToolTipText(pd.getDescription());
-		fontName.addSelectionListener(new ComboItemAction() {
-			/**
-			 * The action to execute when an entry is selected
-			 */
-			@Override
-			public void exec() {
-				propertyChange(section, JRBaseFont.PROPERTY_FONT_NAME, fontName.getSelectionValue() != null ? fontName.getSelectionValue().toString() : null, pd);
+		fontName.addModifyListener(new ModifyListener() {
+
+			private int time = 0;
+
+			public void modifyText(ModifyEvent e) {
+				if (e.time - time > 100) {
+					String value = fontName.getText();
+					if (!value.equals(FontUtils.separator))
+						propertyChange(section, JRBaseFont.PROPERTY_FONT_NAME, value, pd);
+					else
+						fontName.select(indexOf(fontName, (String) mfont.getPropertyActualValue(JRBaseFont.PROPERTY_FONT_NAME)));
+					int stringLength = fontName.getText().length();
+					fontName.setSelection(new Point(stringLength, stringLength));
+				}
+				time = e.time;
 			}
 		});
-		fontName.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		fontName.getControl().addDisposeListener(new DisposeListener() {
+		fontName.addDisposeListener(new DisposeListener() {
 
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
@@ -298,14 +271,27 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 		final RWComboBoxPropertyDescriptor pd1 = (RWComboBoxPropertyDescriptor) mfont
 				.getPropertyDescriptor(JRBaseStyle.PROPERTY_FONT_SIZE);
 
-		fontSize = getFontSizeCombo(group, pd1.getItems());
+		Composite fontSizeLayout = new Composite(group, SWT.NONE);
+		GridData fontSizeData = new GridData();
+		fontSizeData.widthHint = 65;
+		fontSizeData.minimumWidth = 65;
+		fontSizeLayout.setLayout(new GridLayout(1, false));
+		fontSizeLayout.setLayoutData(fontSizeData);
+		fontSize = new NumericCombo(fontSizeLayout, SWT.FLAT, 0, 6);
+		fontSize.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		fontSize.setItems(pd1.getItems());
 		fontSize.addSelectionListener(new SelectionAdapter() {
 
+			private int time = 0;
+
 			public void widgetSelected(SelectionEvent e) {
-				Float value = fontSize.getValueAsFloat();
-				changeProperty(section, pDescriptor.getId(), pd1.getId(), value);
-				int stringLength = fontSize.getText().length();
-				fontSize.setSelection(new Point(stringLength, stringLength));
+				if (e.time - time > 100) {
+					Float value = fontSize.getValueAsFloat();
+					changeProperty(section, pDescriptor.getId(), pd1.getId(), value);
+					int stringLength = fontSize.getText().length();
+					fontSize.setSelection(new Point(stringLength, stringLength));
+				}
+				time = e.time;
 			};
 
 		});
@@ -339,19 +325,6 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 
 		strikeTroughtToolbar = new ToolBar(toolbarsConainer, SWT.FLAT | SWT.WRAP | SWT.LEFT);
 		strikeTroughtButton = createItem(strikeTroughtToolbar, JRBaseStyle.PROPERTY_STRIKE_THROUGH, "icons/resources/edit-strike.png");
-	}
-	
-	/**
-	 * Build the font size combo with a fixed size
-	 * 
-	 * @param parent the parent of the combo
-	 * @return a not null {@link NumericTableCombo}
-	 */
-	protected NumericTableCombo getFontSizeCombo(Composite parent, String[] items){
-		NumericTableCombo result = new NumericTableCombo(parent, SWT.FLAT, 0, 6);
-		result.setMaximum(new Double(Float.MAX_VALUE));
-		result.setItems(items);
-		return result;
 	}
 
 	/**
@@ -412,8 +385,8 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 			JRFont fontValue = (JRFont) mfont.getValue();
 
 			if (!itemsSetted) {
-				refreshFont();
-				createContextualMenu(mfont, fontName.getControl(), JRBaseFont.PROPERTY_FONT_NAME);
+				fontName.setItems(parentNode.getJasperConfiguration().getFontList());
+				createContextualMenu(mfont, fontName, JRBaseFont.PROPERTY_FONT_NAME);
 				itemsSetted = true;
 			}
 			String strfontname = StyleResolver.getInstance().getFontName(fontValue);
@@ -446,7 +419,7 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 	 * from a chart
 	 */
 	@Override
-	protected void createContextualMenu(final APropertyNode node, final Control control, final String propertyID){
+	protected void createContextualMenu(final APropertyNode node, Control control, final String propertyID){
 		if (node != null && control != null && !control.isDisposed()){
 		
 			//MacOS fix, the combo on MacOS doesn't have a contextual menu, so we need to handle this listener manually
@@ -470,7 +443,6 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 							@Override
 							public void widgetSelected(SelectionEvent e) {
 								changeProperty(section, pDescriptor.getId(), propertyID, defaultEntry.getValue());
-								if (!(control instanceof ToolBar)) UIUtil.updateFocus(control);
 							}
 						});
 				    resetItem.setText(Messages.ASPropertyWidget_0);
@@ -484,7 +456,6 @@ public class SPFont extends ASPropertyWidget<IPropertyDescriptor> {
 							@Override
 							public void widgetSelected(SelectionEvent e) {
 								changeProperty(section, pDescriptor.getId(), propertyID, null);
-								if (!(control instanceof ToolBar)) UIUtil.updateFocus(control);
 							}
 						});
 				    nullItem.setText(Messages.ASPropertyWidget_1);

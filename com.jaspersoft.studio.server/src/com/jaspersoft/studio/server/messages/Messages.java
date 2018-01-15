@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.messages;
 
@@ -144,11 +152,6 @@ public class Messages extends NLS {
 	public static String FindResourcePage_7;
 	public static String FindResourcePage_uri;
 	public static String FindResourceWizard_0;
-	public static String ICParameterContributor_2;
-	public static String ICParameterContributor_3;
-	public static String ICParameterContributor_5;
-	public static String ICParameterContributor_7;
-	public static String ICParameterContributor_9;
 	public static String ImportDataSourceInfoFromDA_DialogTitle;
 	public static String ImportDataSourceInfoFromDA_InfoLabel;
 	public static String ImportDataSourceInJSSAction_ActionText;
@@ -176,15 +179,6 @@ public class Messages extends NLS {
 	public static String JRSClasspathContainerPage_2;
 	public static String JRSPreferencesPage_0;
 	public static String JRSPreferencesPage_1;
-	public static String JRSPreferencesPage_10;
-	public static String JRSPreferencesPage_12;
-	public static String JRSPreferencesPage_13;
-	public static String JRSPreferencesPage_14;
-	public static String JRSPreferencesPage_2;
-	public static String JRSPreferencesPage_3;
-	public static String JRSPreferencesPage_5;
-	public static String JRSPreferencesPage_7;
-	public static String JRSPreferencesPage_9;
 	public static String JRSRepositoryService_4;
 	public static String JrxmlPageContent_uploadFromRepo;
 	public static String JrxmlPublishAction_0;

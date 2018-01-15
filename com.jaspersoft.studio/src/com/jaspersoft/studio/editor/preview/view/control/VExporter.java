@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.control;
 
@@ -27,8 +31,6 @@ public class VExporter extends APreview {
 
 	private Composite composite;
 	private ScrolledComposite scompo;
-	private PreferencePage page;
-	private IPreferenceStore pfstore;
 
 	public VExporter(Composite parent, JasperReportsConfiguration jContext) {
 		super(parent, jContext);
@@ -49,6 +51,7 @@ public class VExporter extends APreview {
 		scompo.setExpandHorizontal(true);
 		scompo.setExpandVertical(true);
 		scompo.setAlwaysShowScrollBars(false);
+		scompo.setMinSize(100, 100);
 
 		composite = new Composite(scompo, SWT.BORDER);
 		composite.setBackgroundMode(SWT.INHERIT_FORCE);
@@ -60,6 +63,9 @@ public class VExporter extends APreview {
 
 		return scompo;
 	}
+
+	private PreferencePage page;
+	private IPreferenceStore pfstore;
 
 	public PreferencePage getPreferencePage() {
 		return page;
@@ -80,24 +86,12 @@ public class VExporter extends APreview {
 				page.setPreferenceStore(pfstore);
 				page.createControl(composite);
 				Control pageControl = page.getControl();
-				pageControl.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true));
+				pageControl.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 			}
 		}
-		refreshControl();
-	}
-	
-	@Override
-	public Control getControl() {
-		refreshControl();
-		return super.getControl();
-	}
-	
-	private void refreshControl() {
-		composite.pack();
-		scompo.setVisible(true);
-		scompo.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-		scompo.pack();
-		scompo.getParent().layout();
+		composite.layout();
+		scompo.update();
+		scompo.layout();
 	}
 }

@@ -1,20 +1,27 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.classname;
 
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
+import org.eclipse.jdt.internal.core.search.BasicSearchEngine;
 import org.eclipse.jdt.ui.IJavaElementSearchConstants;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -57,12 +64,15 @@ public class ClassTypeCellEditor extends ATextDialogCellEditor {
 						.getProject();
 				if (prj != null) {
 					IJavaProject jprj = JavaCore.create(prj);
-					IType t = jprj.findType(classes.get(0).getName());
-					if(t!=null){
-						ITypeHierarchy hierarchy = t.newTypeHierarchy(new NullProgressMonitor());
-						IType[] subTypes = hierarchy.getAllSubtypes(t);
-						searchScope = SearchEngine.createJavaSearchScope(subTypes);
-					}
+					IType t;
+
+					t = jprj.findType(classes.get(0).getName());
+					// ITypeHierarchy hierarchy = t.newTypeHierarchy(new
+					// NullProgressMonitor());
+					// IType[] subTypes = hierarchy.getAllSubtypes(t);
+					if (t != null)
+						searchScope = BasicSearchEngine.createHierarchyScope(t);// (jprj, t, owner, true, true, true);
+
 				}
 			}
 			// FilteredTypesSelectionDialog a = new FilteredTypesSelectionDialog();

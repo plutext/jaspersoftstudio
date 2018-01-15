@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.model.dataset;
 
@@ -85,9 +93,10 @@ public class MChartTimeSeriesDataset extends MChartDataset {
 	@Override
 	public Object getPropertyValue(Object id) {
 		JRDesignTimeSeriesDataset jrElement = (JRDesignTimeSeriesDataset) getValue();
-		if (jrElement != null) {
+		if (jrElement != null)
 			if (id.equals(JRDesignTimeSeriesDataset.PROPERTY_TIME_PERIOD)) {
-				return NamedEnumPropertyDescriptor.getIntValue(TimePeriodEnum.DAY, NullEnum.NULL, TimePeriodEnum.getByValue(jrElement.getTimePeriod()));
+				return timePeriodD.getIntValue(TimePeriodEnum
+						.getByValue(jrElement.getTimePeriod()));
 
 				// if (jrElement.getTimePeriod() == null)
 				// return 0;
@@ -104,7 +113,6 @@ public class MChartTimeSeriesDataset extends MChartDataset {
 				// return null;
 			}
 
-		}
 		return super.getPropertyValue(id);
 	}
 

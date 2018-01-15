@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.table;
 
@@ -89,11 +97,6 @@ import com.jaspersoft.studio.components.table.part.TablePageEditPart;
 import com.jaspersoft.studio.components.table.part.editpolicy.JSSCompoundTableCommand;
 import com.jaspersoft.studio.editor.AContextMenuProvider;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
-import com.jaspersoft.studio.editor.layout.FreeLayout;
-import com.jaspersoft.studio.editor.layout.ILayout;
-import com.jaspersoft.studio.editor.layout.LayoutManager;
-import com.jaspersoft.studio.editor.outline.OutlineTreeEditPartFactory;
-import com.jaspersoft.studio.editor.outline.part.OpenableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
 import com.jaspersoft.studio.editor.tools.CompositeElementManager;
 import com.jaspersoft.studio.editor.tools.MCompositeElement;
@@ -149,7 +152,7 @@ public class TableComponentFactory implements IComponentFactory {
 	private static List<Class<?>> knownClasses;
 
 	static {
-		knownClasses = new ArrayList<>(4);
+		knownClasses = new ArrayList<Class<?>>(4);
 		knownClasses.add(MTable.class);
 		knownClasses.add(MCell.class);
 		knownClasses.add(MColumnGroup.class);
@@ -160,7 +163,8 @@ public class TableComponentFactory implements IComponentFactory {
 		if (jrObject instanceof JRDesignComponentElement) {
 			JRDesignComponentElement tbl = (JRDesignComponentElement) jrObject;
 			if (tbl.getComponent() instanceof StandardTable) {
-				JasperDesign jasperDesign = parent.getJasperConfiguration().getJasperDesign();
+				JasperDesign jasperDesign = parent.getJasperConfiguration()
+						.getJasperDesign();
 				TableManager tblManager = new TableManager(tbl, jasperDesign);
 				MTable mt = new MTable(parent, tbl, newIndex, tblManager);
 				createTable(mt);
@@ -182,8 +186,8 @@ public class TableComponentFactory implements IComponentFactory {
 	}
 
 	/**
-	 * Remove the old dataset from the mpage of a table and add the new one, read
-	 * from the dataset run of the table
+	 * Remove the old dataset from the mpage of a table and add the new one,
+	 * read from the dataset run of the table
 	 * 
 	 * @param parent
 	 *            the mpage of the table editor
@@ -192,7 +196,8 @@ public class TableComponentFactory implements IComponentFactory {
 	 * @param st
 	 *            the table element inside the table editor
 	 */
-	public static void setDataset(ANode parent, final JasperDesign jd, StandardTable st) {
+	public static void setDataset(ANode parent, final JasperDesign jd,
+			StandardTable st) {
 		// Remove all the old dataset inside the page
 		for (INode n : parent.getChildren()) {
 			if (n instanceof MDataset)
@@ -218,12 +223,13 @@ public class TableComponentFactory implements IComponentFactory {
 	protected static ANode createTable(MTable mt) {
 		JRDesignComponentElement tbl = (JRDesignComponentElement) mt.getValue();
 		StandardTable table = (StandardTable) tbl.getComponent();
-		MTableHeader mth = new MTableHeader(mt, tbl, StandardColumn.PROPERTY_TABLE_HEADER);
-		MTableColumnHeader mch = new MTableColumnHeader(mt, tbl, StandardColumn.PROPERTY_COLUMN_HEADER);
+		MTableHeader mth = new MTableHeader(mt, tbl,StandardColumn.PROPERTY_TABLE_HEADER);
+		MTableColumnHeader mch = new MTableColumnHeader(mt, tbl,StandardColumn.PROPERTY_COLUMN_HEADER);
 
-		List<?> groupsList = TableUtil.getGroupList(table, mt.getJasperDesign());
-		List<MTableGroupHeader> grHeaders = new ArrayList<>();
-		List<MTableGroupFooter> grFooters = new ArrayList<>();
+		List<?> groupsList = TableUtil
+				.getGroupList(table, mt.getJasperDesign());
+		List<MTableGroupHeader> grHeaders = new ArrayList<MTableGroupHeader>();
+		List<MTableGroupFooter> grFooters = new ArrayList<MTableGroupFooter>();
 
 		if (groupsList != null)
 			for (Iterator<?> it = groupsList.iterator(); it.hasNext();) {
@@ -231,27 +237,33 @@ public class TableComponentFactory implements IComponentFactory {
 				grHeaders.add(new MTableGroupHeader(mt, tbl, jrGroup, ""));
 			}
 
-		MTableDetail mtd = new MTableDetail(mt, tbl, StandardColumn.PROPERTY_DETAIL);
+		MTableDetail mtd = new MTableDetail(mt, tbl,
+				StandardColumn.PROPERTY_DETAIL);
 
 		if (groupsList != null)
-			for (ListIterator<?> it = groupsList.listIterator(groupsList.size()); it.hasPrevious();) {
+			for (ListIterator<?> it = groupsList
+					.listIterator(groupsList.size()); it.hasPrevious();) {
 				JRDesignGroup jrGroup = (JRDesignGroup) it.previous();
 				grFooters.add(new MTableGroupFooter(mt, tbl, jrGroup, ""));
 			}
 
-		MTableColumnFooter mtcf = new MTableColumnFooter(mt, tbl, StandardColumn.PROPERTY_COLUMN_FOOTER);
-		MTableFooter mtf = new MTableFooter(mt, tbl, StandardColumn.PROPERTY_TABLE_FOOTER);
+		MTableColumnFooter mtcf = new MTableColumnFooter(mt, tbl,
+				StandardColumn.PROPERTY_COLUMN_FOOTER);
+		MTableFooter mtf = new MTableFooter(mt, tbl,
+				StandardColumn.PROPERTY_TABLE_FOOTER);
 
-		createColumns(mt, table.getColumns(), mth, mch, mtd, mtcf, mtf, grHeaders, grFooters);
+		createColumns(mt, table.getColumns(), mth, mch, mtd, mtcf, mtf,
+				grHeaders, grFooters);
 
 		return mt;
 	}
 
-	public static void createColumns(ANode parent, List<BaseColumn> columns, MTableHeader mth, MTableColumnHeader mch,
-			MTableDetail mtd, MTableColumnFooter mcf, MTableFooter mtf, List<MTableGroupHeader> grHeaders,
-			List<MTableGroupFooter> grFooter) {
-
-		Pair<Integer, Integer> detailIndex = new Pair<>(1, 0);
+	public static void createColumns(ANode parent, List<BaseColumn> columns,
+			MTableHeader mth, MTableColumnHeader mch, MTableDetail mtd,
+			MTableColumnFooter mcf, MTableFooter mtf,
+			List<MTableGroupHeader> grHeaders, List<MTableGroupFooter> grFooter) {
+		
+		Pair<Integer, Integer> detailIndex = new Pair<Integer, Integer>(1, 0);
 		for (int i = 0; i < columns.size(); i++) {
 			BaseColumn bc = columns.get(i);
 			createCellTableHeader(mth, bc, i + 1, i);
@@ -259,12 +271,14 @@ public class TableComponentFactory implements IComponentFactory {
 			createCellColumnHeader(mch, bc, i + 1, i);
 
 			for (MTableGroupHeader mtgh : grHeaders)
-				createCellGroupHeader(mtgh, bc, i + 1, mtgh.getJrDesignGroup().getName(), i);
+				createCellGroupHeader(mtgh, bc, i + 1, mtgh.getJrDesignGroup()
+						.getName(), i);
 
 			detailIndex = createCellDetail(mtd, bc, detailIndex);
 
 			for (MTableGroupFooter mtgh : grFooter)
-				createCellGroupFooter(mtgh, bc, i + 1, mtgh.getJrDesignGroup().getName(), i);
+				createCellGroupFooter(mtgh, bc, i + 1, mtgh.getJrDesignGroup()
+						.getName(), i);
 
 			createCellColumnFooter(mcf, bc, i + 1, i);
 
@@ -272,12 +286,15 @@ public class TableComponentFactory implements IComponentFactory {
 		}
 	}
 
-	public static int createCellGroupHeader(ANode mth, BaseColumn bc, int i, String grName, int index) {
+	public static int createCellGroupHeader(ANode mth, BaseColumn bc, int i,
+			String grName, int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getGroupHeader(grName), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getGroupHeader(grName), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
-				i = createCellGroupHeader(mcg, scg.getColumns().get(j), i, grName, j);
+				i = createCellGroupHeader(mcg, scg.getColumns().get(j), i,
+						grName, j);
 		} else {
 			createColumnCell(mth, bc, i, bc.getGroupHeader(grName), index);
 			return ++i;
@@ -285,12 +302,15 @@ public class TableComponentFactory implements IComponentFactory {
 		return i;
 	}
 
-	public static int createCellGroupFooter(ANode mth, BaseColumn bc, int i, String grName, int index) {
+	public static int createCellGroupFooter(ANode mth, BaseColumn bc, int i,
+			String grName, int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getGroupFooter(grName), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getGroupFooter(grName), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
-				i = createCellGroupFooter(mcg, scg.getColumns().get(j), i, grName, j);
+				i = createCellGroupFooter(mcg, scg.getColumns().get(j), i,
+						grName, j);
 		} else {
 			createColumnCell(mth, bc, i, bc.getGroupFooter(grName), index);
 			return ++i;
@@ -298,25 +318,25 @@ public class TableComponentFactory implements IComponentFactory {
 		return i;
 	}
 
-	public static Pair<Integer, Integer> createCellDetail(ANode mth, BaseColumn bc,
-			Pair<Integer, Integer> columnNumberIndex) {
+	public static Pair<Integer, Integer> createCellDetail(ANode mth, BaseColumn bc, Pair<Integer, Integer> columnNumberIndex) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			for (BaseColumn bcg : scg.getColumns()) {
+			for (BaseColumn bcg : scg.getColumns()){
 				columnNumberIndex = createCellDetail(mth, bcg, columnNumberIndex);
 			}
 		} else {
-			createColumnCell(mth, bc, columnNumberIndex.getKey(), ((StandardColumn) bc).getDetailCell(),
-					columnNumberIndex.getValue());
-			return new Pair<>(columnNumberIndex.getKey() + 1, columnNumberIndex.getValue() + 1);
+			createColumnCell(mth, bc, columnNumberIndex.getKey(), ((StandardColumn) bc).getDetailCell(), columnNumberIndex.getValue());
+			return new Pair<Integer, Integer>(columnNumberIndex.getKey() + 1, columnNumberIndex.getValue() + 1);
 		}
 		return columnNumberIndex;
 	}
 
-	public static int createCellColumnHeader(ANode mth, BaseColumn bc, int i, int index) {
+	public static int createCellColumnHeader(ANode mth, BaseColumn bc, int i,
+			int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getColumnHeader(), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getColumnHeader(), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
 				i = createCellColumnHeader(mcg, scg.getColumns().get(j), i, j);
 		} else {
@@ -326,10 +346,12 @@ public class TableComponentFactory implements IComponentFactory {
 		return i;
 	}
 
-	public static int createCellColumnFooter(ANode mth, BaseColumn bc, int i, int index) {
+	public static int createCellColumnFooter(ANode mth, BaseColumn bc, int i,
+			int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getColumnFooter(), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getColumnFooter(), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
 				i = createCellColumnFooter(mcg, scg.getColumns().get(j), i, j);
 		} else {
@@ -339,10 +361,12 @@ public class TableComponentFactory implements IComponentFactory {
 		return i;
 	}
 
-	public static int createCellTableHeader(ANode mth, BaseColumn bc, int i, int index) {
+	public static int createCellTableHeader(ANode mth, BaseColumn bc, int i,
+			int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getTableHeader(), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getTableHeader(), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
 				i = createCellTableHeader(mcg, scg.getColumns().get(j), i, j);
 		} else {
@@ -352,10 +376,12 @@ public class TableComponentFactory implements IComponentFactory {
 		return i;
 	}
 
-	public static int createCellTableFooter(ANode mth, BaseColumn bc, int i, int index) {
+	public static int createCellTableFooter(ANode mth, BaseColumn bc, int i,
+			int index) {
 		if (bc instanceof StandardColumnGroup) {
 			StandardColumnGroup scg = (StandardColumnGroup) bc;
-			MColumn mcg = getColumnGroup(mth, scg, (DesignCell) scg.getTableFooter(), i, index);
+			MColumn mcg = getColumnGroup(mth, scg,
+					(DesignCell) scg.getTableFooter(), i, index);
 			for (int j = 0; j < scg.getColumns().size(); j++)
 				i = createCellTableFooter(mcg, scg.getColumns().get(j), i, j);
 		} else {
@@ -369,18 +395,17 @@ public class TableComponentFactory implements IComponentFactory {
 	 * 
 	 * @param parent
 	 * @param bc
-	 * @param i
-	 *            number of the cell used for the name
-	 * @param cell
-	 *            the cell used as value of the node
-	 * @param index
-	 *            index of the cell node
+	 * @param i number of the cell used for the name
+	 * @param cell the cell used as value of the node
+	 * @param index index of the cell node
 	 * @return
 	 */
-	public static ANode createColumnCell(ANode parent, BaseColumn bc, int i, Cell cell, int index) {
+	public static ANode createColumnCell(ANode parent, BaseColumn bc, int i,
+			Cell cell, int index) {
 		String name = i > 0 ? Messages.common_column + i : null;
 		if (cell != null) {
-			MCell mc = new MCell(parent, (StandardBaseColumn) bc, (DesignCell) cell, name, index);
+			MCell mc = new MCell(parent, (StandardBaseColumn) bc,
+					(DesignCell) cell, name, index);
 			ReportFactory.createElementsForBand(mc, cell.getChildren());
 			return mc;
 		}
@@ -388,7 +413,8 @@ public class TableComponentFactory implements IComponentFactory {
 	}
 
 	public static MColumn getColumnGroup(ANode mth, StandardColumnGroup scg, DesignCell cell, int i, int index) {
-		String name = Messages.common_columns + " " + i + "-" + (i + scg.getColumns().size() - 1); //$NON-NLS-1$ //$NON-NLS-2$
+		String name = Messages.common_columns
+				+ " " + i + "-" + (i + scg.getColumns().size() - 1); //$NON-NLS-1$ //$NON-NLS-2$
 		MColumn mcg = null;
 		if (cell != null) {
 			mcg = new MColumnGroupCell(mth, scg, cell, name, index);
@@ -421,7 +447,8 @@ public class TableComponentFactory implements IComponentFactory {
 		return pc;
 	}
 
-	public Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex) {
+	public Command getCreateCommand(ANode parent, ANode child,
+			Rectangle location, int newIndex) {
 		if (parent instanceof MPage) {
 			for (INode c : parent.getChildren()) {
 				if (c instanceof MTable) {
@@ -430,19 +457,8 @@ public class TableComponentFactory implements IComponentFactory {
 				}
 			}
 		}
-
-		// Avoid to generate create command in the main editor
-		if (parent instanceof MTable && !(parent.getParent() instanceof MPage)) {
-			ANode ancestor = parent.getParent();
-			Class<? extends ILayout> ancestorLayout = LayoutManager.getContainerLayout(ancestor);
-			if (!(ancestor instanceof MTable) && !(FreeLayout.class.equals(ancestorLayout))) {
-				return OutlineTreeEditPartFactory.getCreateCommand(ancestor, child, location, newIndex);
-			}
-			return UnexecutableCommand.INSTANCE;
-		}
-
 		if (child instanceof MField && (child.getValue() != null && parent instanceof MCell))
-			return new CreateE4ObjectCommand(child, (MCell) parent, location, newIndex);
+			return new CreateE4ObjectCommand(child, (MCell) parent, location,newIndex);
 		if (child instanceof MParameterSystem && (child.getValue() != null && parent instanceof MCell))
 			return new CreateE4ObjectCommand(child, (MCell) parent, location, newIndex);
 		if (child instanceof MVariableSystem && (child.getValue() != null && parent instanceof MCell))
@@ -465,159 +481,138 @@ public class TableComponentFactory implements IComponentFactory {
 			return cmd;
 		}
 
-		// Avoid to move element from an existing section to another
-		if (child instanceof MColumn) {
+		//Avoid to move element from an existing section to another
+		if (child instanceof MColumn){
 			AMCollection parentSection = null;
-			AMCollection childSection = ((MColumn) child).getSection();
-			if (parent instanceof MColumn) {
-				parentSection = ((MColumn) parent).getSection();
-			} else if (parent instanceof AMCollection) {
-				parentSection = (AMCollection) parent;
-			}
-			// Check if the child section is null to understood if it is the creation of a
-			// new element
-			// or the movement of an existing one
-			if (childSection != parentSection && childSection != null)
-				return UnexecutableCommand.INSTANCE;
-		} else if (child instanceof AMCollection) {
-			return UnexecutableCommand.INSTANCE;
+			AMCollection childSection = ((MColumn)child).getSection();
+			if (parent instanceof MColumn){
+				parentSection = ((MColumn)parent).getSection();
+			} else if (parent instanceof AMCollection){
+				parentSection = (AMCollection)parent;
+			}		
+			//Check if the child section is null to understood if it is the creation of a new element
+			//or the movement of an existing one
+			if (childSection != parentSection && childSection != null) return UnexecutableCommand.INSTANCE;
+		} else if (child instanceof AMCollection){
+			 return UnexecutableCommand.INSTANCE;
 		}
 
 		if (child instanceof MCell) {
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn) parent).getMTable());
-				tableCommand
-						.add(new MoveColumnIntoGroupCommand((StandardColumnGroup) parent.getValue(), (MCell) child));
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn)parent).getMTable());
+				tableCommand.add(new MoveColumnIntoGroupCommand((StandardColumnGroup)parent.getValue(), (MCell)child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
-				tableCommand
-						.add(new MoveColumnIntoGroupCommand((StandardColumnGroup) parent.getValue(), (MCell) child));
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
+				tableCommand.add(new MoveColumnIntoGroupCommand((StandardColumnGroup)parent.getValue(), (MCell)child));
 				return tableCommand;
 			}
-			MCell cell = (MCell) child;
-			if (parent instanceof AMCollection && cell.getSection() == parent) {
+			MCell cell = (MCell)child;		
+			if (parent instanceof AMCollection && cell.getSection() == parent){
 				ANode currentParent = cell.getParent();
-				if (currentParent instanceof MColumnGroupCell) {
+				if (currentParent instanceof MColumnGroupCell){
 					JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(cell.getTable());
-					tableCommand
-							.add(new MoveColumnOutsideGroupCommand((MColumnGroupCell) currentParent, cell, newIndex));
+					tableCommand.add(new MoveColumnOutsideGroupCommand((MColumnGroupCell)currentParent, cell, newIndex));
 					return tableCommand;
-				} else if (currentParent instanceof MColumnGroup) {
+				} else if (currentParent instanceof MColumnGroup){
 					JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(cell.getTable());
-					tableCommand.add(new MoveColumnOutsideGroupCommand((MColumnGroup) currentParent, cell, newIndex));
+					tableCommand.add(new MoveColumnOutsideGroupCommand((MColumnGroup)currentParent, cell, newIndex));
 					return tableCommand;
 				}
 			}
 
-		} else if (child instanceof MColumnGroup) {
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
-				tableCommand.add(new CreateColumnGroupCommand((AMCollection) parent, (MColumnGroup) child, newIndex));
+		}  else if (child instanceof MColumnGroup) {
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
+				tableCommand.add(new CreateColumnGroupCommand((AMCollection) parent,(MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
-				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroupCell) parent, (MColumnGroup) child,
-						newIndex));
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
+				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroupCell) parent, (MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
-				tableCommand.add(
-						new CreateColumnGroupFromGroupCommand((MColumnGroup) parent, (MColumnGroup) child, newIndex));
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
+				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroup) parent, (MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
-			if (parent.getParent() instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent.getParent()).getMTable());
-				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroupCell) parent.getParent(),
-						(MColumnGroup) child, newIndex));
+			if (parent.getParent() instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent.getParent()).getMTable());
+				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroupCell) parent.getParent(),(MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
-			if (parent.getParent() instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroup) parent.getParent()).getMTable());
-				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroup) parent.getParent(),
-						(MColumnGroup) child, newIndex));
+			if (parent.getParent() instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent.getParent()).getMTable());
+				tableCommand.add(new CreateColumnGroupFromGroupCommand((MColumnGroup) parent.getParent(),(MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumn) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn) parent).getMTable());
-				tableCommand.add(new CreateColumnGroupCommand((MColumn) parent, (MColumnGroup) child, newIndex));
+			if (parent instanceof MColumn){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn)parent).getMTable());
+				tableCommand.add(new CreateColumnGroupCommand((MColumn) parent,(MColumnGroup) child, newIndex));
 				return tableCommand;
 			}
 		} else if (child instanceof MColumn) {
-			if (parent instanceof MTable) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand((MTable) parent);
-				tableCommand.add(new CreateColumnCommand((MTable) parent, (MColumn) child, newIndex));
+			if (parent instanceof MTable){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand((MTable)parent);
+				tableCommand.add(new CreateColumnCommand((MTable) parent,(MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MTableGroupHeader) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MTableGroupHeader) parent).getMTable());
+			if (parent instanceof MTableGroupHeader){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableGroupHeader)parent).getMTable());
 				tableCommand.add(new CreateColumnCommand((MTableGroupHeader) parent, (MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MTableGroupFooter) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MTableGroupFooter) parent).getMTable());
+			if (parent instanceof MTableGroupFooter){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableGroupFooter)parent).getMTable());
 				tableCommand.add(new CreateColumnCommand((MTableGroupFooter) parent, (MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
 				tableCommand.add(new CreateColumnCommand((AMCollection) parent, (MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
-				tableCommand
-						.add(new CreateColumnFromGroupCommand((MColumnGroupCell) parent, (MColumn) child, newIndex));
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
+				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroupCell) parent, (MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
-				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroup) parent, (MColumn) child, newIndex));
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
+				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroup) parent,(MColumn) child, newIndex));
 				return tableCommand;
 			}
-			if (parent.getParent() instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent.getParent()).getMTable());
-				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroupCell) parent.getParent(),
-						(MColumn) child, newIndex));
+			if (parent.getParent() instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent.getParent()).getMTable());
+				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroupCell) parent.getParent(), (MColumn) child,newIndex));
 				return tableCommand;
 			}
-			if (parent.getParent() instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroup) parent.getParent()).getMTable());
-				tableCommand.add(
-						new CreateColumnFromGroupCommand((MColumnGroup) parent.getParent(), (MColumn) child, newIndex));
+			if (parent.getParent() instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent.getParent()).getMTable());
+				tableCommand.add(new CreateColumnFromGroupCommand((MColumnGroup) parent.getParent(), (MColumn) child,newIndex));
 				return tableCommand;
 			}
-			if (parent instanceof MColumn && ((MColumn) parent).getMTable() != null) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn) parent).getMTable());
+			if (parent instanceof MColumn && ((MColumn) parent).getMTable() != null){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumn)parent).getMTable());
 				tableCommand.add(new CreateColumnCommand((MColumn) parent, (MColumn) child, newIndex));
 				return tableCommand;
 			}
 		}
-		// If it is a custom tool require the command to the toolmanger
-		if (child instanceof MCompositeElement) {
-			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement) child, location, newIndex);
-		}
+		//If it is a custom tool require the command to the toolmanger
+		if (child instanceof MCompositeElement){
+			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement)child, location, newIndex);
+		} 
 		if (child instanceof MTable) {
 			if (parent instanceof MElementGroup)
-				return new CreateTableCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateTableCommand((MElementGroup) parent,(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MBand)
-				return new CreateTableCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateTableCommand((MBand) parent,(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MFrame)
-				return new CreateTableCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateTableCommand((MFrame) parent,(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MReport)
-				return new CreateTableCommand(parent, (MGraphicElement) child, location, newIndex);
+				return new CreateTableCommand(parent, (MGraphicElement) child,location, newIndex);
 
 			if (parent instanceof IGroupElement && parent instanceof IGraphicElementContainer) {
 				return new CreateTableCommand(parent, (MGraphicElement) child, location, newIndex);
@@ -625,24 +620,31 @@ public class TableComponentFactory implements IComponentFactory {
 		}
 		if (child instanceof MImage) {
 			if (parent instanceof MCell)
-				return new CreateImageCommand((MCell) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateImageCommand((MCell) parent,
+						(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MElementGroup)
-				return new CreateImageCommand((MElementGroup) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateImageCommand((MElementGroup) parent,
+						(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MBand)
-				return new CreateImageCommand((MBand) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateImageCommand((MBand) parent,
+						(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MFrame)
-				return new CreateImageCommand((MFrame) parent, (MGraphicElement) child, location, newIndex);
+				return new CreateImageCommand((MFrame) parent,
+						(MGraphicElement) child, location, newIndex);
 			if (parent instanceof MReport)
-				return new CreateImageCommand(parent, (MGraphicElement) child, location, newIndex);
-			if (parent instanceof IGroupElement) {
-				return new com.jaspersoft.studio.model.command.CreateElementCommand(parent, (MGraphicElement) child,
+				return new CreateImageCommand(parent, (MGraphicElement) child,
 						location, newIndex);
+			if (parent instanceof IGroupElement) {
+				return new com.jaspersoft.studio.model.command.CreateElementCommand(
+						parent, (MGraphicElement) child, location, newIndex);
 			}
 		}
 		if (child instanceof MGraphicElement && parent instanceof MCell)
-			return new CreateElementCommand((MCell) parent, (MGraphicElement) child, location, newIndex);
+			return new CreateElementCommand((MCell) parent,
+					(MGraphicElement) child, location, newIndex);
 		if (child instanceof MElementGroup && parent instanceof MCell)
-			return new CreateElementGroupCommand((MCell) parent, (MElementGroup) child, newIndex);
+			return new CreateElementGroupCommand((MCell) parent,
+					(MElementGroup) child, newIndex);
 		if (parent instanceof MTable && child instanceof MGraphicElement) {
 			MTable mt = (MTable) parent;
 			if (location != null) {
@@ -653,23 +655,25 @@ public class TableComponentFactory implements IComponentFactory {
 					int y = r != null ? r.y : 0;
 					location = location.setLocation(location.x - x, location.y - y);
 
-					// Search the model node of the cell where the element should be placed
-					ModelVisitor<MCell> mv = new ModelVisitor<MCell>(mt != null ? mt : parent) {
+					//Search the model node of the cell where the element should be placed
+					ModelVisitor<MCell> mv = new ModelVisitor<MCell>(mt != null ? mt: parent) {
 						@Override
 						public boolean visit(INode n) {
-							if (n instanceof MCell && ((MCell) n).getCell() == cell) {
+							if (n instanceof MCell && ((MCell) n).getCell() == cell){
 								setObject((MCell) n);
 							}
 							return true;
 						}
 					};
-					MCell mcell = mv.getObject();
+					MCell mcell = (MCell) mv.getObject();
 					if (mcell == null) {
-						UIUtils.showInformation("Impossible to create the element",
+						UIUtils.showInformation(
+								"Impossible to create the element",
 								"The element could not be created in this position, try to enter into the table editor and place it from there");
 						return null;
 					}
-					return new CreateElementCommand(mcell, (MGraphicElement) child, location, newIndex);
+					return new CreateElementCommand(mcell,
+							(MGraphicElement) child, location, newIndex);
 				}
 			}
 		}
@@ -690,39 +694,35 @@ public class TableComponentFactory implements IComponentFactory {
 
 	public static Command getDeleteCellCommand(ANode parent, ANode child) {
 		if (child instanceof MColumnGroupCell) {
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
-				tableCommand
-						.add(new DeleteColumnGroupCellCommand((ANode) parent.getParent(), (MColumnGroupCell) child));
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
+				tableCommand.add(new DeleteColumnGroupCellCommand((ANode) parent.getParent(), (MColumnGroupCell) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
-				tableCommand
-						.add(new DeleteColumnGroupCellCommand((ANode) parent.getParent(), (MColumnGroupCell) child));
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
+				tableCommand.add(new DeleteColumnGroupCellCommand((ANode) parent.getParent(), (MColumnGroupCell) child));
 				return tableCommand;
 			}
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
-				tableCommand.add(new DeleteColumnGroupCellCommand((ANode) parent, (MColumnGroupCell) child));
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
+				tableCommand.add(new DeleteColumnGroupCellCommand((ANode) parent,(MColumnGroupCell) child));
 				return tableCommand;
 			}
 		} else if (child instanceof MCell) {
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
-				tableCommand.add(new DeleteColumnCellCommand((ANode) parent.getParent(), (MCell) child));
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
+				tableCommand.add(new DeleteColumnCellCommand((ANode) parent.getParent(),(MCell) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
-				tableCommand.add(new DeleteColumnCellCommand((ANode) parent.getParent(), (MCell) child));
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
+				tableCommand.add(new DeleteColumnCellCommand((ANode) parent.getParent(),(MCell) child));
 				return tableCommand;
 			}
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
-				tableCommand.add(new DeleteColumnCellCommand((ANode) parent, (MCell) child));
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
+				tableCommand.add(new DeleteColumnCellCommand((ANode) parent,(MCell) child));
 				return tableCommand;
 			}
 		}
@@ -731,45 +731,42 @@ public class TableComponentFactory implements IComponentFactory {
 
 	public static Command getDeleteColumnCommand(ANode parent, ANode child) {
 		if (child instanceof MColumn) {
-			if (parent instanceof MTableDetail) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableDetail) parent).getMTable());
-				MColumn column = (MColumn) child;
+			if (parent instanceof MTableDetail){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableDetail)parent).getMTable());
+				MColumn column = (MColumn)child;
 				StandardTable table = column.getMTable().getStandardTable();
 				StandardColumnGroup colParent = TableManager.getParent(table, column.getValue());
-				if (colParent != null) {
-					tableCommand.add(new DeleteColumnFromGroupCommand(colParent, (MColumn) child));
+				if (colParent != null){
+					tableCommand.add(new DeleteColumnFromGroupCommand(colParent, (MColumn) child));	
 				} else {
 					tableCommand.add(new DeleteColumnCommand((MTableDetail) parent, (MColumn) child));
 				}
 				return tableCommand;
 			}
-
-			if (parent instanceof MTableGroupHeader) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MTableGroupHeader) parent).getMTable());
-				tableCommand.add(new DeleteColumnCommand((MTableGroupHeader) parent, (MColumn) child));
+			
+			if (parent instanceof MTableGroupHeader){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableGroupHeader)parent).getMTable());
+				tableCommand.add(new DeleteColumnCommand((MTableGroupHeader) parent,(MColumn) child));
 				return tableCommand;
 
 			}
-			if (parent instanceof MTableGroupFooter) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MTableGroupFooter) parent).getMTable());
-				tableCommand.add(new DeleteColumnCommand((MTableGroupFooter) parent, (MColumn) child));
+			if (parent instanceof MTableGroupFooter){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MTableGroupFooter)parent).getMTable());
+				tableCommand.add( new DeleteColumnCommand((MTableGroupFooter) parent,(MColumn) child));
 				return tableCommand;
 			}
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
 				tableCommand.add(new DeleteColumnCommand((AMCollection) parent, (MColumn) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
 				tableCommand.add(new DeleteColumnFromGroupCommand((MColumnGroup) parent, (MColumn) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
 				tableCommand.add(new DeleteColumnFromGroupCommand((MColumnGroupCell) parent, (MColumn) child));
 				return tableCommand;
 			}
@@ -779,64 +776,67 @@ public class TableComponentFactory implements IComponentFactory {
 
 	public Command getReorderCommand(ANode parent, ANode child, int newIndex) {
 		if (child instanceof MColumn) {
-			if (parent instanceof MCollection) {
+			if (parent instanceof MCollection){
 				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand((MTable) parent.getParent());
 				tableCommand.add(new RefreshColumnNamesCommand((MTable) parent.getParent(), false, true));
 				tableCommand.add(new ReorderColumnCommand((MColumn) child, (MTable) parent.getParent(), newIndex));
 				tableCommand.add(new RefreshColumnNamesCommand((MTable) parent.getParent(), true, false));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				MTable table = ((MColumnGroupCell) parent).getMTable();
+			if (parent instanceof MColumnGroupCell){
+				MTable table = ((MColumnGroupCell)parent).getMTable();
 				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(table);
 				tableCommand.add(new RefreshColumnNamesCommand(table, false, true));
 				tableCommand.add(new ReorderColumnGroupCommand((MColumn) child, (MColumnGroupCell) parent, newIndex));
 				tableCommand.add(new RefreshColumnNamesCommand(table, true, false));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				MTable table = ((MColumnGroup) parent).getMTable();
+			if (parent instanceof MColumnGroup){
+				MTable table = ((MColumnGroup)parent).getMTable();
 				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(table);
 				tableCommand.add(new RefreshColumnNamesCommand(table, false, true));
-				tableCommand.add(new ReorderColumnGroupCommand((MColumn) child, (MColumnGroup) parent, newIndex));
+				tableCommand.add(new ReorderColumnGroupCommand((MColumn) child,(MColumnGroup) parent, newIndex));
 				tableCommand.add(new RefreshColumnNamesCommand(table, true, false));
 				return tableCommand;
 			}
 
 		}
 		if (child instanceof MGraphicElement && parent instanceof MCell)
-			return new ReorderElementCommand((MGraphicElement) child, (MCell) parent, newIndex);
+			return new ReorderElementCommand((MGraphicElement) child,
+					(MCell) parent, newIndex);
 		if (child instanceof MElementGroup && parent instanceof MCell)
-			return new ReorderElementGroupCommand((MElementGroup) child, (MCell) parent, newIndex);
+			return new ReorderElementGroupCommand((MElementGroup) child,
+					(MCell) parent, newIndex);
 		return null;
 	}
-
+	
 	public Command getOrphanCommand(ANode parent, ANode child) {
 		if (child instanceof MColumn) {
-			if (parent instanceof AMCollection) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection) parent).getMTable());
-				tableCommand.add(new OrphanColumnCommand((AMCollection) parent, (MColumn) child));
+			if (parent instanceof AMCollection){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((AMCollection)parent).getMTable());
+				tableCommand.add(new OrphanColumnCommand((AMCollection) parent,(MColumn) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroupCell) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(
-						((MColumnGroupCell) parent).getMTable());
+			if (parent instanceof MColumnGroupCell){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroupCell)parent).getMTable());
 				tableCommand.add(new OrphanColumn4GroupCommand((MColumnGroupCell) parent, (MColumn) child));
 				return tableCommand;
 			}
-			if (parent instanceof MColumnGroup) {
-				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup) parent).getMTable());
+			if (parent instanceof MColumnGroup){
+				JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(((MColumnGroup)parent).getMTable());
 				tableCommand.add(new OrphanColumn4GroupCommand((MColumnGroup) parent, (MColumn) child));
 				return tableCommand;
 			}
 		}
 		if (child instanceof MGraphicElement && parent instanceof MCell)
-			return new OrphanElementCommand((MCell) parent, (MGraphicElement) child);
+			return new OrphanElementCommand((MCell) parent,
+					(MGraphicElement) child);
 		if (child instanceof MElementGroup && parent instanceof MCell)
-			return new OrphanElementGroupCommand((MCell) parent, (MElementGroup) child);
+			return new OrphanElementGroupCommand((MCell) parent,
+					(MElementGroup) child);
 		return null;
 	}
-
+	
 	@Override
 	public Command getStretchToContent(ANode node) {
 		if (node instanceof MColumn) {
@@ -847,7 +847,7 @@ public class TableComponentFactory implements IComponentFactory {
 				if (d.height > 0 && d.width > 0) {
 					JSSCompoundTableCommand tableCommand = new JSSCompoundTableCommand(model.getMTable());
 					tableCommand.setLabel("Resize to container");
-
+					
 					SetValueCommand heighCommand = new SetValueCommand();
 					heighCommand.setTarget(model);
 					heighCommand.setPropertyId(DesignCell.PROPERTY_HEIGHT);
@@ -865,7 +865,7 @@ public class TableComponentFactory implements IComponentFactory {
 	}
 
 	public List<Action> getActions(WorkbenchPart part) {
-		List<Action> lst = new ArrayList<>();
+		List<Action> lst = new ArrayList<Action>();
 		// lst.add(new CreateColumnAction(part));
 		// lst.add(new CreateColumnGroupAction(part));
 		// lst.add(new CreateColumnCellAction(part));
@@ -878,7 +878,7 @@ public class TableComponentFactory implements IComponentFactory {
 	}
 
 	public List<String> getActionsID() {
-		List<String> lst = new ArrayList<>();
+		List<String> lst = new ArrayList<String>();
 		lst.add(CreateColumnAfterAction.ID);
 		lst.add(CreateColumnBeforeAction.ID);
 		lst.add(CreateColumnBeginAction.ID);
@@ -891,7 +891,7 @@ public class TableComponentFactory implements IComponentFactory {
 		lst.add(CreateColumnGroupCellAction.ID);
 		lst.add(ColumnsEqualWidthAction.ID);
 		lst.add(ColumnsStretchToTableAction.ID);
-
+		
 		lst.add(AContextMenuProvider.SEPARATOR);
 		lst.add(DeleteColumnAction.ID);
 		lst.add(CreateRowAction.ID);
@@ -924,29 +924,31 @@ public class TableComponentFactory implements IComponentFactory {
 		return null;
 	}
 
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		if (model instanceof MTable)
-			return new OpenableContainerTreeEditPart();
-		return null;
-	}
-
-	public AbstractVisualEditor getEditor(Object node, JasperReportsConfiguration jrContext) {
+	public AbstractVisualEditor getEditor(Object node,
+			JasperReportsConfiguration jrContext) {
 		if (node != null && node instanceof JRDesignComponentElement) {
-			Component component = ((JRDesignComponentElement) node).getComponent();
-			if (component != null && component instanceof StandardTable)
-				return new TableEditor(jrContext);
+			Component component = ((JRDesignComponentElement) node)
+					.getComponent();
+			if (component != null && component instanceof StandardTable) {
+				TableEditor editor = new TableEditor(jrContext);
+				return editor;
+			}
 		}
 		return null;
 	}
 
 	public ExpressionContext getElementExpressionContext(Object jrObject) {
-		if (jrObject instanceof MTable && ((MTable) jrObject).getValue() instanceof JRDesignComponentElement) {
+		if (jrObject instanceof MTable
+				&& ((MTable) jrObject).getValue() instanceof JRDesignComponentElement) {
 			MTable mtable = (MTable) jrObject;
-			StandardTable table = (StandardTable) ((JRDesignComponentElement) mtable.getValue()).getComponent();
-			JRDesignDataset designDS = ModelUtils.getDesignDatasetForDatasetRun(
-					mtable.getJasperConfiguration().getJasperDesign(), table.getDatasetRun());
-			return new ExpressionContext(designDS, mtable.getJasperConfiguration());
+			StandardTable table = (StandardTable) ((JRDesignComponentElement) mtable
+					.getValue()).getComponent();
+			JRDesignDataset designDS = ModelUtils
+					.getDesignDatasetForDatasetRun(mtable
+							.getJasperConfiguration().getJasperDesign(), table
+							.getDatasetRun());
+			return new ExpressionContext(designDS,
+					mtable.getJasperConfiguration());
 		}
 		return null;
 	}

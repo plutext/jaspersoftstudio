@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.properties.layout;
 
@@ -111,9 +119,9 @@ public class DynamicColumnLayout extends Layout{
 		Point[] sizes = new Point[children.length];
 
 		int ncolumns = calculateColumnsNumber();
-		int width = page.getTabbedPropertyComposite().getPropertiesArea().width;
+
 		for (int i = 0; i < children.length; i++) {
-			sizes[i] = computeControlSize(children[i], SWT.DEFAULT);
+			sizes[i] = computeControlSize(children[i]);
 			cwidth = Math.max(cwidth, sizes[i].x);
 			cheight += sizes[i].y;
 		}
@@ -153,8 +161,8 @@ public class DynamicColumnLayout extends Layout{
 		return size;
 	}
 
-	private Point computeControlSize(Control c, int suggestedWidth) {
-		return c.computeSize(suggestedWidth, SWT.DEFAULT);
+	private Point computeControlSize(Control c) {
+		return c.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 	}
 
 	private int findShortestColumn(int[] heights) {
@@ -202,14 +210,12 @@ public class DynamicColumnLayout extends Layout{
 		int cwidth = 0;
 		int cheight = 0;
 		Point[] sizes = new Point[children.length];
-		int ncolumns = calculateColumnsNumber();
-		int width = page.getTabbedPropertyComposite().getPropertiesArea().width;
 		for (int i = 0; i < children.length; i++) {
-			sizes[i] = computeControlSize(children[i],  SWT.DEFAULT);
+			sizes[i] = computeControlSize(children[i]);
 			cwidth = Math.max(cwidth, sizes[i].x);
 			cheight += sizes[i].y;
 		}
-	
+		int ncolumns = calculateColumnsNumber();
 		int realWidth = (carea.width - leftMargin - rightMargin + horizontalSpacing) / ncolumns - horizontalSpacing;
 
 		int fillWidth = Math.max(cwidth, realWidth);

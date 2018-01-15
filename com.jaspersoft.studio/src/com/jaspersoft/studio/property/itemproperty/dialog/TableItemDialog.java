@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.itemproperty.dialog;
 
@@ -42,7 +46,7 @@ import net.sf.jasperreports.components.items.StandardItemProperty;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
 public class TableItemDialog extends AItemDialog {
-
+	
 	private EditButton<StandardItemProperty> bpropEdit;
 	private TableViewer tviewer;
 	private Composite vcmp;
@@ -57,7 +61,7 @@ public class TableItemDialog extends AItemDialog {
 		bptab.setText(Messages.ItemDialog_0);
 
 		createValue(tabFolder);
-
+		
 		bptab.setControl(vcmp);
 	}
 
@@ -130,9 +134,11 @@ public class TableItemDialog extends AItemDialog {
 		}.createNewButtons(bGroup, tviewer, new INewElement() {
 
 			public Object newElement(List<?> input, int pos) {
-				StandardItemProperty prop = new StandardItemProperty("newname", "value", null); //$NON-NLS-1$
+				StandardItemProperty prop = new StandardItemProperty("newname", //$NON-NLS-1$
+						"value", null); //$NON-NLS-1$
 				descriptor.setOldItemProperty(null);
-				ItemPropertyDialog dialog = new ItemPropertyDialog(getShell(), prop, descriptor, currentExpContext);
+				ItemPropertyDialog dialog = new ItemPropertyDialog(getShell(), prop, descriptor);
+				dialog.setExpressionContext(currentExpContext);
 				if (openChildDialog(dialog) == Window.OK)
 					return dialog.getValue();
 				return null;
@@ -142,8 +148,7 @@ public class TableItemDialog extends AItemDialog {
 
 		bpropEdit = new EditButton<StandardItemProperty>() {
 			@Override
-			protected void afterElementModified(StandardItemProperty element, List<StandardItemProperty> inlist,
-					int ind) {
+			protected void afterElementModified(Object element, List<StandardItemProperty> inlist, int ind) {
 				validateForm();
 			}
 		};
@@ -154,7 +159,8 @@ public class TableItemDialog extends AItemDialog {
 				StandardItemProperty old = input.get(pos);
 				descriptor.setOldItemProperty(old);
 				StandardItemProperty prop = (StandardItemProperty) old.clone();
-				ItemPropertyDialog dialog = new ItemPropertyDialog(getShell(), prop, descriptor, currentExpContext);
+				ItemPropertyDialog dialog = new ItemPropertyDialog(getShell(), prop, descriptor);
+				dialog.setExpressionContext(currentExpContext);
 				if (openChildDialog(dialog) == Window.OK)
 					input.set(pos, dialog.getValue());
 			}
@@ -164,8 +170,7 @@ public class TableItemDialog extends AItemDialog {
 			/*
 			 * (non-Javadoc)
 			 * 
-			 * @see com.jaspersoft.studio.swt.widgets.table.DeleteButton#
-			 * afterElementDeleted(java.lang.Object)
+			 * @see com.jaspersoft.studio.swt.widgets.table.DeleteButton# afterElementDeleted(java.lang.Object)
 			 */
 			@Override
 			protected void afterElementDeleted(Object element) {
@@ -176,7 +181,7 @@ public class TableItemDialog extends AItemDialog {
 			protected boolean confirmDelete(Object obj) {
 				StandardItemProperty p = (StandardItemProperty) obj;
 				ItemPropertyDescription<?> ipd = descriptor.getDescription(p.getName());
-				if (ipd != null && ipd.isMandatory()) {
+				if (ipd != null && ipd.isMandatory()){
 					if (!UIUtils.showConfirmation(Messages.ItemDialog_3, Messages.ItemDialog_4))
 						return false;
 				}

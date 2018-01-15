@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server;
 
@@ -42,19 +50,18 @@ import com.jaspersoft.studio.model.MDummy;
 import com.jaspersoft.studio.model.MRoot;
 import com.jaspersoft.studio.model.util.ModelVisitor;
 import com.jaspersoft.studio.server.editor.JRSEditorContributor;
-import com.jaspersoft.studio.server.export.AExporter;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.model.server.MServers;
 import com.jaspersoft.studio.server.model.server.ServerProfile;
 import com.jaspersoft.studio.server.protocol.IConnection;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.CastorHelper;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.util.JRXmlUtils;
 
@@ -294,8 +301,15 @@ public class ServerManager {
 				if (v.getUrl().equals(url)) {
 					res = sp;
 					if (user != null) {
-						if (AExporter.encodeUsr(v).equals(user))
-							return sp;
+						if (v.isUseSSO()) {
+							if (user.equals(v.getSsoUuid()))
+								return sp;
+						} else {
+							String u = v.getUser()
+									+ (!Misc.isNullOrEmpty(v.getOrganisation()) ? "|" + v.getOrganisation() : "");
+							if (u.equals(user))
+								return sp;
+						}
 					} else
 						return sp;
 				}
@@ -327,8 +341,6 @@ public class ServerManager {
 	public static int getServerIndexByUrl(String url, String user) {
 		int i = 0;
 		int j = -1;
-		if (user != null && user.endsWith("|"))
-			user = user.substring(0, user.length() - 1);
 		for (MServerProfile sp : getServerProfiles()) {
 			ServerProfile v = sp.getValue();
 			try {

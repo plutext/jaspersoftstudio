@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.obj;
 
@@ -21,7 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.help.HelpSystem;
@@ -36,7 +43,6 @@ import com.jaspersoft.studio.property.section.graphic.ASHighlightControl;
 import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
 import com.jaspersoft.studio.property.section.widgets.BackgroundHighlight;
 import com.jaspersoft.studio.property.section.widgets.SPHyperlinkParameter;
-import com.jaspersoft.studio.property.section.widgets.SPWidgetFactory;
 import com.jaspersoft.studio.swt.widgets.WHyperlink.UIElement;
 import com.jaspersoft.studio.utils.ModelUtils;
 
@@ -242,18 +248,18 @@ public class HyperlinkSection extends AbstractSection {
 		setRefreshing(true);
 		APropertyNode element = getElement();
 		if (element != null) {
-			if (anchorWidget != null) anchorWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_ANCHOR_EXPRESSION));
-			if (referenceWidget != null) referenceWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_REFERENCE_EXPRESSION));
-			if (whenWidget != null) whenWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION));
-			if (pageWidget != null) pageWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_PAGE_EXPRESSION));
-			if (tooltipWidget != null) tooltipWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_TOOLTIP_EXPRESSION));
-			if (parametersWidget != null) parametersWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_PARAMETERS));
+			anchorWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_ANCHOR_EXPRESSION));
+			referenceWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_REFERENCE_EXPRESSION));
+			whenWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION));
+			pageWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_PAGE_EXPRESSION));
+			tooltipWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_TOOLTIP_EXPRESSION));
+			parametersWidget.setData(element, element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_HYPERLINK_PARAMETERS));
 			Object propertyValue = element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_LINK_TARGET);
-			if (targetCombo != null) targetCombo.setText(propertyValue != null ? propertyValue.toString() : linkTargetItems[0]);
+			targetCombo.setText(propertyValue != null ? propertyValue.toString() : linkTargetItems[0]);
 			propertyValue = element.getPropertyActualValue(JRDesignHyperlink.PROPERTY_LINK_TYPE);
 			String typeValue = propertyValue != null ? propertyValue.toString() : linkTypeItems[0];
 			//I don't set the text on the combo if it has already the right value to avoid to raise the panel refresh
-			if (typeCombo != null && !typeValue.equals(typeCombo.getText())) typeCombo.setText(typeValue);	
+			if (!typeValue.equals(typeCombo.getText())) typeCombo.setText(typeValue);	
 		}
 		setRefreshing(false);
 	}
@@ -306,9 +312,8 @@ public class HyperlinkSection extends AbstractSection {
 		String selectedValue = typeCombo.getText();
 		if (!hideList.containsKey(selectedValue)) selectedValue = "Custom"; //$NON-NLS-1$
 		ElementHider[] actualHiders = hideList.get(selectedValue);
-		for(ElementHider hider : actualHiders) {
-			if (hider != null) hider.showAll();
-		}
+		for(ElementHider hider : actualHiders)
+			hider.showAll();
 		mainComposite.layout();
 	}
 	
@@ -350,13 +355,6 @@ public class HyperlinkSection extends AbstractSection {
 			HelpSystem.setHelp(typeCombo, prefix+"sectionHyperlink_hyperlinkType");  //$NON-NLS-1$
 			HelpSystem.setHelp(targetCombo, prefix+"sectionHyperlink_hyperlinkTarget"); //$NON-NLS-1$
 		}
-	}
-	
-	protected void createWhenWidget() {
-		Label whenLabel = createLabel(mainComposite, Messages.MHyperLink_whenexpr_desc, Messages.MHyperLink_whenexpr);
-		whenWidget = createWidget4Property(mainComposite,JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION,false); 
-		whenWidget.getControl().setLayoutData(gridDataGenerator());		
-		when = new ElementHider(new Control[]{whenLabel, whenWidget.getControl()});
 	}
 	
 	/**
@@ -403,15 +401,10 @@ public class HyperlinkSection extends AbstractSection {
 		referenceWidget.getControl().setLayoutData(gridDataGenerator());		
 		reference = new ElementHider(new Control[]{referenceLabel, referenceWidget.getControl()});
 		
-		//Some hyperlink doesn't support the when expression, for this reason check if the model support it
-		IPropertyDescriptor whenDescriptor = getPropertyDesriptor(JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION);
-		if (whenDescriptor != null) {
-			Label whenLabel = createLabel(mainComposite, Messages.MHyperLink_whenexpr_desc, Messages.MHyperLink_whenexpr);
-			whenWidget = SPWidgetFactory.createWidget(mainComposite, this, whenDescriptor);
-			widgets.put(whenDescriptor.getId(), whenWidget);
-			whenWidget.getControl().setLayoutData(gridDataGenerator());		
-			when = new ElementHider(new Control[]{whenLabel, whenWidget.getControl()});
-		}
+		Label whenLabel = createLabel(mainComposite, Messages.MHyperLink_whenexpr_desc, Messages.MHyperLink_whenexpr);
+		whenWidget = createWidget4Property(mainComposite,JRDesignHyperlink.PROPERTY_HYPERLINK_WHEN_EXPRESSION,false); 
+		whenWidget.getControl().setLayoutData(gridDataGenerator());		
+		when = new ElementHider(new Control[]{whenLabel, whenWidget.getControl()});
 		
 		Label tooltipLabel = createLabel(mainComposite, Messages.MHyperLink_hyperlink_tooltip_expression_description, Messages.MHyperLink_hyperlink_tooltip_expression);
 		tooltipWidget = createWidget4Property(mainComposite,JRDesignHyperlink.PROPERTY_HYPERLINK_TOOLTIP_EXPRESSION,false); 

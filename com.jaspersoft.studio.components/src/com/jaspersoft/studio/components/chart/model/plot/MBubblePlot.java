@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.model.plot;
 
@@ -34,12 +42,8 @@ import net.sf.jasperreports.engine.JRConstants;
 public class MBubblePlot extends MChartPlot {
 	
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
+	
 	private static IPropertyDescriptor[] descriptors;
-	private static NamedEnumPropertyDescriptor<ScaleTypeEnum> scaleType;
-	private MFont clFont;
-	private MFont ctFont;
-	private MFont vlFont;
-	private MFont vtFont;
 
 	public MBubblePlot(JRBubblePlot value) {
 		super(value);
@@ -357,6 +361,12 @@ public class MBubblePlot extends MChartPlot {
 
 		return super.getPropertyValue(id);
 	}
+
+	private MFont clFont;
+	private MFont ctFont;
+	private MFont vlFont;
+	private MFont vtFont;
+	private NamedEnumPropertyDescriptor<ScaleTypeEnum> scaleType;
 
 	/*
 	 * (non-Javadoc)

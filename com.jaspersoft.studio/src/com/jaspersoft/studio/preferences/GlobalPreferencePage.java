@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.preferences;
 
@@ -35,10 +39,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import com.jaspersoft.studio.ConfigurationManager;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.KeyValue;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class GlobalPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	public static final String LOG_FILE = "com.jaspersoft.studio.log.file"; //$NON-NLS-1$
@@ -46,13 +50,8 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 	public static final String LOG_ENABLE = "com.jaspersoft.studio.log.enable"; //$NON-NLS-1$
 	public static final String JSS_JETTY_PORT = "com.jaspersoft.studio.jetty.port"; //$NON-NLS-1$
 	public static final String JSS_USE_SECURE_STORAGE = "com.jaspersoft.studio.secure.storage"; //$NON-NLS-1$
-	public static final String JSS_DISABLE_EXPRESSION_EVALUATION = "com.jaspersoft.studio.secure.disableExpression"; //$NON-NLS-1$
 	public static final String JSS_ENABLE_INTERNAL_CONSOLE = "com.jaspersoft.studio.jss.console"; //$NON-NLS-1$
 	public static final String JSS_USE_ALWAYS_EXTERNAL_BROWSER = "com.jaspersoft.studio.jss.browser.external"; //$NON-NLS-1$
-
-	public static final String JSS_PROPERTIES_VIEW_MODE = "com.jaspersoft.studio.properties.view.mode"; //$NON-NLS-1$
-	public static final String JSS_PROPERTIES_SHOW_SET = "com.jaspersoft.studio.properties.show.set"; //$NON-NLS-1$
-
 	private BooleanFieldEditor enableLoggers;
 	private FileFieldEditor logFile;
 
@@ -74,8 +73,7 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 				fini = ConfigurationManager.getApplicationConfigurationFile();
 				System.out.println("Fini: " + fini.toString()); //$NON-NLS-1$
 				defaultLogProperties = new File(ConfigurationManager.getAppDataFolder("config"), "log.properties"); //$NON-NLS-1$ //$NON-NLS-2$
-				defaultLog4jProperties = new File(ConfigurationManager.getAppDataFolder("config"), //$NON-NLS-1$
-						"log4j-config.properties"); //$NON-NLS-1$
+				defaultLog4jProperties = new File(ConfigurationManager.getAppDataFolder("config"), "log4j-config.properties"); //$NON-NLS-1$ //$NON-NLS-2$
 				initDefaultLogProperties();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -150,13 +148,6 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 				Messages.GlobalPreferencePage_flagDescription, getFieldEditorParent());
 		addField(useSecStorage);
 
-		BooleanFieldEditor disableExpressions = new BooleanFieldEditor(JSS_DISABLE_EXPRESSION_EVALUATION,
-				Messages.GlobalPreferencePage_disableExpression, getFieldEditorParent());
-
-		disableExpressions.getDescriptionControl(getFieldEditorParent())
-				.setToolTipText(Messages.GlobalPreferencePage_disableExpressionTooltip);
-		addField(disableExpressions);
-
 		Label separator3 = new Label(getFieldEditorParent(), SWT.SEPARATOR | SWT.HORIZONTAL);
 		separator3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 
@@ -203,13 +194,12 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 					}
 					String javaLogPath = getJavaLogPath();
 					KeyValue<String, String>[] kv = new KeyValue[javaLogPath != null ? 4 : 3];
-					kv[0] = new KeyValue<>("-Djava.util.logging.config.file", fname); //$NON-NLS-1$
-					kv[1] = new KeyValue<>("-Dlog4j.configuration", fLog4jName); //$NON-NLS-1$
-					kv[2] = new KeyValue<>("-Dorg.apache.commons.logging.Log", //$NON-NLS-1$
+					kv[0] = new KeyValue<String, String>("-Djava.util.logging.config.file", fname); //$NON-NLS-1$
+					kv[1] = new KeyValue<String, String>("-Dlog4j.configuration", fLog4jName); //$NON-NLS-1$
+					kv[2] = new KeyValue<String, String>("-Dorg.apache.commons.logging.Log", //$NON-NLS-1$
 							"org.apache.commons.logging.impl.Jdk14Logger"); //$NON-NLS-1$
 					if (javaLogPath != null)
-						kv[3] = new KeyValue<>("-Dorg.apache.commons.logging.diagnostics.dest", //$NON-NLS-1$
-								javaLogPath);
+						kv[3] = new KeyValue<String, String>("-Dorg.apache.commons.logging.diagnostics.dest", javaLogPath); //$NON-NLS-1$
 
 					ConfigurationManager.changeVMArgs(kv);
 					try {
@@ -236,10 +226,10 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 					getPreferenceStore().putValue(LOG_FILE, getPreferenceStore().getDefaultString(LOG_FILE));
 					getPreferenceStore().putValue(LOG4j_FILE, getPreferenceStore().getDefaultString(LOG4j_FILE));
 					KeyValue<String, String>[] kv = new KeyValue[4];
-					kv[0] = new KeyValue<>("-Djava.util.logging.config.file", null); //$NON-NLS-1$
-					kv[1] = new KeyValue<>("-Dorg.apache.commons.logging.diagnostics.dest", null); //$NON-NLS-1$
-					kv[2] = new KeyValue<>("-Dorg.apache.commons.logging.Log", null); //$NON-NLS-1$
-					kv[3] = new KeyValue<>("-Dlog4j.configuration", null); //$NON-NLS-1$
+					kv[0] = new KeyValue<String, String>("-Djava.util.logging.config.file", null); //$NON-NLS-1$
+					kv[1] = new KeyValue<String, String>("-Dorg.apache.commons.logging.diagnostics.dest", null); //$NON-NLS-1$
+					kv[2] = new KeyValue<String, String>("-Dorg.apache.commons.logging.Log", null); //$NON-NLS-1$
+					kv[3] = new KeyValue<String, String>("-Dlog4j.configuration", null); //$NON-NLS-1$
 
 					ConfigurationManager.changeVMArgs(kv);
 				}
@@ -466,29 +456,38 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 	private static File template;
 
 	private static File getTemplate() {
-		if (template == null)
+		if (template == null) {
 			try {
 				String path = JaspersoftStudioPlugin.getInstance().getFileLocation("/resources/log.properties"); //$NON-NLS-1$
-				if (!Misc.isNullOrEmpty(path))
+				if (!Misc.isNullOrEmpty(path)) {
 					template = FileUtils.toFile(new URL("file://" + path)); //$NON-NLS-1$
+
+					// Bundle bundle = JaspersoftStudioPlugin.getInstance().getBundle();
+					// template = bundle.getDataFile("resources/log.properties");
+				}
 			} catch (IOException e) {
 				UIUtils.showError(e);
 			}
+		}
 		return template;
 	}
 
 	private static File log4jTemplate;
 
 	private static File getLog4JTemplate() {
-		if (log4jTemplate == null)
+		if (log4jTemplate == null) {
 			try {
-				String path = JaspersoftStudioPlugin.getInstance()
-						.getFileLocation("/resources/log4j-config.properties"); //$NON-NLS-1$
-				if (!Misc.isNullOrEmpty(path))
+				String path = JaspersoftStudioPlugin.getInstance().getFileLocation("/resources/log4j-config.properties"); //$NON-NLS-1$
+				if (!Misc.isNullOrEmpty(path)) {
 					log4jTemplate = FileUtils.toFile(new URL("file://" + path)); //$NON-NLS-1$
+
+					// Bundle bundle = JaspersoftStudioPlugin.getInstance().getBundle();
+					// template = bundle.getDataFile("resources/log.properties");
+				}
 			} catch (IOException e) {
 				UIUtils.showError(e);
 			}
+		}
 		return log4jTemplate;
 	}
 
@@ -536,7 +535,6 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 		initVars();
 		store.setDefault(JSS_JETTY_PORT, 0);
 		store.setDefault(JSS_USE_SECURE_STORAGE, false);
-		store.setDefault(JSS_DISABLE_EXPRESSION_EVALUATION, false);
 		store.setDefault(JSS_ENABLE_INTERNAL_CONSOLE, false);
 		store.setDefault(JSS_USE_ALWAYS_EXTERNAL_BROWSER, false);
 		store.setDefault(LOG_ENABLE, false);
@@ -544,7 +542,7 @@ public class GlobalPreferencePage extends FieldEditorPreferencePage implements I
 
 	@Override
 	public void init(IWorkbench workbench) {
-		// do nothing
+
 	}
 
 }

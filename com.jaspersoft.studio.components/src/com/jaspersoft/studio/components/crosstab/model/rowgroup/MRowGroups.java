@@ -1,10 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.model.rowgroup;
 
-import java.beans.PropertyChangeEvent;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,7 +25,6 @@ import com.jaspersoft.studio.model.MCollection;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
 
 import net.sf.jasperreports.crosstabs.JRCrosstab;
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
 import net.sf.jasperreports.engine.JRConstants;
 
 public class MRowGroups extends MCollection {
@@ -60,22 +66,6 @@ public class MRowGroups extends MCollection {
 	 */
 	public ImageDescriptor getImagePath() {
 		return getIconDescriptor().getIcon16();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.jaspersoft.studio.model.ANode#propertyChange(java.beans.PropertyChangeEvent)
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// PropertyChangeEvent newEvent = evt;
-		if (evt.getPropertyName().equals(JRDesignCrosstab.PROPERTY_ROW_GROUPS) && evt.getSource() == getValue()) {
-			if (evt.getOldValue() == null && evt.getNewValue() != null) {
-				return;
-			}
-		}
-		super.propertyChange(evt);
 	}
 	
 	@Override

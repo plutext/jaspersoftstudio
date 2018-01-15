@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui;
 
@@ -13,38 +17,38 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import com.jaspersoft.studio.swt.widgets.NumericText;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
-import com.jaspersoft.studio.widgets.framework.ui.widget.FallbackNumericText;
 
-import net.sf.jasperreports.eclipse.util.Misc;
-
-public abstract class NumberPropertyDescription<T extends Number> extends AbstractExpressionPropertyDescription<T> {
+public abstract class NumberPropertyDescription<T extends Number> extends TextPropertyDescription<T> {
 	
-	protected T min;
+	protected Number min;
 	
-	protected T max;
+	protected Number max;
 
 	public NumberPropertyDescription() {
 	}
 	
-	public NumberPropertyDescription(String name, String label, String description, boolean mandatory, T defaultValue, T min, T max) {
+	public NumberPropertyDescription(String name, String label, String description, boolean mandatory, T defaultValue, Number min, Number max) {
 		super(name, label, description, mandatory, defaultValue);
 		this.min = min;
 		this.max = max;
 	}
 
-	public NumberPropertyDescription(String name, String label, String description, boolean mandatory, T min, T max) {
+	public NumberPropertyDescription(String name, String label, String description, boolean mandatory, Number min, Number max) {
 		super(name, label, description, mandatory);
 		this.min = min;
 		this.max = max;
 	}
+	
+	public abstract Class<?> getType();
 
-	public T getMin() {
+	public Number getMin() {
 		return min;
 	}
 
-	public T getMax() {
+	public Number getMax() {
 		return max;
 	}
 
@@ -53,11 +57,11 @@ public abstract class NumberPropertyDescription<T extends Number> extends Abstra
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		final NumericText simpleControl = createSimpleEditor(cmp.getSecondContainer());
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.verticalAlignment = SWT.CENTER;
 		textData.grabExcessVerticalSpace = true;
@@ -73,6 +77,7 @@ public abstract class NumberPropertyDescription<T extends Number> extends Abstra
 			
 		});
 		setupContextMenu(simpleControl, wiProp);
+		setupContextMenu(textExpression, wiProp);
 		cmp.switchToFirstContainer();
 		return cmp;
 	}
@@ -83,19 +88,12 @@ public abstract class NumberPropertyDescription<T extends Number> extends Abstra
 	 * @param parent the parent of the element
 	 * @return a not null NumericText to handle the numeric field
 	 */
-	protected abstract FallbackNumericText createSimpleEditor(Composite parent);
+	protected abstract NumericText createSimpleEditor(Composite parent);
 	
 	/**
 	 * Convert the string into a number for the simple control when necessary
 	 */
-	protected abstract Number convertValue(String v) throws NumberFormatException;
-	
-	/**
-	 * Return the type of the number handled by this class (ie integer, long...)
-	 * 
-	 * @return a not null class
-	 */
-	public abstract Class<? extends Number> getType();
+	protected abstract Number convertValue(String v);
 	
 	/**
 	 * Set the value inside the correct control, if the editor is in 
@@ -105,28 +103,19 @@ public abstract class NumberPropertyDescription<T extends Number> extends Abstra
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text expressionControl = (Text) cmp.getFirstContainer().getData();
 			super.update(expressionControl, wip);
 			cmp.switchToFirstContainer();
 		} else {
 			boolean isFallback = false;
-			FallbackNumericText simpleControl = (FallbackNumericText)cmp.getSecondContainer().getData();
+			NumericText simpleControl = (NumericText)cmp.getSecondContainer().getData();
 			String v = wip.getStaticValue();
 			if (v == null && wip.getFallbackValue() != null){
 				v = wip.getFallbackValue().toString();
 				isFallback = true;
 			}
-			simpleControl.setFallback(isFallback);
-			try{
-				Number numericValue = convertValue(Misc.nvl(v));
-				simpleControl.setValue(numericValue);
-				simpleControl.setToolTipText(getToolTip());
-			} catch (NumberFormatException ex){
-				simpleControl.setUnparsedValue(Misc.nvl(v));
-				simpleControl.setToolTipText("The current value can not be recognized \n" + getToolTip());
-			}
-			
+			simpleControl.setValue(convertValue(Misc.nvl(v)));
+			simpleControl.setToolTipText(getToolTip());
 			changeFallbackForeground(isFallback, simpleControl);
 			cmp.switchToSecondContainer();
 		}

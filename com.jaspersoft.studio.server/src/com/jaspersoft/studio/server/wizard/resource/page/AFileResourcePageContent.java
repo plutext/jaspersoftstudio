@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.resource.page;
 
@@ -48,12 +56,12 @@ import com.jaspersoft.studio.server.model.AFileResource;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.wizard.resource.APageContent;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.ui.validator.NotEmptyFileValidator;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.type.ImageTypeEnum;
 import net.sf.jasperreports.engine.util.JRTypeSniffer;
 
@@ -179,7 +187,7 @@ public abstract class AFileResourcePageContent extends APageContent {
 		List<ComboItem> itemsList = getItemsList();
 		final ComboMenuViewer multipleButton = new ComboMenuViewer(parent, SWT.NORMAL,
 				SPRWPopUpCombo.getLongest(itemsList));
-
+		multipleButton.setItems(itemsList);
 		multipleButton.addSelectionListener(new ComboItemAction() {
 			/**
 			 * The action to execute when an entry is selected
@@ -189,7 +197,6 @@ public abstract class AFileResourcePageContent extends APageContent {
 				buttonSelected((Integer) multipleButton.getSelectionValue());
 			}
 		});
-		multipleButton.setItems(itemsList);
 		multipleButton.disableSelectedItemUpdate(true);
 		multipleButton.disableSelectedEmphasis(true);
 		multipleButton.select(defaultComboItem);
@@ -210,7 +217,7 @@ public abstract class AFileResourcePageContent extends APageContent {
 		// not when we create a new one
 		// so we hide the download option is hidden when we are creating an
 		// elemen
-		if (res.getRoot() instanceof MServerProfile && !res.getValue().getIsNew())
+		if (res.getRoot() instanceof MServerProfile)
 			itemsList.add(new ComboItem(Messages.AFileResourcePage_downloadfilebutton, true,
 					Activator.getDefault().getImage("icons/drive-download.png"), 0, 0, 0)); // $NON-NLS-2$
 		itemsList.add(new ComboItem(Messages.AFileResourcePageContent_uploadFromFS, true,

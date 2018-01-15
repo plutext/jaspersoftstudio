@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.property;
 
@@ -24,28 +32,40 @@ public class CrosstabMeasureSection extends AbstractSection {
 			TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 
-		parent.setLayout(new GridLayout(2, false));
+		parent.setLayout(new GridLayout(3, false));
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent, JRDesignCrosstabMeasure.PROPERTY_NAME).getControl().setLayoutData(gd);
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent, JRDesignCrosstabMeasure.PROPERTY_NAME)
+				.getControl().setLayoutData(gd);
 
 		gd = new GridData();
-		createWidget4Property(parent,JRDesignCrosstabMeasure.PROPERTY_CALCULATION).getControl().setLayoutData(gd);
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabMeasure.PROPERTY_CALCULATION).getControl()
+				.setLayoutData(gd);
 
 		gd = new GridData();
-		createWidget4Property(parent,JRDesignCrosstabMeasure.PROPERTY_PERCENTAGE_OF_TYPE).getControl().setLayoutData(gd);
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabMeasure.PROPERTY_PERCENTAGE_OF_TYPE)
+				.getControl().setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent,JRDesignCrosstabMeasure.PROPERTY_VALUE_EXPRESSION).getControl().setLayoutData(gd);
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabMeasure.PROPERTY_VALUE_EXPRESSION).getControl()
+				.setLayoutData(gd);
 
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent,JRDesignCrosstabMeasure.PROPERTY_VALUE_CLASS).getControl().setLayoutData(gd);
+		createWidget4Property(parent,
+				JRDesignCrosstabMeasure.PROPERTY_VALUE_CLASS);
 
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent, JRDesignCrosstabMeasure.PROPERTY_INCREMENTER_FACTORY_CLASS_NAME).getControl().setLayoutData(gd);
+		createWidget4Property(parent,
+				JRDesignCrosstabMeasure.PROPERTY_INCREMENTER_FACTORY_CLASS_NAME);
 
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent, JRDesignCrosstabMeasure.PROPERTY_PERCENTAGE_CALCULATION_CLASS_NAME).getControl().setLayoutData(gd);
+		createWidget4Property(
+				parent,
+				JRDesignCrosstabMeasure.PROPERTY_PERCENTAGE_CALCULATION_CLASS_NAME);
 	}
 	
 	@Override

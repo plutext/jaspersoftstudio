@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.book.model;
 
 import java.util.ArrayList;
@@ -48,10 +44,10 @@ public class BookFactory {
 		// Create Part(s) inside Group Header section(s)
 		if (jd.getGroupsList() != null) {
 			for (JRGroup gr : jd.getGroupsList()) {
-				MGroupReportPartContainer grpHeader = null;
+				MReportPartContainer grpHeader = null;
 				if (gr.getGroupHeaderSection() != null) {
 					List<JRPart> grphParts = ((JRDesignSection) gr.getGroupHeaderSection()).getPartsList();
-					grpHeader = new MGroupReportPartContainer(report, gr.getGroupHeaderSection() , -1);
+					grpHeader = new MReportPartContainer(report, gr.getGroupHeaderSection() , -1);
 					grpHeader.setJRGroup(gr);
 					if (grphParts != null) {
 						for (JRPart p : grphParts) {
@@ -77,10 +73,10 @@ public class BookFactory {
 			//The groups must be build in the reverse order
 			for (int i = jd.getGroupsList().size()-1; i>=0; i--) {
 				JRGroup gr = jd.getGroupsList().get(i);
-				MGroupReportPartContainer grpFooter = null;
+				MReportPartContainer grpFooter = null;
 				if (gr.getGroupFooterSection()!= null) {
 					List<JRPart> grphParts = ((JRDesignSection) gr.getGroupFooterSection()).getPartsList();
-					grpFooter = new MGroupReportPartContainer(report, gr.getGroupFooterSection(), -1);
+					grpFooter = new MReportPartContainer(report, gr.getGroupFooterSection(), -1);
 					grpFooter.setJRGroup(gr);
 					if (grphParts != null) {
 						for(JRPart p : grphParts) {

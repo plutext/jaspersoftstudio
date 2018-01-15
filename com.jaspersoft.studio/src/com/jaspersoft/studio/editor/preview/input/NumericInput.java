@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.input;
 
@@ -16,8 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Spinner;
 
 import com.jaspersoft.studio.editor.preview.view.control.VParameters;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class NumericInput extends ADataInput {
 	private Spinner num;
@@ -55,7 +58,6 @@ public class NumericInput extends ADataInput {
 
 			num = new Spinner(parent, SWT.BORDER);
 			num.addFocusListener(focusListener);
-			num.addTraverseListener(keyListener);
 			num.setToolTipText(VParameters.createToolTip(param));
 			updateInput();
 			final ModifyListener listener2 = new ModifyListener() {

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.parameter.command;
 
@@ -17,7 +25,6 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.parameter.MParameter;
 import com.jaspersoft.studio.model.parameter.MParameters;
 import com.jaspersoft.studio.utils.ModelUtils;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 /*
  * link nodes & together.
@@ -34,19 +41,18 @@ public class CreateParameterCommand extends Command {
 
 	/** The index. */
 	private int index;
-	private JasperReportsConfiguration jrContext;
 
 	/**
 	 * Instantiates a new creates the parameter command.
 	 * 
 	 * @param destNode
-	 *            the dest node
+	 *          the dest node
 	 * @param srcNode
-	 *            the src node
+	 *          the src node
 	 * @param position
-	 *            the position
+	 *          the position
 	 * @param index
-	 *            the index
+	 *          the index
 	 */
 	public CreateParameterCommand(MParameters<?> destNode, MParameter srcNode, int index) {
 		super();
@@ -54,19 +60,14 @@ public class CreateParameterCommand extends Command {
 		this.index = index;
 		if (srcNode != null && srcNode.getValue() != null)
 			this.jrParameter = (JRDesignParameter) srcNode.getValue();
-		jrContext = destNode.getJasperConfiguration();
 	}
 
-	public CreateParameterCommand(JRDesignDataset jDataset, JRParameter jParam, JasperReportsConfiguration jrContext,
-			int index) {
+	public CreateParameterCommand(JRDesignDataset jDataset, JRParameter jParam, int index) {
 		super();
-		this.jrContext = jrContext;
 		this.jrDataset = jDataset;
 		this.index = index;
 		this.jrParameter = (JRDesignParameter) jParam;
 	}
-
-	private ReorderParameterCommand rc;
 
 	/*
 	 * (non-Javadoc)
@@ -75,21 +76,11 @@ public class CreateParameterCommand extends Command {
 	 */
 	@Override
 	public void execute() {
-		if (rc != null) {
-			rc.execute();
-			return;
-		}
 		if (jrParameter == null) {
 			this.jrParameter = MParameter.createJRParameter(jrDataset);
 		}
 		if (jrParameter != null) {
 			try {
-				if (jrDataset.getParametersList().contains(jrParameter)) {
-					rc = new ReorderParameterCommand(jrParameter, jrDataset, jrContext, index);
-					rc.execute();
-					return;
-				}
-
 				if (index < 0 || index > jrDataset.getParametersList().size())
 					jrDataset.addParameter(jrParameter);
 				else
@@ -104,8 +95,7 @@ public class CreateParameterCommand extends Command {
 					if (dlg.open() == InputDialog.OK) {
 						jrParameter.setName(dlg.getValue());
 						execute();
-					} else
-						return;
+					}
 				}
 			}
 		}
@@ -128,9 +118,6 @@ public class CreateParameterCommand extends Command {
 	 */
 	@Override
 	public void undo() {
-		if (rc != null)
-			rc.undo();
-		else
-			jrDataset.removeParameter(jrParameter);
+		jrDataset.removeParameter(jrParameter);
 	}
 }

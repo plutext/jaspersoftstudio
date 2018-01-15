@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.utils;
 
@@ -23,16 +27,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.nebula.widgets.gallery.GalleryItem;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ST;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Drawable;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.FontMetrics;
@@ -47,11 +43,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.wb.swt.ResourceManager;
@@ -64,9 +57,6 @@ import com.jaspersoft.studio.swt.events.ExpressionModifiedListener;
 import com.jaspersoft.studio.swt.widgets.NullableSpinner;
 import com.jaspersoft.studio.swt.widgets.WTextExpression;
 import com.jaspersoft.studio.utils.SWTImageEffects.Glow;
-
-import net.sf.jasperreports.eclipse.util.BundleCommonUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class UIUtil {
 	/** ID for the "Properties View" */
@@ -535,111 +525,5 @@ public class UIUtil {
 	 */
 	public static boolean shouldTrickToolbar() {
 		return isEclipse4();
-	}
-	
-	/**
-	 * Force a control to loose the focus and another one to gain it (if it can).
-	 * If the control is already focused it does nothing.
-	 * 
-	 * @param toFocus the control to focus, must be not null
-	 */
-	public static void updateFocus(Control toFocus) {
-		Control focusedControl = toFocus.getDisplay().getFocusControl();
-		if (focusedControl != toFocus){
-			boolean isFocusedEnabled = focusedControl != null && focusedControl.isEnabled();
-			if (isFocusedEnabled){
-				//force the lost of focus by disabling and enabling the control
-				focusedControl.setEnabled(false);
-				focusedControl.setEnabled(true);
-			}
-			toFocus.setFocus();
-		}
-	}
-	
-	/**
-	 * Add a context menu to the specified styled text widget.
-	 * <p>
-	 * This means that three menu items for the basic operations cut/copy/past
-	 * are added.
-	 * 
-	 * @param widget the styled text widget
-	 */
-	public static void enableCopyPasteCutContextMenu(StyledText widget) {
-		Menu menu = new Menu(widget.getShell(), SWT.POP_UP);
-		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
-		final MenuItem cutItem = new MenuItem(menu, SWT.PUSH);
-		cutItem.setText(Messages.UIUtil_CutMenuItemText);
-		safeApplyMenuItemTooltip(cutItem, Messages.UIUtil_CutMenuItemTooltip);
-		cutItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				widget.invokeAction(ST.CUT);
-			}
-		});
-		cutItem.setImage(
-			ResourceManager.getImage(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_CUT)));
-
-		final MenuItem copyItem = new MenuItem(menu, SWT.PUSH);
-		copyItem.setText(Messages.UIUtil_CopyMenuItemText);
-		safeApplyMenuItemTooltip(copyItem, Messages.UIUtil_CopyMenuItemTooltip);
-		copyItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				widget.invokeAction(ST.COPY);
-			}
-		});
-		copyItem.setImage(
-			ResourceManager.getImage(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_COPY)));
-		
-		final MenuItem pasteItem = new MenuItem(menu, SWT.PUSH);
-		pasteItem.setText(Messages.UIUtil_PasteMenuItemText);
-		safeApplyMenuItemTooltip(pasteItem, Messages.UIUtil_PasteMenuItemTooltip);
-		pasteItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				widget.invokeAction(ST.PASTE);
-			}
-		});
-		pasteItem.setImage(
-			ResourceManager.getImage(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE)));
-
-		menu.addMenuListener(new MenuListener() {
-			@Override
-			public void menuShown(MenuEvent e) {
-				cutItem.setEnabled(!widget.getSelectionText().isEmpty());
-				copyItem.setEnabled(!widget.getSelectionText().isEmpty());
-				Clipboard cb = new Clipboard(widget.getDisplay());
-				Object contents = cb.getContents(TextTransfer.getInstance());
-				if(contents instanceof String && !((String) contents).isEmpty()){
-					pasteItem.setEnabled(true);
-				}
-				else {
-					pasteItem.setEnabled(false);
-				}
-			}
-			
-			@Override
-			public void menuHidden(MenuEvent e) {
-			}
-		});
-		widget.setMenu(menu);
-	}
-	
-	/**
-	 * Checks if it is possible to apply the tooltip to the menu item using
-	 * the proper API introduced since SWT version 3.104.
-	 * <p>
-	 * 
-	 * Please check bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=62575 for more details
-	 * 
-	 * @param menuItem the menu item
-	 * @param tooltipTxt the tooltip text to set
-	 */
-	public static void safeApplyMenuItemTooltip(MenuItem menuItem, String tooltipTxt) {
-		String minSWTVersion = "3.104"; //$NON-NLS-1$
-		String currentSWTVersion = BundleCommonUtils.getBundleVersion("org.eclipse.swt"); //$NON-NLS-1$
-		if(currentSWTVersion!=null && currentSWTVersion.compareTo(minSWTVersion)>=0){
-			menuItem.setToolTipText(tooltipTxt);
-		}
 	}
 }

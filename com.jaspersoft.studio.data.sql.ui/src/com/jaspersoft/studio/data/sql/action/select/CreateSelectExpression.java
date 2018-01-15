@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.action.select;
 
@@ -26,7 +34,8 @@ public class CreateSelectExpression extends AAction {
 	@Override
 	public boolean calculateEnabled(Object[] selection) {
 		super.calculateEnabled(selection);
-		return selection != null && selection.length == 1 && isInSelect(selection[0]);
+		return selection != null && selection.length == 1
+				&& isInSelect(selection[0]);
 	}
 
 	public static boolean isInSelect(Object element) {
@@ -38,7 +47,8 @@ public class CreateSelectExpression extends AAction {
 
 	@Override
 	public void run() {
-		EditSelectExpressionDialog dialog = new EditSelectExpressionDialog(treeViewer.getControl().getShell());
+		EditSelectExpressionDialog dialog = new EditSelectExpressionDialog(
+				UIUtils.getShell());
 		MSelectExpression mexpr = new MSelectExpression(null, Messages.CreateSelectExpression_1);
 		dialog.setValue(mexpr);
 		if (dialog.open() == Window.OK) {
@@ -47,7 +57,8 @@ public class CreateSelectExpression extends AAction {
 			int index = 0;
 			if (sel instanceof MSelect)
 				mselect = (MSelect) sel;
-			else if (sel instanceof ANode && ((ANode) sel).getParent() instanceof MSelect) {
+			else if (sel instanceof ANode
+					&& ((ANode) sel).getParent() instanceof MSelect) {
 				mselect = (MSelect) ((ANode) sel).getParent();
 				index = mselect.getChildren().indexOf(sel) + 1;
 			}

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action.layout;
 
@@ -58,10 +66,8 @@ public class LayoutAction extends SelectionAction {
 		setText(layout.getName());
 		setToolTipText(layout.getToolTip());
 		setId(type.getName());
-		if (layout.getIcon() != null) {
-			setImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor(layout.getIcon()));
-			setDisabledImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor(layout.getIcon()));
-		}
+		setImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor(layout.getIcon()));
+		setDisabledImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor(layout.getIcon()));
 		setEnabled(false);
 	}
 
@@ -153,7 +159,7 @@ public class LayoutAction extends SelectionAction {
 						cc.add(c);
 					}
 				}
-				cc.add(new LayoutCommand(n.getJasperDesign(), container, layout, size));
+				cc.add(new LayoutCommand(container, layout, size));
 				return cc;
 			}
 		}

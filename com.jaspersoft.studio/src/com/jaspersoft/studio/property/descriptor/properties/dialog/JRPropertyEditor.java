@@ -1,14 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.properties.dialog;
+
+import net.sf.jasperreports.engine.JRPropertiesMap;
 
 import org.eclipse.jface.wizard.Wizard;
 
 import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.engine.JRPropertiesMap;
 
 public class JRPropertyEditor extends Wizard {
 	private JRPropertiesMap value;
@@ -26,20 +34,15 @@ public class JRPropertyEditor extends Wizard {
 		this.value = value;
 	}
 
-	private JasperReportsConfiguration jConfig;
-	private Object jrElement;
-
-	public JRPropertyEditor(JasperReportsConfiguration jConfig, Object jrElement) {
+	public JRPropertyEditor() {
 		super();
 		setWindowTitle(Messages.common_properties);
 		setNeedsProgressMonitor(false);
-		this.jConfig = jConfig;
-		this.jrElement = jrElement;
 	}
 
 	@Override
 	public void addPages() {
-		page0 = new JRPropertyPage("jrproperties", jConfig, jrElement); //$NON-NLS-1$
+		page0 = new JRPropertyPage("jrproperties"); //$NON-NLS-1$
 		page0.setValue(value);
 		addPage(page0);
 	}

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.manager;
 
@@ -25,36 +29,25 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IPropertyEditor;
 import com.jaspersoft.studio.widgets.framework.model.SectionPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-import com.jaspersoft.studio.widgets.framework.ui.ArrayPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.BigDecimalPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.CheckboxItemPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.ClassItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ColorPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ComboItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.DoublePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FilePropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.FixedMeasurePropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.FixedNumberMesurePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FloatPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FontFamilyComboPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.FontStylePropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.IntegerPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.ItemPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.LocaleComboPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.LongPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.MeasureUnitPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.NotNullableTextPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.SelectableComboItemPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.TextPropertyDescription;
-import com.jaspersoft.studio.widgets.framework.ui.TimezoneComboPropertyDescription;
 import com.jaspersoft.studio.widgets.framework.ui.TransparentColorPropertyDescription;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * Factory used to build the {@link ItemPropertyDescription} from a {@link WidgetPropertyDescriptor}. It handle also
@@ -124,20 +117,11 @@ public class WidgetFactory {
 			hardcodedWidgets.put("float", new FloatPropertyDescription());
 			hardcodedWidgets.put("integer", new IntegerPropertyDescription());
 			hardcodedWidgets.put("double", new DoublePropertyDescription());
-			hardcodedWidgets.put("long", new LongPropertyDescription());
-			hardcodedWidgets.put("bigdecimal", new BigDecimalPropertyDescription());
 			hardcodedWidgets.put("text", new TextPropertyDescription<String>());
-			hardcodedWidgets.put("not_nullable_text", new NotNullableTextPropertyDescription<String>());
 			hardcodedWidgets.put("selectable_combo", new SelectableComboItemPropertyDescription<String>());
-			hardcodedWidgets.put("class_combo", new ClassItemPropertyDescription());
 			hardcodedWidgets.put("fontfamily_combo", new FontFamilyComboPropertyDescription());
 			hardcodedWidgets.put("fontstyle_selector", new FontStylePropertyDescription());
 			hardcodedWidgets.put("checkbox_selector", new CheckboxItemPropertyDescription());
-			hardcodedWidgets.put("measureunit", new MeasureUnitPropertyDescription());
-			hardcodedWidgets.put("fixedmeasureunit", new FixedMeasurePropertyDescription());
-			hardcodedWidgets.put("fixednumbermeasureunit", new FixedNumberMesurePropertyDescription());
-			hardcodedWidgets.put("timezone_combo", new TimezoneComboPropertyDescription());
-			hardcodedWidgets.put("locale_combo", new LocaleComboPropertyDescription());
 		}
 		return hardcodedWidgets;
 	}
@@ -170,39 +154,17 @@ public class WidgetFactory {
 	 * @return the {@link ItemPropertyDescription} to handle the type defined by the WidgetPropertyDescription, or null if the type can not be resolved
 	 */
 	public static ItemPropertyDescription<?> createItemPropertyDescriptor(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig) {
-		String type = cpd.getType().toLowerCase().trim();
-		return createItemPropertyDescriptor(cd, cpd, jConfig, type);
-	}
-	
-	/**
-	 * Create a {@link ItemPropertyDescription} from a widget definition. If the widgets can not be resolved it log an error. This overload get the type of 
-	 * the widget explicitly instead to extract it from the widgets property descriptor, this allow to be used recursively to build nested array
-	 * 
-	 * @param cd the container of all the widgets, used for the localization
-	 * @param cpd the descriptor of the widget, the type and the other informations will be used to build the {@link ItemPropertyDescription}
-	 * @param jConfig the current {@link JasperReportsConfiguration}
-	 * @param editor a not null {@link IPropertyEditor} that will be used inside the widget to provide the read/write logic between the widget and the element
-	 * @return the type of the widget to create
-	 */
-	protected static ItemPropertyDescription<?> createItemPropertyDescriptor(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig, String type) {
-		ItemPropertyDescription<?> hardcodedType = getHardcodedWidgets().get(type);	
+		ItemPropertyDescription<?> hardcodedType = getHardcodedWidgets().get(cpd.getType().toLowerCase());	
 		ItemPropertyDescription<?> desc = null;
 		if (hardcodedType != null){
 			 desc = hardcodedType.getInstance(cd, cpd, jConfig);
 		} else {
 			//Build the contributed widget if any
-			ItemPropertyDescription<?> contribuitedType = getContributedWidgets().get(type);
+			ItemPropertyDescription<?> contribuitedType = getContributedWidgets().get(cpd.getType().toLowerCase());
 			if (contribuitedType == null){
-				//check if the type is an array
-				if (type.startsWith("[") && type.endsWith("]")) {
-					desc = new ArrayPropertyDescription().getInstance(cd, cpd, jConfig);
-					String newType = type.substring(1, type.length()-1);
-					((ArrayPropertyDescription)desc).setInnterType(createItemPropertyDescriptor(cd, cpd, jConfig, newType));
-				} else {
-					String errorString = "Invalid widget type {0}, valid types are: {1}";
-					String errorMessage = MessageFormat.format(errorString, new Object[]{type, getValidTypes()});
-					JaspersoftStudioPlugin.getInstance().logError(errorMessage, new Exception(errorMessage));
-				}
+				String errorString = "Invalid widget type {0}, valid types are: {1}";
+				String errorMessage = MessageFormat.format(errorString, new Object[]{cpd.getType().toLowerCase(), getValidTypes()});
+				JaspersoftStudioPlugin.getInstance().logError(errorMessage, new Exception(errorMessage));
 			} else { 	
 				desc = contribuitedType.getInstance(cd, cpd, jConfig);
 			}
@@ -221,21 +183,6 @@ public class WidgetFactory {
 		Label lbl = new Label(parent, SWT.NONE);
 		lbl.setText(pDescriptor.getLabel());
 		lbl.setToolTipText(pDescriptor.getDescription());
-		return lbl;
-	}
-	
-	/**
-	 * Creates a label widget for the specified property. Will try also to localize the text using the passed WidgetsDescriptor
-	 * 
-	 * @param parent the parent composite
-	 * @param pDescriptor the property descriptor
-	 * @param descriptor the descriptor used to localize the text, must be not null
-	 * @return the label
-	 */
-	public static Label createLabelForProperty(Composite parent, WidgetPropertyDescriptor pDescriptor, WidgetsDescriptor descriptor) {
-		Label lbl = new Label(parent, SWT.NONE);
-		lbl.setText(descriptor.getLocalizedString(pDescriptor.getLabel()));
-		lbl.setToolTipText(descriptor.getLocalizedString(pDescriptor.getDescription()));
 		return lbl;
 	}
 	
