@@ -1,12 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.swt.widgets.table;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -41,7 +49,7 @@ public class EditButton<T> {
 
 				List<T> inlist = (List<T>) tableViewer.getInput();
 				if (inlist == null) {
-					inlist = new ArrayList<>();
+					inlist = new ArrayList<T>();
 					tableViewer.setInput(inlist);
 				}
 				int index = -1;
@@ -50,7 +58,7 @@ public class EditButton<T> {
 				else
 					return;
 				editElement.editElement(inlist, index);
-				afterElementModified((T) s.getFirstElement(), inlist, index);
+				afterElementModified(s.getFirstElement(), inlist, index);
 				tableViewer.refresh();
 				tableViewer.setSelection(new StructuredSelection(inlist.get(index)));
 				tableViewer.reveal(s.getFirstElement());
@@ -69,14 +77,24 @@ public class EditButton<T> {
 		editB.addSelectionListener(listener);
 
 		editB.setEnabled(!tableViewer.getSelection().isEmpty());
-		tableViewer.addSelectionChangedListener(event -> {
-			StructuredSelection s = (StructuredSelection) tableViewer.getSelection();
-			setEnabled(!s.isEmpty() && s.size() == 1);
+		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				StructuredSelection s = (StructuredSelection) tableViewer.getSelection();
+				setEnabled(!s.isEmpty() && s.size() == 1);
+			}
 		});
 	}
 
 	public void editOnDoubleClick() {
-		listener.tableViewer.addDoubleClickListener(event -> push());
+		listener.tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				push();
+			}
+		});
 	}
 
 	public void push() {
@@ -97,11 +115,11 @@ public class EditButton<T> {
 	 * 
 	 * @param object
 	 * @param inlist
-	 *            list of elements from the table
+	 *          list of elements from the table
 	 * @param ind
-	 *            index of the changed element in the table
+	 *          index of the changed element in the table
 	 */
-	protected void afterElementModified(T element, List<T> inlist, int ind) {
+	protected void afterElementModified(Object element, List<T> inlist, int ind) {
 		// empty...
 	}
 }

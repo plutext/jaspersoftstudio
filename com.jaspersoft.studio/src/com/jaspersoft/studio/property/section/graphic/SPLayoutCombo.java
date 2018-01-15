@@ -1,26 +1,22 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.graphic;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
-import com.jaspersoft.studio.JSSCompoundCommand;
-import com.jaspersoft.studio.editor.layout.ChangeLayoutCommand;
 import com.jaspersoft.studio.editor.layout.ILayout;
 import com.jaspersoft.studio.editor.layout.LayoutCommand;
 import com.jaspersoft.studio.editor.layout.LayoutManager;
@@ -28,9 +24,11 @@ import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.IContainerLayout;
 import com.jaspersoft.studio.model.IGraphicElementContainer;
 import com.jaspersoft.studio.model.IGroupElement;
-import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
+import com.jaspersoft.studio.model.INode;
+import com.jaspersoft.studio.model.MGraphicElement;
+import com.jaspersoft.studio.model.MReport;
+import com.jaspersoft.studio.property.section.widgets.SPReadCombo;
 
-import net.sf.jasperreports.eclipse.ui.JSSTableCombo;
 import net.sf.jasperreports.engine.JRCommonElement;
 import net.sf.jasperreports.engine.JRElementGroup;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
@@ -43,32 +41,39 @@ import net.sf.jasperreports.engine.design.JasperDesign;
  * Layout combo used the select the layout strategy of a container
  *
  */
-public class SPLayoutCombo extends ASPropertyWidget<IPropertyDescriptor>  {
+public class SPLayoutCombo extends SPReadCombo {
 
 	private APropertyNode pnode;
 
 	private int index = 0;
 
 	private ILayout[] layouts;
-	
-	private boolean refreshing = false;
-	
-	private JSSTableCombo combo;
 
 	public SPLayoutCombo(Composite parent, LayoutSection section, IPropertyDescriptor pDescriptor) {
 		super(parent, section, pDescriptor);
 	}
 
 	protected void handlePropertyChange() {
-		if (refreshing) return;
 		int ind = combo.getSelectionIndex();
-		if (ind == index && index != 1)
+		if (ind == index)
 			return;
-		ILayout selectedLayout = (ILayout)combo.getTable().getItem(ind).getData();
+		if (pnode.getValue() instanceof JRPropertiesHolder) {
+			JRPropertiesMap pmap = (JRPropertiesMap) pnode.getPropertyValue(MGraphicElement.PROPERTY_MAP);
+			pmap = (JRPropertiesMap) pmap.clone();
+			pmap.setProperty(ILayout.KEY, layouts[ind].getClass().getName());
+			section.changeProperty(MGraphicElement.PROPERTY_MAP, pmap);
+		} else if (pnode.getValue() instanceof JRBaseElement) {
+			String uuid = ((JRBaseElement) pnode.getValue()).getUUID().toString();
+			INode n = pnode.getRoot();
+			if (n != null && n instanceof MReport) {
+				MReport mrep = (MReport) n;
+				JRPropertiesMap pmap = (JRPropertiesMap) mrep.getPropertyValue(MGraphicElement.PROPERTY_MAP);
+				pmap = (JRPropertiesMap) pmap.clone();
+				pmap.setProperty(ILayout.KEY + "." + uuid, layouts[ind].getClass().getName()); //$NON-NLS-1$
+				section.changePropertyOn(MGraphicElement.PROPERTY_MAP, pmap, mrep);
+			}
+		}
 		CommandStack cs = section.getEditDomain().getCommandStack();
-		ChangeLayoutCommand changeLayoutCommand = new ChangeLayoutCommand(pnode, selectedLayout);
-		JSSCompoundCommand container = new JSSCompoundCommand(pnode);
-		container.add(changeLayoutCommand);
 		Object destValue = pnode.getValue();
 		if (pnode instanceof IGroupElement)
 			destValue = ((IGroupElement) pnode).getJRElementGroup();
@@ -94,70 +99,47 @@ public class SPLayoutCombo extends ASPropertyWidget<IPropertyDescriptor>  {
 				// d.setSize(w, ((JRDesignBand) destValue).getHeight());
 				d.setSize(new Dimension(w, ((JRDesignBand) destValue).getHeight()));
 			}
-			container.add(new LayoutCommand(pnode.getJasperDesign(), (JRElementGroup) destValue, selectedLayout, d));
+			cs.execute(new LayoutCommand((JRElementGroup) destValue, layouts[ind], d));
 		}
-		cs.execute(container);
 	}
 
 	@Override
 	public void setData(APropertyNode pnode, Object b) {
-		refreshing = true;
-		try{
-			this.pnode = pnode;
-			index = -1;
-			Object obj = pnode.getValue();
-			combo.setEnabled(true);
-			String layoutName = null;
-			if (b instanceof JRPropertiesMap) {
-				layoutName = getLayoutName(null, (JRPropertiesMap) b);
-			} else if (obj != null && obj instanceof JRPropertiesHolder) {
-				layoutName = getLayoutName((JRPropertiesHolder) obj, null);
-			} else if (obj instanceof JRBaseElement) {
-				JasperDesign jDesign = pnode.getJasperDesign();
-				layoutName = getLayoutName(jDesign, ((JRBaseElement) obj).getUUID().toString());
-			}
-			if (layoutName != null){
-				index = getIndex(layoutName, combo.getTable());
-				if (index == -1){
-					ILayout resolvedLayout = resoveLayout(layoutName);
-					if (resolvedLayout != null){
-						combo.setText(resolvedLayout.getName());
-						return;
-					} else {
-						index = 0;
-						combo.select(index);
-					}
-				} else {
-					combo.select(index);
-				}
-			} else  {
-				if (pnode != null && pnode instanceof IContainerLayout) {
-					IContainerLayout layoutContainer = (IContainerLayout) pnode;
-					ILayout defaultLayout = layoutContainer.getDefaultLayout();
-					if (defaultLayout != null) {
-						index = getIndex(defaultLayout.getClass().getName(), combo.getTable());
-					}
-				}
-				if (index == -1){
-					index = 0;
-				}
-				combo.select(index);
-			}
-		} finally {
-			refreshing = false;
+		this.pnode = pnode;
+		index = -1;
+		Object obj = pnode.getValue();
+		if (b instanceof JRPropertiesMap) {
+			index = getIndex(null, (JRPropertiesMap) b);
+		} else if (obj != null && obj instanceof JRPropertiesHolder) {
+			index = getIndex((JRPropertiesHolder) obj, null);
+		} else if (obj instanceof JRBaseElement) {
+			JasperDesign jDesign = pnode.getJasperDesign();
+			index = getIndex(jDesign, ((JRBaseElement) obj).getUUID().toString());
 		}
+		if (index == -1) {
+			if (pnode != null && pnode instanceof IContainerLayout) {
+				IContainerLayout layoutContainer = (IContainerLayout) pnode;
+				ILayout defaultLayout = layoutContainer.getDefaultLayout();
+				if (defaultLayout != null) {
+					index = getIndex(defaultLayout.getClass().getName());
+				}
+			}
+			if (index == -1)
+				index = 0;
+		}
+		combo.select(index);
 	}
 
-	private String getLayoutName(JRPropertiesHolder pholder, String uuid) {
-		return getLayoutName(uuid, pholder.getPropertiesMap());
+	private int getIndex(JRPropertiesHolder pholder, String uuid) {
+		return getIndex(uuid, pholder.getPropertiesMap());
 	}
 
-	private String getLayoutName(String uuid, JRPropertiesMap pmap) {
+	private int getIndex(String uuid, JRPropertiesMap pmap) {
 		String key = ILayout.KEY;
 		if (uuid != null)
 			key += "." + uuid; //$NON-NLS-1$
 		String str = pmap.getProperty(key);
-		return str;
+		return getIndex(str);
 	}
 
 	/**
@@ -167,78 +149,35 @@ public class SPLayoutCombo extends ASPropertyWidget<IPropertyDescriptor>  {
 	 *          classname of the layout
 	 * @return the index of the layout in the combo or -1 if it can't be found
 	 */
-	private int getIndex(String layoutName, Control combo) {
+	private int getIndex(String layoutName) {
 		if (layoutName != null) {
-			ILayout[] visibleLayouts = (ILayout[])combo.getData();
-			for (int i = 0; i < visibleLayouts.length; i++) {
-				if (visibleLayouts[i].getClass().getName().equals(layoutName)) {
+			for (int i = 0; i < layouts.length; i++) {
+				if (layouts[i].getClass().getName().equals(layoutName)) {
 					return i;
 				}
 			}
 		}
 		return -1;
 	}
-	
-	private ILayout resoveLayout(String layoutName) {
-		if (layoutName != null) {
-			for (int i = 0; i < layouts.length; i++) {
-				if (layouts[i].getClass().getName().equals(layoutName)) {
-					return layouts[i];
-				}
-			}
-		}
-		return null;
-	}
-
 
 	@Override
 	protected void createComponent(Composite parent) {
-		layouts = LayoutManager.getAllLayouts();
 		Composite container = section.getWidgetFactory().createComposite(parent);
 		container.setLayout(new GridLayout(1, false));
-		combo = new JSSTableCombo(container, SWT.READ_ONLY){
-			protected void setTableData(Table table) {
-				refreshTableItems(table);
-			};
-			
-			@Override
-			protected void dropDown(boolean drop) {
-				//if opening force the refresh of the items
-				if (drop) refreshItems();
-				super.dropDown(drop);
-			}
-		};
+		combo = section.getWidgetFactory().createCombo(container, SWT.READ_ONLY);
+		layouts = LayoutManager.getAllLayouts();
+		String[] labels = new String[layouts.length];
+		for (int i = 0; i < layouts.length; i++)
+			labels[i] = layouts[i].getName();
+		combo.setItems(labels);
 
-		combo.addModifyListener(new ModifyListener() {
-			
+		combo.addSelectionListener(new SelectionAdapter() {
+
 			@Override
-			public void modifyText(ModifyEvent e) {
+			public void widgetSelected(SelectionEvent e) {
 				handlePropertyChange();
 			}
 		});
-
 		combo.setToolTipText(pDescriptor.getDescription());
 	}
-
-	@Override
-	public Control getControl() {
-		return combo;
-	}
-	
-	private void refreshTableItems(Table table){
-		table.clearAll();
-		List<ILayout> visibleLayouts = new ArrayList<ILayout>();
-		for (int i = 0; i < layouts.length; i++){
-			if (layouts[i].isSelectable(section.getElement())){
-				visibleLayouts.add(layouts[i]);
-			}
-		}
-		for(ILayout item : visibleLayouts){
-			TableItem tableItem = new TableItem(table, SWT.NONE);
-			tableItem.setText(0, item.getName());
-			tableItem.setData(item);
-		}
-		table.setData(visibleLayouts.toArray(new ILayout[visibleLayouts.size()]));
-	}
-	
 }

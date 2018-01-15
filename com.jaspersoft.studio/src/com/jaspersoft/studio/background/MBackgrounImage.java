@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.background;
 
@@ -10,31 +18,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRPropertiesMap;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.APropertyNode;
-import com.jaspersoft.studio.model.DefaultValue;
 import com.jaspersoft.studio.model.IGraphicElement;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.property.descriptor.checkbox.CheckBoxPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.TransparencyPropertyDescriptor;
-import com.jaspersoft.studio.property.section.AbstractSection;
-import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
-import com.jaspersoft.studio.property.section.widgets.SPPixel;
-
-import net.sf.jasperreports.engine.JRPropertiesMap;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 /**
  * 
@@ -93,6 +96,11 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 	private IPropertyDescriptor[] descriptors;
 	
 	/**
+	 * Map for the default proeprties value
+	 */
+	private static Map<String, Object> defaultsMap;
+	
+	/**
 	 * Path of the last background image loaded
 	 */
 	private String lastPath;
@@ -139,6 +147,14 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 	}
 
 	/**
+	 * Return the map of the default values of the element
+	 */
+	@Override
+	public Map<String, Object> getDefaultsMap() {
+		return defaultsMap;
+	}
+
+	/**
 	 * Return the property descriptors of the element
 	 */
 	@Override
@@ -147,15 +163,16 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 	}
 
 	@Override
-	public void setDescriptors(IPropertyDescriptor[] descriptors1) {
+	public void setDescriptors(IPropertyDescriptor[] descriptors1, Map<String, Object> defaultsMap1) {
 		descriptors = descriptors1;
+		defaultsMap = defaultsMap1;
 	}
 
 	/**
 	 * Creates the property descriptors for the background and initialize the default map
 	 */
 	@Override
-	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
+	public void createPropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap) {
 		// bounds
 		JSSBackgroundPixelLocationValidator heightValidator = new JSSBackgroundPixelLocationValidator(PROPERTY_HEIGHT);
 		heightValidator.setTargetNode(this);
@@ -175,16 +192,7 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 
 		JSSBackgroundPixelLocationValidator xValidator = new JSSBackgroundPixelLocationValidator(PROPERTY_X);
 		xValidator.setTargetNode(this);
-		PixelPropertyDescriptor xD = new PixelPropertyDescriptor(PROPERTY_X, Messages.common_left){
-			public ASPropertyWidget<PixelPropertyDescriptor> createWidget(Composite parent, AbstractSection section) {
-				SPPixel spNumber = new SPPixel(parent, section, this) {
-					protected int getPixelOffset() {
-						return -10;
-					};
-				};
-				return spNumber;
-			};
-		};
+		PixelPropertyDescriptor xD = new PixelPropertyDescriptor(PROPERTY_X, Messages.common_left);
 		xD.setCategory(Messages.MGraphicElement_location_category);
 		xD.setDescription(Messages.MGraphicElement_left_description);
 		xD.setValidator(xValidator);
@@ -192,16 +200,7 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 
 		JSSBackgroundPixelLocationValidator yValidator = new JSSBackgroundPixelLocationValidator(PROPERTY_Y);
 		yValidator.setTargetNode(this);
-		PixelPropertyDescriptor yD = new PixelPropertyDescriptor(PROPERTY_Y, Messages.common_top) {
-			public ASPropertyWidget<PixelPropertyDescriptor> createWidget(Composite parent, AbstractSection section) {
-				SPPixel spNumber = new SPPixel(parent, section, this) {
-					protected int getPixelOffset() {
-						return -10;
-					};
-				};
-				return spNumber;
-			};
-		};
+		PixelPropertyDescriptor yD = new PixelPropertyDescriptor(PROPERTY_Y, Messages.common_top);
 		yD.setCategory(Messages.MGraphicElement_location_category);
 		yD.setDescription(Messages.MGraphicElement_top_description);
 		yD.setValidator(yValidator);
@@ -216,18 +215,13 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 		keepRatio.setCategory(Messages.MBackgrounImage_labelCategory); 
 		keepRatio.setDescription(Messages.MBackgrounImage_descriptionKeepRatio);
 		desc.add(keepRatio);
-	}
-	
-	@Override
-	protected Map<String, DefaultValue> createDefaultsMap() {
-		Map<String, DefaultValue> defaultsMap = super.createDefaultsMap();
-		defaultsMap.put(PROPERTY_KEEP_RATIO, new DefaultValue(false, false));
-		defaultsMap.put(PROPERTY_ALPHA, new DefaultValue(0.5f, false));
-		defaultsMap.put(PROPERTY_HEIGHT, new DefaultValue(100, false));
-		defaultsMap.put(PROPERTY_WIDTH, new DefaultValue(100, false));
-		defaultsMap.put(PROPERTY_X, new DefaultValue(10, false));
-		defaultsMap.put(PROPERTY_Y, new DefaultValue(10, false));
-		return defaultsMap;
+		
+		defaultsMap.put(PROPERTY_KEEP_RATIO, false);
+		defaultsMap.put(PROPERTY_ALPHA, 0.5f);
+		defaultsMap.put(PROPERTY_HEIGHT, 100);
+		defaultsMap.put(PROPERTY_WIDTH, 100);
+		defaultsMap.put(PROPERTY_X, 10);
+		defaultsMap.put(PROPERTY_Y, 10);
 	}
 
 	@Override
@@ -290,7 +284,6 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 		} else if (id.equals(PROPERTY_KEEP_RATIO)){
 			jrObj.setProperty(PROPERTY_KEEP_RATIO, Boolean.toString((Boolean)value));
 		}
-		//firePropertyChange(new PropertyChangeEvent(this, arg1, arg2, arg3));
 	}
 	
 	/**
@@ -436,13 +429,16 @@ public class MBackgrounImage extends APropertyNode implements IGraphicElement {
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		//The properties map was changed so i need to refresh the part.
-		//The event doesn't contains the property of the map changed so i'm not sure
-		//that the change regards the background image, so it must be always refreshed
-		EditPart figureEditPart = getFigureEditPart();
-		if (figureEditPart != null){
-			figureEditPart.refresh();
+		//If the properties is for the image refresh it and propagate the event
+		if (evt.getPropertyName().equals(JRPropertiesMap.PROPERTY_VALUE)){
+			//The properties map was changed so i need to refresh the part.
+			//The event doesn't contains the property of the map changed so i'm not sure
+			//that the change regards the background image, so it must be always refreshed
+			EditPart figureEditPart = getFigureEditPart();
+			if (figureEditPart != null){
+				figureEditPart.refresh();
+			}
+			firePropertyChange(evt);
 		}
-		firePropertyChange(evt);
 	}
 }

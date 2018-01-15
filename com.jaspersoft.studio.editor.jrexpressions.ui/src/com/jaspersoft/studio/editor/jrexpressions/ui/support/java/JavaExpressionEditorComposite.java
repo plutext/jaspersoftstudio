@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.jrexpressions.ui.support.java;
 
@@ -13,10 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.expressions.annotations.JRExprFunctionCategoryBean;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -28,37 +41,21 @@ import org.eclipse.swt.custom.CaretListener;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetAdapter;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.progress.WorkbenchJob;
-import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.xtext.validation.Issue;
 
 import com.google.inject.Injector;
@@ -66,14 +63,11 @@ import com.jaspersoft.studio.data.designer.UndoRedoImpl;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
 import com.jaspersoft.studio.editor.expression.ExpressionContextUtils;
 import com.jaspersoft.studio.editor.expression.ExpressionEditorComposite;
-import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
-import com.jaspersoft.studio.editor.expression.ExpressionPersistentWizardDialog;
 import com.jaspersoft.studio.editor.expression.ExpressionStatus;
 import com.jaspersoft.studio.editor.expression.FunctionsLibraryUtil;
 import com.jaspersoft.studio.editor.expression.IExpressionStatusChangeListener;
 import com.jaspersoft.studio.editor.jrexpressions.functions.AdditionalStaticFunctions;
 import com.jaspersoft.studio.editor.jrexpressions.ui.JRExpressionsActivator;
-import com.jaspersoft.studio.editor.jrexpressions.ui.JRExpressionsUIPlugin;
 import com.jaspersoft.studio.editor.jrexpressions.ui.messages.Messages;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectCategoryItem;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectCategoryItem.Category;
@@ -82,17 +76,7 @@ import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectCategorySelec
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectsNavigatorContentProvider;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.ObjectsNavigatorLabelProvider;
 import com.jaspersoft.studio.editor.jrexpressions.ui.support.StyledTextXtextAdapter2;
-import com.jaspersoft.studio.preferences.ExpressionEditorPreferencePage;
 import com.jaspersoft.studio.swt.widgets.ClassType;
-import com.jaspersoft.studio.utils.UIUtil;
-
-import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
-import net.sf.jasperreports.eclipse.JasperReportsPlugin;
-import net.sf.jasperreports.eclipse.util.BundleCommonUtils;
-import net.sf.jasperreports.engine.JRExpression;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.expressions.annotations.JRExprFunctionCategoryBean;
 
 /**
  * Standard implementation of the main editing area for JasperReports
@@ -108,11 +92,6 @@ import net.sf.jasperreports.expressions.annotations.JRExprFunctionCategoryBean;
  * 
  */
 public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
-	
-	public static final int MAIN_SASH_WEIGHT_EDITAREA = 20;
-	public static final int MAIN_SASH_WEIGHT_SELECTIONAREA = 80;
-	public static final String MAIN_SASH_WEIGHT_EDITAREA_KEY = "mainSashEditArea"; //$NON-NLS-1$
-	public static final String MAIN_SASH_WEIGHT_SELECTIONAREA_KEY = "mainSashSelectionArea"; //$NON-NLS-1$
 
 	// Expression stuff
 	private JRDesignExpression expression;
@@ -126,9 +105,6 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 	private StackLayout detailsPanelStackLayout;
 	private List<IExpressionStatusChangeListener> statusChangeListeners;
 	private ClassType valueType;
-	private SashForm mainSashForm;
-	private boolean hasFocus;
-	private boolean dragActive;
 
 	// Support data structures and classes
 	private static final int UPDATE_DELAY=300;
@@ -144,6 +120,7 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 	private ObjectCategoryItem variablesCategoryItem;
 	private ObjectCategoryItem resourceKeysCategoryItem;	
 	private List<ObjectCategoryItem> rootCategories;
+
 
 	/**
 	 * Creates the expression editor composite.
@@ -161,15 +138,9 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		GridLayout gdl = new GridLayout(1, true);
 		this.setLayout(gdl);
 
-		mainSashForm = new SashForm(this, SWT.VERTICAL);
+		final SashForm mainSashForm = new SashForm(this, SWT.VERTICAL);
 		GridData gdMainSash = new GridData(SWT.FILL, SWT.FILL, true, true);
 		mainSashForm.setLayoutData(gdMainSash);
-		mainSashForm.addDisposeListener(new DisposeListener() {
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				saveMainSashWeights();
-			}
-		});
 
 		createEditorArea(mainSashForm);
 
@@ -181,7 +152,7 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		createCustomPanel(subSashForm);
 
 		subSashForm.setWeights(new int[] { 25, 75 });
-		mainSashForm.setWeights(getMainSashWeights());
+		mainSashForm.setWeights(new int[] { 20, 80 });
 		
 		createBackCompatibilitySection();
 		
@@ -192,39 +163,6 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		
 		this.updatePanelJob=new UpdatePanelJob();
 	}
-	
-	/*
-	 * Reads the details about the main sash area.
-	 */
-	private int[] getMainSashWeights() {
-		if(ExpressionEditorSupportUtil.shouldRememberExpEditorDialogSize()) {
-			IDialogSettings settings = JasperReportsPlugin.getDefault().getDialogSettings().getSection(ExpressionPersistentWizardDialog.WIZARD_ID);
-			if (settings != null) {
-				try {
-					int w1 = settings.getInt(MAIN_SASH_WEIGHT_EDITAREA_KEY);
-					int w2 = settings.getInt(MAIN_SASH_WEIGHT_SELECTIONAREA_KEY);
-					return new int[] {w1,w2};
-				} catch (NumberFormatException e) {
-				}
-			}
-		}
-		return new int[] { MAIN_SASH_WEIGHT_EDITAREA, MAIN_SASH_WEIGHT_SELECTIONAREA };
-	}
-	
-	/*
-	 * Stores information about the main sash area.
-	 */
-	private void saveMainSashWeights() {
-		IDialogSettings settings = JasperReportsPlugin.getDefault().getDialogSettings().getSection(ExpressionPersistentWizardDialog.WIZARD_ID);
-		if(ExpressionEditorSupportUtil.shouldRememberExpEditorDialogSize()) {
-			if (settings == null) {
-				settings = JasperReportsPlugin.getDefault().getDialogSettings().addNewSection(ExpressionPersistentWizardDialog.WIZARD_ID);
-			}
-			settings.put(MAIN_SASH_WEIGHT_EDITAREA_KEY, mainSashForm.getWeights()[0]);
-			settings.put(MAIN_SASH_WEIGHT_SELECTIONAREA_KEY, mainSashForm.getWeights()[1]);
-		}
-	}
-	
 
 	/*
 	 * Creates an expandable section with some back-compatibility option.
@@ -268,55 +206,24 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		editorContainer.setLayout(layout);
 
 		editorArea = new StyledText(editorContainer, SWT.BORDER
-				| SWT.BORDER_SOLID | SWT.WRAP | SWT.V_SCROLL);
+				| SWT.BORDER_SOLID | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		
 		new UndoRedoImpl(editorArea);
 		GridData editorAreaGD=new GridData(SWT.FILL, SWT.FILL, true, true);
 		editorAreaGD.widthHint=500;
 		editorArea.setLayoutData(editorAreaGD);
 		editorArea.addModifyListener(new ModifyListener() {
+
 			public void modifyText(ModifyEvent e) {
 				performUpdate();
 			}
 		});
 		editorArea.addCaretListener(new CaretListener() {
+
 			public void caretMoved(CaretEvent event) {
 				performUpdate();
 			}
 		});
-		editorArea.addPaintListener(new PaintListener() {
-			@Override
-			public void paintControl(PaintEvent e) {
-				if(!hasFocus && !dragActive){
-					editingAreaInfo.drawFakeCursor();
-				}
-			}
-		});
-		DropTarget dropTarget = new DropTarget(editorArea, DND.DROP_DEFAULT | DND.DROP_COPY);
-		dropTarget.setTransfer(new Transfer[]{TextTransfer.getInstance()});
-		dropTarget.addDropListener(new DropTargetAdapter(){
-			@Override
-			public void dragEnter(DropTargetEvent e) {
-				dragActive = true;
-				if (e.detail == DND.DROP_DEFAULT) {
-					e.detail = DND.DROP_COPY;
-				}
-				// triggering redraw for cleaning dirty cursor 
-				editorArea.redraw();
-			}
-
-			@Override
-			public void dragLeave(DropTargetEvent event) {
-				dragActive = false;
-			}
-
-			@Override
-			public void drop(DropTargetEvent event) {
-				editorArea.insert((String) event.data);
-				dragActive = false;
-			}
-		});
-		
 		
 		xtextAdapter = new StyledTextXtextAdapter2(getInjector());
 		xtextAdapter.adapt(editorArea, exprContext);
@@ -324,6 +231,7 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		editingAreaInfo = new EditingAreaHelper(xtextAdapter, editorArea);
 		editingAreaInfo
 				.addCategorySelectionListener(new ObjectCategorySelectionListener() {
+
 					public void select(ObjectCategorySelectionEvent event) {
 						performCategorySelection(event.selectedCategory);
 					}
@@ -331,62 +239,15 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 		editorArea.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
-				hasFocus = false;
 				editingAreaInfo.ignoreAutoEditStrategies(true);
-				editingAreaInfo.drawFakeCursor();
 			}
 			@Override
 			public void focusGained(FocusEvent e) {
-				hasFocus = true;
 				editingAreaInfo.ignoreAutoEditStrategies(false);
-				// dirty-trick to avoid painted "fake cursors" left on the widget
-				editorArea.redraw();
-			}
-		});
-		
-		// Enable context menu on the styled text
-		UIUtil.enableCopyPasteCutContextMenu(editorArea);
-		new MenuItem(editorArea.getMenu(), SWT.SEPARATOR);
-		final MenuItem addUserDefinedExprItem = new MenuItem(editorArea.getMenu(), SWT.PUSH);
-		addUserDefinedExprItem.setText(Messages.JavaExpressionEditorComposite_AddCustomExpressionItemText);
-		UIUtil.safeApplyMenuItemTooltip(addUserDefinedExprItem, Messages.JavaExpressionEditorComposite_AddCustomExpressionItemTooltip);
-		addUserDefinedExprItem.setImage(ResourceManager.getImage(
-						BundleCommonUtils.getImageDescriptor(JRExpressionsUIPlugin.PLUGIN_ID, "/resources/icons/expression_obj.gif"))); //$NON-NLS-1$
-		addUserDefinedExprItem.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String selectionText = editorArea.getSelectionText();
-				if(!selectionText.isEmpty()){
-					ExpressionEditorPreferencePage.addUserDefinedExpression(selectionText);
-					// trigger update
-					String tmpKey = Category.USER_DEFINED_EXPRESSIONS.getDisplayName() + "_" //$NON-NLS-1$
-							+ Category.USER_DEFINED_EXPRESSIONS.getDisplayName();
-					ObjectCategoryDetailsPanel tmpControl = detailPanels.get(tmpKey);
-					if(detailsPanelStackLayout.topControl.equals(tmpControl)){
-						tmpControl.refreshPanelUI(
-								new ObjectCategoryItem(Category.USER_DEFINED_EXPRESSIONS), true);
-					}
-					else {
-						if(tmpControl!=null){
-							tmpControl.dispose();
-							detailPanels.remove(tmpKey);
-						}
-					}
-				}
-			}
-		});
-		editorArea.getMenu().addMenuListener(new MenuListener() {
-			@Override
-			public void menuShown(MenuEvent e) {
-				addUserDefinedExprItem.setEnabled(!editorArea.getSelectionText().isEmpty());
-			}
-			
-			@Override
-			public void menuHidden(MenuEvent e) {
 			}
 		});
 	}
-	
+
 	/*
 	 * Creates the categories tree navigator.
 	 */
@@ -449,7 +310,6 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 			valueType.setClassType(null);
 		} else {
 			editorArea.setText(expression.getText());
-			editorArea.selectAll();
 			valueType.setClassType(this.expression.getValueClassName());
 		}
 		updateExpressionStatus();
@@ -502,7 +362,7 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 				for(JRDesignDataset ds : contextDatasets) {
 					String dsname = ds.getName();
 					if(ds.isMainDataset()){
-						dsname = Messages.JavaExpressionEditorComposite_MainDatasetLabel;
+						dsname = "Main Dataset";
 					}
 					// all parameters for the dataset
 					ObjectCategoryItem pItems = new ObjectCategoryItem(Category.PDATASET, dsname);
@@ -753,8 +613,7 @@ public class JavaExpressionEditorComposite extends ExpressionEditorComposite {
 
 		List<Issue> validationIssues = xtextAdapter.getXtextValidationIssues();
 		if (validationIssues != null && !validationIssues.isEmpty()) {
-			// let's relax the message and use a warning
-			ExpressionStatus exprStatus = ExpressionStatus.WARNING;
+			ExpressionStatus exprStatus = ExpressionStatus.ERROR;
 			for (Issue vi : validationIssues) {
 				exprStatus.getMessages().add(vi.getMessage());
 			}

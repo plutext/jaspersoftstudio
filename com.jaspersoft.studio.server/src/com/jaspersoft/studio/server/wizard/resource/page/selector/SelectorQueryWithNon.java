@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.server.wizard.resource.page.selector;
 
 import org.eclipse.swt.SWT;
@@ -53,7 +49,7 @@ public class SelectorQueryWithNon extends SelectorQuery {
 	public void setEnabled(int pos) {
 		brNon.setSelection(false);
 		super.setEnabled(pos);
-		if (pos == 2 && brNon != null && !bRef.getSelection() && !bLoc.getSelection())
+		if (pos == 2 && brNon != null)
 			brNon.setSelection(true);
 	}
 

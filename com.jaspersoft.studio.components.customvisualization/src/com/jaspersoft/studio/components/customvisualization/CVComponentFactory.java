@@ -1,6 +1,7 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * Licensed under commercial Jaspersoft Subscription License Agreement
  ******************************************************************************/
 package com.jaspersoft.studio.components.customvisualization;
 
@@ -85,11 +86,6 @@ public class CVComponentFactory implements IComponentFactory {
 		return null;
 	}
 
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		return null;
-	}
-	
 	@Override
 	public Command getStretchToContent(ANode node) {
 		return null;

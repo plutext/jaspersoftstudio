@@ -26,7 +26,7 @@ import java.math.BigDecimal;
  * @model
  * @generated
  */
-public interface ScalarOperand extends RowValue, OperandList
+public interface ScalarOperand extends OperandList
 {
   /**
    * Returns the value of the '<em><b>Sostr</b></em>' attribute.
@@ -167,12 +167,12 @@ public interface ScalarOperand extends RowValue, OperandList
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>So UInt</em>' attribute.
-   * @see #setSoUInt(Long)
+   * @see #setSoUInt(Integer)
    * @see com.jaspersoft.studio.data.sql.SqlPackage#getScalarOperand_SoUInt()
    * @model
    * @generated
    */
-  Long getSoUInt();
+  Integer getSoUInt();
 
   /**
    * Sets the value of the '{@link com.jaspersoft.studio.data.sql.ScalarOperand#getSoUInt <em>So UInt</em>}' attribute.
@@ -182,7 +182,7 @@ public interface ScalarOperand extends RowValue, OperandList
    * @see #getSoUInt()
    * @generated
    */
-  void setSoUInt(Long value);
+  void setSoUInt(Integer value);
 
   /**
    * Returns the value of the '<em><b>Soint</b></em>' attribute.
@@ -193,12 +193,12 @@ public interface ScalarOperand extends RowValue, OperandList
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Soint</em>' attribute.
-   * @see #setSoint(Long)
+   * @see #setSoint(Integer)
    * @see com.jaspersoft.studio.data.sql.SqlPackage#getScalarOperand_Soint()
    * @model
    * @generated
    */
-  Long getSoint();
+  Integer getSoint();
 
   /**
    * Sets the value of the '{@link com.jaspersoft.studio.data.sql.ScalarOperand#getSoint <em>Soint</em>}' attribute.
@@ -208,6 +208,6 @@ public interface ScalarOperand extends RowValue, OperandList
    * @see #getSoint()
    * @generated
    */
-  void setSoint(Long value);
+  void setSoint(Integer value);
 
 } // ScalarOperand

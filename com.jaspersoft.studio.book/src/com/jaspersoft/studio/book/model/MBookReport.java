@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.book.model;
 
 import java.beans.PropertyChangeEvent;
@@ -20,7 +16,6 @@ import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
 import com.jaspersoft.studio.help.HelpReferenceBuilder;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.ANode;
-import com.jaspersoft.studio.model.DefaultValue;
 import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.MReport;
@@ -55,6 +50,8 @@ public class MBookReport extends MReport {
 
 	private IPropertyDescriptor[] descriptors;
 
+	private Map<String, Object> defaultsMap;
+	
 	public MBookReport(ANode parent, JasperReportsConfiguration jConfig) {
 		super(parent, jConfig);
 	}
@@ -63,7 +60,7 @@ public class MBookReport extends MReport {
 	 * Handle group changed.
 	 * 
 	 * @param evt
-	 *            the evt
+	 *          the evt
 	 */
 	@Override
 	protected void handleGroupChanged(PropertyChangeEvent evt) {
@@ -72,8 +69,8 @@ public class MBookReport extends MReport {
 			removeGroupListener(group);
 			List<ANode> dNodes = new ArrayList<ANode>();
 			for (INode node : getChildren()) {
-				if (node instanceof MGroupReportPartContainer) {
-					MGroupReportPartContainer band = (MGroupReportPartContainer) node;
+				if (node instanceof MReportPartContainer) {
+					MReportPartContainer band = (MReportPartContainer) node;
 					if (group.equals(band.getJrgroup()))
 						dNodes.add(band);
 				}
@@ -84,56 +81,57 @@ public class MBookReport extends MReport {
 		} else if (evt instanceof CollectionElementAddedEvent && evt.getNewValue() != null && evt.getOldValue() == null) {
 			JRDesignGroup group = (JRDesignGroup) evt.getNewValue();
 			for (INode n : getChildren()) {
-				if (n instanceof MGroupReportPartContainer && ((MGroupReportPartContainer) n).getJrgroup() == group)
+				if (n instanceof MReportPartContainer && ((MReportPartContainer) n).getJrgroup() == group)
 					return;
 			}
 
-			boolean mainDataset = !getJasperDesign().getDatasetMap()
-					.containsKey(((JRDataset) evt.getSource()).getName());
+			boolean mainDataset = !getJasperDesign().getDatasetMap().containsKey(((JRDataset) evt.getSource()).getName());
 			if (mainDataset) {
-				// find the right position where to put the band, considering
-				// the position of where the group is
-				// it's important to consider the position of the group because
-				// in the creation it is always the last
+				// find the right position where to put the band, considering the position of where the group is
+				// it's important to consider the position of the group because in the creation it is always the last
 				// but if there is an undo operation this could not be true
 				int groupIndex = getJasperDesign().getGroupsList().indexOf(group);
 				addGroupListener(group);
 				int headerPosition = -1;
-				for (INode node : getChildren()) {
+				for(INode node : getChildren()){
 					headerPosition++;
 					if (node instanceof MReportPartContainer) {
-						headerPosition += groupIndex;
+						headerPosition+=groupIndex;
 						break;
 					}
 				}
-
-				int footerPosition = getChildren().size() - groupIndex + 1;
-
-				MGroupReportPartContainer mHeader = new MGroupReportPartContainer(this, group.getGroupHeaderSection(), headerPosition);
+				
+				int footerPosition = getChildren().size()-groupIndex+1;
+				
+				MReportPartContainer mHeader = new MReportPartContainer(this, group.getGroupHeaderSection(), headerPosition);
 				mHeader.setJRGroup(group);
 				createParts(group.getGroupHeaderSection(), mHeader);
 
-				MGroupReportPartContainer mFooter = new MGroupReportPartContainer(this, group.getGroupFooterSection(), footerPosition);
+				MReportPartContainer mFooter = new MReportPartContainer(this, group.getGroupFooterSection(), footerPosition);
 				mFooter.setJRGroup(group);
 				createParts(group.getGroupFooterSection(), mFooter);
 			}
 		}
 	}
-
-	private void createParts(JRSection section, MReportPartContainer parent) {
-		if (section == null || section.getParts() == null)
-			return;
-		for (JRPart part : section.getParts()) {
+	
+	private void createParts(JRSection section, MReportPartContainer parent){
+		if (section == null || section.getParts() == null) return;
+		for (JRPart part : section.getParts()){
 			new MReportPart(parent, part, -1);
 		}
 	}
-
+	
 	@Override
 	public Object getAdapter(Class adapter) {
-		if (ExpressionContext.class.equals(adapter)) {
+		if(ExpressionContext.class.equals(adapter)){
 			return ExpressionEditorSupportUtil.getReportExpressionContext();
 		}
 		return super.getAdapter(adapter);
+	}
+	
+	@Override
+	public Map<String, Object> getDefaultsMap() {
+		return defaultsMap;
 	}
 
 	@Override
@@ -142,19 +140,20 @@ public class MBookReport extends MReport {
 	}
 
 	@Override
-	public void setDescriptors(IPropertyDescriptor[] descriptors1) {
+	public void setDescriptors(IPropertyDescriptor[] descriptors1, Map<String, Object> defaultsMap1) {
 		descriptors = descriptors1;
+		defaultsMap = defaultsMap1;
 	}
-
+	
 	@Override
-	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
+	public void createPropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap) {
 
 		ImportDeclarationPropertyDescriptor importsD = new ImportDeclarationPropertyDescriptor(
 				JasperDesign.PROPERTY_IMPORTS, Messages.MReport_imports);
 		importsD.setDescription(Messages.MReport_imports_description);
 		desc.add(importsD);
-		importsD.setHelpRefBuilder(
-				new HelpReferenceBuilder("net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#import")); //$NON-NLS-1$
+		importsD.setHelpRefBuilder(new HelpReferenceBuilder(
+				"net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#import")); //$NON-NLS-1$
 
 		JSSTextPropertyDescriptor nameD = new JSSTextPropertyDescriptor(JasperDesign.PROPERTY_NAME,
 				Messages.MReport_report_name);
@@ -163,11 +162,10 @@ public class MBookReport extends MReport {
 		desc.add(nameD);
 
 		// main dataset
-		PropertyDescriptor datasetD = new PropertyDescriptor(JasperDesign.PROPERTY_MAIN_DATASET,
-				Messages.MReport_main_dataset);
+		PropertyDescriptor datasetD = new PropertyDescriptor(JasperDesign.PROPERTY_MAIN_DATASET, Messages.MReport_main_dataset);
 		datasetD.setDescription(Messages.MReport_main_dataset_description);
 		desc.add(datasetD);
-
+		
 		// -------------------
 		PixelPropertyDescriptor heightD = new PixelPropertyDescriptor(JasperDesign.PROPERTY_PAGE_HEIGHT,
 				Messages.MReport_page_height);
@@ -229,14 +227,12 @@ public class MBookReport extends MReport {
 		languageD.setCategory(Messages.common_report);
 		desc.add(languageD);
 
-		NamedEnumPropertyDescriptor<OrientationEnum> orientationD = new NamedEnumPropertyDescriptor<OrientationEnum>(
-				JasperDesign.PROPERTY_ORIENTATION, Messages.MReport_page_orientation, OrientationEnum.LANDSCAPE,
-				NullEnum.NOTNULL) {
+		NamedEnumPropertyDescriptor<OrientationEnum> orientationD = new NamedEnumPropertyDescriptor<OrientationEnum>(JasperDesign.PROPERTY_ORIENTATION,
+				Messages.MReport_page_orientation, OrientationEnum.LANDSCAPE, NullEnum.NOTNULL) {
 			@Override
 			public ASPropertyWidget<NamedEnumPropertyDescriptor<OrientationEnum>> createWidget(Composite parent,
 					AbstractSection section) {
-				Image[] images = new Image[] {
-						JaspersoftStudioPlugin.getInstance().getImage("icons/resources/portrait16.png"), //$NON-NLS-1$
+				Image[] images = new Image[] { JaspersoftStudioPlugin.getInstance().getImage("icons/resources/portrait16.png"), //$NON-NLS-1$
 						JaspersoftStudioPlugin.getInstance().getImage("icons/resources/landscape16.png") }; //$NON-NLS-1$
 				return new SPToolBarEnum<NamedEnumPropertyDescriptor<OrientationEnum>>(parent, section, this, images);
 			}
@@ -245,56 +241,41 @@ public class MBookReport extends MReport {
 		orientationD.setCategory(Messages.MReport_report_page_category);
 		desc.add(orientationD);
 
-		NamedEnumPropertyDescriptor<PrintOrderEnum> printOrderD = new NamedEnumPropertyDescriptor<PrintOrderEnum>(
-				JasperDesign.PROPERTY_PRINT_ORDER, Messages.MReport_print_order, PrintOrderEnum.HORIZONTAL,
-				NullEnum.NULL);
+		NamedEnumPropertyDescriptor<PrintOrderEnum> printOrderD = new NamedEnumPropertyDescriptor<PrintOrderEnum>(JasperDesign.PROPERTY_PRINT_ORDER,
+				Messages.MReport_print_order, PrintOrderEnum.HORIZONTAL, NullEnum.NULL);
 		printOrderD.setDescription(Messages.MReport_print_order_description);
 		printOrderD.setCategory(Messages.MReport_columns_category);
 		desc.add(printOrderD);
 
-		NamedEnumPropertyDescriptor<WhenNoDataTypeEnum> whenNoDataD = new NamedEnumPropertyDescriptor<WhenNoDataTypeEnum>(
-				JasperDesign.PROPERTY_WHEN_NO_DATA_TYPE, Messages.MReport_when_no_data_type,
-				WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL, NullEnum.NULL);
+		NamedEnumPropertyDescriptor<WhenNoDataTypeEnum> whenNoDataD = new NamedEnumPropertyDescriptor<WhenNoDataTypeEnum>(JasperDesign.PROPERTY_WHEN_NO_DATA_TYPE,
+				Messages.MReport_when_no_data_type, WhenNoDataTypeEnum.ALL_SECTIONS_NO_DETAIL, NullEnum.NULL);
 		whenNoDataD.setDescription(Messages.MReport_when_no_data_type_description);
 		whenNoDataD.setCategory(Messages.common_report);
 		desc.add(whenNoDataD);
 
+
 		JPropertiesPropertyDescriptor propertiesMapD = new JPropertiesPropertyDescriptor(MGraphicElement.PROPERTY_MAP,
-				Messages.common_properties, getJasperConfiguration(), getValue());
+				Messages.common_properties);
 		propertiesMapD.setDescription(Messages.common_properties);
 		desc.add(propertiesMapD);
 
+		defaultsMap.put(JasperDesign.PROPERTY_PAGE_WIDTH, new Integer(595));
+		defaultsMap.put(JasperDesign.PROPERTY_PAGE_HEIGHT, new Integer(842));
+		defaultsMap.put(JasperDesign.PROPERTY_TOP_MARGIN, new Integer(30));
+		defaultsMap.put(JasperDesign.PROPERTY_BOTTOM_MARGIN, new Integer(30));
+		defaultsMap.put(JasperDesign.PROPERTY_LEFT_MARGIN, new Integer(20));
+		defaultsMap.put(JasperDesign.PROPERTY_RIGHT_MARGIN, new Integer(20));
+
+		defaultsMap.put(JasperDesign.PROPERTY_LANGUAGE, "Java"); //$NON-NLS-1$
+
+		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_COUNT, new Integer(1));
+		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_WIDTH, new Integer(555));
+		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_SPACING, new Integer(0));
+		defaultsMap.put(JasperDesign.PROPERTY_ORIENTATION, orientationD.getIntValue(OrientationEnum.PORTRAIT));
+		defaultsMap.put(JasperDesign.PROPERTY_PRINT_ORDER, printOrderD.getIntValue(PrintOrderEnum.VERTICAL));
+		defaultsMap.put(JasperDesign.PROPERTY_WHEN_NO_DATA_TYPE, whenNoDataD.getIntValue(WhenNoDataTypeEnum.NO_PAGES));
+
 		setHelpPrefix(desc, "net.sf.jasperreports.doc/docs/schema.reference.html?cp=0_1#jasperReport"); //$NON-NLS-1$
-	}
-
-	@Override
-	protected Map<String, DefaultValue> createDefaultsMap() {
-		Map<String, DefaultValue> defaultsMap = super.createDefaultsMap();
-
-		defaultsMap.put(JasperDesign.PROPERTY_PAGE_WIDTH, new DefaultValue(new Integer(595), false));
-		defaultsMap.put(JasperDesign.PROPERTY_PAGE_HEIGHT, new DefaultValue(new Integer(842), false));
-		defaultsMap.put(JasperDesign.PROPERTY_TOP_MARGIN, new DefaultValue(new Integer(30), false));
-		defaultsMap.put(JasperDesign.PROPERTY_BOTTOM_MARGIN, new DefaultValue(new Integer(30), false));
-		defaultsMap.put(JasperDesign.PROPERTY_LEFT_MARGIN, new DefaultValue(new Integer(20), false));
-		defaultsMap.put(JasperDesign.PROPERTY_RIGHT_MARGIN, new DefaultValue(new Integer(20), false));
-		defaultsMap.put(JasperDesign.PROPERTY_LANGUAGE, new DefaultValue("Java", false)); //$NON-NLS-1$
-		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_COUNT, new DefaultValue(new Integer(1), false));
-		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_WIDTH, new DefaultValue(new Integer(555), false));
-		defaultsMap.put(JasperDesign.PROPERTY_COLUMN_SPACING, new DefaultValue(new Integer(0), false));
-
-		int orientationValue = NamedEnumPropertyDescriptor.getIntValue(OrientationEnum.PORTRAIT, NullEnum.NOTNULL,
-				OrientationEnum.PORTRAIT);
-		defaultsMap.put(JasperDesign.PROPERTY_ORIENTATION, new DefaultValue(orientationValue, false));
-
-		int printOrderValue = NamedEnumPropertyDescriptor.getIntValue(PrintOrderEnum.VERTICAL, NullEnum.NULL,
-				PrintOrderEnum.VERTICAL);
-		defaultsMap.put(JasperDesign.PROPERTY_PRINT_ORDER, new DefaultValue(printOrderValue, true));
-
-		int whenNoDataValue = NamedEnumPropertyDescriptor.getIntValue(WhenNoDataTypeEnum.NO_PAGES, NullEnum.NULL,
-				WhenNoDataTypeEnum.NO_PAGES);
-		defaultsMap.put(JasperDesign.PROPERTY_WHEN_NO_DATA_TYPE, new DefaultValue(whenNoDataValue, true));
-
-		return defaultsMap;
 	}
 
 }

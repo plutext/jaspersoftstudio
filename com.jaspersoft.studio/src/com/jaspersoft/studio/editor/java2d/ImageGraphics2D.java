@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.java2d;
 
@@ -65,44 +73,21 @@ public class ImageGraphics2D extends ACachedGraphics {
 	 */
 	public ImageGraphics2D(Graphics2D originalGrpahics) {
 		this.targetGraphics = originalGrpahics;
-		
-		//scale the graphics to the current zoom level and set the rendering hints
-		double scaleX = originalGrpahics.getTransform().getScaleX();
-		double scaleY = originalGrpahics.getTransform().getScaleY();
-		image = new BufferedImage( (int)(targetGraphics.getClipBounds().width*scaleX), (int)(originalGrpahics.getClipBounds().height*scaleY), BufferedImage.TYPE_INT_ARGB);
-		imageGraphics = (Graphics2D)image.createGraphics();
-		imageGraphics.scale(scaleX, scaleY);
-		imageGraphics.setRenderingHints(originalGrpahics.getRenderingHints());
-		//need to set the clip otherwise the getClip method can return null and some JR Drawer (ie frame) relay on not having a null clip
-		imageGraphics.setClip(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+		image = new BufferedImage(targetGraphics.getClipBounds().width, originalGrpahics.getClipBounds().height, BufferedImage.TYPE_INT_ARGB);
+		imageGraphics = (Graphics2D)image.getGraphics();
 	}
 	
 	public ImageGraphics2D(Graphics2D originalGrpahics, int width, int height) {
 		this.targetGraphics = originalGrpahics;
 		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		imageGraphics = (Graphics2D)image.createGraphics();
-		
-		//scale the graphics to the current zoom level and set the rendering hints
-		double scaleX = originalGrpahics.getTransform().getScaleX();
-		double scaleY = originalGrpahics.getTransform().getScaleY();
-		imageGraphics.scale(scaleX, scaleY);
-		//need to set the clip otherwise the getClip method can return null and some JR Drawer (ie frame) relay on not having a null clip
-		imageGraphics.setClip(new Rectangle(0, 0, image.getWidth(), image.getHeight()));
+		imageGraphics = (Graphics2D)image.getGraphics();
 	}
 	
 	/**
 	 * Paint the content of the buffered image on the target image
 	 */
 	public void paintCache(){
-		double scaleX = targetGraphics.getTransform().getScaleX();
-		double scaleY = targetGraphics.getTransform().getScaleY();
-		//update the current scale value
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
-		//scale the figure to the image size
-		AffineTransform transform = new AffineTransform();
-		transform.scale(1/scaleX, 1/scaleY);
-		targetGraphics.drawImage(image, transform , null);
+		targetGraphics.drawImage(image, null, null);
 	}
 	
 	/**

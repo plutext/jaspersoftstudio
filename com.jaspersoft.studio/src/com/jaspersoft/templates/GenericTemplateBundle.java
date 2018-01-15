@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.templates;
 
 import java.io.File;
@@ -251,7 +247,7 @@ public abstract class GenericTemplateBundle implements IconedTemplateBundle, Val
 				if (el instanceof JRSubreport) {
 					JRSubreport sr = (JRSubreport) el;
 					String res = evalResourceName(sr.getExpression());
-					if (res != null && res.endsWith(".jasper")) { //$NON-NLS-1$
+					if (res.endsWith(".jasper")) { //$NON-NLS-1$
 						res = res.substring(0, res.length() - ".jasper".length()) + ".jrxml"; //$NON-NLS-1$ //$NON-NLS-2$
 						resourceNames.add(res);
 					}

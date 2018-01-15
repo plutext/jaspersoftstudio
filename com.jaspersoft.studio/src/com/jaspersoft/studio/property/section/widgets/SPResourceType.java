@@ -1,10 +1,16 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.widgets;
-
-
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -13,11 +19,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -54,34 +57,16 @@ public class SPResourceType<T extends IPropertyDescriptor> extends SPText<T> {
 			}
 		};
 	}
-	
-	@Override
-	protected int getStyle() {
-		return SWT.BORDER;
-	}
+
 
 	protected void createComponent(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
-		layout.verticalSpacing = 0;
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-		container.setLayout(layout);
-		super.createComponent(container);
-		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
-		textData.minimumWidth = 50;
-		ftext.setLayoutData(textData);
-		btn = section.getWidgetFactory().createButton(container, "...", SWT.PUSH);
+		super.createComponent(parent);
+		btn = section.getWidgetFactory().createButton(parent, "...", SWT.PUSH);
 		btn.addSelectionListener(buttonPressed());
 	}
 
 	protected String convertFile2Value(IFile f) {
 		return f.getProjectRelativePath().toOSString();
-	}
-	
-	@Override
-	public Control getControl() {
-		return btn.getParent();
 	}
 
 	protected void handleTextChanged(final AbstractSection section, final Object property, String text) {

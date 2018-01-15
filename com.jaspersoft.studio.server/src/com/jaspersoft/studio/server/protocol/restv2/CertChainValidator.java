@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
@@ -41,21 +45,15 @@ import org.eclipse.jface.dialogs.Dialog;
 import com.jaspersoft.studio.ConfigurationManager;
 import com.jaspersoft.studio.server.messages.Messages;
 import com.jaspersoft.studio.server.protocol.CRLVerifier;
-import com.jaspersoft.studio.server.utils.Pass;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class CertChainValidator {
 	private static String fname = System.getProperty("javax.net.ssl.trustStore"); //$NON-NLS-1$
-	private static String fksname = System.getProperty("javax.net.ssl.trustStore"); //$NON-NLS-1$
-	public static char[] spass = Misc.nvl(System.getProperty("javax.net.ssl.trustStorePassword")).toCharArray(); //$NON-NLS-1$
-	public static char[] kpass = Pass
-			.getPassKeyStore(Misc.nvl(System.getProperty("javax.net.ssl.keyStorePassword"), "keystore")) //$NON-NLS-1$
-			.toCharArray();
+	private static char[] spass = Misc.nvl(System.getProperty("javax.net.ssl.trustStorePassword")).toCharArray(); //$NON-NLS-1$
 	private static String stype = System.getProperty("javax.net.ssl.trustStoreType"); //$NON-NLS-1$
-	private static String kstype = System.getProperty("javax.net.ssl.keyStoreType"); //$NON-NLS-1$
 
 	public static KeyStore getDefaultTrustStore()
 			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
@@ -80,47 +78,6 @@ public class CertChainValidator {
 			}
 		}
 		return trustStore;
-	}
-
-	public static KeyStore getDefaultKeyStore()
-			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
-		kstype = System.getProperty("javax.net.ssl.keyStoreType"); //$NON-NLS-1$
-		KeyStore store = KeyStore.getInstance(Misc.isNullOrEmpty(stype) ? KeyStore.getDefaultType() : kstype);
-		fksname = System.getProperty("javax.net.ssl.keyStore"); //$NON-NLS-1$
-		File f = null;
-		if (Misc.isNullOrEmpty(fksname)) {
-			f = new File(ConfigurationManager.getStorage("certificates"), "certkeystore.ks"); //$NON-NLS-1$ //$NON-NLS-2$
-			fksname = f.getAbsolutePath();
-		} else
-			f = new File(fksname);
-		if (!f.exists()) {
-			store.load(null, kpass);
-		} else {
-			FileInputStream fos = null;
-			try {
-				fos = new FileInputStream(fksname);
-				store.load(fos, kpass);
-			} finally {
-				FileUtils.closeStream(fos);
-			}
-		}
-		return store;
-	}
-
-	public static void writeKeyStore(KeyStore trustStore) throws FileNotFoundException, KeyStoreException, IOException,
-			NoSuchAlgorithmException, CertificateException {
-		writeKeyStore(fksname, trustStore);
-	}
-
-	protected static void writeKeyStore(String fname, KeyStore trustStore) throws FileNotFoundException,
-			KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException {
-		FileOutputStream fos = null;
-		try {
-			fos = new FileOutputStream(fname);
-			trustStore.store(fos, kpass);
-		} finally {
-			FileUtils.closeStream(fos);
-		}
 	}
 
 	public static void writeTrustStore(KeyStore trustStore) throws FileNotFoundException, KeyStoreException,

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.ireport.jasperserver.ws.http;
 
@@ -88,8 +96,8 @@ public class JSSCommonsHTTPSender extends BasicHandler {
 	}
 
 	/**
-	 * invoke creates a socket connection, sends the request SOAP message and then
-	 * reads the response SOAP message back from the SOAP server
+	 * invoke creates a socket connection, sends the request SOAP message and
+	 * then reads the response SOAP message back from the SOAP server
 	 *
 	 * @param msgContext
 	 *            the messsage context
@@ -217,6 +225,7 @@ public class JSSCommonsHTTPSender extends BasicHandler {
 					req.viaProxy(proxy);
 				addContextInfo(req, msgContext, targetURL);
 			}
+
 			response = exec.execute(req);
 			response.handleResponse(new ResponseHandler<String>() {
 
@@ -226,7 +235,7 @@ public class JSSCommonsHTTPSender extends BasicHandler {
 					try {
 						StatusLine statusLine = response.getStatusLine();
 						int returnCode = statusLine.getStatusCode();
-						String contentType = en.getContentType() != null ? en.getContentType().getValue() : null;
+						String contentType = en.getContentType().getValue();
 
 						in = new BufferedHttpEntity(en).getContent();
 						// String str = IOUtils.toString(in);
@@ -326,7 +335,7 @@ public class JSSCommonsHTTPSender extends BasicHandler {
 		if (msg != null)
 			req.addHeader(HTTPConstants.HEADER_CONTENT_TYPE, msg.getContentType(msgContext.getSOAPConstants()));
 		req.addHeader(HTTPConstants.HEADER_SOAP_ACTION, "\"" + action + "\"");
-		req.addHeader(HTTPConstants.HEADER_USER_AGENT, HttpUtils.USER_AGENT_JASPERSOFT_STUDIO);
+		req.addHeader(HTTPConstants.HEADER_USER_AGENT, Messages.getMessage("axisUserAgent"));
 
 		// add compression headers if needed
 		if (msgContext.isPropertyTrue(HTTPConstants.MC_ACCEPT_GZIP))

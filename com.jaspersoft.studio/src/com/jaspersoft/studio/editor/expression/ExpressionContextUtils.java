@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.expression;
 
@@ -16,22 +24,20 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.eclipse.osgi.util.NLS;
-
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
 import net.sf.jasperreports.crosstabs.design.JRDesignCrosstab;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRDatasetRun;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JRVariable;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.util.JRResourcesUtil;
+
+import org.eclipse.osgi.util.NLS;
+
+import com.jaspersoft.studio.JaspersoftStudioPlugin;
+import com.jaspersoft.studio.utils.Misc;
+import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 /**
  * Utility methods related to the {@link ExpressionContext} object.
@@ -210,18 +216,6 @@ public final class ExpressionContextUtils {
 	public static List<String> getResourceBundleKeys(ExpressionContext expContext) {
 		Set<String> keys=new LinkedHashSet<String>();
 		for(JRDataset ds : expContext.getDatasets()) {
-			ResourceBundle rb = getResourceBundle(ds, expContext.getJasperReportsConfiguration());
-			if(rb!=null) {
-				keys.addAll(Collections.list(rb.getKeys()));
-			}
-		}
-		for (JRDesignCrosstab crosstab : expContext.getCrosstabs()) {
-			JRDatasetRun datasetRun = crosstab.getDataset().getDatasetRun();
-			JasperDesign jd = expContext.getJasperReportsConfiguration().getJasperDesign();
-			JRDataset ds = jd.getMainDataset();
-			if (datasetRun != null){
-				ds = jd.getDatasetMap().get(datasetRun.getDatasetName());
-			}
 			ResourceBundle rb = getResourceBundle(ds, expContext.getJasperReportsConfiguration());
 			if(rb!=null) {
 				keys.addAll(Collections.list(rb.getKeys()));
