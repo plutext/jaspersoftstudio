@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.swt.widgets.table;
 
@@ -66,8 +70,7 @@ public class DeleteButton {
 	}
 
 	protected boolean confirmDelete(Object obj) {
-		if (confirm && !UIUtils.showDeleteConfirmation(delB.getShell(),
-				net.sf.jasperreports.eclipse.messages.Messages.UIUtils_3))
+		if (confirm && !UIUtils.showDeleteConfirmation(net.sf.jasperreports.eclipse.messages.Messages.UIUtils_3))
 			return false;
 		return canRemove(obj);
 	}
@@ -107,17 +110,10 @@ public class DeleteButton {
 		delB.setEnabled(enabled);
 	}
 
-	private int minSize = 0;
-
-	public void setMinSize(int minSize) {
-		this.minSize = minSize;
-	}
-
 	private void setEnabledState(final TableViewer tableViewer) {
 		boolean enable = true;
 		StructuredSelection s = (StructuredSelection) tableViewer.getSelection();
-		List<?> inlist = (List<?>) tableViewer.getInput();
-		if (inlist != null && inlist.size() > minSize && !s.isEmpty()) {
+		if (!s.isEmpty()) {
 			for (Object obj : s.toArray()) {
 				if (!canRemove(obj)) {
 					enable = false;

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -24,7 +28,8 @@ import org.eclipse.swt.graphics.Point;
 import com.jaspersoft.studio.callout.CalloutEditPart;
 import com.jaspersoft.studio.callout.pin.PinEditPart;
 import com.jaspersoft.studio.editor.gef.parts.FigureEditPart;
-import com.jaspersoft.studio.editor.outline.part.TreeEditPart;
+import com.jaspersoft.studio.editor.outline.part.ContainerTreeEditPart;
+import com.jaspersoft.studio.editor.outline.part.NotDragableContainerTreeEditPart;
 import com.jaspersoft.studio.model.style.MStylesTemplate;
 import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.model.util.NodeIconDescriptor;
@@ -463,15 +468,8 @@ public abstract class ANode implements INode, Serializable, IAdaptable, Cloneabl
 
 	public EditPart getFigureEditPart() {
 		for (Object o : propertyChangeSupport.getPropertyChangeListeners()) {
-			if (o instanceof FigureEditPart || o instanceof CalloutEditPart || o instanceof PinEditPart)
-				return (EditPart) o;
-		}
-		return null;
-	}
-	
-	public EditPart getTreeEditPart() {
-		for (Object o : propertyChangeSupport.getPropertyChangeListeners()) {
-			if (o instanceof TreeEditPart)
+			if (o instanceof FigureEditPart || o instanceof CalloutEditPart || o instanceof PinEditPart
+					|| o instanceof ContainerTreeEditPart || o instanceof NotDragableContainerTreeEditPart)
 				return (EditPart) o;
 		}
 		return null;

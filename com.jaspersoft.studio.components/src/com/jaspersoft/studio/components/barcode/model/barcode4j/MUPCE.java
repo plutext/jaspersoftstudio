@@ -1,18 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.barcode.model.barcode4j;
 
 import java.util.HashSet;
 import java.util.List;
-
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-
-import com.jaspersoft.studio.components.barcode.messages.Messages;
-import com.jaspersoft.studio.editor.defaults.DefaultManager;
-import com.jaspersoft.studio.model.ANode;
-import com.jaspersoft.studio.property.descriptors.JSSComboPropertyDescriptor;
+import java.util.Map;
 
 import net.sf.jasperreports.components.barcode4j.UPCEComponent;
 import net.sf.jasperreports.engine.JRConstants;
@@ -22,11 +24,15 @@ import net.sf.jasperreports.engine.design.JRDesignComponentElement;
 import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+
+import com.jaspersoft.studio.components.barcode.messages.Messages;
+import com.jaspersoft.studio.editor.defaults.DefaultManager;
+import com.jaspersoft.studio.model.ANode;
+import com.jaspersoft.studio.property.descriptors.JSSComboPropertyDescriptor;
+
 public class MUPCE extends MBarcode4j {
-	
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
-	
-	private static IPropertyDescriptor[] descriptors;
 
 	public MUPCE() {
 		super();
@@ -37,7 +43,7 @@ public class MUPCE extends MBarcode4j {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		UPCEComponent component = new UPCEComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -46,11 +52,17 @@ public class MUPCE extends MBarcode4j {
 		el.setComponent(component);
 		el.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", "UPCE")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 		
 		return el;
+	}
+
+	private static IPropertyDescriptor[] descriptors;
+	private static Map<String, Object> defaultsMap;
+
+	@Override
+	public Map<String, Object> getDefaultsMap() {
+		return defaultsMap;
 	}
 
 	@Override
@@ -59,8 +71,10 @@ public class MUPCE extends MBarcode4j {
 	}
 
 	@Override
-	public void setDescriptors(IPropertyDescriptor[] descriptors1) {
+	public void setDescriptors(IPropertyDescriptor[] descriptors1,
+			Map<String, Object> defaultsMap1) {
 		descriptors = descriptors1;
+		defaultsMap = defaultsMap1;
 	}
 
 	/**
@@ -70,8 +84,9 @@ public class MUPCE extends MBarcode4j {
 	 *            the desc
 	 */
 	@Override
-	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
-		super.createPropertyDescriptors(desc);
+	public void createPropertyDescriptors(List<IPropertyDescriptor> desc,
+			Map<String, Object> defaultsMap) {
+		super.createPropertyDescriptors(desc, defaultsMap);
 
 		JSSComboPropertyDescriptor checksumModeD = new JSSComboPropertyDescriptor(
 				UPCEComponent.PROPERTY_CHECKSUM_MODE,

@@ -1,21 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.subreport.parameter.dialog;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.eclipse.core.resources.IFile;
-
-import com.jaspersoft.studio.model.subreport.MSubreport;
-import com.jaspersoft.studio.property.descriptor.parameter.dialog.ParameterEditor;
-import com.jaspersoft.studio.property.descriptor.parameter.dialog.ParameterPage;
-import com.jaspersoft.studio.utils.ExpressionUtil;
-import com.jaspersoft.studio.utils.jasper.ExtensionLoader;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.util.FileUtils;
 import net.sf.jasperreports.engine.JRExpression;
@@ -25,6 +24,15 @@ import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+
+import org.eclipse.core.resources.IFile;
+
+import com.jaspersoft.studio.model.subreport.MSubreport;
+import com.jaspersoft.studio.property.descriptor.parameter.dialog.ParameterEditor;
+import com.jaspersoft.studio.property.descriptor.parameter.dialog.ParameterPage;
+import com.jaspersoft.studio.utils.ExpressionUtil;
+import com.jaspersoft.studio.utils.jasper.ExtensionLoader;
+import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 public class SubreportParameterEditor extends ParameterEditor {
 	
@@ -42,22 +50,17 @@ public class SubreportParameterEditor extends ParameterEditor {
 	 * The jasper design of the current report
 	 */
 	private JasperDesign jd;
-	
-	/**
-	 * the model of the edited subreport
-	 */
-	private MSubreport subReport;
 
 	public SubreportParameterEditor(MSubreport subReport) {
 		super();
 		this.jd = subReport.getJasperDesign();
-		this.subReport = subReport;
 		preloadReport(subReport);
 	}
 	
 	@Override
 	protected ParameterPage getEditingPage() {
-		SubreportParameterPage page = new SubreportParameterPage(subReport, jd);
+		SubreportParameterPage page = new SubreportParameterPage(this);
+		page.setJasperDesign(jd);
 		return page;
 	}
 	

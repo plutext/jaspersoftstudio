@@ -21,112 +21,24 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Model");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final RuleCall cJRNPARAMTerminalRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Assignment cWqAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cWqWithQueryParserRuleCall_1_0 = (RuleCall)cWqAssignment_1.eContents().get(0);
-		private final Assignment cQueryAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cQuerySelectQueryParserRuleCall_2_0 = (RuleCall)cQueryAssignment_2.eContents().get(0);
+		private final Assignment cQueryAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cQuerySelectQueryParserRuleCall_1_0 = (RuleCall)cQueryAssignment_1.eContents().get(0);
 		
 		//Model:
-		//	JRNPARAM? wq=WithQuery? query=SelectQuery;
+		//	JRNPARAM? query=SelectQuery;
 		@Override public ParserRule getRule() { return rule; }
 
-		//JRNPARAM? wq=WithQuery? query=SelectQuery
+		//JRNPARAM? query=SelectQuery
 		public Group getGroup() { return cGroup; }
 
 		//JRNPARAM?
 		public RuleCall getJRNPARAMTerminalRuleCall_0() { return cJRNPARAMTerminalRuleCall_0; }
 
-		//wq=WithQuery?
-		public Assignment getWqAssignment_1() { return cWqAssignment_1; }
-
-		//WithQuery
-		public RuleCall getWqWithQueryParserRuleCall_1_0() { return cWqWithQueryParserRuleCall_1_0; }
-
 		//query=SelectQuery
-		public Assignment getQueryAssignment_2() { return cQueryAssignment_2; }
+		public Assignment getQueryAssignment_1() { return cQueryAssignment_1; }
 
 		//SelectQuery
-		public RuleCall getQuerySelectQueryParserRuleCall_2_0() { return cQuerySelectQueryParserRuleCall_2_0; }
-	}
-
-	public class WithQueryElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.WithQuery");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cWAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final Keyword cWWITHKeyword_0_0 = (Keyword)cWAssignment_0.eContents().get(0);
-		private final Assignment cWnameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cWnameDBIDParserRuleCall_1_0 = (RuleCall)cWnameAssignment_1.eContents().get(0);
-		private final Assignment cWithColsAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cWithColsWithColumnsParserRuleCall_2_0 = (RuleCall)cWithColsAssignment_2.eContents().get(0);
-		private final Keyword cASKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Keyword cLeftParenthesisKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cQueryAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cQuerySelectQueryParserRuleCall_5_0 = (RuleCall)cQueryAssignment_5.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_6 = (Keyword)cGroup.eContents().get(6);
-		
-		//WithQuery:
-		//	w='WITH' wname=DBID withCols=WithColumns? 'AS' '(' query=SelectQuery ')';
-		@Override public ParserRule getRule() { return rule; }
-
-		//w='WITH' wname=DBID withCols=WithColumns? 'AS' '(' query=SelectQuery ')'
-		public Group getGroup() { return cGroup; }
-
-		//w='WITH'
-		public Assignment getWAssignment_0() { return cWAssignment_0; }
-
-		//'WITH'
-		public Keyword getWWITHKeyword_0_0() { return cWWITHKeyword_0_0; }
-
-		//wname=DBID
-		public Assignment getWnameAssignment_1() { return cWnameAssignment_1; }
-
-		//DBID
-		public RuleCall getWnameDBIDParserRuleCall_1_0() { return cWnameDBIDParserRuleCall_1_0; }
-
-		//withCols=WithColumns?
-		public Assignment getWithColsAssignment_2() { return cWithColsAssignment_2; }
-
-		//WithColumns
-		public RuleCall getWithColsWithColumnsParserRuleCall_2_0() { return cWithColsWithColumnsParserRuleCall_2_0; }
-
-		//'AS'
-		public Keyword getASKeyword_3() { return cASKeyword_3; }
-
-		//'('
-		public Keyword getLeftParenthesisKeyword_4() { return cLeftParenthesisKeyword_4; }
-
-		//query=SelectQuery
-		public Assignment getQueryAssignment_5() { return cQueryAssignment_5; }
-
-		//SelectQuery
-		public RuleCall getQuerySelectQueryParserRuleCall_5_0() { return cQuerySelectQueryParserRuleCall_5_0; }
-
-		//')'
-		public Keyword getRightParenthesisKeyword_6() { return cRightParenthesisKeyword_6; }
-	}
-
-	public class WithColumnsElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.WithColumns");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final RuleCall cUsingColsParserRuleCall_1 = (RuleCall)cGroup.eContents().get(1);
-		private final Keyword cRightParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		
-		//WithColumns:
-		//	'(' UsingCols ')';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'(' UsingCols ')'
-		public Group getGroup() { return cGroup; }
-
-		//'('
-		public Keyword getLeftParenthesisKeyword_0() { return cLeftParenthesisKeyword_0; }
-
-		//UsingCols
-		public RuleCall getUsingColsParserRuleCall_1() { return cUsingColsParserRuleCall_1; }
-
-		//')'
-		public Keyword getRightParenthesisKeyword_2() { return cRightParenthesisKeyword_2; }
+		public RuleCall getQuerySelectQueryParserRuleCall_1_0() { return cQuerySelectQueryParserRuleCall_1_0; }
 	}
 
 	public class FetchFirstElements extends AbstractParserRuleElementFinder {
@@ -325,9 +237,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cINTTerminalRuleCall_2_1_0 = (RuleCall)cAlternatives_2_1.eContents().get(0);
 		private final RuleCall cSIGNED_DOUBLETerminalRuleCall_2_1_1 = (RuleCall)cAlternatives_2_1.eContents().get(1);
 		private final Keyword cPERCENTKeyword_2_2 = (Keyword)cGroup_2.eContents().get(2);
-		private final Group cGroup_2_3 = (Group)cGroup_2.eContents().get(3);
-		private final Keyword cWITHKeyword_2_3_0 = (Keyword)cGroup_2_3.eContents().get(0);
-		private final Keyword cTIESKeyword_2_3_1 = (Keyword)cGroup_2_3.eContents().get(1);
+		private final Keyword cWITHTIESKeyword_2_3 = (Keyword)cGroup_2.eContents().get(3);
 		private final Assignment cColsAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final RuleCall cColsColumnsParserRuleCall_3_0 = (RuleCall)cColsAssignment_3.eContents().get(0);
 		private final Keyword cFROMKeyword_4 = (Keyword)cGroup.eContents().get(4);
@@ -338,19 +248,17 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cWhereExpressionAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
 		private final RuleCall cWhereExpressionFullExpressionParserRuleCall_6_1_0 = (RuleCall)cWhereExpressionAssignment_6_1.eContents().get(0);
 		private final Group cGroup_7 = (Group)cGroup.eContents().get(7);
-		private final Keyword cGROUPKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
-		private final Keyword cBYKeyword_7_1 = (Keyword)cGroup_7.eContents().get(1);
-		private final Assignment cGroupByEntryAssignment_7_2 = (Assignment)cGroup_7.eContents().get(2);
-		private final RuleCall cGroupByEntryGroupByColumnsParserRuleCall_7_2_0 = (RuleCall)cGroupByEntryAssignment_7_2.eContents().get(0);
+		private final Keyword cGROUPBYKeyword_7_0 = (Keyword)cGroup_7.eContents().get(0);
+		private final Assignment cGroupByEntryAssignment_7_1 = (Assignment)cGroup_7.eContents().get(1);
+		private final RuleCall cGroupByEntryGroupByColumnsParserRuleCall_7_1_0 = (RuleCall)cGroupByEntryAssignment_7_1.eContents().get(0);
 		private final Group cGroup_8 = (Group)cGroup.eContents().get(8);
 		private final Keyword cHAVINGKeyword_8_0 = (Keyword)cGroup_8.eContents().get(0);
 		private final Assignment cHavingEntryAssignment_8_1 = (Assignment)cGroup_8.eContents().get(1);
 		private final RuleCall cHavingEntryFullExpressionParserRuleCall_8_1_0 = (RuleCall)cHavingEntryAssignment_8_1.eContents().get(0);
 		private final Group cGroup_9 = (Group)cGroup.eContents().get(9);
-		private final Keyword cORDERKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
-		private final Keyword cBYKeyword_9_1 = (Keyword)cGroup_9.eContents().get(1);
-		private final Assignment cOrderByEntryAssignment_9_2 = (Assignment)cGroup_9.eContents().get(2);
-		private final RuleCall cOrderByEntryOrderByColumnsParserRuleCall_9_2_0 = (RuleCall)cOrderByEntryAssignment_9_2.eContents().get(0);
+		private final Keyword cORDERBYKeyword_9_0 = (Keyword)cGroup_9.eContents().get(0);
+		private final Assignment cOrderByEntryAssignment_9_1 = (Assignment)cGroup_9.eContents().get(1);
+		private final RuleCall cOrderByEntryOrderByColumnsParserRuleCall_9_1_0 = (RuleCall)cOrderByEntryAssignment_9_1.eContents().get(0);
 		private final Group cGroup_10 = (Group)cGroup.eContents().get(10);
 		private final Keyword cLIMITKeyword_10_0 = (Keyword)cGroup_10.eContents().get(0);
 		private final Assignment cLimAssignment_10_1 = (Assignment)cGroup_10.eContents().get(1);
@@ -360,22 +268,21 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Assignment cOffsetAssignment_11_1 = (Assignment)cGroup_11.eContents().get(1);
 		private final RuleCall cOffsetOffsetParserRuleCall_11_1_0 = (RuleCall)cOffsetAssignment_11_1.eContents().get(0);
 		private final Group cGroup_12 = (Group)cGroup.eContents().get(12);
-		private final Keyword cFETCHKeyword_12_0 = (Keyword)cGroup_12.eContents().get(0);
-		private final Keyword cFIRSTKeyword_12_1 = (Keyword)cGroup_12.eContents().get(1);
-		private final Assignment cFetchFirstAssignment_12_2 = (Assignment)cGroup_12.eContents().get(2);
-		private final RuleCall cFetchFirstFetchFirstParserRuleCall_12_2_0 = (RuleCall)cFetchFirstAssignment_12_2.eContents().get(0);
+		private final Keyword cFETCHFIRSTKeyword_12_0 = (Keyword)cGroup_12.eContents().get(0);
+		private final Assignment cFetchFirstAssignment_12_1 = (Assignment)cGroup_12.eContents().get(1);
+		private final RuleCall cFetchFirstFetchFirstParserRuleCall_12_1_0 = (RuleCall)cFetchFirstAssignment_12_1.eContents().get(0);
 		
 		//Select:
-		//	select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? ('WITH' 'TIES')?)? cols=Columns 'FROM'
-		//	tbl=Tables ('WHERE' whereExpression=FullExpression)? ('GROUP' 'BY' groupByEntry=GroupByColumns)? ('HAVING'
-		//	havingEntry=FullExpression)? ('ORDER' 'BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET'
-		//	offset=Offset)? ('FETCH' 'FIRST' fetchFirst=FetchFirst)?;
+		//	select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? 'WITH TIES'?)? cols=Columns 'FROM' tbl=Tables
+		//	('WHERE' whereExpression=FullExpression)? ('GROUP BY' groupByEntry=GroupByColumns)? ('HAVING'
+		//	havingEntry=FullExpression)? ('ORDER BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET' offset=Offset)?
+		//	('FETCH FIRST' fetchFirst=FetchFirst)?;
 		@Override public ParserRule getRule() { return rule; }
 
-		//select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? ('WITH' 'TIES')?)? cols=Columns 'FROM' tbl=Tables
-		//('WHERE' whereExpression=FullExpression)? ('GROUP' 'BY' groupByEntry=GroupByColumns)? ('HAVING'
-		//havingEntry=FullExpression)? ('ORDER' 'BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET' offset=Offset)?
-		//('FETCH' 'FIRST' fetchFirst=FetchFirst)?
+		//select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? 'WITH TIES'?)? cols=Columns 'FROM' tbl=Tables
+		//('WHERE' whereExpression=FullExpression)? ('GROUP BY' groupByEntry=GroupByColumns)? ('HAVING'
+		//havingEntry=FullExpression)? ('ORDER BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET' offset=Offset)?
+		//('FETCH FIRST' fetchFirst=FetchFirst)?
 		public Group getGroup() { return cGroup; }
 
 		//select='SELECT'
@@ -387,7 +294,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//'DISTINCT'?
 		public Keyword getDISTINCTKeyword_1() { return cDISTINCTKeyword_1; }
 
-		//('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? ('WITH' 'TIES')?)?
+		//('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? 'WITH TIES'?)?
 		public Group getGroup_2() { return cGroup_2; }
 
 		//'TOP'
@@ -405,14 +312,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//'PERCENT'?
 		public Keyword getPERCENTKeyword_2_2() { return cPERCENTKeyword_2_2; }
 
-		//('WITH' 'TIES')?
-		public Group getGroup_2_3() { return cGroup_2_3; }
-
-		//'WITH'
-		public Keyword getWITHKeyword_2_3_0() { return cWITHKeyword_2_3_0; }
-
-		//'TIES'
-		public Keyword getTIESKeyword_2_3_1() { return cTIESKeyword_2_3_1; }
+		//'WITH TIES'?
+		public Keyword getWITHTIESKeyword_2_3() { return cWITHTIESKeyword_2_3; }
 
 		//cols=Columns
 		public Assignment getColsAssignment_3() { return cColsAssignment_3; }
@@ -441,20 +342,17 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//FullExpression
 		public RuleCall getWhereExpressionFullExpressionParserRuleCall_6_1_0() { return cWhereExpressionFullExpressionParserRuleCall_6_1_0; }
 
-		//('GROUP' 'BY' groupByEntry=GroupByColumns)?
+		//('GROUP BY' groupByEntry=GroupByColumns)?
 		public Group getGroup_7() { return cGroup_7; }
 
-		//'GROUP'
-		public Keyword getGROUPKeyword_7_0() { return cGROUPKeyword_7_0; }
-
-		//'BY'
-		public Keyword getBYKeyword_7_1() { return cBYKeyword_7_1; }
+		//'GROUP BY'
+		public Keyword getGROUPBYKeyword_7_0() { return cGROUPBYKeyword_7_0; }
 
 		//groupByEntry=GroupByColumns
-		public Assignment getGroupByEntryAssignment_7_2() { return cGroupByEntryAssignment_7_2; }
+		public Assignment getGroupByEntryAssignment_7_1() { return cGroupByEntryAssignment_7_1; }
 
 		//GroupByColumns
-		public RuleCall getGroupByEntryGroupByColumnsParserRuleCall_7_2_0() { return cGroupByEntryGroupByColumnsParserRuleCall_7_2_0; }
+		public RuleCall getGroupByEntryGroupByColumnsParserRuleCall_7_1_0() { return cGroupByEntryGroupByColumnsParserRuleCall_7_1_0; }
 
 		//('HAVING' havingEntry=FullExpression)?
 		public Group getGroup_8() { return cGroup_8; }
@@ -468,20 +366,17 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//FullExpression
 		public RuleCall getHavingEntryFullExpressionParserRuleCall_8_1_0() { return cHavingEntryFullExpressionParserRuleCall_8_1_0; }
 
-		//('ORDER' 'BY' orderByEntry=OrderByColumns)?
+		//('ORDER BY' orderByEntry=OrderByColumns)?
 		public Group getGroup_9() { return cGroup_9; }
 
-		//'ORDER'
-		public Keyword getORDERKeyword_9_0() { return cORDERKeyword_9_0; }
-
-		//'BY'
-		public Keyword getBYKeyword_9_1() { return cBYKeyword_9_1; }
+		//'ORDER BY'
+		public Keyword getORDERBYKeyword_9_0() { return cORDERBYKeyword_9_0; }
 
 		//orderByEntry=OrderByColumns
-		public Assignment getOrderByEntryAssignment_9_2() { return cOrderByEntryAssignment_9_2; }
+		public Assignment getOrderByEntryAssignment_9_1() { return cOrderByEntryAssignment_9_1; }
 
 		//OrderByColumns
-		public RuleCall getOrderByEntryOrderByColumnsParserRuleCall_9_2_0() { return cOrderByEntryOrderByColumnsParserRuleCall_9_2_0; }
+		public RuleCall getOrderByEntryOrderByColumnsParserRuleCall_9_1_0() { return cOrderByEntryOrderByColumnsParserRuleCall_9_1_0; }
 
 		//('LIMIT' lim=Limit)?
 		public Group getGroup_10() { return cGroup_10; }
@@ -507,20 +402,17 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//Offset
 		public RuleCall getOffsetOffsetParserRuleCall_11_1_0() { return cOffsetOffsetParserRuleCall_11_1_0; }
 
-		//('FETCH' 'FIRST' fetchFirst=FetchFirst)?
+		//('FETCH FIRST' fetchFirst=FetchFirst)?
 		public Group getGroup_12() { return cGroup_12; }
 
-		//'FETCH'
-		public Keyword getFETCHKeyword_12_0() { return cFETCHKeyword_12_0; }
-
-		//'FIRST'
-		public Keyword getFIRSTKeyword_12_1() { return cFIRSTKeyword_12_1; }
+		//'FETCH FIRST'
+		public Keyword getFETCHFIRSTKeyword_12_0() { return cFETCHFIRSTKeyword_12_0; }
 
 		//fetchFirst=FetchFirst
-		public Assignment getFetchFirstAssignment_12_2() { return cFetchFirstAssignment_12_2; }
+		public Assignment getFetchFirstAssignment_12_1() { return cFetchFirstAssignment_12_1; }
 
 		//FetchFirst
-		public RuleCall getFetchFirstFetchFirstParserRuleCall_12_2_0() { return cFetchFirstFetchFirstParserRuleCall_12_2_0; }
+		public RuleCall getFetchFirstFetchFirstParserRuleCall_12_1_0() { return cFetchFirstFetchFirstParserRuleCall_12_1_0; }
 	}
 
 	public class ColumnsElements extends AbstractParserRuleElementFinder {
@@ -535,7 +427,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesColumnOrAliasParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//Columns OrColumn:
-		//	ColumnOrAlias ({OrColumn.entries+=current} ("," entries+=ColumnOrAlias)+)?;
+		//	ColumnOrAlias ({OrColumn.entries+=current} ("," entries+=ColumnOrAlias)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//ColumnOrAlias ({OrColumn.entries+=current} ("," entries+=ColumnOrAlias)+)?
@@ -671,7 +563,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesFromTableParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//Tables OrTable:
-		//	FromTable ({OrTable.entries+=current} ("," entries+=FromTable)+)?;
+		//	FromTable ({OrTable.entries+=current} ("," entries+=FromTable)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//FromTable ({OrTable.entries+=current} ("," entries+=FromTable)+)?
@@ -863,8 +755,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cTfullTableFullParserRuleCall_0_0_0 = (RuleCall)cTfullAssignment_0_0.eContents().get(0);
 		private final Assignment cSqAssignment_0_1 = (Assignment)cAlternatives_0.eContents().get(1);
 		private final RuleCall cSqSubQueryOperandParserRuleCall_0_1_0 = (RuleCall)cSqAssignment_0_1.eContents().get(0);
-		private final Assignment cValuesAssignment_0_2 = (Assignment)cAlternatives_0.eContents().get(2);
-		private final RuleCall cValuesFromValuesParserRuleCall_0_2_0 = (RuleCall)cValuesAssignment_0_2.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
 		private final Assignment cPivotAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
 		private final RuleCall cPivotPivotTableParserRuleCall_1_0_0 = (RuleCall)cPivotAssignment_1_0.eContents().get(0);
@@ -876,15 +766,14 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cTblAliasDbObjectNameParserRuleCall_3_0 = (RuleCall)cTblAliasAssignment_3.eContents().get(0);
 		
 		//TableOrAlias:
-		//	(tfull=TableFull | sq=SubQueryOperand | values=FromValues) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'?
+		//	(tfull=TableFull | sq=SubQueryOperand) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'?
 		//	tblAlias=DbObjectName?;
 		@Override public ParserRule getRule() { return rule; }
 
-		//(tfull=TableFull | sq=SubQueryOperand | values=FromValues) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'?
-		//tblAlias=DbObjectName?
+		//(tfull=TableFull | sq=SubQueryOperand) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'? tblAlias=DbObjectName?
 		public Group getGroup() { return cGroup; }
 
-		//tfull=TableFull | sq=SubQueryOperand | values=FromValues
+		//tfull=TableFull | sq=SubQueryOperand
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
 		//tfull=TableFull
@@ -898,12 +787,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 		//SubQueryOperand
 		public RuleCall getSqSubQueryOperandParserRuleCall_0_1_0() { return cSqSubQueryOperandParserRuleCall_0_1_0; }
-
-		//values=FromValues
-		public Assignment getValuesAssignment_0_2() { return cValuesAssignment_0_2; }
-
-		//FromValues
-		public RuleCall getValuesFromValuesParserRuleCall_0_2_0() { return cValuesFromValuesParserRuleCall_0_2_0; }
 
 		//(pivot=PivotTable | unpivot=UnpivotTable)?
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
@@ -931,286 +814,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 		//DbObjectName
 		public RuleCall getTblAliasDbObjectNameParserRuleCall_3_0() { return cTblAliasDbObjectNameParserRuleCall_3_0; }
-	}
-
-	public class FromValuesElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.FromValues");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cValuesAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cValuesValuesParserRuleCall_0_0 = (RuleCall)cValuesAssignment_0.eContents().get(0);
-		private final Assignment cCAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cCFromValuesColumnsParserRuleCall_1_0 = (RuleCall)cCAssignment_1.eContents().get(0);
-		
-		//FromValues:
-		//	values=Values c=FromValuesColumns?;
-		@Override public ParserRule getRule() { return rule; }
-
-		//values=Values c=FromValuesColumns?
-		public Group getGroup() { return cGroup; }
-
-		//values=Values
-		public Assignment getValuesAssignment_0() { return cValuesAssignment_0; }
-
-		//Values
-		public RuleCall getValuesValuesParserRuleCall_0_0() { return cValuesValuesParserRuleCall_0_0; }
-
-		//c=FromValuesColumns?
-		public Assignment getCAssignment_1() { return cCAssignment_1; }
-
-		//FromValuesColumns
-		public RuleCall getCFromValuesColumnsParserRuleCall_1_0() { return cCFromValuesColumnsParserRuleCall_1_0; }
-	}
-
-	public class FromValuesColumnsElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.FromValuesColumns");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cIDTerminalRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Keyword cLeftParenthesisKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cFvColsAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cFvColsFromValuesColumnNamesParserRuleCall_2_0 = (RuleCall)cFvColsAssignment_2.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		
-		//FromValuesColumns:
-		//	ID '(' fvCols=FromValuesColumnNames ')';
-		@Override public ParserRule getRule() { return rule; }
-
-		//ID '(' fvCols=FromValuesColumnNames ')'
-		public Group getGroup() { return cGroup; }
-
-		//ID
-		public RuleCall getIDTerminalRuleCall_0() { return cIDTerminalRuleCall_0; }
-
-		//'('
-		public Keyword getLeftParenthesisKeyword_1() { return cLeftParenthesisKeyword_1; }
-
-		//fvCols=FromValuesColumnNames
-		public Assignment getFvColsAssignment_2() { return cFvColsAssignment_2; }
-
-		//FromValuesColumnNames
-		public RuleCall getFvColsFromValuesColumnNamesParserRuleCall_2_0() { return cFvColsFromValuesColumnNamesParserRuleCall_2_0; }
-
-		//')'
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
-	}
-
-	public class FromValuesColumnNamesElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.FromValuesColumnNames");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cColumnNameParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cAbcEntriesAction_1_0 = (Action)cGroup_1.eContents().get(0);
-		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
-		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Assignment cEntriesAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
-		private final RuleCall cEntriesColumnNameParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
-		
-		//FromValuesColumnNames:
-		//	ColumnName ({abc.entries+=current} ("," entries+=ColumnName)+)?;
-		@Override public ParserRule getRule() { return rule; }
-
-		//ColumnName ({abc.entries+=current} ("," entries+=ColumnName)+)?
-		public Group getGroup() { return cGroup; }
-
-		//ColumnName
-		public RuleCall getColumnNameParserRuleCall_0() { return cColumnNameParserRuleCall_0; }
-
-		//({abc.entries+=current} ("," entries+=ColumnName)+)?
-		public Group getGroup_1() { return cGroup_1; }
-
-		//{abc.entries+=current}
-		public Action getAbcEntriesAction_1_0() { return cAbcEntriesAction_1_0; }
-
-		//("," entries+=ColumnName)+
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//","
-		public Keyword getCommaKeyword_1_1_0() { return cCommaKeyword_1_1_0; }
-
-		//entries+=ColumnName
-		public Assignment getEntriesAssignment_1_1_1() { return cEntriesAssignment_1_1_1; }
-
-		//ColumnName
-		public RuleCall getEntriesColumnNameParserRuleCall_1_1_1_0() { return cEntriesColumnNameParserRuleCall_1_1_1_0; }
-	}
-
-	public class ColumnNameElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.ColumnName");
-		private final Assignment cColNameAssignment = (Assignment)rule.eContents().get(1);
-		private final RuleCall cColNameSTRINGTerminalRuleCall_0 = (RuleCall)cColNameAssignment.eContents().get(0);
-		
-		//ColumnName ColumnNames:
-		//	colName=STRING;
-		@Override public ParserRule getRule() { return rule; }
-
-		//colName=STRING
-		public Assignment getColNameAssignment() { return cColNameAssignment; }
-
-		//STRING
-		public RuleCall getColNameSTRINGTerminalRuleCall_0() { return cColNameSTRINGTerminalRuleCall_0; }
-	}
-
-	public class ValuesElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Values");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cVALUESKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cRowsAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cRowsRowsParserRuleCall_2_0 = (RuleCall)cRowsAssignment_2.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		
-		//Values:
-		//	'(' 'VALUES' rows=Rows ')';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'(' 'VALUES' rows=Rows ')'
-		public Group getGroup() { return cGroup; }
-
-		//'('
-		public Keyword getLeftParenthesisKeyword_0() { return cLeftParenthesisKeyword_0; }
-
-		//'VALUES'
-		public Keyword getVALUESKeyword_1() { return cVALUESKeyword_1; }
-
-		//rows=Rows
-		public Assignment getRowsAssignment_2() { return cRowsAssignment_2; }
-
-		//Rows
-		public RuleCall getRowsRowsParserRuleCall_2_0() { return cRowsRowsParserRuleCall_2_0; }
-
-		//')'
-		public Keyword getRightParenthesisKeyword_3() { return cRightParenthesisKeyword_3; }
-	}
-
-	public class RowsElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Rows");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cRowParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cRowsEntriesAction_1_0 = (Action)cGroup_1.eContents().get(0);
-		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
-		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Assignment cEntriesAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
-		private final RuleCall cEntriesRowParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
-		
-		//Rows:
-		//	Row ({Rows.entries+=current} ("," entries+=Row)+)?;
-		@Override public ParserRule getRule() { return rule; }
-
-		//Row ({Rows.entries+=current} ("," entries+=Row)+)?
-		public Group getGroup() { return cGroup; }
-
-		//Row
-		public RuleCall getRowParserRuleCall_0() { return cRowParserRuleCall_0; }
-
-		//({Rows.entries+=current} ("," entries+=Row)+)?
-		public Group getGroup_1() { return cGroup_1; }
-
-		//{Rows.entries+=current}
-		public Action getRowsEntriesAction_1_0() { return cRowsEntriesAction_1_0; }
-
-		//("," entries+=Row)+
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//","
-		public Keyword getCommaKeyword_1_1_0() { return cCommaKeyword_1_1_0; }
-
-		//entries+=Row
-		public Assignment getEntriesAssignment_1_1_1() { return cEntriesAssignment_1_1_1; }
-
-		//Row
-		public RuleCall getEntriesRowParserRuleCall_1_1_1_0() { return cEntriesRowParserRuleCall_1_1_1_0; }
-	}
-
-	public class RowElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Row");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cRowValuesAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cRowValuesRowValuesParserRuleCall_1_0 = (RuleCall)cRowValuesAssignment_1.eContents().get(0);
-		private final Keyword cRightParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		
-		//Row:
-		//	'(' rowValues=RowValues ')';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'(' rowValues=RowValues ')'
-		public Group getGroup() { return cGroup; }
-
-		//'('
-		public Keyword getLeftParenthesisKeyword_0() { return cLeftParenthesisKeyword_0; }
-
-		//rowValues=RowValues
-		public Assignment getRowValuesAssignment_1() { return cRowValuesAssignment_1; }
-
-		//RowValues
-		public RuleCall getRowValuesRowValuesParserRuleCall_1_0() { return cRowValuesRowValuesParserRuleCall_1_0; }
-
-		//')'
-		public Keyword getRightParenthesisKeyword_2() { return cRightParenthesisKeyword_2; }
-	}
-
-	public class RowValuesElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.RowValues");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final RuleCall cRowValueParserRuleCall_0 = (RuleCall)cGroup.eContents().get(0);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Action cRowValuesEntriesAction_1_0 = (Action)cGroup_1.eContents().get(0);
-		private final Group cGroup_1_1 = (Group)cGroup_1.eContents().get(1);
-		private final Keyword cCommaKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Assignment cEntriesAssignment_1_1_1 = (Assignment)cGroup_1_1.eContents().get(1);
-		private final RuleCall cEntriesRowValueParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
-		
-		//RowValues:
-		//	RowValue ({RowValues.entries+=current} ("," entries+=RowValue)+)?;
-		@Override public ParserRule getRule() { return rule; }
-
-		//RowValue ({RowValues.entries+=current} ("," entries+=RowValue)+)?
-		public Group getGroup() { return cGroup; }
-
-		//RowValue
-		public RuleCall getRowValueParserRuleCall_0() { return cRowValueParserRuleCall_0; }
-
-		//({RowValues.entries+=current} ("," entries+=RowValue)+)?
-		public Group getGroup_1() { return cGroup_1; }
-
-		//{RowValues.entries+=current}
-		public Action getRowValuesEntriesAction_1_0() { return cRowValuesEntriesAction_1_0; }
-
-		//("," entries+=RowValue)+
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//","
-		public Keyword getCommaKeyword_1_1_0() { return cCommaKeyword_1_1_0; }
-
-		//entries+=RowValue
-		public Assignment getEntriesAssignment_1_1_1() { return cEntriesAssignment_1_1_1; }
-
-		//RowValue
-		public RuleCall getEntriesRowValueParserRuleCall_1_1_1_0() { return cEntriesRowValueParserRuleCall_1_1_1_0; }
-	}
-
-	public class RowValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.RowValue");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final RuleCall cScalarNumberOperandParserRuleCall_0 = (RuleCall)cAlternatives.eContents().get(0);
-		private final Assignment cNullAssignment_1 = (Assignment)cAlternatives.eContents().get(1);
-		private final Keyword cNullNULLKeyword_1_0 = (Keyword)cNullAssignment_1.eContents().get(0);
-		
-		//RowValue:
-		//	ScalarNumberOperand | null='NULL';
-		@Override public ParserRule getRule() { return rule; }
-
-		//ScalarNumberOperand | null='NULL'
-		public Alternatives getAlternatives() { return cAlternatives; }
-
-		//ScalarNumberOperand
-		public RuleCall getScalarNumberOperandParserRuleCall_0() { return cScalarNumberOperandParserRuleCall_0; }
-
-		//null='NULL'
-		public Assignment getNullAssignment_1() { return cNullAssignment_1; }
-
-		//'NULL'
-		public Keyword getNullNULLKeyword_1_0() { return cNullNULLKeyword_1_0; }
 	}
 
 	public class PivotTableElements extends AbstractParserRuleElementFinder {
@@ -1666,7 +1269,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesPivotColParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//PivotCols Pivots:
-		//	PivotCol ({pvcs.entries+=current} ("," entries+=PivotCol)+)?;
+		//	PivotCol ({pvcs.entries+=current} ("," entries+=PivotCol)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//PivotCol ({pvcs.entries+=current} ("," entries+=PivotCol)+)?
@@ -1830,7 +1433,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesOrderByColumnFullParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//OrderByColumns OrOrderByColumn:
-		//	OrderByColumnFull ({OrOrderByColumn.entries+=current} ("," entries+=OrderByColumnFull)+)?;
+		//	OrderByColumnFull ({OrOrderByColumn.entries+=current} ("," entries+=OrderByColumnFull)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//OrderByColumnFull ({OrOrderByColumn.entries+=current} ("," entries+=OrderByColumnFull)+)?
@@ -1918,7 +1521,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesGroupByColumnFullParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//GroupByColumns OrGroupByColumn:
-		//	GroupByColumnFull ({OrGroupByColumn.entries+=current} ("," entries+=GroupByColumnFull)+)?;
+		//	GroupByColumnFull ({OrGroupByColumn.entries+=current} ("," entries+=GroupByColumnFull)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//GroupByColumnFull ({OrGroupByColumn.entries+=current} ("," entries+=GroupByColumnFull)+)?
@@ -1992,7 +1595,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesExpressionFragmentSecondParserRuleCall_1_1_0 = (RuleCall)cEntriesAssignment_1_1.eContents().get(0);
 		
 		//FullExpression OrExpr:
-		//	ExpressionFragment ({OrExpr.entries+=current} entries+=ExpressionFragmentSecond+)?;
+		//	ExpressionFragment ({OrExpr.entries+=current} entries+=ExpressionFragmentSecond+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//ExpressionFragment ({OrExpr.entries+=current} entries+=ExpressionFragmentSecond+)?
@@ -2028,7 +1631,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cNotPrmJRNPARAMTerminalRuleCall_1_0 = (RuleCall)cNotPrmAssignment_1.eContents().get(0);
 		
 		//ExpressionFragmentSecond FullExpression:
-		//	c=('AND' | 'OR') efrag=ExpressionFragment | notPrm=JRNPARAM;
+		//	c=('AND' | 'OR') efrag=ExpressionFragment | notPrm=JRNPARAM
 		@Override public ParserRule getRule() { return rule; }
 
 		//c=('AND' | 'OR') efrag=ExpressionFragment | notPrm=JRNPARAM
@@ -2082,7 +1685,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//ExpressionFragment FullExpression:
 		//	expgroup=ExpressionGroup | exp=Expression | xexp=(XExpression | XExpression_) | notPrm=JRNPARAM | in=InOperator |
-		//	exists=ExistsOperator;
+		//	exists=ExistsOperator
 		@Override public ParserRule getRule() { return rule; }
 
 		//expgroup=ExpressionGroup | exp=Expression | xexp=(XExpression | XExpression_) | notPrm=JRNPARAM | in=InOperator |
@@ -2146,22 +1749,22 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightParenthesisKeyword_4 = (Keyword)cGroup.eContents().get(4);
 		
 		//ExpressionGroup ExprGroup:
-		//	{ExprGroup} isnot=('NOT' | 'NOT\n')? '(' expr=FullExpression ')';
+		//	{ExprGroup} isnot=('NOT ' | 'NOT\n')? '(' expr=FullExpression ')'
 		@Override public ParserRule getRule() { return rule; }
 
-		//{ExprGroup} isnot=('NOT' | 'NOT\n')? '(' expr=FullExpression ')'
+		//{ExprGroup} isnot=('NOT ' | 'NOT\n')? '(' expr=FullExpression ')'
 		public Group getGroup() { return cGroup; }
 
 		//{ExprGroup}
 		public Action getExprGroupAction_0() { return cExprGroupAction_0; }
 
-		//isnot=('NOT' | 'NOT\n')?
+		//isnot=('NOT ' | 'NOT\n')?
 		public Assignment getIsnotAssignment_1() { return cIsnotAssignment_1; }
 
-		//('NOT' | 'NOT\n')
+		//('NOT ' | 'NOT\n')
 		public Alternatives getIsnotAlternatives_1_0() { return cIsnotAlternatives_1_0; }
 
-		//'NOT'
+		//'NOT '
 		public Keyword getIsnotNOTKeyword_1_0_0() { return cIsnotNOTKeyword_1_0_0; }
 
 		//'NOT\n'
@@ -2185,22 +1788,23 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cXKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Action cXExprAction_1 = (Action)cGroup.eContents().get(1);
-		private final Assignment cXfAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cXfXFunctionEnumRuleCall_2_0 = (RuleCall)cXfAssignment_2.eContents().get(0);
-		private final Keyword cCommaKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cColAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cColOperandGroupParserRuleCall_4_0 = (RuleCall)cColAssignment_4.eContents().get(0);
-		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cCommaKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cPrmAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cPrmXExpressionParamsParserRuleCall_5_1_0 = (RuleCall)cPrmAssignment_5_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cXfAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cXfXFunctionEnumRuleCall_3_0 = (RuleCall)cXfAssignment_3.eContents().get(0);
+		private final Keyword cCommaKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cColAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cColOperandGroupParserRuleCall_5_0 = (RuleCall)cColAssignment_5.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cCommaKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cPrmAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cPrmXExpressionParamsParserRuleCall_6_1_0 = (RuleCall)cPrmAssignment_6_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		//XExpression XExpr:
-		//	'$X' {XExpr} xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}';
+		//	'$X' {XExpr} '{' xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}'
 		@Override public ParserRule getRule() { return rule; }
 
-		//'$X' {XExpr} xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}'
+		//'$X' {XExpr} '{' xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}'
 		public Group getGroup() { return cGroup; }
 
 		//'$X'
@@ -2209,35 +1813,38 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//{XExpr}
 		public Action getXExprAction_1() { return cXExprAction_1; }
 
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
+
 		//xf=XFunction
-		public Assignment getXfAssignment_2() { return cXfAssignment_2; }
+		public Assignment getXfAssignment_3() { return cXfAssignment_3; }
 
 		//XFunction
-		public RuleCall getXfXFunctionEnumRuleCall_2_0() { return cXfXFunctionEnumRuleCall_2_0; }
+		public RuleCall getXfXFunctionEnumRuleCall_3_0() { return cXfXFunctionEnumRuleCall_3_0; }
 
 		//","
-		public Keyword getCommaKeyword_3() { return cCommaKeyword_3; }
+		public Keyword getCommaKeyword_4() { return cCommaKeyword_4; }
 
 		//col=OperandGroup
-		public Assignment getColAssignment_4() { return cColAssignment_4; }
+		public Assignment getColAssignment_5() { return cColAssignment_5; }
 
 		//OperandGroup
-		public RuleCall getColOperandGroupParserRuleCall_4_0() { return cColOperandGroupParserRuleCall_4_0; }
+		public RuleCall getColOperandGroupParserRuleCall_5_0() { return cColOperandGroupParserRuleCall_5_0; }
 
 		//("," prm=XExpressionParams)?
-		public Group getGroup_5() { return cGroup_5; }
+		public Group getGroup_6() { return cGroup_6; }
 
 		//","
-		public Keyword getCommaKeyword_5_0() { return cCommaKeyword_5_0; }
+		public Keyword getCommaKeyword_6_0() { return cCommaKeyword_6_0; }
 
 		//prm=XExpressionParams
-		public Assignment getPrmAssignment_5_1() { return cPrmAssignment_5_1; }
+		public Assignment getPrmAssignment_6_1() { return cPrmAssignment_6_1; }
 
 		//XExpressionParams
-		public RuleCall getPrmXExpressionParamsParserRuleCall_5_1_0() { return cPrmXExpressionParamsParserRuleCall_5_1_0; }
+		public RuleCall getPrmXExpressionParamsParserRuleCall_6_1_0() { return cPrmXExpressionParamsParserRuleCall_6_1_0; }
 
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 
 	public class XExpression_Elements extends AbstractParserRuleElementFinder {
@@ -2245,22 +1852,23 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cXKeyword_0 = (Keyword)cGroup.eContents().get(0);
 		private final Action cXExprAction_1 = (Action)cGroup.eContents().get(1);
-		private final Assignment cXfAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cXfXFunctionEnumRuleCall_2_0 = (RuleCall)cXfAssignment_2.eContents().get(0);
-		private final Keyword cVerticalLineKeyword_3 = (Keyword)cGroup.eContents().get(3);
-		private final Assignment cColAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cColOperandGroupParserRuleCall_4_0 = (RuleCall)cColAssignment_4.eContents().get(0);
-		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
-		private final Keyword cVerticalLineKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
-		private final Assignment cPrmAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
-		private final RuleCall cPrmXExpressionParamsParserRuleCall_5_1_0 = (RuleCall)cPrmAssignment_5_1.eContents().get(0);
-		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
+		private final Keyword cLeftCurlyBracketKeyword_2 = (Keyword)cGroup.eContents().get(2);
+		private final Assignment cXfAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cXfXFunctionEnumRuleCall_3_0 = (RuleCall)cXfAssignment_3.eContents().get(0);
+		private final Keyword cVerticalLineKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Assignment cColAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cColOperandGroupParserRuleCall_5_0 = (RuleCall)cColAssignment_5.eContents().get(0);
+		private final Group cGroup_6 = (Group)cGroup.eContents().get(6);
+		private final Keyword cVerticalLineKeyword_6_0 = (Keyword)cGroup_6.eContents().get(0);
+		private final Assignment cPrmAssignment_6_1 = (Assignment)cGroup_6.eContents().get(1);
+		private final RuleCall cPrmXExpressionParamsParserRuleCall_6_1_0 = (RuleCall)cPrmAssignment_6_1.eContents().get(0);
+		private final Keyword cRightCurlyBracketKeyword_7 = (Keyword)cGroup.eContents().get(7);
 		
 		//XExpression_ XExpr:
-		//	'$X' {XExpr} xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}';
+		//	'$X' {XExpr} '{' xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}'
 		@Override public ParserRule getRule() { return rule; }
 
-		//'$X' {XExpr} xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}'
+		//'$X' {XExpr} '{' xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}'
 		public Group getGroup() { return cGroup; }
 
 		//'$X'
@@ -2269,35 +1877,38 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//{XExpr}
 		public Action getXExprAction_1() { return cXExprAction_1; }
 
+		//'{'
+		public Keyword getLeftCurlyBracketKeyword_2() { return cLeftCurlyBracketKeyword_2; }
+
 		//xf=XFunction
-		public Assignment getXfAssignment_2() { return cXfAssignment_2; }
+		public Assignment getXfAssignment_3() { return cXfAssignment_3; }
 
 		//XFunction
-		public RuleCall getXfXFunctionEnumRuleCall_2_0() { return cXfXFunctionEnumRuleCall_2_0; }
+		public RuleCall getXfXFunctionEnumRuleCall_3_0() { return cXfXFunctionEnumRuleCall_3_0; }
 
 		//"|"
-		public Keyword getVerticalLineKeyword_3() { return cVerticalLineKeyword_3; }
+		public Keyword getVerticalLineKeyword_4() { return cVerticalLineKeyword_4; }
 
 		//col=OperandGroup
-		public Assignment getColAssignment_4() { return cColAssignment_4; }
+		public Assignment getColAssignment_5() { return cColAssignment_5; }
 
 		//OperandGroup
-		public RuleCall getColOperandGroupParserRuleCall_4_0() { return cColOperandGroupParserRuleCall_4_0; }
+		public RuleCall getColOperandGroupParserRuleCall_5_0() { return cColOperandGroupParserRuleCall_5_0; }
 
 		//("|" prm=XExpressionParams)?
-		public Group getGroup_5() { return cGroup_5; }
+		public Group getGroup_6() { return cGroup_6; }
 
 		//"|"
-		public Keyword getVerticalLineKeyword_5_0() { return cVerticalLineKeyword_5_0; }
+		public Keyword getVerticalLineKeyword_6_0() { return cVerticalLineKeyword_6_0; }
 
 		//prm=XExpressionParams
-		public Assignment getPrmAssignment_5_1() { return cPrmAssignment_5_1; }
+		public Assignment getPrmAssignment_6_1() { return cPrmAssignment_6_1; }
 
 		//XExpressionParams
-		public RuleCall getPrmXExpressionParamsParserRuleCall_5_1_0() { return cPrmXExpressionParamsParserRuleCall_5_1_0; }
+		public RuleCall getPrmXExpressionParamsParserRuleCall_6_1_0() { return cPrmXExpressionParamsParserRuleCall_6_1_0; }
 
 		//'}'
-		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
+		public Keyword getRightCurlyBracketKeyword_7() { return cRightCurlyBracketKeyword_7; }
 	}
 
 	public class XExpressionParamsElements extends AbstractParserRuleElementFinder {
@@ -2312,7 +1923,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEntriesJRParameterParserRuleCall_1_1_1_0 = (RuleCall)cEntriesAssignment_1_1_1.eContents().get(0);
 		
 		//XExpressionParams Prms:
-		//	JRParameter ({Prms.entries+=current} ("," entries+=JRParameter)+)?;
+		//	JRParameter ({Prms.entries+=current} ("," entries+=JRParameter)+)?
 		@Override public ParserRule getRule() { return rule; }
 
 		//JRParameter ({Prms.entries+=current} ("," entries+=JRParameter)+)?
@@ -2363,7 +1974,9 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cOp1OperandParserRuleCall_0_0 = (RuleCall)cOp1Assignment_0.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
 		private final Assignment cIsnullAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cIsnullIsNullValueParserRuleCall_1_0_0 = (RuleCall)cIsnullAssignment_1_0.eContents().get(0);
+		private final Alternatives cIsnullAlternatives_1_0_0 = (Alternatives)cIsnullAssignment_1_0.eContents().get(0);
+		private final Keyword cIsnullISNULLKeyword_1_0_0_0 = (Keyword)cIsnullAlternatives_1_0_0.eContents().get(0);
+		private final Keyword cIsnullISNOTNULLKeyword_1_0_0_1 = (Keyword)cIsnullAlternatives_1_0_0.eContents().get(1);
 		private final Assignment cInAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
 		private final RuleCall cInInOperatorParserRuleCall_1_1_0 = (RuleCall)cInAssignment_1_1.eContents().get(0);
 		private final Assignment cExistsAssignment_1_2 = (Assignment)cAlternatives_1.eContents().get(2);
@@ -2376,11 +1989,12 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cCompComparisonParserRuleCall_1_5_0 = (RuleCall)cCompAssignment_1_5.eContents().get(0);
 		
 		//Expression FullExpression:
-		//	op1=Operand (isnull=IsNullValue | in=InOperator | exists=ExistsOperator | between=Between | like=Like
-		//	| comp=Comparison);
+		//	op1=Operand (isnull=('IS NULL' | 'IS NOT NULL') | in=InOperator | exists=ExistsOperator | between=Between | like=Like
+		//	| comp=Comparison)
 		@Override public ParserRule getRule() { return rule; }
 
-		//op1=Operand (isnull=IsNullValue | in=InOperator | exists=ExistsOperator | between=Between | like=Like | comp=Comparison)
+		//op1=Operand (isnull=('IS NULL' | 'IS NOT NULL') | in=InOperator | exists=ExistsOperator | between=Between | like=Like |
+		//comp=Comparison)
 		public Group getGroup() { return cGroup; }
 
 		//op1=Operand
@@ -2389,14 +2003,21 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//Operand
 		public RuleCall getOp1OperandParserRuleCall_0_0() { return cOp1OperandParserRuleCall_0_0; }
 
-		//isnull=IsNullValue | in=InOperator | exists=ExistsOperator | between=Between | like=Like | comp=Comparison
+		//isnull=('IS NULL' | 'IS NOT NULL') | in=InOperator | exists=ExistsOperator | between=Between | like=Like |
+		//comp=Comparison
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
-		//isnull=IsNullValue
+		//isnull=('IS NULL' | 'IS NOT NULL')
 		public Assignment getIsnullAssignment_1_0() { return cIsnullAssignment_1_0; }
 
-		//IsNullValue
-		public RuleCall getIsnullIsNullValueParserRuleCall_1_0_0() { return cIsnullIsNullValueParserRuleCall_1_0_0; }
+		//('IS NULL' | 'IS NOT NULL')
+		public Alternatives getIsnullAlternatives_1_0_0() { return cIsnullAlternatives_1_0_0; }
+
+		//'IS NULL'
+		public Keyword getIsnullISNULLKeyword_1_0_0_0() { return cIsnullISNULLKeyword_1_0_0_0; }
+
+		//'IS NOT NULL'
+		public Keyword getIsnullISNOTNULLKeyword_1_0_0_1() { return cIsnullISNOTNULLKeyword_1_0_0_1; }
 
 		//in=InOperator
 		public Assignment getInAssignment_1_1() { return cInAssignment_1_1; }
@@ -2427,30 +2048,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 		//Comparison
 		public RuleCall getCompComparisonParserRuleCall_1_5_0() { return cCompComparisonParserRuleCall_1_5_0; }
-	}
-
-	public class IsNullValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.IsNullValue");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cISKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cNOTKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Keyword cNULLKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		
-		//IsNullValue:
-		//	'IS' 'NOT'? 'NULL';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'IS' 'NOT'? 'NULL'
-		public Group getGroup() { return cGroup; }
-
-		//'IS'
-		public Keyword getISKeyword_0() { return cISKeyword_0; }
-
-		//'NOT'?
-		public Keyword getNOTKeyword_1() { return cNOTKeyword_1; }
-
-		//'NULL'
-		public Keyword getNULLKeyword_2() { return cNULLKeyword_2; }
 	}
 
 	public class ComparisonElements extends AbstractParserRuleElementFinder {
@@ -2537,48 +2134,36 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Like");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cOpLikeAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cOpLikeLikeValueParserRuleCall_0_0 = (RuleCall)cOpLikeAssignment_0.eContents().get(0);
+		private final Alternatives cOpLikeAlternatives_0_0 = (Alternatives)cOpLikeAssignment_0.eContents().get(0);
+		private final Keyword cOpLikeLIKEKeyword_0_0_0 = (Keyword)cOpLikeAlternatives_0_0.eContents().get(0);
+		private final Keyword cOpLikeNOTLIKEKeyword_0_0_1 = (Keyword)cOpLikeAlternatives_0_0.eContents().get(1);
 		private final Assignment cOp2Assignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cOp2LikeOperandParserRuleCall_1_0 = (RuleCall)cOp2Assignment_1.eContents().get(0);
 		
 		//Like:
-		//	opLike=LikeValue op2=LikeOperand;
+		//	opLike=('LIKE' | 'NOT LIKE') op2=LikeOperand;
 		@Override public ParserRule getRule() { return rule; }
 
-		//opLike=LikeValue op2=LikeOperand
+		//opLike=('LIKE' | 'NOT LIKE') op2=LikeOperand
 		public Group getGroup() { return cGroup; }
 
-		//opLike=LikeValue
+		//opLike=('LIKE' | 'NOT LIKE')
 		public Assignment getOpLikeAssignment_0() { return cOpLikeAssignment_0; }
 
-		//LikeValue
-		public RuleCall getOpLikeLikeValueParserRuleCall_0_0() { return cOpLikeLikeValueParserRuleCall_0_0; }
+		//('LIKE' | 'NOT LIKE')
+		public Alternatives getOpLikeAlternatives_0_0() { return cOpLikeAlternatives_0_0; }
+
+		//'LIKE'
+		public Keyword getOpLikeLIKEKeyword_0_0_0() { return cOpLikeLIKEKeyword_0_0_0; }
+
+		//'NOT LIKE'
+		public Keyword getOpLikeNOTLIKEKeyword_0_0_1() { return cOpLikeNOTLIKEKeyword_0_0_1; }
 
 		//op2=LikeOperand
 		public Assignment getOp2Assignment_1() { return cOp2Assignment_1; }
 
 		//LikeOperand
 		public RuleCall getOp2LikeOperandParserRuleCall_1_0() { return cOp2LikeOperandParserRuleCall_1_0; }
-	}
-
-	public class LikeValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.LikeValue");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cNOTKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cLIKEKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		
-		//LikeValue:
-		//	'NOT'? 'LIKE';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'NOT'? 'LIKE'
-		public Group getGroup() { return cGroup; }
-
-		//'NOT'?
-		public Keyword getNOTKeyword_0() { return cNOTKeyword_0; }
-
-		//'LIKE'
-		public Keyword getLIKEKeyword_1() { return cLIKEKeyword_1; }
 	}
 
 	public class LikeOperandElements extends AbstractParserRuleElementFinder {
@@ -2629,7 +2214,9 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.Between");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Assignment cOpBetweenAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cOpBetweenBetweenValueParserRuleCall_0_0 = (RuleCall)cOpBetweenAssignment_0.eContents().get(0);
+		private final Alternatives cOpBetweenAlternatives_0_0 = (Alternatives)cOpBetweenAssignment_0.eContents().get(0);
+		private final Keyword cOpBetweenBETWEENKeyword_0_0_0 = (Keyword)cOpBetweenAlternatives_0_0.eContents().get(0);
+		private final Keyword cOpBetweenNOTBETWEENKeyword_0_0_1 = (Keyword)cOpBetweenAlternatives_0_0.eContents().get(1);
 		private final Assignment cOp2Assignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cOp2OperandGroupParserRuleCall_1_0 = (RuleCall)cOp2Assignment_1.eContents().get(0);
 		private final Keyword cANDKeyword_2 = (Keyword)cGroup.eContents().get(2);
@@ -2637,17 +2224,23 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cOp3OperandGroupParserRuleCall_3_0 = (RuleCall)cOp3Assignment_3.eContents().get(0);
 		
 		//Between:
-		//	opBetween=BetweenValue op2=OperandGroup 'AND' op3=OperandGroup;
+		//	opBetween=('BETWEEN' | 'NOT BETWEEN') op2=OperandGroup 'AND' op3=OperandGroup;
 		@Override public ParserRule getRule() { return rule; }
 
-		//opBetween=BetweenValue op2=OperandGroup 'AND' op3=OperandGroup
+		//opBetween=('BETWEEN' | 'NOT BETWEEN') op2=OperandGroup 'AND' op3=OperandGroup
 		public Group getGroup() { return cGroup; }
 
-		//opBetween=BetweenValue
+		//opBetween=('BETWEEN' | 'NOT BETWEEN')
 		public Assignment getOpBetweenAssignment_0() { return cOpBetweenAssignment_0; }
 
-		//BetweenValue
-		public RuleCall getOpBetweenBetweenValueParserRuleCall_0_0() { return cOpBetweenBetweenValueParserRuleCall_0_0; }
+		//('BETWEEN' | 'NOT BETWEEN')
+		public Alternatives getOpBetweenAlternatives_0_0() { return cOpBetweenAlternatives_0_0; }
+
+		//'BETWEEN'
+		public Keyword getOpBetweenBETWEENKeyword_0_0_0() { return cOpBetweenBETWEENKeyword_0_0_0; }
+
+		//'NOT BETWEEN'
+		public Keyword getOpBetweenNOTBETWEENKeyword_0_0_1() { return cOpBetweenNOTBETWEENKeyword_0_0_1; }
 
 		//op2=OperandGroup
 		public Assignment getOp2Assignment_1() { return cOp2Assignment_1; }
@@ -2665,32 +2258,14 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		public RuleCall getOp3OperandGroupParserRuleCall_3_0() { return cOp3OperandGroupParserRuleCall_3_0; }
 	}
 
-	public class BetweenValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.BetweenValue");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cNOTKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cBETWEENKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		
-		//BetweenValue:
-		//	'NOT'? 'BETWEEN';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'NOT'? 'BETWEEN'
-		public Group getGroup() { return cGroup; }
-
-		//'NOT'?
-		public Keyword getNOTKeyword_0() { return cNOTKeyword_0; }
-
-		//'BETWEEN'
-		public Keyword getBETWEENKeyword_1() { return cBETWEENKeyword_1; }
-	}
-
 	public class InOperatorElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.InOperator");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cInOperAction_0 = (Action)cGroup.eContents().get(0);
 		private final Assignment cOpAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cOpInValueParserRuleCall_1_0 = (RuleCall)cOpAssignment_1.eContents().get(0);
+		private final Alternatives cOpAlternatives_1_0 = (Alternatives)cOpAssignment_1.eContents().get(0);
+		private final Keyword cOpNOTINKeyword_1_0_0 = (Keyword)cOpAlternatives_1_0.eContents().get(0);
+		private final Keyword cOpINKeyword_1_0_1 = (Keyword)cOpAlternatives_1_0.eContents().get(1);
 		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
 		private final Assignment cSubqueryAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
 		private final RuleCall cSubquerySubQueryOperandParserRuleCall_2_0_0 = (RuleCall)cSubqueryAssignment_2_0.eContents().get(0);
@@ -2698,20 +2273,26 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cOpListOperandListGroupParserRuleCall_2_1_0 = (RuleCall)cOpListAssignment_2_1.eContents().get(0);
 		
 		//InOperator InOper:
-		//	{InOper} op=InValue (subquery=SubQueryOperand | opList=OperandListGroup);
+		//	{InOper} op=('NOT IN' | 'IN') (subquery=SubQueryOperand | opList=OperandListGroup)
 		@Override public ParserRule getRule() { return rule; }
 
-		//{InOper} op=InValue (subquery=SubQueryOperand | opList=OperandListGroup)
+		//{InOper} op=('NOT IN' | 'IN') (subquery=SubQueryOperand | opList=OperandListGroup)
 		public Group getGroup() { return cGroup; }
 
 		//{InOper}
 		public Action getInOperAction_0() { return cInOperAction_0; }
 
-		//op=InValue
+		//op=('NOT IN' | 'IN')
 		public Assignment getOpAssignment_1() { return cOpAssignment_1; }
 
-		//InValue
-		public RuleCall getOpInValueParserRuleCall_1_0() { return cOpInValueParserRuleCall_1_0; }
+		//('NOT IN' | 'IN')
+		public Alternatives getOpAlternatives_1_0() { return cOpAlternatives_1_0; }
+
+		//'NOT IN'
+		public Keyword getOpNOTINKeyword_1_0_0() { return cOpNOTINKeyword_1_0_0; }
+
+		//'IN'
+		public Keyword getOpINKeyword_1_0_1() { return cOpINKeyword_1_0_1; }
 
 		//subquery=SubQueryOperand | opList=OperandListGroup
 		public Alternatives getAlternatives_2() { return cAlternatives_2; }
@@ -2727,26 +2308,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 		//OperandListGroup
 		public RuleCall getOpListOperandListGroupParserRuleCall_2_1_0() { return cOpListOperandListGroupParserRuleCall_2_1_0; }
-	}
-
-	public class InValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.InValue");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cNOTKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cINKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		
-		//InValue:
-		//	'NOT'? 'IN';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'NOT'? 'IN'
-		public Group getGroup() { return cGroup; }
-
-		//'NOT'?
-		public Keyword getNOTKeyword_0() { return cNOTKeyword_0; }
-
-		//'IN'
-		public Keyword getINKeyword_1() { return cINKeyword_1; }
 	}
 
 	public class ExistsOperatorElements extends AbstractParserRuleElementFinder {
@@ -2754,7 +2315,9 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cExistsOperAction_0 = (Action)cGroup.eContents().get(0);
 		private final Assignment cOpAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cOpExistsValueParserRuleCall_1_0 = (RuleCall)cOpAssignment_1.eContents().get(0);
+		private final Alternatives cOpAlternatives_1_0 = (Alternatives)cOpAssignment_1.eContents().get(0);
+		private final Keyword cOpNOTEXISTSKeyword_1_0_0 = (Keyword)cOpAlternatives_1_0.eContents().get(0);
+		private final Keyword cOpEXISTSKeyword_1_0_1 = (Keyword)cOpAlternatives_1_0.eContents().get(1);
 		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
 		private final Assignment cSubqueryAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
 		private final RuleCall cSubquerySubQueryOperandParserRuleCall_2_0_0 = (RuleCall)cSubqueryAssignment_2_0.eContents().get(0);
@@ -2762,20 +2325,26 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cOpListOperandListGroupParserRuleCall_2_1_0 = (RuleCall)cOpListAssignment_2_1.eContents().get(0);
 		
 		//ExistsOperator ExistsOper:
-		//	{ExistsOper} op=ExistsValue (subquery=SubQueryOperand | opList=OperandListGroup);
+		//	{ExistsOper} op=('NOT EXISTS' | 'EXISTS') (subquery=SubQueryOperand | opList=OperandListGroup)
 		@Override public ParserRule getRule() { return rule; }
 
-		//{ExistsOper} op=ExistsValue (subquery=SubQueryOperand | opList=OperandListGroup)
+		//{ExistsOper} op=('NOT EXISTS' | 'EXISTS') (subquery=SubQueryOperand | opList=OperandListGroup)
 		public Group getGroup() { return cGroup; }
 
 		//{ExistsOper}
 		public Action getExistsOperAction_0() { return cExistsOperAction_0; }
 
-		//op=ExistsValue
+		//op=('NOT EXISTS' | 'EXISTS')
 		public Assignment getOpAssignment_1() { return cOpAssignment_1; }
 
-		//ExistsValue
-		public RuleCall getOpExistsValueParserRuleCall_1_0() { return cOpExistsValueParserRuleCall_1_0; }
+		//('NOT EXISTS' | 'EXISTS')
+		public Alternatives getOpAlternatives_1_0() { return cOpAlternatives_1_0; }
+
+		//'NOT EXISTS'
+		public Keyword getOpNOTEXISTSKeyword_1_0_0() { return cOpNOTEXISTSKeyword_1_0_0; }
+
+		//'EXISTS'
+		public Keyword getOpEXISTSKeyword_1_0_1() { return cOpEXISTSKeyword_1_0_1; }
 
 		//subquery=SubQueryOperand | opList=OperandListGroup
 		public Alternatives getAlternatives_2() { return cAlternatives_2; }
@@ -2791,26 +2360,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 		//OperandListGroup
 		public RuleCall getOpListOperandListGroupParserRuleCall_2_1_0() { return cOpListOperandListGroupParserRuleCall_2_1_0; }
-	}
-
-	public class ExistsValueElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.ExistsValue");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cNOTKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cEXISTSKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		
-		//ExistsValue:
-		//	'NOT'? 'EXISTS';
-		@Override public ParserRule getRule() { return rule; }
-
-		//'NOT'? 'EXISTS'
-		public Group getGroup() { return cGroup; }
-
-		//'NOT'?
-		public Keyword getNOTKeyword_0() { return cNOTKeyword_0; }
-
-		//'EXISTS'
-		public Keyword getEXISTSKeyword_1() { return cEXISTSKeyword_1; }
 	}
 
 	public class OperandListGroupElements extends AbstractParserRuleElementFinder {
@@ -2822,8 +2371,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightParenthesisKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		
 		//OperandListGroup:
-		//	'('
-		//	opGroup=OperandList ')';
+		//	'(' opGroup=OperandList ')';
 		@Override public ParserRule getRule() { return rule; }
 
 		//'(' opGroup=OperandList ')'
@@ -2892,7 +2440,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightParenthesisKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
 		
 		//OperandGroup Operands:
-		//	Operand | '(' Operand ')';
+		//	Operand | '(' Operand ')'
 		@Override public ParserRule getRule() { return rule; }
 
 		//Operand | '(' Operand ')'
@@ -2941,7 +2489,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//Operand Operands:
 		//	op1=OperandFragment (({Plus.left=current} '+' | {Minus.left=current} '-' | {Concat.left=current} '||' |
-		//	{Multiply.left=current} STAR | {Division.left=current} '/') right=OperandFragment)*;
+		//	{Multiply.left=current} STAR | {Division.left=current} '/') right=OperandFragment)*
 		@Override public ParserRule getRule() { return rule; }
 
 		//op1=OperandFragment (({Plus.left=current} '+' | {Minus.left=current} '-' | {Concat.left=current} '||' |
@@ -3034,7 +2582,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		
 		//OperandFragment Operand:
 		//	column=ColumnOperand | xop=XOperandFragment | subq=SubQueryOperand | fcast=OpFunctionCast | fext=FunctionExtract |
-		//	func=OperandFunction | sqlcase=SQLCASE;
+		//	func=OperandFunction | sqlcase=SQLCASE
 		@Override public ParserRule getRule() { return rule; }
 
 		//column=ColumnOperand | xop=XOperandFragment | subq=SubQueryOperand | fcast=OpFunctionCast | fext=FunctionExtract |
@@ -3100,7 +2648,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cFanFunctionAnalyticalParserRuleCall_4_0 = (RuleCall)cFanAssignment_4.eContents().get(0);
 		
 		//OperandFunction OpFunction:
-		//	{OpFunction} fname=FNAME (star=STAR | args=OpFunctionArg)? ')' fan=FunctionAnalytical?;
+		//	{OpFunction} fname=FNAME (star=STAR | args=OpFunctionArg)? ')' fan=FunctionAnalytical?
 		@Override public ParserRule getRule() { return rule; }
 
 		//{OpFunction} fname=FNAME (star=STAR | args=OpFunctionArg)? ')' fan=FunctionAnalytical?
@@ -3153,8 +2701,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightParenthesisKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//FunctionExtract:
-		//	'EXTRACT'
-		//	'(' v=EXTRACT_VALUES 'FROM' operand=OperandGroup ')';
+		//	'EXTRACT' '(' v=EXTRACT_VALUES 'FROM' operand=OperandGroup ')';
 		@Override public ParserRule getRule() { return rule; }
 
 		//'EXTRACT' '(' v=EXTRACT_VALUES 'FROM' operand=OperandGroup ')'
@@ -3195,8 +2742,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cRightParenthesisKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//FunctionAnalytical:
-		//	'OVER' '(' anClause=AnalyticClause
-		//	')';
+		//	'OVER' '(' anClause=AnalyticClause ')';
 		@Override public ParserRule getRule() { return rule; }
 
 		//'OVER' '(' anClause=AnalyticClause ')'
@@ -3339,12 +2885,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cWindowingClauseOperandFollowingAction_0 = (Action)cGroup.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Group cGroup_1_0 = (Group)cAlternatives_1.eContents().get(0);
-		private final Keyword cUNBOUNDEDKeyword_1_0_0 = (Keyword)cGroup_1_0.eContents().get(0);
-		private final Keyword cFOLLOWINGKeyword_1_0_1 = (Keyword)cGroup_1_0.eContents().get(1);
-		private final Group cGroup_1_1 = (Group)cAlternatives_1.eContents().get(1);
-		private final Keyword cCURRENTKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Keyword cROWKeyword_1_1_1 = (Keyword)cGroup_1_1.eContents().get(1);
+		private final Keyword cUNBOUNDEDFOLLOWINGKeyword_1_0 = (Keyword)cAlternatives_1.eContents().get(0);
+		private final Keyword cCURRENTROWKeyword_1_1 = (Keyword)cAlternatives_1.eContents().get(1);
 		private final Group cGroup_1_2 = (Group)cAlternatives_1.eContents().get(2);
 		private final Assignment cExpAssignment_1_2_0 = (Assignment)cGroup_1_2.eContents().get(0);
 		private final RuleCall cExpAnalyticExprArgParserRuleCall_1_2_0_0 = (RuleCall)cExpAssignment_1_2_0.eContents().get(0);
@@ -3353,37 +2895,25 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cFOLLOWINGKeyword_1_2_1_1 = (Keyword)cAlternatives_1_2_1.eContents().get(1);
 		
 		//WindowingClauseOperandFollowing:
-		//	{WindowingClauseOperandFollowing} ('UNBOUNDED' 'FOLLOWING' | 'CURRENT'
-		//	'ROW' | exp=AnalyticExprArg ('PRECEDING' | 'FOLLOWING'));
+		//	{WindowingClauseOperandFollowing} ('UNBOUNDED FOLLOWING' | 'CURRENT ROW' | exp=AnalyticExprArg ('PRECEDING' |
+		//	'FOLLOWING'));
 		@Override public ParserRule getRule() { return rule; }
 
-		//{WindowingClauseOperandFollowing} ('UNBOUNDED' 'FOLLOWING' | 'CURRENT' 'ROW' | exp=AnalyticExprArg ('PRECEDING' |
+		//{WindowingClauseOperandFollowing} ('UNBOUNDED FOLLOWING' | 'CURRENT ROW' | exp=AnalyticExprArg ('PRECEDING' |
 		//'FOLLOWING'))
 		public Group getGroup() { return cGroup; }
 
 		//{WindowingClauseOperandFollowing}
 		public Action getWindowingClauseOperandFollowingAction_0() { return cWindowingClauseOperandFollowingAction_0; }
 
-		//'UNBOUNDED' 'FOLLOWING' | 'CURRENT' 'ROW' | exp=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
+		//'UNBOUNDED FOLLOWING' | 'CURRENT ROW' | exp=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
-		//'UNBOUNDED' 'FOLLOWING'
-		public Group getGroup_1_0() { return cGroup_1_0; }
+		//'UNBOUNDED FOLLOWING'
+		public Keyword getUNBOUNDEDFOLLOWINGKeyword_1_0() { return cUNBOUNDEDFOLLOWINGKeyword_1_0; }
 
-		//'UNBOUNDED'
-		public Keyword getUNBOUNDEDKeyword_1_0_0() { return cUNBOUNDEDKeyword_1_0_0; }
-
-		//'FOLLOWING'
-		public Keyword getFOLLOWINGKeyword_1_0_1() { return cFOLLOWINGKeyword_1_0_1; }
-
-		//'CURRENT' 'ROW'
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//'CURRENT'
-		public Keyword getCURRENTKeyword_1_1_0() { return cCURRENTKeyword_1_1_0; }
-
-		//'ROW'
-		public Keyword getROWKeyword_1_1_1() { return cROWKeyword_1_1_1; }
+		//'CURRENT ROW'
+		public Keyword getCURRENTROWKeyword_1_1() { return cCURRENTROWKeyword_1_1; }
 
 		//exp=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
 		public Group getGroup_1_2() { return cGroup_1_2; }
@@ -3409,12 +2939,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Action cWindowingClauseOperandPrecedingAction_0 = (Action)cGroup.eContents().get(0);
 		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Group cGroup_1_0 = (Group)cAlternatives_1.eContents().get(0);
-		private final Keyword cUNBOUNDEDKeyword_1_0_0 = (Keyword)cGroup_1_0.eContents().get(0);
-		private final Keyword cPRECEDINGKeyword_1_0_1 = (Keyword)cGroup_1_0.eContents().get(1);
-		private final Group cGroup_1_1 = (Group)cAlternatives_1.eContents().get(1);
-		private final Keyword cCURRENTKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
-		private final Keyword cROWKeyword_1_1_1 = (Keyword)cGroup_1_1.eContents().get(1);
+		private final Keyword cUNBOUNDEDPRECEDINGKeyword_1_0 = (Keyword)cAlternatives_1.eContents().get(0);
+		private final Keyword cCURRENTROWKeyword_1_1 = (Keyword)cAlternatives_1.eContents().get(1);
 		private final Group cGroup_1_2 = (Group)cAlternatives_1.eContents().get(2);
 		private final Assignment cExprAssignment_1_2_0 = (Assignment)cGroup_1_2.eContents().get(0);
 		private final RuleCall cExprAnalyticExprArgParserRuleCall_1_2_0_0 = (RuleCall)cExprAssignment_1_2_0.eContents().get(0);
@@ -3423,37 +2949,25 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cFOLLOWINGKeyword_1_2_1_1 = (Keyword)cAlternatives_1_2_1.eContents().get(1);
 		
 		//WindowingClauseOperandPreceding:
-		//	{WindowingClauseOperandPreceding} ('UNBOUNDED' 'PRECEDING' | 'CURRENT' 'ROW' | expr=AnalyticExprArg ('PRECEDING'
-		//	| 'FOLLOWING'));
+		//	{WindowingClauseOperandPreceding} ('UNBOUNDED PRECEDING' | 'CURRENT ROW' | expr=AnalyticExprArg ('PRECEDING' |
+		//	'FOLLOWING'));
 		@Override public ParserRule getRule() { return rule; }
 
-		//{WindowingClauseOperandPreceding} ('UNBOUNDED' 'PRECEDING' | 'CURRENT' 'ROW' | expr=AnalyticExprArg ('PRECEDING' |
+		//{WindowingClauseOperandPreceding} ('UNBOUNDED PRECEDING' | 'CURRENT ROW' | expr=AnalyticExprArg ('PRECEDING' |
 		//'FOLLOWING'))
 		public Group getGroup() { return cGroup; }
 
 		//{WindowingClauseOperandPreceding}
 		public Action getWindowingClauseOperandPrecedingAction_0() { return cWindowingClauseOperandPrecedingAction_0; }
 
-		//'UNBOUNDED' 'PRECEDING' | 'CURRENT' 'ROW' | expr=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
+		//'UNBOUNDED PRECEDING' | 'CURRENT ROW' | expr=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
 		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
-		//'UNBOUNDED' 'PRECEDING'
-		public Group getGroup_1_0() { return cGroup_1_0; }
+		//'UNBOUNDED PRECEDING'
+		public Keyword getUNBOUNDEDPRECEDINGKeyword_1_0() { return cUNBOUNDEDPRECEDINGKeyword_1_0; }
 
-		//'UNBOUNDED'
-		public Keyword getUNBOUNDEDKeyword_1_0_0() { return cUNBOUNDEDKeyword_1_0_0; }
-
-		//'PRECEDING'
-		public Keyword getPRECEDINGKeyword_1_0_1() { return cPRECEDINGKeyword_1_0_1; }
-
-		//'CURRENT' 'ROW'
-		public Group getGroup_1_1() { return cGroup_1_1; }
-
-		//'CURRENT'
-		public Keyword getCURRENTKeyword_1_1_0() { return cCURRENTKeyword_1_1_0; }
-
-		//'ROW'
-		public Keyword getROWKeyword_1_1_1() { return cROWKeyword_1_1_1; }
+		//'CURRENT ROW'
+		public Keyword getCURRENTROWKeyword_1_1() { return cCURRENTROWKeyword_1_1; }
 
 		//expr=AnalyticExprArg ('PRECEDING' | 'FOLLOWING')
 		public Group getGroup_1_2() { return cGroup_1_2; }
@@ -3478,46 +2992,26 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.OrderByClause");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Alternatives cAlternatives_0 = (Alternatives)cGroup.eContents().get(0);
-		private final Group cGroup_0_0 = (Group)cAlternatives_0.eContents().get(0);
-		private final Keyword cORDERKeyword_0_0_0 = (Keyword)cGroup_0_0.eContents().get(0);
-		private final Keyword cBYKeyword_0_0_1 = (Keyword)cGroup_0_0.eContents().get(1);
-		private final Group cGroup_0_1 = (Group)cAlternatives_0.eContents().get(1);
-		private final Keyword cORDERKeyword_0_1_0 = (Keyword)cGroup_0_1.eContents().get(0);
-		private final Keyword cSIBLINGSKeyword_0_1_1 = (Keyword)cGroup_0_1.eContents().get(1);
-		private final Keyword cBYKeyword_0_1_2 = (Keyword)cGroup_0_1.eContents().get(2);
+		private final Keyword cORDERBYKeyword_0_0 = (Keyword)cAlternatives_0.eContents().get(0);
+		private final Keyword cORDERSIBLINGSBYKeyword_0_1 = (Keyword)cAlternatives_0.eContents().get(1);
 		private final Assignment cArgsAssignment_1 = (Assignment)cGroup.eContents().get(1);
 		private final RuleCall cArgsOrderByClauseArgsParserRuleCall_1_0 = (RuleCall)cArgsAssignment_1.eContents().get(0);
 		
 		//OrderByClause:
-		//	('ORDER' 'BY' | 'ORDER' 'SIBLINGS' 'BY') args=OrderByClauseArgs;
+		//	('ORDER BY' | 'ORDER SIBLINGS BY') args=OrderByClauseArgs;
 		@Override public ParserRule getRule() { return rule; }
 
-		//('ORDER' 'BY' | 'ORDER' 'SIBLINGS' 'BY') args=OrderByClauseArgs
+		//('ORDER BY' | 'ORDER SIBLINGS BY') args=OrderByClauseArgs
 		public Group getGroup() { return cGroup; }
 
-		//'ORDER' 'BY' | 'ORDER' 'SIBLINGS' 'BY'
+		//'ORDER BY' | 'ORDER SIBLINGS BY'
 		public Alternatives getAlternatives_0() { return cAlternatives_0; }
 
-		//'ORDER' 'BY'
-		public Group getGroup_0_0() { return cGroup_0_0; }
+		//'ORDER BY'
+		public Keyword getORDERBYKeyword_0_0() { return cORDERBYKeyword_0_0; }
 
-		//'ORDER'
-		public Keyword getORDERKeyword_0_0_0() { return cORDERKeyword_0_0_0; }
-
-		//'BY'
-		public Keyword getBYKeyword_0_0_1() { return cBYKeyword_0_0_1; }
-
-		//'ORDER' 'SIBLINGS' 'BY'
-		public Group getGroup_0_1() { return cGroup_0_1; }
-
-		//'ORDER'
-		public Keyword getORDERKeyword_0_1_0() { return cORDERKeyword_0_1_0; }
-
-		//'SIBLINGS'
-		public Keyword getSIBLINGSKeyword_0_1_1() { return cSIBLINGSKeyword_0_1_1; }
-
-		//'BY'
-		public Keyword getBYKeyword_0_1_2() { return cBYKeyword_0_1_2; }
+		//'ORDER SIBLINGS BY'
+		public Keyword getORDERSIBLINGSBYKeyword_0_1() { return cORDERSIBLINGSBYKeyword_0_1; }
 
 		//args=OrderByClauseArgs
 		public Assignment getArgsAssignment_1() { return cArgsAssignment_1; }
@@ -3621,49 +3115,45 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	public class QueryPartitionClauseElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.QueryPartitionClause");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cPARTITIONKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Keyword cBYKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Alternatives cAlternatives_2 = (Alternatives)cGroup.eContents().get(2);
-		private final Assignment cArgsAssignment_2_0 = (Assignment)cAlternatives_2.eContents().get(0);
-		private final RuleCall cArgsAnalyticExprArgsParserRuleCall_2_0_0 = (RuleCall)cArgsAssignment_2_0.eContents().get(0);
-		private final Group cGroup_2_1 = (Group)cAlternatives_2.eContents().get(1);
-		private final Keyword cLeftParenthesisKeyword_2_1_0 = (Keyword)cGroup_2_1.eContents().get(0);
-		private final RuleCall cAnalyticExprArgsParserRuleCall_2_1_1 = (RuleCall)cGroup_2_1.eContents().get(1);
-		private final Keyword cRightParenthesisKeyword_2_1_2 = (Keyword)cGroup_2_1.eContents().get(2);
+		private final Keyword cPARTITIONBYKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
+		private final Assignment cArgsAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
+		private final RuleCall cArgsAnalyticExprArgsParserRuleCall_1_0_0 = (RuleCall)cArgsAssignment_1_0.eContents().get(0);
+		private final Group cGroup_1_1 = (Group)cAlternatives_1.eContents().get(1);
+		private final Keyword cLeftParenthesisKeyword_1_1_0 = (Keyword)cGroup_1_1.eContents().get(0);
+		private final RuleCall cAnalyticExprArgsParserRuleCall_1_1_1 = (RuleCall)cGroup_1_1.eContents().get(1);
+		private final Keyword cRightParenthesisKeyword_1_1_2 = (Keyword)cGroup_1_1.eContents().get(2);
 		
 		//QueryPartitionClause:
-		//	'PARTITION' 'BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')');
+		//	'PARTITION BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')');
 		@Override public ParserRule getRule() { return rule; }
 
-		//'PARTITION' 'BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')')
+		//'PARTITION BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')')
 		public Group getGroup() { return cGroup; }
 
-		//'PARTITION'
-		public Keyword getPARTITIONKeyword_0() { return cPARTITIONKeyword_0; }
-
-		//'BY'
-		public Keyword getBYKeyword_1() { return cBYKeyword_1; }
+		//'PARTITION BY'
+		public Keyword getPARTITIONBYKeyword_0() { return cPARTITIONBYKeyword_0; }
 
 		//args=AnalyticExprArgs | '(' AnalyticExprArgs ')'
-		public Alternatives getAlternatives_2() { return cAlternatives_2; }
+		public Alternatives getAlternatives_1() { return cAlternatives_1; }
 
 		//args=AnalyticExprArgs
-		public Assignment getArgsAssignment_2_0() { return cArgsAssignment_2_0; }
+		public Assignment getArgsAssignment_1_0() { return cArgsAssignment_1_0; }
 
 		//AnalyticExprArgs
-		public RuleCall getArgsAnalyticExprArgsParserRuleCall_2_0_0() { return cArgsAnalyticExprArgsParserRuleCall_2_0_0; }
+		public RuleCall getArgsAnalyticExprArgsParserRuleCall_1_0_0() { return cArgsAnalyticExprArgsParserRuleCall_1_0_0; }
 
 		//'(' AnalyticExprArgs ')'
-		public Group getGroup_2_1() { return cGroup_2_1; }
+		public Group getGroup_1_1() { return cGroup_1_1; }
 
 		//'('
-		public Keyword getLeftParenthesisKeyword_2_1_0() { return cLeftParenthesisKeyword_2_1_0; }
+		public Keyword getLeftParenthesisKeyword_1_1_0() { return cLeftParenthesisKeyword_1_1_0; }
 
 		//AnalyticExprArgs
-		public RuleCall getAnalyticExprArgsParserRuleCall_2_1_1() { return cAnalyticExprArgsParserRuleCall_2_1_1; }
+		public RuleCall getAnalyticExprArgsParserRuleCall_1_1_1() { return cAnalyticExprArgsParserRuleCall_1_1_1; }
 
 		//')'
-		public Keyword getRightParenthesisKeyword_2_1_2() { return cRightParenthesisKeyword_2_1_2; }
+		public Keyword getRightParenthesisKeyword_1_1_2() { return cRightParenthesisKeyword_1_1_2; }
 	}
 
 	public class AnalyticExprArgsElements extends AbstractParserRuleElementFinder {
@@ -3785,7 +3275,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//	op=(OpFunctionArgAgregate | Operand);
 		@Override public ParserRule getRule() { return rule; }
 
-		///*fa=OpFunctionArgAgregate | fc=OpFunctionArgCast |*/ op=(OpFunctionArgAgregate | Operand)
+		/// *fa=OpFunctionArgAgregate | fc=OpFunctionArgCast |* / op=(OpFunctionArgAgregate | Operand)
 		public Assignment getOpAssignment() { return cOpAssignment; }
 
 		//(OpFunctionArgAgregate | Operand)
@@ -3810,19 +3300,19 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
 		private final Keyword cLeftParenthesisKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
 		private final Assignment cPAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final RuleCall cPUNSIGNEDTerminalRuleCall_4_1_0 = (RuleCall)cPAssignment_4_1.eContents().get(0);
+		private final RuleCall cPINTTerminalRuleCall_4_1_0 = (RuleCall)cPAssignment_4_1.eContents().get(0);
 		private final Group cGroup_4_2 = (Group)cGroup_4.eContents().get(2);
 		private final Keyword cCommaKeyword_4_2_0 = (Keyword)cGroup_4_2.eContents().get(0);
 		private final Assignment cP2Assignment_4_2_1 = (Assignment)cGroup_4_2.eContents().get(1);
-		private final RuleCall cP2UNSIGNEDTerminalRuleCall_4_2_1_0 = (RuleCall)cP2Assignment_4_2_1.eContents().get(0);
+		private final RuleCall cP2INTTerminalRuleCall_4_2_1_0 = (RuleCall)cP2Assignment_4_2_1.eContents().get(0);
 		private final Keyword cRightParenthesisKeyword_4_3 = (Keyword)cGroup_4.eContents().get(3);
 		private final Keyword cRightParenthesisKeyword_5 = (Keyword)cGroup.eContents().get(5);
 		
 		//OpFunctionCast:
-		//	'CAST(' op=OperandGroup 'AS' type=ID ('(' p=UNSIGNED (',' p2=UNSIGNED)? ')')? ')';
+		//	'CAST(' op=OperandGroup 'AS' type=ID ('(' p=INT (',' p2=INT)? ')')? ')';
 		@Override public ParserRule getRule() { return rule; }
 
-		//'CAST(' op=OperandGroup 'AS' type=ID ('(' p=UNSIGNED (',' p2=UNSIGNED)? ')')? ')'
+		//'CAST(' op=OperandGroup 'AS' type=ID ('(' p=INT (',' p2=INT)? ')')? ')'
 		public Group getGroup() { return cGroup; }
 
 		//'CAST('
@@ -3843,29 +3333,29 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//ID
 		public RuleCall getTypeIDTerminalRuleCall_3_0() { return cTypeIDTerminalRuleCall_3_0; }
 
-		//('(' p=UNSIGNED (',' p2=UNSIGNED)? ')')?
+		//('(' p=INT (',' p2=INT)? ')')?
 		public Group getGroup_4() { return cGroup_4; }
 
 		//'('
 		public Keyword getLeftParenthesisKeyword_4_0() { return cLeftParenthesisKeyword_4_0; }
 
-		//p=UNSIGNED
+		//p=INT
 		public Assignment getPAssignment_4_1() { return cPAssignment_4_1; }
 
-		//UNSIGNED
-		public RuleCall getPUNSIGNEDTerminalRuleCall_4_1_0() { return cPUNSIGNEDTerminalRuleCall_4_1_0; }
+		//INT
+		public RuleCall getPINTTerminalRuleCall_4_1_0() { return cPINTTerminalRuleCall_4_1_0; }
 
-		//(',' p2=UNSIGNED)?
+		//(',' p2=INT)?
 		public Group getGroup_4_2() { return cGroup_4_2; }
 
 		//','
 		public Keyword getCommaKeyword_4_2_0() { return cCommaKeyword_4_2_0; }
 
-		//p2=UNSIGNED
+		//p2=INT
 		public Assignment getP2Assignment_4_2_1() { return cP2Assignment_4_2_1; }
 
-		//UNSIGNED
-		public RuleCall getP2UNSIGNEDTerminalRuleCall_4_2_1_0() { return cP2UNSIGNEDTerminalRuleCall_4_2_1_0; }
+		//INT
+		public RuleCall getP2INTTerminalRuleCall_4_2_1_0() { return cP2INTTerminalRuleCall_4_2_1_0; }
 
 		//')'
 		public Keyword getRightParenthesisKeyword_4_3() { return cRightParenthesisKeyword_4_3; }
@@ -3913,7 +3403,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cScalarScalarNumberOperandParserRuleCall_2_0 = (RuleCall)cScalarAssignment_2.eContents().get(0);
 		
 		//XOperandFragment Operand:
-		//	param=ParameterOperand | eparam=ExclamationParameterOperand | scalar=ScalarNumberOperand;
+		//	param=ParameterOperand | eparam=ExclamationParameterOperand | scalar=ScalarNumberOperand
 		@Override public ParserRule getRule() { return rule; }
 
 		//param=ParameterOperand | eparam=ExclamationParameterOperand | scalar=ScalarNumberOperand
@@ -3944,7 +3434,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cPrmJRPARAMTerminalRuleCall_0 = (RuleCall)cPrmAssignment.eContents().get(0);
 		
 		//ParameterOperand POperand:
-		//	prm=JRPARAM;
+		//	prm=JRPARAM
 		@Override public ParserRule getRule() { return rule; }
 
 		//prm=JRPARAM
@@ -3960,7 +3450,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cPrmJRNPARAMTerminalRuleCall_0 = (RuleCall)cPrmAssignment.eContents().get(0);
 		
 		//ExclamationParameterOperand ExpOperand:
-		//	prm=JRNPARAM;
+		//	prm=JRNPARAM
 		@Override public ParserRule getRule() { return rule; }
 
 		//prm=JRNPARAM
@@ -4095,7 +3585,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cSostrStringOperandParserRuleCall_3_0 = (RuleCall)cSostrAssignment_3.eContents().get(0);
 		
 		//ScalarNumberOperand ScalarOperand:
-		//	soUInt=UNSIGNED | soint=INT | sodbl=SIGNED_DOUBLE | sostr=StringOperand;
+		//	soUInt=UNSIGNED | soint=INT | sodbl=SIGNED_DOUBLE | sostr=StringOperand
 		@Override public ParserRule getRule() { return rule; }
 
 		//soUInt=UNSIGNED | soint=INT | sodbl=SIGNED_DOUBLE | sostr=StringOperand
@@ -4130,39 +3620,27 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.SQLCASE");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cCASEKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cWopAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cWopOperandGroupParserRuleCall_1_0_0 = (RuleCall)cWopAssignment_1_0.eContents().get(0);
-		private final Assignment cExprAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final RuleCall cExprFullExpressionParserRuleCall_1_1_0 = (RuleCall)cExprAssignment_1_1.eContents().get(0);
+		private final Assignment cExprAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cExprFullExpressionParserRuleCall_1_0 = (RuleCall)cExprAssignment_1.eContents().get(0);
 		private final Assignment cWhenAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cWhenSQLCaseWhensParserRuleCall_2_0 = (RuleCall)cWhenAssignment_2.eContents().get(0);
 		private final Keyword cENDKeyword_3 = (Keyword)cGroup.eContents().get(3);
 		
 		//SQLCASE SQLCaseOperand:
-		//	'CASE' (wop=OperandGroup | expr=FullExpression)? when=SQLCaseWhens 'END';
+		//	'CASE' expr=FullExpression? when=SQLCaseWhens 'END'
 		@Override public ParserRule getRule() { return rule; }
 
-		//'CASE' (wop=OperandGroup | expr=FullExpression)? when=SQLCaseWhens 'END'
+		//'CASE' expr=FullExpression? when=SQLCaseWhens 'END'
 		public Group getGroup() { return cGroup; }
 
 		//'CASE'
 		public Keyword getCASEKeyword_0() { return cCASEKeyword_0; }
 
-		//(wop=OperandGroup | expr=FullExpression)?
-		public Alternatives getAlternatives_1() { return cAlternatives_1; }
-
-		//wop=OperandGroup
-		public Assignment getWopAssignment_1_0() { return cWopAssignment_1_0; }
-
-		//OperandGroup
-		public RuleCall getWopOperandGroupParserRuleCall_1_0_0() { return cWopOperandGroupParserRuleCall_1_0_0; }
-
-		//expr=FullExpression
-		public Assignment getExprAssignment_1_1() { return cExprAssignment_1_1; }
+		//expr=FullExpression?
+		public Assignment getExprAssignment_1() { return cExprAssignment_1; }
 
 		//FullExpression
-		public RuleCall getExprFullExpressionParserRuleCall_1_1_0() { return cExprFullExpressionParserRuleCall_1_1_0; }
+		public RuleCall getExprFullExpressionParserRuleCall_1_0() { return cExprFullExpressionParserRuleCall_1_0; }
 
 		//when=SQLCaseWhens
 		public Assignment getWhenAssignment_2() { return cWhenAssignment_2; }
@@ -4210,11 +3688,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.SqlCaseWhen");
 		private final Group cGroup = (Group)rule.eContents().get(1);
 		private final Keyword cWHENKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Alternatives cAlternatives_1 = (Alternatives)cGroup.eContents().get(1);
-		private final Assignment cWopAssignment_1_0 = (Assignment)cAlternatives_1.eContents().get(0);
-		private final RuleCall cWopOperandGroupParserRuleCall_1_0_0 = (RuleCall)cWopAssignment_1_0.eContents().get(0);
-		private final Assignment cExprAssignment_1_1 = (Assignment)cAlternatives_1.eContents().get(1);
-		private final RuleCall cExprFullExpressionParserRuleCall_1_1_0 = (RuleCall)cExprAssignment_1_1.eContents().get(0);
+		private final Assignment cExprAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cExprFullExpressionParserRuleCall_1_0 = (RuleCall)cExprAssignment_1.eContents().get(0);
 		private final Keyword cTHENKeyword_2 = (Keyword)cGroup.eContents().get(2);
 		private final Assignment cTexpAssignment_3 = (Assignment)cGroup.eContents().get(3);
 		private final RuleCall cTexpOperandGroupParserRuleCall_3_0 = (RuleCall)cTexpAssignment_3.eContents().get(0);
@@ -4224,29 +3699,20 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final RuleCall cEexpOperandGroupParserRuleCall_4_1_0 = (RuleCall)cEexpAssignment_4_1.eContents().get(0);
 		
 		//SqlCaseWhen:
-		//	'WHEN' (wop=OperandGroup | expr=FullExpression) 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?;
+		//	'WHEN' expr=FullExpression 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?;
 		@Override public ParserRule getRule() { return rule; }
 
-		//'WHEN' (wop=OperandGroup | expr=FullExpression) 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?
+		//'WHEN' expr=FullExpression 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?
 		public Group getGroup() { return cGroup; }
 
 		//'WHEN'
 		public Keyword getWHENKeyword_0() { return cWHENKeyword_0; }
 
-		//wop=OperandGroup | expr=FullExpression
-		public Alternatives getAlternatives_1() { return cAlternatives_1; }
-
-		//wop=OperandGroup
-		public Assignment getWopAssignment_1_0() { return cWopAssignment_1_0; }
-
-		//OperandGroup
-		public RuleCall getWopOperandGroupParserRuleCall_1_0_0() { return cWopOperandGroupParserRuleCall_1_0_0; }
-
 		//expr=FullExpression
-		public Assignment getExprAssignment_1_1() { return cExprAssignment_1_1; }
+		public Assignment getExprAssignment_1() { return cExprAssignment_1; }
 
 		//FullExpression
-		public RuleCall getExprFullExpressionParserRuleCall_1_1_0() { return cExprFullExpressionParserRuleCall_1_1_0; }
+		public RuleCall getExprFullExpressionParserRuleCall_1_0() { return cExprFullExpressionParserRuleCall_1_0; }
 
 		//'THEN'
 		public Keyword getTHENKeyword_2() { return cTHENKeyword_2; }
@@ -4419,117 +3885,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 	
 	
-	public class XFunctionElements extends AbstractEnumRuleElementFinder {
-		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.XFunction");
-		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
-		private final EnumLiteralDeclaration cXinEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
-		private final Keyword cXinINKeyword_0_0 = (Keyword)cXinEnumLiteralDeclaration_0.eContents().get(0);
-		private final EnumLiteralDeclaration cXnotinEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
-		private final Keyword cXnotinNOTINKeyword_1_0 = (Keyword)cXnotinEnumLiteralDeclaration_1.eContents().get(0);
-		private final EnumLiteralDeclaration cXeqEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
-		private final Keyword cXeqEQUALKeyword_2_0 = (Keyword)cXeqEnumLiteralDeclaration_2.eContents().get(0);
-		private final EnumLiteralDeclaration cXnoteqEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
-		private final Keyword cXnoteqNOTEQUALKeyword_3_0 = (Keyword)cXnoteqEnumLiteralDeclaration_3.eContents().get(0);
-		private final EnumLiteralDeclaration cXlsEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
-		private final Keyword cXlsLESSKeyword_4_0 = (Keyword)cXlsEnumLiteralDeclaration_4.eContents().get(0);
-		private final EnumLiteralDeclaration cXlsrEnumLiteralDeclaration_5 = (EnumLiteralDeclaration)cAlternatives.eContents().get(5);
-		private final Keyword cXlsrLESSKeyword_5_0 = (Keyword)cXlsrEnumLiteralDeclaration_5.eContents().get(0);
-		private final EnumLiteralDeclaration cXgtlEnumLiteralDeclaration_6 = (EnumLiteralDeclaration)cAlternatives.eContents().get(6);
-		private final Keyword cXgtlGREATERKeyword_6_0 = (Keyword)cXgtlEnumLiteralDeclaration_6.eContents().get(0);
-		private final EnumLiteralDeclaration cXgtEnumLiteralDeclaration_7 = (EnumLiteralDeclaration)cAlternatives.eContents().get(7);
-		private final Keyword cXgtGREATERKeyword_7_0 = (Keyword)cXgtEnumLiteralDeclaration_7.eContents().get(0);
-		private final EnumLiteralDeclaration cXbwnEnumLiteralDeclaration_8 = (EnumLiteralDeclaration)cAlternatives.eContents().get(8);
-		private final Keyword cXbwnBETWEENKeyword_8_0 = (Keyword)cXbwnEnumLiteralDeclaration_8.eContents().get(0);
-		private final EnumLiteralDeclaration cXbwncEnumLiteralDeclaration_9 = (EnumLiteralDeclaration)cAlternatives.eContents().get(9);
-		private final Keyword cXbwncBETWEENKeyword_9_0 = (Keyword)cXbwncEnumLiteralDeclaration_9.eContents().get(0);
-		private final EnumLiteralDeclaration cXbwnlEnumLiteralDeclaration_10 = (EnumLiteralDeclaration)cAlternatives.eContents().get(10);
-		private final Keyword cXbwnlBETWEENKeyword_10_0 = (Keyword)cXbwnlEnumLiteralDeclaration_10.eContents().get(0);
-		private final EnumLiteralDeclaration cXbwnrEnumLiteralDeclaration_11 = (EnumLiteralDeclaration)cAlternatives.eContents().get(11);
-		private final Keyword cXbwnrBETWEENKeyword_11_0 = (Keyword)cXbwnrEnumLiteralDeclaration_11.eContents().get(0);
-		
-		//enum XFunction:
-		//	xin='{IN' | xnotin='{NOTIN' | xeq='{EQUAL' | xnoteq='{NOTEQUAL' | xls='{LESS' |
-		//	xlsr='{LESS]' | xgtl='{[GREATER' | xgt='{GREATER' | xbwn='{BETWEEN' | xbwnc='{[BETWEEN]' | xbwnl='{[BETWEEN' |
-		//	xbwnr='{BETWEEN]';
-		public EnumRule getRule() { return rule; }
-
-		//xin='{IN' | xnotin='{NOTIN' | xeq='{EQUAL' | xnoteq='{NOTEQUAL' | xls='{LESS' | xlsr='{LESS]' | xgtl='{[GREATER' |
-		//xgt='{GREATER' | xbwn='{BETWEEN' | xbwnc='{[BETWEEN]' | xbwnl='{[BETWEEN' | xbwnr='{BETWEEN]'
-		public Alternatives getAlternatives() { return cAlternatives; }
-
-		//xin='{IN'
-		public EnumLiteralDeclaration getXinEnumLiteralDeclaration_0() { return cXinEnumLiteralDeclaration_0; }
-
-		//'{IN'
-		public Keyword getXinINKeyword_0_0() { return cXinINKeyword_0_0; }
-
-		//xnotin='{NOTIN'
-		public EnumLiteralDeclaration getXnotinEnumLiteralDeclaration_1() { return cXnotinEnumLiteralDeclaration_1; }
-
-		//'{NOTIN'
-		public Keyword getXnotinNOTINKeyword_1_0() { return cXnotinNOTINKeyword_1_0; }
-
-		//xeq='{EQUAL'
-		public EnumLiteralDeclaration getXeqEnumLiteralDeclaration_2() { return cXeqEnumLiteralDeclaration_2; }
-
-		//'{EQUAL'
-		public Keyword getXeqEQUALKeyword_2_0() { return cXeqEQUALKeyword_2_0; }
-
-		//xnoteq='{NOTEQUAL'
-		public EnumLiteralDeclaration getXnoteqEnumLiteralDeclaration_3() { return cXnoteqEnumLiteralDeclaration_3; }
-
-		//'{NOTEQUAL'
-		public Keyword getXnoteqNOTEQUALKeyword_3_0() { return cXnoteqNOTEQUALKeyword_3_0; }
-
-		//xls='{LESS'
-		public EnumLiteralDeclaration getXlsEnumLiteralDeclaration_4() { return cXlsEnumLiteralDeclaration_4; }
-
-		//'{LESS'
-		public Keyword getXlsLESSKeyword_4_0() { return cXlsLESSKeyword_4_0; }
-
-		//xlsr='{LESS]'
-		public EnumLiteralDeclaration getXlsrEnumLiteralDeclaration_5() { return cXlsrEnumLiteralDeclaration_5; }
-
-		//'{LESS]'
-		public Keyword getXlsrLESSKeyword_5_0() { return cXlsrLESSKeyword_5_0; }
-
-		//xgtl='{[GREATER'
-		public EnumLiteralDeclaration getXgtlEnumLiteralDeclaration_6() { return cXgtlEnumLiteralDeclaration_6; }
-
-		//'{[GREATER'
-		public Keyword getXgtlGREATERKeyword_6_0() { return cXgtlGREATERKeyword_6_0; }
-
-		//xgt='{GREATER'
-		public EnumLiteralDeclaration getXgtEnumLiteralDeclaration_7() { return cXgtEnumLiteralDeclaration_7; }
-
-		//'{GREATER'
-		public Keyword getXgtGREATERKeyword_7_0() { return cXgtGREATERKeyword_7_0; }
-
-		//xbwn='{BETWEEN'
-		public EnumLiteralDeclaration getXbwnEnumLiteralDeclaration_8() { return cXbwnEnumLiteralDeclaration_8; }
-
-		//'{BETWEEN'
-		public Keyword getXbwnBETWEENKeyword_8_0() { return cXbwnBETWEENKeyword_8_0; }
-
-		//xbwnc='{[BETWEEN]'
-		public EnumLiteralDeclaration getXbwncEnumLiteralDeclaration_9() { return cXbwncEnumLiteralDeclaration_9; }
-
-		//'{[BETWEEN]'
-		public Keyword getXbwncBETWEENKeyword_9_0() { return cXbwncBETWEENKeyword_9_0; }
-
-		//xbwnl='{[BETWEEN'
-		public EnumLiteralDeclaration getXbwnlEnumLiteralDeclaration_10() { return cXbwnlEnumLiteralDeclaration_10; }
-
-		//'{[BETWEEN'
-		public Keyword getXbwnlBETWEENKeyword_10_0() { return cXbwnlBETWEENKeyword_10_0; }
-
-		//xbwnr='{BETWEEN]'
-		public EnumLiteralDeclaration getXbwnrEnumLiteralDeclaration_11() { return cXbwnrEnumLiteralDeclaration_11; }
-
-		//'{BETWEEN]'
-		public Keyword getXbwnrBETWEENKeyword_11_0() { return cXbwnrBETWEENKeyword_11_0; }
-	}
-
 	public class EXTRACT_VALUESElements extends AbstractEnumRuleElementFinder {
 		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.EXTRACT_VALUES");
 		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
@@ -4575,11 +3930,11 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		private final Keyword cYearMonthYEAR_MONTHKeyword_19_0 = (Keyword)cYearMonthEnumLiteralDeclaration_19.eContents().get(0);
 		
 		//enum EXTRACT_VALUES:
-		//	ms='MICROSECOND' | s='SECOND' | m='MINUTE' | h='HOUR' |
-		//	day='DAY' | week='WEEK' | month='MONTH' | quart='QUARTER' | year='YEAR' | micros='SECOND_MICROSECOND' |
-		//	minMicro='MINUTE_MICROSECOND' | minSec='MINUTE_SECOND' | hms='HOUR_MICROSECOND' | hs='HOUR_SECOND' |
-		//	hmin='HOUR_MINUTE' | dms='DAY_MICROSECOND' | ds='DAY_SECOND' | daymin='DAY_MINUTE' | dayh='DAY_HOUR' |
-		//	yearMonth='YEAR_MONTH';
+		//	ms='MICROSECOND' | s='SECOND' | m='MINUTE' | h='HOUR' | day='DAY' | week='WEEK' | month='MONTH' | quart='QUARTER' |
+		//	year='YEAR' | micros='SECOND_MICROSECOND'
+		//	| minMicro='MINUTE_MICROSECOND' | minSec='MINUTE_SECOND' | hms='HOUR_MICROSECOND' | hs='HOUR_SECOND' |
+		//	hmin='HOUR_MINUTE' | dms='DAY_MICROSECOND' | ds='DAY_SECOND'
+		//	| daymin='DAY_MINUTE' | dayh='DAY_HOUR' | yearMonth='YEAR_MONTH';
 		public EnumRule getRule() { return rule; }
 
 		//ms='MICROSECOND' | s='SECOND' | m='MINUTE' | h='HOUR' | day='DAY' | week='WEEK' | month='MONTH' | quart='QUARTER' |
@@ -4708,10 +4063,119 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		//'YEAR_MONTH'
 		public Keyword getYearMonthYEAR_MONTHKeyword_19_0() { return cYearMonthYEAR_MONTHKeyword_19_0; }
 	}
+
+	public class XFunctionElements extends AbstractEnumRuleElementFinder {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.XFunction");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cXinEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cXinINKeyword_0_0 = (Keyword)cXinEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cXnotinEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cXnotinNOTINKeyword_1_0 = (Keyword)cXnotinEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cXeqEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cXeqEQUALKeyword_2_0 = (Keyword)cXeqEnumLiteralDeclaration_2.eContents().get(0);
+		private final EnumLiteralDeclaration cXnoteqEnumLiteralDeclaration_3 = (EnumLiteralDeclaration)cAlternatives.eContents().get(3);
+		private final Keyword cXnoteqNOTEQUALKeyword_3_0 = (Keyword)cXnoteqEnumLiteralDeclaration_3.eContents().get(0);
+		private final EnumLiteralDeclaration cXlsEnumLiteralDeclaration_4 = (EnumLiteralDeclaration)cAlternatives.eContents().get(4);
+		private final Keyword cXlsLESSKeyword_4_0 = (Keyword)cXlsEnumLiteralDeclaration_4.eContents().get(0);
+		private final EnumLiteralDeclaration cXgtEnumLiteralDeclaration_5 = (EnumLiteralDeclaration)cAlternatives.eContents().get(5);
+		private final Keyword cXgtGREATERKeyword_5_0 = (Keyword)cXgtEnumLiteralDeclaration_5.eContents().get(0);
+		private final EnumLiteralDeclaration cXlsrEnumLiteralDeclaration_6 = (EnumLiteralDeclaration)cAlternatives.eContents().get(6);
+		private final Keyword cXlsrLESSKeyword_6_0 = (Keyword)cXlsrEnumLiteralDeclaration_6.eContents().get(0);
+		private final EnumLiteralDeclaration cXgtlEnumLiteralDeclaration_7 = (EnumLiteralDeclaration)cAlternatives.eContents().get(7);
+		private final Keyword cXgtlGREATERKeyword_7_0 = (Keyword)cXgtlEnumLiteralDeclaration_7.eContents().get(0);
+		private final EnumLiteralDeclaration cXbwnEnumLiteralDeclaration_8 = (EnumLiteralDeclaration)cAlternatives.eContents().get(8);
+		private final Keyword cXbwnBETWEENKeyword_8_0 = (Keyword)cXbwnEnumLiteralDeclaration_8.eContents().get(0);
+		private final EnumLiteralDeclaration cXbwncEnumLiteralDeclaration_9 = (EnumLiteralDeclaration)cAlternatives.eContents().get(9);
+		private final Keyword cXbwncBETWEENKeyword_9_0 = (Keyword)cXbwncEnumLiteralDeclaration_9.eContents().get(0);
+		private final EnumLiteralDeclaration cXbwnlEnumLiteralDeclaration_10 = (EnumLiteralDeclaration)cAlternatives.eContents().get(10);
+		private final Keyword cXbwnlBETWEENKeyword_10_0 = (Keyword)cXbwnlEnumLiteralDeclaration_10.eContents().get(0);
+		private final EnumLiteralDeclaration cXbwnrEnumLiteralDeclaration_11 = (EnumLiteralDeclaration)cAlternatives.eContents().get(11);
+		private final Keyword cXbwnrBETWEENKeyword_11_0 = (Keyword)cXbwnrEnumLiteralDeclaration_11.eContents().get(0);
+		
+		//enum XFunction:
+		//	xin='IN' | xnotin='NOTIN' | xeq='EQUAL' | xnoteq='NOTEQUAL' | xls='LESS' | xgt='GREATER'
+		//	| xlsr='LESS]' | xgtl='[GREATER' | xbwn='BETWEEN' | xbwnc='[BETWEEN]' | xbwnl='[BETWEEN'
+		//	| xbwnr='BETWEEN]';
+		public EnumRule getRule() { return rule; }
+
+		//xin='IN' | xnotin='NOTIN' | xeq='EQUAL' | xnoteq='NOTEQUAL' | xls='LESS' | xgt='GREATER' | xlsr='LESS]' |
+		//xgtl='[GREATER' | xbwn='BETWEEN' | xbwnc='[BETWEEN]' | xbwnl='[BETWEEN' | xbwnr='BETWEEN]'
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//xin='IN'
+		public EnumLiteralDeclaration getXinEnumLiteralDeclaration_0() { return cXinEnumLiteralDeclaration_0; }
+
+		//'IN'
+		public Keyword getXinINKeyword_0_0() { return cXinINKeyword_0_0; }
+
+		//xnotin='NOTIN'
+		public EnumLiteralDeclaration getXnotinEnumLiteralDeclaration_1() { return cXnotinEnumLiteralDeclaration_1; }
+
+		//'NOTIN'
+		public Keyword getXnotinNOTINKeyword_1_0() { return cXnotinNOTINKeyword_1_0; }
+
+		//xeq='EQUAL'
+		public EnumLiteralDeclaration getXeqEnumLiteralDeclaration_2() { return cXeqEnumLiteralDeclaration_2; }
+
+		//'EQUAL'
+		public Keyword getXeqEQUALKeyword_2_0() { return cXeqEQUALKeyword_2_0; }
+
+		//xnoteq='NOTEQUAL'
+		public EnumLiteralDeclaration getXnoteqEnumLiteralDeclaration_3() { return cXnoteqEnumLiteralDeclaration_3; }
+
+		//'NOTEQUAL'
+		public Keyword getXnoteqNOTEQUALKeyword_3_0() { return cXnoteqNOTEQUALKeyword_3_0; }
+
+		//xls='LESS'
+		public EnumLiteralDeclaration getXlsEnumLiteralDeclaration_4() { return cXlsEnumLiteralDeclaration_4; }
+
+		//'LESS'
+		public Keyword getXlsLESSKeyword_4_0() { return cXlsLESSKeyword_4_0; }
+
+		//xgt='GREATER'
+		public EnumLiteralDeclaration getXgtEnumLiteralDeclaration_5() { return cXgtEnumLiteralDeclaration_5; }
+
+		//'GREATER'
+		public Keyword getXgtGREATERKeyword_5_0() { return cXgtGREATERKeyword_5_0; }
+
+		//xlsr='LESS]'
+		public EnumLiteralDeclaration getXlsrEnumLiteralDeclaration_6() { return cXlsrEnumLiteralDeclaration_6; }
+
+		//'LESS]'
+		public Keyword getXlsrLESSKeyword_6_0() { return cXlsrLESSKeyword_6_0; }
+
+		//xgtl='[GREATER'
+		public EnumLiteralDeclaration getXgtlEnumLiteralDeclaration_7() { return cXgtlEnumLiteralDeclaration_7; }
+
+		//'[GREATER'
+		public Keyword getXgtlGREATERKeyword_7_0() { return cXgtlGREATERKeyword_7_0; }
+
+		//xbwn='BETWEEN'
+		public EnumLiteralDeclaration getXbwnEnumLiteralDeclaration_8() { return cXbwnEnumLiteralDeclaration_8; }
+
+		//'BETWEEN'
+		public Keyword getXbwnBETWEENKeyword_8_0() { return cXbwnBETWEENKeyword_8_0; }
+
+		//xbwnc='[BETWEEN]'
+		public EnumLiteralDeclaration getXbwncEnumLiteralDeclaration_9() { return cXbwncEnumLiteralDeclaration_9; }
+
+		//'[BETWEEN]'
+		public Keyword getXbwncBETWEENKeyword_9_0() { return cXbwncBETWEENKeyword_9_0; }
+
+		//xbwnl='[BETWEEN'
+		public EnumLiteralDeclaration getXbwnlEnumLiteralDeclaration_10() { return cXbwnlEnumLiteralDeclaration_10; }
+
+		//'[BETWEEN'
+		public Keyword getXbwnlBETWEENKeyword_10_0() { return cXbwnlBETWEENKeyword_10_0; }
+
+		//xbwnr='BETWEEN]'
+		public EnumLiteralDeclaration getXbwnrEnumLiteralDeclaration_11() { return cXbwnrEnumLiteralDeclaration_11; }
+
+		//'BETWEEN]'
+		public Keyword getXbwnrBETWEENKeyword_11_0() { return cXbwnrBETWEENKeyword_11_0; }
+	}
 	
 	private final ModelElements pModel;
-	private final WithQueryElements pWithQuery;
-	private final WithColumnsElements pWithColumns;
 	private final FetchFirstElements pFetchFirst;
 	private final OffsetElements pOffset;
 	private final LimitElements pLimit;
@@ -4727,15 +4191,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	private final JoinConditionElements pJoinCondition;
 	private final UsingColsElements pUsingCols;
 	private final TableOrAliasElements pTableOrAlias;
-	private final FromValuesElements pFromValues;
-	private final FromValuesColumnsElements pFromValuesColumns;
-	private final FromValuesColumnNamesElements pFromValuesColumnNames;
-	private final ColumnNameElements pColumnName;
-	private final ValuesElements pValues;
-	private final RowsElements pRows;
-	private final RowElements pRow;
-	private final RowValuesElements pRowValues;
-	private final RowValueElements pRowValue;
 	private final PivotTableElements pPivotTable;
 	private final PivotFunctionsElements pPivotFunctions;
 	private final PivotFunctionElements pPivotFunction;
@@ -4762,21 +4217,15 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	private final ExpressionGroupElements pExpressionGroup;
 	private final XExpressionElements pXExpression;
 	private final XExpression_Elements pXExpression_;
-	private final XFunctionElements eXFunction;
 	private final XExpressionParamsElements pXExpressionParams;
 	private final JRParameterElements pJRParameter;
 	private final ExpressionElements pExpression;
-	private final IsNullValueElements pIsNullValue;
 	private final ComparisonElements pComparison;
 	private final LikeElements pLike;
-	private final LikeValueElements pLikeValue;
 	private final LikeOperandElements pLikeOperand;
 	private final BetweenElements pBetween;
-	private final BetweenValueElements pBetweenValue;
 	private final InOperatorElements pInOperator;
-	private final InValueElements pInValue;
 	private final ExistsOperatorElements pExistsOperator;
-	private final ExistsValueElements pExistsValue;
 	private final OperandListGroupElements pOperandListGroup;
 	private final OperandListElements pOperandList;
 	private final OperandGroupElements pOperandGroup;
@@ -4811,6 +4260,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	private final SQLCaseWhensElements pSQLCaseWhens;
 	private final SqlCaseWhenElements pSqlCaseWhen;
 	private final EXTRACT_VALUESElements eEXTRACT_VALUES;
+	private final XFunctionElements eXFunction;
 	private final JoinTypeElements pJoinType;
 	private final DBIDElements pDBID;
 	private final StringOperandElements pStringOperand;
@@ -4829,7 +4279,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	private final TerminalRule tSTRING_;
 	private final TerminalRule tSTRING;
 	private final TerminalRule tDBNAME;
-	private final TerminalRule tSTRING_CORE;
 	private final TerminalRule tID;
 	private final TerminalRule tML_COMMENT;
 	private final TerminalRule tSL_COMMENT;
@@ -4842,8 +4291,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	public SqlGrammarAccess(GrammarProvider grammarProvider) {
 		this.grammar = internalFindGrammar(grammarProvider);
 		this.pModel = new ModelElements();
-		this.pWithQuery = new WithQueryElements();
-		this.pWithColumns = new WithColumnsElements();
 		this.pFetchFirst = new FetchFirstElements();
 		this.pOffset = new OffsetElements();
 		this.pLimit = new LimitElements();
@@ -4859,15 +4306,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		this.pJoinCondition = new JoinConditionElements();
 		this.pUsingCols = new UsingColsElements();
 		this.pTableOrAlias = new TableOrAliasElements();
-		this.pFromValues = new FromValuesElements();
-		this.pFromValuesColumns = new FromValuesColumnsElements();
-		this.pFromValuesColumnNames = new FromValuesColumnNamesElements();
-		this.pColumnName = new ColumnNameElements();
-		this.pValues = new ValuesElements();
-		this.pRows = new RowsElements();
-		this.pRow = new RowElements();
-		this.pRowValues = new RowValuesElements();
-		this.pRowValue = new RowValueElements();
 		this.pPivotTable = new PivotTableElements();
 		this.pPivotFunctions = new PivotFunctionsElements();
 		this.pPivotFunction = new PivotFunctionElements();
@@ -4894,21 +4332,15 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		this.pExpressionGroup = new ExpressionGroupElements();
 		this.pXExpression = new XExpressionElements();
 		this.pXExpression_ = new XExpression_Elements();
-		this.eXFunction = new XFunctionElements();
 		this.pXExpressionParams = new XExpressionParamsElements();
 		this.pJRParameter = new JRParameterElements();
 		this.pExpression = new ExpressionElements();
-		this.pIsNullValue = new IsNullValueElements();
 		this.pComparison = new ComparisonElements();
 		this.pLike = new LikeElements();
-		this.pLikeValue = new LikeValueElements();
 		this.pLikeOperand = new LikeOperandElements();
 		this.pBetween = new BetweenElements();
-		this.pBetweenValue = new BetweenValueElements();
 		this.pInOperator = new InOperatorElements();
-		this.pInValue = new InValueElements();
 		this.pExistsOperator = new ExistsOperatorElements();
-		this.pExistsValue = new ExistsValueElements();
 		this.pOperandListGroup = new OperandListGroupElements();
 		this.pOperandList = new OperandListElements();
 		this.pOperandGroup = new OperandGroupElements();
@@ -4943,6 +4375,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		this.pSQLCaseWhens = new SQLCaseWhensElements();
 		this.pSqlCaseWhen = new SqlCaseWhenElements();
 		this.eEXTRACT_VALUES = new EXTRACT_VALUESElements();
+		this.eXFunction = new XFunctionElements();
 		this.pJoinType = new JoinTypeElements();
 		this.pDBID = new DBIDElements();
 		this.pStringOperand = new StringOperandElements();
@@ -4961,7 +4394,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		this.tSTRING_ = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.STRING_");
 		this.tSTRING = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.STRING");
 		this.tDBNAME = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.DBNAME");
-		this.tSTRING_CORE = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.STRING_CORE");
 		this.tID = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.ID");
 		this.tML_COMMENT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.ML_COMMENT");
 		this.tSL_COMMENT = (TerminalRule) GrammarUtil.findRuleForName(getGrammar(), "com.jaspersoft.studio.data.Sql.SL_COMMENT");
@@ -4993,33 +4425,13 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 	
 	//Model:
-	//	JRNPARAM? wq=WithQuery? query=SelectQuery;
+	//	JRNPARAM? query=SelectQuery;
 	public ModelElements getModelAccess() {
 		return pModel;
 	}
 	
 	public ParserRule getModelRule() {
 		return getModelAccess().getRule();
-	}
-
-	//WithQuery:
-	//	w='WITH' wname=DBID withCols=WithColumns? 'AS' '(' query=SelectQuery ')';
-	public WithQueryElements getWithQueryAccess() {
-		return pWithQuery;
-	}
-	
-	public ParserRule getWithQueryRule() {
-		return getWithQueryAccess().getRule();
-	}
-
-	//WithColumns:
-	//	'(' UsingCols ')';
-	public WithColumnsElements getWithColumnsAccess() {
-		return pWithColumns;
-	}
-	
-	public ParserRule getWithColumnsRule() {
-		return getWithColumnsAccess().getRule();
 	}
 
 	//FetchFirst:
@@ -5073,10 +4485,10 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Select:
-	//	select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? ('WITH' 'TIES')?)? cols=Columns 'FROM'
-	//	tbl=Tables ('WHERE' whereExpression=FullExpression)? ('GROUP' 'BY' groupByEntry=GroupByColumns)? ('HAVING'
-	//	havingEntry=FullExpression)? ('ORDER' 'BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET'
-	//	offset=Offset)? ('FETCH' 'FIRST' fetchFirst=FetchFirst)?;
+	//	select='SELECT' 'DISTINCT'? ('TOP' (INT | SIGNED_DOUBLE) 'PERCENT'? 'WITH TIES'?)? cols=Columns 'FROM' tbl=Tables
+	//	('WHERE' whereExpression=FullExpression)? ('GROUP BY' groupByEntry=GroupByColumns)? ('HAVING'
+	//	havingEntry=FullExpression)? ('ORDER BY' orderByEntry=OrderByColumns)? ('LIMIT' lim=Limit)? ('OFFSET' offset=Offset)?
+	//	('FETCH FIRST' fetchFirst=FetchFirst)?;
 	public SelectElements getSelectAccess() {
 		return pSelect;
 	}
@@ -5086,7 +4498,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Columns OrColumn:
-	//	ColumnOrAlias ({OrColumn.entries+=current} ("," entries+=ColumnOrAlias)+)?;
+	//	ColumnOrAlias ({OrColumn.entries+=current} ("," entries+=ColumnOrAlias)+)?
 	public ColumnsElements getColumnsAccess() {
 		return pColumns;
 	}
@@ -5116,7 +4528,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Tables OrTable:
-	//	FromTable ({OrTable.entries+=current} ("," entries+=FromTable)+)?;
+	//	FromTable ({OrTable.entries+=current} ("," entries+=FromTable)+)?
 	public TablesElements getTablesAccess() {
 		return pTables;
 	}
@@ -5166,7 +4578,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//TableOrAlias:
-	//	(tfull=TableFull | sq=SubQueryOperand | values=FromValues) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'?
+	//	(tfull=TableFull | sq=SubQueryOperand) (pivot=PivotTable | unpivot=UnpivotTable)? alias='AS'?
 	//	tblAlias=DbObjectName?;
 	public TableOrAliasElements getTableOrAliasAccess() {
 		return pTableOrAlias;
@@ -5174,96 +4586,6 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	
 	public ParserRule getTableOrAliasRule() {
 		return getTableOrAliasAccess().getRule();
-	}
-
-	//FromValues:
-	//	values=Values c=FromValuesColumns?;
-	public FromValuesElements getFromValuesAccess() {
-		return pFromValues;
-	}
-	
-	public ParserRule getFromValuesRule() {
-		return getFromValuesAccess().getRule();
-	}
-
-	//FromValuesColumns:
-	//	ID '(' fvCols=FromValuesColumnNames ')';
-	public FromValuesColumnsElements getFromValuesColumnsAccess() {
-		return pFromValuesColumns;
-	}
-	
-	public ParserRule getFromValuesColumnsRule() {
-		return getFromValuesColumnsAccess().getRule();
-	}
-
-	//FromValuesColumnNames:
-	//	ColumnName ({abc.entries+=current} ("," entries+=ColumnName)+)?;
-	public FromValuesColumnNamesElements getFromValuesColumnNamesAccess() {
-		return pFromValuesColumnNames;
-	}
-	
-	public ParserRule getFromValuesColumnNamesRule() {
-		return getFromValuesColumnNamesAccess().getRule();
-	}
-
-	//ColumnName ColumnNames:
-	//	colName=STRING;
-	public ColumnNameElements getColumnNameAccess() {
-		return pColumnName;
-	}
-	
-	public ParserRule getColumnNameRule() {
-		return getColumnNameAccess().getRule();
-	}
-
-	//Values:
-	//	'(' 'VALUES' rows=Rows ')';
-	public ValuesElements getValuesAccess() {
-		return pValues;
-	}
-	
-	public ParserRule getValuesRule() {
-		return getValuesAccess().getRule();
-	}
-
-	//Rows:
-	//	Row ({Rows.entries+=current} ("," entries+=Row)+)?;
-	public RowsElements getRowsAccess() {
-		return pRows;
-	}
-	
-	public ParserRule getRowsRule() {
-		return getRowsAccess().getRule();
-	}
-
-	//Row:
-	//	'(' rowValues=RowValues ')';
-	public RowElements getRowAccess() {
-		return pRow;
-	}
-	
-	public ParserRule getRowRule() {
-		return getRowAccess().getRule();
-	}
-
-	//RowValues:
-	//	RowValue ({RowValues.entries+=current} ("," entries+=RowValue)+)?;
-	public RowValuesElements getRowValuesAccess() {
-		return pRowValues;
-	}
-	
-	public ParserRule getRowValuesRule() {
-		return getRowValuesAccess().getRule();
-	}
-
-	//RowValue:
-	//	ScalarNumberOperand | null='NULL';
-	public RowValueElements getRowValueAccess() {
-		return pRowValue;
-	}
-	
-	public ParserRule getRowValueRule() {
-		return getRowValueAccess().getRule();
 	}
 
 	//PivotTable:
@@ -5378,7 +4700,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//PivotCols Pivots:
-	//	PivotCol ({pvcs.entries+=current} ("," entries+=PivotCol)+)?;
+	//	PivotCol ({pvcs.entries+=current} ("," entries+=PivotCol)+)?
 	public PivotColsElements getPivotColsAccess() {
 		return pPivotCols;
 	}
@@ -5428,7 +4750,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//OrderByColumns OrOrderByColumn:
-	//	OrderByColumnFull ({OrOrderByColumn.entries+=current} ("," entries+=OrderByColumnFull)+)?;
+	//	OrderByColumnFull ({OrOrderByColumn.entries+=current} ("," entries+=OrderByColumnFull)+)?
 	public OrderByColumnsElements getOrderByColumnsAccess() {
 		return pOrderByColumns;
 	}
@@ -5448,7 +4770,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//GroupByColumns OrGroupByColumn:
-	//	GroupByColumnFull ({OrGroupByColumn.entries+=current} ("," entries+=GroupByColumnFull)+)?;
+	//	GroupByColumnFull ({OrGroupByColumn.entries+=current} ("," entries+=GroupByColumnFull)+)?
 	public GroupByColumnsElements getGroupByColumnsAccess() {
 		return pGroupByColumns;
 	}
@@ -5468,7 +4790,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//FullExpression OrExpr:
-	//	ExpressionFragment ({OrExpr.entries+=current} entries+=ExpressionFragmentSecond+)?;
+	//	ExpressionFragment ({OrExpr.entries+=current} entries+=ExpressionFragmentSecond+)?
 	public FullExpressionElements getFullExpressionAccess() {
 		return pFullExpression;
 	}
@@ -5478,7 +4800,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ExpressionFragmentSecond FullExpression:
-	//	c=('AND' | 'OR') efrag=ExpressionFragment | notPrm=JRNPARAM;
+	//	c=('AND' | 'OR') efrag=ExpressionFragment | notPrm=JRNPARAM
 	public ExpressionFragmentSecondElements getExpressionFragmentSecondAccess() {
 		return pExpressionFragmentSecond;
 	}
@@ -5489,7 +4811,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 	//ExpressionFragment FullExpression:
 	//	expgroup=ExpressionGroup | exp=Expression | xexp=(XExpression | XExpression_) | notPrm=JRNPARAM | in=InOperator |
-	//	exists=ExistsOperator;
+	//	exists=ExistsOperator
 	public ExpressionFragmentElements getExpressionFragmentAccess() {
 		return pExpressionFragment;
 	}
@@ -5499,7 +4821,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ExpressionGroup ExprGroup:
-	//	{ExprGroup} isnot=('NOT' | 'NOT\n')? '(' expr=FullExpression ')';
+	//	{ExprGroup} isnot=('NOT ' | 'NOT\n')? '(' expr=FullExpression ')'
 	public ExpressionGroupElements getExpressionGroupAccess() {
 		return pExpressionGroup;
 	}
@@ -5509,7 +4831,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XExpression XExpr:
-	//	'$X' {XExpr} xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}';
+	//	'$X' {XExpr} '{' xf=XFunction "," col=OperandGroup ("," prm=XExpressionParams)? '}'
 	public XExpressionElements getXExpressionAccess() {
 		return pXExpression;
 	}
@@ -5519,7 +4841,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XExpression_ XExpr:
-	//	'$X' {XExpr} xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}';
+	//	'$X' {XExpr} '{' xf=XFunction "|" col=OperandGroup ("|" prm=XExpressionParams)? '}'
 	public XExpression_Elements getXExpression_Access() {
 		return pXExpression_;
 	}
@@ -5528,20 +4850,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		return getXExpression_Access().getRule();
 	}
 
-	//enum XFunction:
-	//	xin='{IN' | xnotin='{NOTIN' | xeq='{EQUAL' | xnoteq='{NOTEQUAL' | xls='{LESS' |
-	//	xlsr='{LESS]' | xgtl='{[GREATER' | xgt='{GREATER' | xbwn='{BETWEEN' | xbwnc='{[BETWEEN]' | xbwnl='{[BETWEEN' |
-	//	xbwnr='{BETWEEN]';
-	public XFunctionElements getXFunctionAccess() {
-		return eXFunction;
-	}
-	
-	public EnumRule getXFunctionRule() {
-		return getXFunctionAccess().getRule();
-	}
-
 	//XExpressionParams Prms:
-	//	JRParameter ({Prms.entries+=current} ("," entries+=JRParameter)+)?;
+	//	JRParameter ({Prms.entries+=current} ("," entries+=JRParameter)+)?
 	public XExpressionParamsElements getXExpressionParamsAccess() {
 		return pXExpressionParams;
 	}
@@ -5561,24 +4871,14 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Expression FullExpression:
-	//	op1=Operand (isnull=IsNullValue | in=InOperator | exists=ExistsOperator | between=Between | like=Like
-	//	| comp=Comparison);
+	//	op1=Operand (isnull=('IS NULL' | 'IS NOT NULL') | in=InOperator | exists=ExistsOperator | between=Between | like=Like
+	//	| comp=Comparison)
 	public ExpressionElements getExpressionAccess() {
 		return pExpression;
 	}
 	
 	public ParserRule getExpressionRule() {
 		return getExpressionAccess().getRule();
-	}
-
-	//IsNullValue:
-	//	'IS' 'NOT'? 'NULL';
-	public IsNullValueElements getIsNullValueAccess() {
-		return pIsNullValue;
-	}
-	
-	public ParserRule getIsNullValueRule() {
-		return getIsNullValueAccess().getRule();
 	}
 
 	//Comparison:
@@ -5592,23 +4892,13 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Like:
-	//	opLike=LikeValue op2=LikeOperand;
+	//	opLike=('LIKE' | 'NOT LIKE') op2=LikeOperand;
 	public LikeElements getLikeAccess() {
 		return pLike;
 	}
 	
 	public ParserRule getLikeRule() {
 		return getLikeAccess().getRule();
-	}
-
-	//LikeValue:
-	//	'NOT'? 'LIKE';
-	public LikeValueElements getLikeValueAccess() {
-		return pLikeValue;
-	}
-	
-	public ParserRule getLikeValueRule() {
-		return getLikeValueAccess().getRule();
 	}
 
 	//LikeOperand:
@@ -5622,7 +4912,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//Between:
-	//	opBetween=BetweenValue op2=OperandGroup 'AND' op3=OperandGroup;
+	//	opBetween=('BETWEEN' | 'NOT BETWEEN') op2=OperandGroup 'AND' op3=OperandGroup;
 	public BetweenElements getBetweenAccess() {
 		return pBetween;
 	}
@@ -5631,18 +4921,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		return getBetweenAccess().getRule();
 	}
 
-	//BetweenValue:
-	//	'NOT'? 'BETWEEN';
-	public BetweenValueElements getBetweenValueAccess() {
-		return pBetweenValue;
-	}
-	
-	public ParserRule getBetweenValueRule() {
-		return getBetweenValueAccess().getRule();
-	}
-
 	//InOperator InOper:
-	//	{InOper} op=InValue (subquery=SubQueryOperand | opList=OperandListGroup);
+	//	{InOper} op=('NOT IN' | 'IN') (subquery=SubQueryOperand | opList=OperandListGroup)
 	public InOperatorElements getInOperatorAccess() {
 		return pInOperator;
 	}
@@ -5651,18 +4931,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		return getInOperatorAccess().getRule();
 	}
 
-	//InValue:
-	//	'NOT'? 'IN';
-	public InValueElements getInValueAccess() {
-		return pInValue;
-	}
-	
-	public ParserRule getInValueRule() {
-		return getInValueAccess().getRule();
-	}
-
 	//ExistsOperator ExistsOper:
-	//	{ExistsOper} op=ExistsValue (subquery=SubQueryOperand | opList=OperandListGroup);
+	//	{ExistsOper} op=('NOT EXISTS' | 'EXISTS') (subquery=SubQueryOperand | opList=OperandListGroup)
 	public ExistsOperatorElements getExistsOperatorAccess() {
 		return pExistsOperator;
 	}
@@ -5671,19 +4941,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		return getExistsOperatorAccess().getRule();
 	}
 
-	//ExistsValue:
-	//	'NOT'? 'EXISTS';
-	public ExistsValueElements getExistsValueAccess() {
-		return pExistsValue;
-	}
-	
-	public ParserRule getExistsValueRule() {
-		return getExistsValueAccess().getRule();
-	}
-
 	//OperandListGroup:
-	//	'('
-	//	opGroup=OperandList ')';
+	//	'(' opGroup=OperandList ')';
 	public OperandListGroupElements getOperandListGroupAccess() {
 		return pOperandListGroup;
 	}
@@ -5703,7 +4962,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//OperandGroup Operands:
-	//	Operand | '(' Operand ')';
+	//	Operand | '(' Operand ')'
 	public OperandGroupElements getOperandGroupAccess() {
 		return pOperandGroup;
 	}
@@ -5714,7 +4973,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 	//Operand Operands:
 	//	op1=OperandFragment (({Plus.left=current} '+' | {Minus.left=current} '-' | {Concat.left=current} '||' |
-	//	{Multiply.left=current} STAR | {Division.left=current} '/') right=OperandFragment)*;
+	//	{Multiply.left=current} STAR | {Division.left=current} '/') right=OperandFragment)*
 	public OperandElements getOperandAccess() {
 		return pOperand;
 	}
@@ -5725,7 +4984,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 
 	//OperandFragment Operand:
 	//	column=ColumnOperand | xop=XOperandFragment | subq=SubQueryOperand | fcast=OpFunctionCast | fext=FunctionExtract |
-	//	func=OperandFunction | sqlcase=SQLCASE;
+	//	func=OperandFunction | sqlcase=SQLCASE
 	public OperandFragmentElements getOperandFragmentAccess() {
 		return pOperandFragment;
 	}
@@ -5735,7 +4994,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//OperandFunction OpFunction:
-	//	{OpFunction} fname=FNAME (star=STAR | args=OpFunctionArg)? ')' fan=FunctionAnalytical?;
+	//	{OpFunction} fname=FNAME (star=STAR | args=OpFunctionArg)? ')' fan=FunctionAnalytical?
 	public OperandFunctionElements getOperandFunctionAccess() {
 		return pOperandFunction;
 	}
@@ -5745,8 +5004,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//FunctionExtract:
-	//	'EXTRACT'
-	//	'(' v=EXTRACT_VALUES 'FROM' operand=OperandGroup ')';
+	//	'EXTRACT' '(' v=EXTRACT_VALUES 'FROM' operand=OperandGroup ')';
 	public FunctionExtractElements getFunctionExtractAccess() {
 		return pFunctionExtract;
 	}
@@ -5756,8 +5014,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//FunctionAnalytical:
-	//	'OVER' '(' anClause=AnalyticClause
-	//	')';
+	//	'OVER' '(' anClause=AnalyticClause ')';
 	public FunctionAnalyticalElements getFunctionAnalyticalAccess() {
 		return pFunctionAnalytical;
 	}
@@ -5797,8 +5054,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//WindowingClauseOperandFollowing:
-	//	{WindowingClauseOperandFollowing} ('UNBOUNDED' 'FOLLOWING' | 'CURRENT'
-	//	'ROW' | exp=AnalyticExprArg ('PRECEDING' | 'FOLLOWING'));
+	//	{WindowingClauseOperandFollowing} ('UNBOUNDED FOLLOWING' | 'CURRENT ROW' | exp=AnalyticExprArg ('PRECEDING' |
+	//	'FOLLOWING'));
 	public WindowingClauseOperandFollowingElements getWindowingClauseOperandFollowingAccess() {
 		return pWindowingClauseOperandFollowing;
 	}
@@ -5808,8 +5065,8 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//WindowingClauseOperandPreceding:
-	//	{WindowingClauseOperandPreceding} ('UNBOUNDED' 'PRECEDING' | 'CURRENT' 'ROW' | expr=AnalyticExprArg ('PRECEDING'
-	//	| 'FOLLOWING'));
+	//	{WindowingClauseOperandPreceding} ('UNBOUNDED PRECEDING' | 'CURRENT ROW' | expr=AnalyticExprArg ('PRECEDING' |
+	//	'FOLLOWING'));
 	public WindowingClauseOperandPrecedingElements getWindowingClauseOperandPrecedingAccess() {
 		return pWindowingClauseOperandPreceding;
 	}
@@ -5819,7 +5076,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//OrderByClause:
-	//	('ORDER' 'BY' | 'ORDER' 'SIBLINGS' 'BY') args=OrderByClauseArgs;
+	//	('ORDER BY' | 'ORDER SIBLINGS BY') args=OrderByClauseArgs;
 	public OrderByClauseElements getOrderByClauseAccess() {
 		return pOrderByClause;
 	}
@@ -5849,7 +5106,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//QueryPartitionClause:
-	//	'PARTITION' 'BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')');
+	//	'PARTITION BY' (args=AnalyticExprArgs | '(' AnalyticExprArgs ')');
 	public QueryPartitionClauseElements getQueryPartitionClauseAccess() {
 		return pQueryPartitionClause;
 	}
@@ -5899,7 +5156,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//OpFunctionCast:
-	//	'CAST(' op=OperandGroup 'AS' type=ID ('(' p=UNSIGNED (',' p2=UNSIGNED)? ')')? ')';
+	//	'CAST(' op=OperandGroup 'AS' type=ID ('(' p=INT (',' p2=INT)? ')')? ')';
 	public OpFunctionCastElements getOpFunctionCastAccess() {
 		return pOpFunctionCast;
 	}
@@ -5919,7 +5176,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//XOperandFragment Operand:
-	//	param=ParameterOperand | eparam=ExclamationParameterOperand | scalar=ScalarNumberOperand;
+	//	param=ParameterOperand | eparam=ExclamationParameterOperand | scalar=ScalarNumberOperand
 	public XOperandFragmentElements getXOperandFragmentAccess() {
 		return pXOperandFragment;
 	}
@@ -5929,7 +5186,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ParameterOperand POperand:
-	//	prm=JRPARAM;
+	//	prm=JRPARAM
 	public ParameterOperandElements getParameterOperandAccess() {
 		return pParameterOperand;
 	}
@@ -5939,7 +5196,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ExclamationParameterOperand ExpOperand:
-	//	prm=JRNPARAM;
+	//	prm=JRNPARAM
 	public ExclamationParameterOperandElements getExclamationParameterOperandAccess() {
 		return pExclamationParameterOperand;
 	}
@@ -5979,7 +5236,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//ScalarNumberOperand ScalarOperand:
-	//	soUInt=UNSIGNED | soint=INT | sodbl=SIGNED_DOUBLE | sostr=StringOperand;
+	//	soUInt=UNSIGNED | soint=INT | sodbl=SIGNED_DOUBLE | sostr=StringOperand
 	public ScalarNumberOperandElements getScalarNumberOperandAccess() {
 		return pScalarNumberOperand;
 	}
@@ -5989,7 +5246,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//SQLCASE SQLCaseOperand:
-	//	'CASE' (wop=OperandGroup | expr=FullExpression)? when=SQLCaseWhens 'END';
+	//	'CASE' expr=FullExpression? when=SQLCaseWhens 'END'
 	public SQLCASEElements getSQLCASEAccess() {
 		return pSQLCASE;
 	}
@@ -6009,7 +5266,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//SqlCaseWhen:
-	//	'WHEN' (wop=OperandGroup | expr=FullExpression) 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?;
+	//	'WHEN' expr=FullExpression 'THEN' texp=OperandGroup ('ELSE' eexp=OperandGroup)?;
 	public SqlCaseWhenElements getSqlCaseWhenAccess() {
 		return pSqlCaseWhen;
 	}
@@ -6019,17 +5276,29 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	}
 
 	//enum EXTRACT_VALUES:
-	//	ms='MICROSECOND' | s='SECOND' | m='MINUTE' | h='HOUR' |
-	//	day='DAY' | week='WEEK' | month='MONTH' | quart='QUARTER' | year='YEAR' | micros='SECOND_MICROSECOND' |
-	//	minMicro='MINUTE_MICROSECOND' | minSec='MINUTE_SECOND' | hms='HOUR_MICROSECOND' | hs='HOUR_SECOND' |
-	//	hmin='HOUR_MINUTE' | dms='DAY_MICROSECOND' | ds='DAY_SECOND' | daymin='DAY_MINUTE' | dayh='DAY_HOUR' |
-	//	yearMonth='YEAR_MONTH';
+	//	ms='MICROSECOND' | s='SECOND' | m='MINUTE' | h='HOUR' | day='DAY' | week='WEEK' | month='MONTH' | quart='QUARTER' |
+	//	year='YEAR' | micros='SECOND_MICROSECOND'
+	//	| minMicro='MINUTE_MICROSECOND' | minSec='MINUTE_SECOND' | hms='HOUR_MICROSECOND' | hs='HOUR_SECOND' |
+	//	hmin='HOUR_MINUTE' | dms='DAY_MICROSECOND' | ds='DAY_SECOND'
+	//	| daymin='DAY_MINUTE' | dayh='DAY_HOUR' | yearMonth='YEAR_MONTH';
 	public EXTRACT_VALUESElements getEXTRACT_VALUESAccess() {
 		return eEXTRACT_VALUES;
 	}
 	
 	public EnumRule getEXTRACT_VALUESRule() {
 		return getEXTRACT_VALUESAccess().getRule();
+	}
+
+	//enum XFunction:
+	//	xin='IN' | xnotin='NOTIN' | xeq='EQUAL' | xnoteq='NOTEQUAL' | xls='LESS' | xgt='GREATER'
+	//	| xlsr='LESS]' | xgtl='[GREATER' | xbwn='BETWEEN' | xbwnc='[BETWEEN]' | xbwnl='[BETWEEN'
+	//	| xbwnr='BETWEEN]';
+	public XFunctionElements getXFunctionAccess() {
+		return eXFunction;
+	}
+	
+	public EnumRule getXFunctionRule() {
+		return getXFunctionAccess().getRule();
 	}
 
 	//JoinType:
@@ -6110,21 +5379,20 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 		return tSTAR;
 	} 
 
-	//terminal UNSIGNED returns ecore::ELongObject:
+	//terminal UNSIGNED returns ecore::EIntegerObject:
 	//	'0'..'9'+;
 	public TerminalRule getUNSIGNEDRule() {
 		return tUNSIGNED;
 	} 
 
-	//terminal INT returns ecore::ELongObject:
+	//terminal INT returns ecore::EIntegerObject:
 	//	'-'? UNSIGNED;
 	public TerminalRule getINTRule() {
 		return tINT;
 	} 
 
 	//terminal SIGNED_DOUBLE returns ecore::EBigDecimal:
-	//	'-'? UNSIGNED ('.'
-	//	UNSIGNED)?;
+	//	'-'? UNSIGNED ('.' UNSIGNED)?;
 	public TerminalRule getSIGNED_DOUBLERule() {
 		return tSIGNED_DOUBLE;
 	} 
@@ -6136,8 +5404,7 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	} 
 
 	//terminal DATE:
-	//	"'" '0'..'9' '0'..'9' '0'..'9' '0'..'9' '-'
-	//	'0'..'1' '0'..'9' '-' '0'..'3' '0'..'9' "'";
+	//	"'" '0'..'9' '0'..'9' '0'..'9' '0'..'9' '-' '0'..'1' '0'..'9' '-' '0'..'3' '0'..'9' "'";
 	public TerminalRule getDATERule() {
 		return tDATE;
 	} 
@@ -6149,40 +5416,38 @@ public class SqlGrammarAccess extends AbstractGrammarElementFinder {
 	} 
 
 	//terminal STRING_:
-	//	"'" ("''" | STRING_CORE | !('\\' | "'"))* "'";
+	//	"'" ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | "'"))* "'";
 	public TerminalRule getSTRING_Rule() {
 		return tSTRING_;
 	} 
 
 	//terminal STRING:
-	//	'"' (STRING_CORE | !('\\' | '"'))* '"';
+	//	'"' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '"'))* '"';
 	public TerminalRule getSTRINGRule() {
 		return tSTRING;
 	} 
 
 	//terminal DBNAME:
-	//	'`' (STRING_CORE | !('\\' | '`'))* '`' | '[' (STRING_CORE | !('\\' | ']'))* ']';
+	//	'`' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | '`'))* '`' |
+	//	'[' ('\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\') | !('\\' | ']'))* ']';
 	public TerminalRule getDBNAMERule() {
 		return tDBNAME;
 	} 
 
-	//terminal fragment STRING_CORE:
-	//	'\\' ('b' | 't' | 'n' | 'f' | 'r' | 'u' | '"' | "'" | '\\');
-	public TerminalRule getSTRING_CORERule() {
-		return tSTRING_CORE;
-	} 
-
 	//terminal ID:
-	//	('a'..'z' | 'A'..'Z' | 'À'..'ÿ' | 'Ā'..'ſ' |
-	//	'ƀ'..'ɏ' | 'А'..'я' | '_' | '$' | 'ぁ'..'ゟ' | '゠'..'ヿ' | 'ㇰ'..'ㇿ' | '一'..'鿿' | '歴'..'す' | 'ア'..'ン' | '豈'..'﫿' |
-	//	'㐀'..'䶿' | '＿') ('a'..'z' | 'A'..'Z' | 'À'..'ÿ' | 'Ā'..'ſ' | 'ƀ'..'ɏ' | 'А'..'я' | '_' | '-' |
-	//	'$' | 'ぁ'..'ゟ' | '゠'..'ヿ' | 'ㇰ'..'ㇿ' | '一'..'鿿' | '歴'..'す' | 'ア'..'ン' | '豈'..'﫿' | '㐀'..'䶿' | '＿' | '0'..'9')*;
+	//	('a'..'z' | 'A'..'Z' | 'À'..'ÿ' | 'Ā'..'ſ' | 'ƀ'..'ɏ' | 'А'..'я' | '_' | '$' | 'ぁ'..'ゟ' | '゠'..'ヿ' | 'ㇰ'..'ㇿ' |
+	//	'一'..'鿿' |
+	//	'歴'..'す' | 'ア'..'ン' | '豈'..'﫿' | '㐀'..'䶿' | '＿') ('a'..'z' | 'A'..'Z' | 'À'..'ÿ' | 'Ā'..'ſ' | 'ƀ'..'ɏ' | 'А'..'я' |
+	//	'_' | '-' | '$' | 'ぁ'..'ゟ' | '゠'..'ヿ' | 'ㇰ'..'ㇿ' |
+	//	'一'..'鿿' |
+	//	'歴'..'す' | 'ア'..'ン' | '豈'..'﫿' | '㐀'..'䶿' | '＿' |
+	//	'0'..'9')*;
 	public TerminalRule getIDRule() {
 		return tID;
 	} 
 
 	//terminal ML_COMMENT:
-	//	'/*'->'*/';
+	//	'/ *'->'* /';
 	public TerminalRule getML_COMMENTRule() {
 		return tML_COMMENT;
 	} 

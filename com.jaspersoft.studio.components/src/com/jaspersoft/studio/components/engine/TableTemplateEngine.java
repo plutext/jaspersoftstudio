@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.engine;
 
@@ -310,7 +318,7 @@ public class TableTemplateEngine extends DefaultTemplateEngine {
 				groupCell.addElement(copyElement);
 			}
 		} else {
-			JRDesignTextField sText = new MTextField().createJRElement(jd, true);
+			JRDesignTextField sText = new MTextField().createJRElement(jd);
 			sText.setWidth(newGroupWidth);
 			sText.setHeight(groupCell.getHeight());
 			sText.setX(0);
@@ -682,7 +690,7 @@ public class TableTemplateEngine extends DefaultTemplateEngine {
 			detailContent = new ArrayList<JRDesignElement>();
 			tableGroupField = new ArrayList<List<JRDesignElement>>();
 			List<JRDesignElement> fakeGroupPlaceHolder = new ArrayList<JRDesignElement>();
-			JRDesignTextField groupElement = new MTextField().createJRElement(jd, true);
+			JRDesignTextField groupElement = new MTextField().createJRElement(jd);
 			groupElement.setExpression(ExprUtil.setValues(new JRDesignExpression(), "$F{Group1}", "java.Lang.Object"));
 			fakeGroupPlaceHolder.add(groupElement);
 			tableGroupField.add(fakeGroupPlaceHolder);

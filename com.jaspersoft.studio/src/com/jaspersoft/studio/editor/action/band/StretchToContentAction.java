@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action.band;
 
@@ -42,7 +50,7 @@ public class StretchToContentAction extends SelectionAction {
 	 * Constructs a <code>CreateAction</code> using the specified part.
 	 * 
 	 * @param part
-	 *            The part for this action
+	 *          The part for this action
 	 */
 	public StretchToContentAction(IWorkbenchPart part) {
 		super(part);
@@ -50,16 +58,14 @@ public class StretchToContentAction extends SelectionAction {
 		setText(Messages.StretchToContentAction_name);
 		setToolTipText(Messages.StretchToContentAction_tooltip);
 		setId(ID);
-		setImageDescriptor(JaspersoftStudioPlugin.getInstance().getImageDescriptor("icons/transparent_icon.png"));
 		// setImageDescriptor(JaspersoftStudioPlugin.getImageDescriptor(layout.getIcon()));
 		// setDisabledImageDescriptor(JaspersoftStudioPlugin.getImageDescriptor(layout.getIcon()));
 		setEnabled(false);
 	}
 
 	/**
-	 * Returns <code>true</code> if the selected objects can be created. Returns
-	 * <code>false</code> if there are no objects selected or the selected objects
-	 * are not {@link EditPart}s.
+	 * Returns <code>true</code> if the selected objects can be created. Returns <code>false</code> if there are no
+	 * objects selected or the selected objects are not {@link EditPart}s.
 	 * 
 	 * @return if the command should be enabled
 	 */
@@ -74,7 +80,7 @@ public class StretchToContentAction extends SelectionAction {
 	 * Create a command to create the selected objects.
 	 * 
 	 * @param objects
-	 *            The objects to be deleted.
+	 *          The objects to be deleted.
 	 * @return The command to remove the selected objects.
 	 */
 	public Command createReorderCommand(List<?> objects) {
@@ -82,68 +88,65 @@ public class StretchToContentAction extends SelectionAction {
 			return null;
 		Object obj = objects.get(0);
 		if (obj instanceof EditPart) {
-			Object model = ((EditPart) obj).getModel();
-			if (model instanceof ANode) {
-				ANode n = (ANode) model;
-				if (n instanceof MPage) {
-					for (INode c : n.getChildren()) {
-						if (c instanceof MGraphicElement) {
-							n = (ANode) c;
-							break;
-						}
+			ANode n = (ANode) ((EditPart) obj).getModel();
+			if (n instanceof MPage) {
+				for (INode c : n.getChildren()) {
+					if (c instanceof MGraphicElement) {
+						n = (ANode) c;
+						break;
 					}
 				}
-				if (!(n instanceof IGraphicElement))
-					return null;
-
-				JRElementGroup container = getContainer(n);
-				if (container == null)
-					return null;
-
-				APropertyNode mcontainer = getContainerNode(n);
-				JSSCompoundCommand cc = new JSSCompoundCommand(getText(), mcontainer);
-				Dimension size = new Dimension(0, 0);
-				if (container instanceof JRDesignFrame) {
-					size = ModelUtils.getContainerSize(container.getChildren(), size);
-					if (size.height > 0 && size.width > 0) {
-						SetValueCommand cmd = new SetValueCommand();
-						cmd.setTarget(mcontainer);
-						cmd.setPropertyId(JRDesignFrame.PROPERTY_WIDTH);
-						cmd.setPropertyValue(size.width);
-						cc.add(cmd);
-
-						cmd = new SetValueCommand();
-						cmd.setTarget(mcontainer);
-						cmd.setPropertyId(JRDesignFrame.PROPERTY_HEIGHT);
-						cmd.setPropertyValue(size.height);
-						cc.add(cmd);
-					}
-				} else if (container instanceof JRDesignBand) {
-					int bandHeight = ModelUtils.getBandHeight((JRBand) container);
-					if (bandHeight > 0) {
-						SetValueCommand cmd = new SetValueCommand();
-						cmd.setTarget(mcontainer);
-						cmd.setPropertyId(JRDesignBand.PROPERTY_HEIGHT);
-						cmd.setPropertyValue(bandHeight);
-						cc.add(cmd);
-					}
-				} else if (n instanceof IGraphicElementContainer) {
-					Command c = JaspersoftStudioPlugin.getExtensionManager().getStretchToContent(n);
-					if (c != null)
-						cc.add(c);
-				} else if (n.getParent() instanceof IGraphicElementContainer) {
-					Command c = JaspersoftStudioPlugin.getExtensionManager().getStretchToContent(n.getParent());
-					if (c != null)
-						cc.add(c);
-				}
-				return cc;
 			}
+			if (!(n instanceof IGraphicElement))
+				return null;
+
+			JRElementGroup container = getContainer(n);
+			if (container == null)
+				return null;
+
+			APropertyNode mcontainer = getContainerNode(n);
+			JSSCompoundCommand cc = new JSSCompoundCommand(getText(), mcontainer);
+			Dimension size = new Dimension(0, 0);
+			if (container instanceof JRDesignFrame) {
+				size = ModelUtils.getContainerSize(container.getChildren(), size);
+				if (size.height > 0 && size.width > 0) {
+					SetValueCommand cmd = new SetValueCommand();
+					cmd.setTarget(mcontainer);
+					cmd.setPropertyId(JRDesignFrame.PROPERTY_WIDTH);
+					cmd.setPropertyValue(size.width);
+					cc.add(cmd);
+
+					cmd = new SetValueCommand();
+					cmd.setTarget(mcontainer);
+					cmd.setPropertyId(JRDesignFrame.PROPERTY_HEIGHT);
+					cmd.setPropertyValue(size.height);
+					cc.add(cmd);
+				}
+			} else if (container instanceof JRDesignBand) {
+				int bandHeight = ModelUtils.getBandHeight((JRBand) container);
+				if (bandHeight > 0) {
+					SetValueCommand cmd = new SetValueCommand();
+					cmd.setTarget(mcontainer);
+					cmd.setPropertyId(JRDesignBand.PROPERTY_HEIGHT);
+					cmd.setPropertyValue(bandHeight);
+					cc.add(cmd);
+				}
+			} else if (n instanceof IGraphicElementContainer) {
+				Command c = JaspersoftStudioPlugin.getExtensionManager().getStretchToContent(n);
+				if (c != null)
+					cc.add(c);
+			} else if (n.getParent() instanceof IGraphicElementContainer) {
+				Command c = JaspersoftStudioPlugin.getExtensionManager().getStretchToContent(n.getParent());
+				if (c != null)
+					cc.add(c);
+			}
+			return cc;
 		}
 		return null;
 	}
 
 	private JRElementGroup getContainer(ANode n) {
-		if (n != null) {
+		if (n != null){
 			Object val = n.getValue();
 			if (n instanceof IGroupElement)
 				return ((IGroupElement) n).getJRElementGroup();
@@ -159,10 +162,11 @@ public class StretchToContentAction extends SelectionAction {
 		Object val = n.getValue();
 		if (n instanceof IGroupElement)
 			return (APropertyNode) n;
-		if (val instanceof JRElementGroup) {
-			if (n instanceof MElementGroup) {
+		if (val instanceof JRElementGroup){
+			if(n instanceof MElementGroup) {
 				return getContainerNode(n.getParent());
-			} else {
+			}
+			else {
 				return (APropertyNode) n;
 			}
 		}

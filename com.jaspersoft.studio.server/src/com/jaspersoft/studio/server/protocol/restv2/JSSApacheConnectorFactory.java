@@ -1,10 +1,5 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -18,8 +13,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
 import org.glassfish.jersey.client.spi.Connector;
 
-import net.sf.jasperreports.eclipse.util.HttpUtils;
-
 public class JSSApacheConnectorFactory extends ApacheConnectorProvider {
 	private Connector conn;
 
@@ -29,7 +22,8 @@ public class JSSApacheConnectorFactory extends ApacheConnectorProvider {
 		return conn;
 	}
 
-	private Response doWait(Future<Response> rf, IProgressMonitor monitor) throws Exception {
+	private Response doWait(Future<Response> rf, IProgressMonitor monitor)
+			throws Exception {
 		try {
 			if (monitor != null)
 				while (!rf.isDone() && !rf.isCancelled()) {
@@ -45,29 +39,25 @@ public class JSSApacheConnectorFactory extends ApacheConnectorProvider {
 		}
 	}
 
-	public synchronized Response get(Builder builder, IProgressMonitor monitor) throws Exception {
-		builder.header("Accept-Timezone", TimeZone.getDefault().getID());
-		builder.header("User-Agent", HttpUtils.USER_AGENT_JASPERSOFT_STUDIO);
+	public synchronized Response get(Builder builder, IProgressMonitor monitor)
+			throws Exception {
 		return doWait(builder.async().get(), monitor);
 	}
 
-	public Response delete(Builder builder, IProgressMonitor monitor) throws Exception {
-		builder.header("Accept-Timezone", TimeZone.getDefault().getID());
-		// builder.header("User-Agent", HttpUtils.USER_AGENT_JASPERSOFT_STUDIO);
+	public Response delete(Builder builder, IProgressMonitor monitor)
+			throws Exception { 
 		return doWait(builder.async().delete(), monitor);
 	}
 
-	public Response post(Builder builder, Entity<?> entity, IProgressMonitor monitor) throws Exception {
-		builder.header("Accept-Timezone", TimeZone.getDefault().getID());
-		// builder.header("User-Agent", HttpUtils.USER_AGENT_JASPERSOFT_STUDIO);
+	public Response post(Builder builder, Entity<?> entity,
+			IProgressMonitor monitor) throws Exception {
 		return doWait(builder.async().post(entity), monitor);
 	}
 
-	public Response put(Builder builder, Entity<?> entity, IProgressMonitor monitor) throws Exception {
+	public Response put(Builder builder, Entity<?> entity,
+			IProgressMonitor monitor) throws Exception { 
 		// builder.header("Content-Lenght", 0);
-		builder.header("Accept-Timezone", TimeZone.getDefault().getID());
 		builder.header("X-HTTP-Method-Override", "PUT");
-		// builder.header("User-Agent", HttpUtils.USER_AGENT_JASPERSOFT_STUDIO);
 		return doWait(builder.async().post(entity), monitor);
 	}
 }

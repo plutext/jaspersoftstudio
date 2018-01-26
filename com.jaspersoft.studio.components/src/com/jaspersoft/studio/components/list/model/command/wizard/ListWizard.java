@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.list.model.command.wizard;
 
@@ -123,7 +131,7 @@ public class ListWizard extends JSSWizard {
 		
 		MList list = new MList();
 		
-		JRDesignComponentElement jrElement = list.createJRElement(getConfig().getJasperDesign(), true);
+		JRDesignComponentElement jrElement = list.createJRElement(getConfig().getJasperDesign());
 		//Set the element size
 		if (suggestedWidth > 0) jrElement.setWidth(suggestedWidth);
 		if (suggestedHeight > 0) jrElement.setHeight(suggestedHeight);
@@ -163,7 +171,7 @@ public class ListWizard extends JSSWizard {
 		int elementWidth = lst.size() > 0 ? Math.round(jrElement.getWidth()/lst.size()) : jrElement.getWidth();
 		if (lst != null)
 			for (Object f : lst) {
-				JRDesignTextField element = mtext.createJRElement(jd, true);
+				JRDesignTextField element = mtext.createJRElement(jd);
 				element.setX(x);
 				element.setWidth(elementWidth);
 				element.setHeight(jrElement.getHeight());

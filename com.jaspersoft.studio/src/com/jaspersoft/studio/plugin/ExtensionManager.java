@@ -1,5 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.plugin;
 
@@ -28,15 +33,12 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.palette.PaletteEntry;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterFactory;
 import com.jaspersoft.studio.data.DataAdapterManager;
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
-import com.jaspersoft.studio.data.designer.IParameterICContributor;
 import com.jaspersoft.studio.data.jdbc.JDBCDriverDefinition;
 import com.jaspersoft.studio.data.jdbc.JDBCDriverDefinitionsContainer;
 import com.jaspersoft.studio.editor.IEditorContributor;
@@ -58,48 +60,42 @@ import com.jaspersoft.studio.swt.widgets.WHyperlink;
 import com.jaspersoft.studio.swt.widgets.WHyperlink.UIElement;
 import com.jaspersoft.studio.templates.TemplateProvider;
 import com.jaspersoft.studio.utils.AContributorAction;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class ExtensionManager {
 
 	private static Map<Class<?>, IComponentFactory> factoryByNodeType = new HashMap<Class<?>, IComponentFactory>();
-
+	
 	private List<IEditorContributor> eContributor = new ArrayList<IEditorContributor>();
-
+	
 	private List<String> customHyperlinkTypes;
-
+	
 	private Map<String, List<HyperlinkDefaultParameter>> defaultHyperlinkParametersByCustomType;
-
+	
 	private Map<String, List<WHyperlink.UIElement>> uiElementsIDByCustomType;
-
+	
 	private static final Comparator<IConfigurationElement> extensionSorter = new Comparator<IConfigurationElement>() {
 
 		@Override
 		public int compare(IConfigurationElement o1, IConfigurationElement o2) {
 			String contributor1 = o1.getContributor().getName();
 			String contributor2 = o2.getContributor().getName();
-			if (JaspersoftStudioPlugin.PLUGIN_ID.equals(contributor1)) {
+			if (JaspersoftStudioPlugin.PLUGIN_ID.equals(contributor1)){
 				return 2;
-			} else if (JaspersoftStudioPlugin.PLUGIN_ID.equals(contributor2)) {
+			} else if (JaspersoftStudioPlugin.PLUGIN_ID.equals(contributor2)){
 				return -2;
 			} else {
 				int stringCompare = contributor1.compareTo(contributor2);
-				if (stringCompare < 0)
-					return -1;
-				else if (stringCompare > 0)
-					return 1;
-				else
-					return stringCompare;
+				if (stringCompare < 0) return -1;
+				else if (stringCompare > 0) return 1;
+				else return stringCompare;
 			}
 		}
 	};
-	private List<IParameterICContributor> prmICContributors = new ArrayList<IParameterICContributor>();
 
 	public void init() {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()
@@ -145,26 +141,6 @@ public class ExtensionManager {
 		}
 
 		DataAdapterManager.getPreferencesStorage();
-	}
-
-	public void createParameterICUI(Composite parent, JRDesignParameter prm, AQueryDesigner designer) {
-		IConfigurationElement[] config = Platform.getExtensionRegistry()
-				.getConfigurationElementsFor(JaspersoftStudioPlugin.PLUGIN_ID, "parameterIC"); //$NON-NLS-1$
-		prmICContributors.clear();
-		for (IConfigurationElement e : config) {
-			try {
-				prmICContributors.add((IParameterICContributor) e.createExecutableExtension("ICParameterContributor")); //$NON-NLS-1$
-			} catch (CoreException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
-		for (IParameterICContributor pic : prmICContributors)
-			pic.createUI(parent, prm, designer);
-	}
-
-	public void refreshICUI(JRDesignParameter prm) {
-		for (IParameterICContributor pic : prmICContributors)
-			pic.refresh(prm);
 	}
 
 	public List<IRepositoryViewProvider> getRepositoryProviders() {
@@ -398,37 +374,37 @@ public class ExtensionManager {
 		}
 		return actionMap.values();
 	}
-
+	
 	/**
-	 * Static variable to cache the loaded binding after the first time they are requested
+	 * Static variable to cache the loaded binding after the first time they are
+	 * requested
 	 */
 	private static HashMap<String, BindingElement> contributedBindings = null;
-
+	
 	/**
-	 * Return a list of the contributed key bindings, these are the keybindings contributed to the studio keybindings
-	 * manager. The key binding of a specific action can be read from the returned map using its id
+	 * Return a list of the contributed key bindings, these are the keybindings contributed to the studio keybindings manager.
+	 * The key binding of a specific action can be read from the returned map using its id
 	 * 
-	 * @return a not null list Map of binding where the key is the id of the binded key and the value is the definition of
-	 *         the binding key
+	 * @return a not null list Map of binding where the key is the id of the binded key and the value is the definition of the binding
+	 * key
 	 */
 	public static HashMap<String, BindingElement> getContributedBindings() {
 		if (contributedBindings == null) {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor(JaspersoftStudioPlugin.PLUGIN_ID, "bindings");
-
+	
 			contributedBindings = new HashMap<String, BindingElement>();
 			for (IConfigurationElement el : config) {
-				try {
+				try{
 					String bindingID = el.getAttribute("id");
 					String bindingSequence = el.getAttribute("sequence");
 					String bindingContext = el.getAttribute("context");
 					String bindinDescription = el.getAttribute("description");
 					String bidningName = el.getAttribute("name");
 					JSSKeySequence bindingKeySequence = JSSKeySequence.getInstance(bindingSequence);
-					BindingElement element = new BindingElement(bindingID, bidningName, Misc.nvl(bindinDescription),
-							bindingContext, bindingKeySequence);
+					BindingElement element = new BindingElement(bindingID, bidningName, Misc.nvl(bindinDescription), bindingContext, bindingKeySequence);
 					contributedBindings.put(bindingID, element);
-				} catch (Exception ex) {
+				} catch (Exception ex){
 					ex.printStackTrace();
 					JaspersoftStudioPlugin.getInstance().logError(ex);
 				}
@@ -436,12 +412,13 @@ public class ExtensionManager {
 		}
 		return contributedBindings;
 	}
-
+	
 	/**
-	 * List of handler used to export or import Jaspersoft Studio resources. It is used as cache for the contributed items
+	 * List of handler used to export or import Jaspersoft Studio resources. It is used 
+	 * as cache for the contributed items
 	 */
 	private static List<IExportedResourceHandler> contributedExporters = null;
-
+	
 	/**
 	 * Return the List of handler used to export or import Jaspersoft Studio resources.
 	 * 
@@ -451,10 +428,10 @@ public class ExtensionManager {
 		if (contributedExporters == null) {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor(JaspersoftStudioPlugin.PLUGIN_ID, "resourceExporter");
-
+	
 			contributedExporters = new ArrayList<IExportedResourceHandler>();
 			List<IConfigurationElement> configList = new ArrayList<IConfigurationElement>(Arrays.asList(config));
-			Collections.sort(configList, extensionSorter);
+			Collections.sort(configList, extensionSorter); 
 			Collections.reverse(configList);
 			for (IConfigurationElement el : configList) {
 				Object defaultSupportClazz;
@@ -472,6 +449,7 @@ public class ExtensionManager {
 		}
 		return contributedExporters;
 	}
+
 
 	public List<PaletteGroup> getPaletteGroups() {
 		List<PaletteGroup> paletteGroup = new ArrayList<PaletteGroup>();
@@ -622,15 +600,6 @@ public class ExtensionManager {
 		}
 		return null;
 	}
-	
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		for (IComponentFactory f : getPrioritizedFactoryList(model)) {
-			EditPart c = f.createTreeEditPart(context, model);
-			if (c != null)
-				return c;
-		}
-		return null;
-	}
 
 	public List<Action> getActions(WorkbenchPart part) {
 		List<Action> lst = new ArrayList<Action>();
@@ -661,19 +630,9 @@ public class ExtensionManager {
 		return null;
 	}
 
-	public void onInitContext(JasperReportsConfiguration jConfig) {
-		for (IEditorContributor f : eContributor)
-			f.onInitContext(jConfig);
-	}
-
 	public void onLoad(JasperDesign jd, EditorPart editor) {
 		for (IEditorContributor f : eContributor)
 			f.onLoad(jd, editor);
-	}
-
-	public void onRename(IFile oldName, IFile newName, JasperReportsContext jrConfig, IProgressMonitor monitor) {
-		for (IEditorContributor f : eContributor)
-			f.onRename(oldName, newName, jrConfig, monitor);
 	}
 
 	public void onSave(JasperReportsConfiguration jrConfig, IProgressMonitor monitor) {

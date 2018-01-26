@@ -1,10 +1,17 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.swt.widgets;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,11 +19,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.draw2d.ColorConstants;
-import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,27 +39,12 @@ import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.ValidatedDecimalFormat;
 
 /**
- * Extension of an swt widget to handle only numeric values. It will forbid invalid characters.
- * It will handle also min and max values. It is not possible to forbid the input of numbers
- * outside the max min bounds in some cases. For example if the minimum is 1.5 and the user want
- * to type a number it will start with 1, but at this point the platform would not allow him 
- * to input because it is lower of the minimum, but maybe the user want to add other digits that
- * in the end will keep the value inside the bounds. For this reason when the value is out of bounds
- * the control is colored in red and the user is allow to type any number. Until the value is not valid
- * it is not stored at model level, and it is reverted to a valid value when the focus is lost
- * 
+ * Extension of an swt widget to handle only numeric values
  * 
  * @author Orlandin Marco
  *
  */
 public class NumericText extends Text {
-	
-	/**
-	 * Enumeration used as a result of the validation, valid it means the inserted text is 
-	 * a valid number, not valid means it can not be formatted as a number, out of bounds means
-	 * it is a valid number but exceeds the min or max accepted values
-	 */
-	protected enum VALIDATION_RESULT {VALID, NOT_VALID, OUT_OF_BOUNDS};
 	
 	/**
 	 * The listeners on this widget
@@ -64,12 +54,12 @@ public class NumericText extends Text {
 	/**
 	 * The minimum value accepted
 	 */
-	private Double minimum = 0d;
+	private double minimum = 0;
 	
 	/**
 	 * The maximum value accepted
 	 */
-	private Double maximum = Double.MAX_VALUE;
+	private double maximum = Double.MAX_VALUE;
 	
 	/**
 	 * Flag used to know if the null value is accepted or not
@@ -99,17 +89,7 @@ public class NumericText extends Text {
 	/**
 	 * The increment step where the increment or decrements methods are called
 	 */
-	private float increamentStep = 1;
-	
-	/**
-	 * The default value shown in the text area when the value is null
-	 */
-	private Number defaultValue = null;
-	
-	/**
-	 * Flag used to know if the trailing zeroes after the decimal separator should be removed or not
-	 */
-	private boolean removeTrailZeroes = false;
+	private int increamentStep = 1;
 	
 	/**
 	 * Flag used to avoid to fire the listener when the focus is lost but the value
@@ -118,14 +98,9 @@ public class NumericText extends Text {
 	private boolean changedAfterFocus = false;
 	
 	/**
-	 * The background color to use when there aren't validation errors
+	 * The default value shown in the text area when the value is null
 	 */
-	private Color defaultBackgroundColor;
-	
-	/**
-	 * The status of the value displayed
-	 */
-	protected VALIDATION_RESULT currentState = VALIDATION_RESULT.VALID;
+	private Number defaultValue = null;
 	
 	/**
 	 * Verify listener used to check if the typed value is valid or not
@@ -133,9 +108,7 @@ public class NumericText extends Text {
 	private VerifyListener inputVerifier = new VerifyListener() {
 		@Override
 		public void verifyText(final VerifyEvent e) {
-			//Update the validation status
-			currentState = verifyEntryAndStoreValue(e.text, e.keyCode);
-			e.doit = currentState != VALIDATION_RESULT.NOT_VALID;
+			e.doit = verifyEntryAndStoreValue(e.text, e.keyCode);
 		}
 	};
 	
@@ -147,38 +120,9 @@ public class NumericText extends Text {
 		
 		@Override
 		public void modifyText(ModifyEvent e) {
-			if (currentState == VALIDATION_RESULT.VALID){
-				//Fire the listeners only if the value is valid
-				fireListeners();
-			}
+			fireListeners();
 			//open the flag to fire the listeners
 			changedAfterFocus = true;
-		}
-	};
-	
-	private FocusListener focusNotifier = new FocusAdapter() {
-		@Override
-		public void focusLost(final FocusEvent e) {
-			if (changedAfterFocus){
-				//The listener are fired instead only if the value changed
-				//after the focus gain
-				if (currentState == VALIDATION_RESULT.VALID) {
-					//Fire the listeners only if the value is valid
-					fireListeners();
-				}
-				//Refresh the value
-				setValue(storedValue, true);
-			}
-		}
-		
-		@Override
-		public void focusGained(FocusEvent e) {
-			changedAfterFocus = false;
-			//The set value on focus lost is done always to avoid
-			//the mac text reset bug
-			if (Util.isMac()){
-				setValue(storedValue, true);
-			}
 		}
 	};
 	
@@ -196,7 +140,6 @@ public class NumericText extends Text {
 		currentColor = getForeground();
 		this.formatter = new ValidatedDecimalFormat(decimalDigitsShown, decimalDigitsAccepted);
 		addListeners();
-		defaultBackgroundColor = getBackground();
 	}
 	
 	/**
@@ -212,7 +155,6 @@ public class NumericText extends Text {
 		addListeners();
 		this.formatter = formatter;
 		Assert.isTrue(formatter != null, "The formatter can't be null");
-		defaultBackgroundColor = getBackground();
 	}
 	
 	/**
@@ -221,7 +163,25 @@ public class NumericText extends Text {
 	protected void addListeners(){
 		addVerifyListener(inputVerifier);
 		addModifyListener(inputNotifier);
-		addFocusListener(focusNotifier);
+		addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(final FocusEvent e) {
+				//The set value on focus lost is done always to avoid
+				//the mac text reset bug
+				setValue(storedValue, true);
+				if (changedAfterFocus){
+					//The listener are fired instead only if the value changed
+					//after the focus gain
+					fireListeners();
+				}
+				changedAfterFocus = false;
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				changedAfterFocus = false;
+			}
+		});
 		
 	}
 	
@@ -235,13 +195,10 @@ public class NumericText extends Text {
 	 *            current maximum
 	 * 
 	 */
-	public void setMinimum(Double min){
-		if (min == null){
-			//there is no maximum so the value is not updated
-			this.minimum = null;
-		} else if (maximum == null || min < maximum){
+	public void setMinimum(double min){
+		if (min < maximum){
 			this.minimum = min;
-			if (storedValue != null && (this.minimum != null && storedValue.doubleValue() < this.minimum)){
+			if (storedValue != null && storedValue.doubleValue() < this.minimum){
 				setValue(minimum);
 			}
 		}
@@ -257,13 +214,10 @@ public class NumericText extends Text {
 	 *            current minimum
 	 * 
 	 */
-	public void setMaximum(Double max){
-		if (max == null){
-			//there is no maximum so the value is not updated
-			this.maximum = null;
-		} else if (minimum == null || max > minimum){
+	public void setMaximum(double max){
+		if (max > minimum){
 			this.maximum = max;
-			if (storedValue != null && (this.maximum != null && storedValue.doubleValue() > this.maximum)){
+			if (storedValue != null && storedValue.doubleValue() > this.maximum){
 				setValue(maximum);
 			}
 		}
@@ -308,9 +262,9 @@ public class NumericText extends Text {
 	 * @param minimum the new minimum value
 	 * @param maximum the new maximum value
 	 */
-	public void setValues(Number selection, Number minimum, Number maximum) {
-		this.setMinimum(minimum != null ? minimum.doubleValue() : null);
-		this.setMaximum(maximum != null ? maximum.doubleValue() : null);
+	public void setValues(Number selection, int minimum, int maximum) {
+		this.setMinimum(minimum);
+		this.setMaximum(maximum);
 		setValue(selection);
 	}
 	
@@ -321,40 +275,15 @@ public class NumericText extends Text {
 	 * 
 	 * @param newValue the first value
 	 * @param storedValue the second value
-	 * @return  true if the values have the same textual representation, false otherwise
+	 * @return  true if the values have the same textual rappresentation, false otherwise
 	 */
 	protected boolean hasSameValue(Number newValue, Number storedValue){
-		if (currentState != VALIDATION_RESULT.VALID) return false;
 		if (ModelUtils.safeEquals(newValue, storedValue)) return true;
 		String newFormat = null;
-		if (newValue != null) newFormat = formatNumber(newValue);
+		if (newValue != null) newFormat = formatter.format(newValue);
 		String storedFormat = null;
-		if (storedValue != null) storedFormat = formatNumber(storedValue);
+		if (storedValue != null) storedFormat = formatter.format(storedValue);
 		return ModelUtils.safeEquals(newFormat, storedFormat);
-	}
-	
-	/**
-	 * Method that convert the number value to a string. The perfect place to do this
-	 * could be the formatter, but since the format method is final we do this workaround
-	 * to allow custom implementation
-	 * 
-	 * @param value the number to format, must be not null
-	 * @return the number as a string
-	 */
-	protected String formatNumber(Number value){
-		String result;
-		if (value instanceof Float){
-			//When using a decimal format there is a conversion error done passing from float to double
-			//explained here (http://programmingjungle.blogspot.it/2013/03/float-to-double-conversion-in-java.html)
-			//Doing this will avoid the conversion error
-			result = formatter.format(Double.parseDouble(value.toString()));
-		} else {
-			result = formatter.format(value);
-		}
-		if (removeTrailZeroes && result.indexOf(ValidatedDecimalFormat.DECIMAL_SEPARATOR) != -1){
-			result = result.replaceAll("0*$", "").replaceAll(ValidatedDecimalFormat.PATTERN_DECIMAL_SEPARATOR + "$", "");
-		}
-		return result;
 	}
 	
 	/**
@@ -399,77 +328,37 @@ public class NumericText extends Text {
 	protected void setValue(Number selection, boolean formatText) {
 		this.checkWidget();
 		if (selection != null){	
-			if ((minimum != null && selection.doubleValue() < minimum) || 
-						(maximum != null && selection.doubleValue() > maximum)) {
-				//out of bounds, update the validation status
-				updateBackground(ColorConstants.red);
-				currentState = VALIDATION_RESULT.OUT_OF_BOUNDS;
-			} else {
-				//valid value, update the validation status
-				updateBackground(defaultBackgroundColor);
-				currentState = VALIDATION_RESULT.VALID;
-				storedValue = selection;
+			if (selection.doubleValue() < minimum) {
+				selection = this.minimum;
+			} else if (selection.doubleValue() > maximum) {
+				selection = this.maximum;
 			}
+			storedValue = selection;
 			if (formatText) {
-				setText(formatNumber(selection));
+				setText(formatter.format(selection));
 			} else {
 				setText(selection.toString());
 			}
+			selectAll();
+			setFocus();
 		} else {
 			if (isNullable){
-				//valid value, update the validation status
-				updateBackground(defaultBackgroundColor);
-				currentState = VALIDATION_RESULT.VALID;
 				storedValue = null;
 				if (defaultValue != null){
 					if (formatText) {
-						setText(formatNumber(defaultValue));
+						setText(formatter.format(defaultValue));
 					} else {
 						setText(defaultValue.toString());
 					}
 				} else {
 					setText("");
 				}
+				selectAll();
+				setFocus();
 			} else {
 				throw new IllegalArgumentException("The widget can not accept null values when the isNullable property is false");
 			}
 		}
-	}
-	
-	/**
-	 * Handle the input of the user and output the final string 
-	 * 
-	 * @param entry the key pressed by the user
-	 * @param keyCode the code of the key pressed by the user
-	 * @param text the current text on the widget
-	 * @param cursorSelection the current cursor selection on the widget
-	 * @return the text that should be on the widget after the key is pressed
-	 */
-	protected String updateString(final String entry, int keyCode, String text, Point cursorSelection){
-		String work = "";
-		if (keyCode == SWT.DEL) {
-			if (cursorSelection.x == cursorSelection.y && cursorSelection.x != text.length()){
-				work = StringUtil.removeCharAt(getText(), getCaretPosition());
-			} else {
-				work = text.substring(0, cursorSelection.x) + text.substring(cursorSelection.y, text.length());
-			}
-		} else if (keyCode == SWT.BS) {
-			if (cursorSelection.x == cursorSelection.y && cursorSelection.x != 0){
-				work = StringUtil.removeCharAt(getText(), getCaretPosition() - 1);
-			} else if (cursorSelection.x != cursorSelection.y) {
-				work = text.substring(0, cursorSelection.x) + text.substring(cursorSelection.y, text.length());
-			}
-		} else if (keyCode == 0) {
-			work = entry;
-		} else {
-			if (cursorSelection.x == cursorSelection.y){
-				work = StringUtil.insertString(getText(), entry, getCaretPosition());
-			} else if (cursorSelection.x != cursorSelection.y) {
-				work = text.substring(0, cursorSelection.x) + entry + text.substring(cursorSelection.y, text.length());
-			}
-		}
-		work = work.trim();
-		return work;
 	}
 	
 	/**
@@ -480,56 +369,53 @@ public class NumericText extends Text {
 	 * @return <code>true</code> if the entry if correct, <code>false</code>
 	 *         otherwise
 	 */
-	private VALIDATION_RESULT verifyEntryAndStoreValue(String entry, int keyCode) {
-		Point cursorSelection = getSelection();
-		String text = getText();
-		String work = updateString(entry, keyCode, text, cursorSelection);
+	private boolean verifyEntryAndStoreValue(final String entry, final int keyCode) {
+		String work = "";
+		if (keyCode == SWT.DEL) {
+			Point cursorSelection = getSelection();
+			String text = getText();
+			if (cursorSelection.x == cursorSelection.y && cursorSelection.x != text.length()){
+				work = StringUtil.removeCharAt(getText(), getCaretPosition());
+			} else {
+				work = text.substring(0, cursorSelection.x) + text.substring(cursorSelection.y, text.length());
+			}
+		} else if (keyCode == SWT.BS) {
+			Point cursorSelection = getSelection();
+			if (cursorSelection.x == cursorSelection.y && cursorSelection.x != 0){
+				work = StringUtil.removeCharAt(getText(), getCaretPosition() - 1);
+			} else if (cursorSelection.x != cursorSelection.y) {
+				String text = getText();
+				work = text.substring(0, cursorSelection.x) + text.substring(cursorSelection.y, text.length());
+			}
+		} else if (keyCode == 0) {
+			work = entry;
+		} else {
+			Point cursorSelection = getSelection();
+			if (cursorSelection.x == cursorSelection.y){
+				work = StringUtil.insertString(getText(), entry, getCaretPosition());
+			} else if (cursorSelection.x != cursorSelection.y) {
+				String text = getText();
+				work = text.substring(0, cursorSelection.x) + entry + text.substring(cursorSelection.y, text.length());
+			}
+		}
+		work = work.trim();
+		
 		if (work.isEmpty()){
 			if (isNullable){
 				storedValue = null;
 			} else {
-				return VALIDATION_RESULT.NOT_VALID;
+				return false;
 			}
 		} else {
 			try {			
 				Number newValue = formatter.parse(work);
-				if ((minimum != null && newValue.doubleValue() < minimum) || 
-							(maximum != null && newValue.doubleValue() > maximum)) {
-					updateBackground(ColorConstants.red);
-					return VALIDATION_RESULT.OUT_OF_BOUNDS;
-				} else {
-					storedValue = newValue;
-				}
+				if (newValue.doubleValue() < minimum || newValue.doubleValue() > maximum) return false;
+				storedValue = newValue;
 			} catch (ParseException nfe) {
-				return VALIDATION_RESULT.NOT_VALID;
+				return false;
 			}
 		}
-		updateBackground(defaultBackgroundColor);
-		return VALIDATION_RESULT.VALID;
-	}
-	
-	/**
-	 * On macos the update of the color need some additional operation because of an SWT bug
-	 * (https://bugs.eclipse.org/bugs/show_bug.cgi?id=346361). If the widget is focused it need
-	 * to lose the focus to be updated correctly. For this reason the widget is forced to loose
-	 * the focus and the it will regain it
-	 * 
-	 * @param color the color to set
-	 */
-	protected void updateBackground(Color color){
-		if (Util.isMac() && isFocusControl() && !ModelUtils.safeEquals(color, super.getBackground())){
-			removeFocusListener(focusNotifier);
-			Point caretPosition = getSelection();
-			boolean oldEnabled = getEnabled();
-			setEnabled(false);//Force the focus lost
-			super.setBackground(color);
-			setEnabled(oldEnabled);
-			setFocus();
-			setSelection(caretPosition.x);
-			addFocusListener(focusNotifier);
-		} else {
-			super.setBackground(color);
-		}
+		return true;
 	}
 
 	/**
@@ -572,16 +458,7 @@ public class NumericText extends Text {
 		else return storedValue.floatValue();
 	}
 	
-	/**
-	 * Returns the numeric value stored inside the control, as a BigDecimal
-	 * 
-	 * @return the numeric value, could be null
-	 */
-	public BigDecimal getValueAsBigDecimal(){
-		if (storedValue == null) return null;
-		else return new BigDecimal(storedValue.toString());
-	}
-	
+
 	/**
 	 * Returns the numeric value stored inside the control
 	 * 
@@ -616,7 +493,7 @@ public class NumericText extends Text {
 	 *  
 	 * @param step a positive integer
 	 */
-	public void setIncrementStep(float step){
+	public void setIncrementStep(int step){
 		Assert.isTrue(step >= 0, "The step can't be negative");
 		this.increamentStep = step;
 	}
@@ -632,13 +509,11 @@ public class NumericText extends Text {
 			if (defaultValue != null){
 				defaultMin = defaultValue.intValue();
 			}
-			if (minimum != null && minimum > defaultMin) defaultMin = minimum;
+			if (minimum > defaultMin) defaultMin = minimum;
 			storedValue = new Double(defaultMin);
 		}
 		double newValue = storedValue.doubleValue() + increamentStep;
-		if ((minimum != null && newValue >= minimum) && (maximum != null && newValue <= maximum)){
-			setValue(newValue, true);
-		}
+		setValue(newValue, true);
 		fireListeners();
 	}
 	
@@ -653,14 +528,12 @@ public class NumericText extends Text {
 			if (defaultValue != null){
 				defaultMin = defaultValue.intValue();
 			}
-			if (minimum != null && minimum > defaultMin) defaultMin = minimum;
+			if (minimum > defaultMin) defaultMin = minimum;
 			storedValue = new Double(defaultMin);
 			setValue(storedValue, true);
 		} else {
 			double newValue = storedValue.doubleValue() - increamentStep;	
-			if ((minimum != null && newValue >= minimum) && (maximum != null && newValue <= maximum)){
-				setValue(newValue, true);
-			}
+			setValue(newValue, true);
 		}
 		fireListeners();
 	}
@@ -729,9 +602,7 @@ public class NumericText extends Text {
 	public void setText(String string) {
 		removeVerifyListener(inputVerifier);
 		removeModifyListener(inputNotifier);
-		Point location = getSelection();
 		super.setText(string);
-		setSelection(location.x);
 		addVerifyListener(inputVerifier);
 		addModifyListener(inputNotifier);
 	}
@@ -758,27 +629,5 @@ public class NumericText extends Text {
 	 */
 	public void setDefaultValue(Number value){
 		this.defaultValue = value;
-	}
-	
-	/**
-	 * Set the flag to know if the trailing zeroes after the decimal separator should be removed or not.
-	 * By default they are not removed
-	 * 
-	 * @param value true to remove the zeroes, false otherwise
-	 */
-	public void setRemoveTrailZeroes(boolean value){
-		this.removeTrailZeroes = value;
-	}
-	
-	/**
-	 * When the background is set the original color is stored to be restored when 
-	 * switching between a valid and invalid state
-	 */
-	@Override
-	public void setBackground(Color color) {
-		if (currentState != VALIDATION_RESULT.OUT_OF_BOUNDS) {
-			super.setBackground(color);
-		}
-		defaultBackgroundColor = color;
 	}
 }

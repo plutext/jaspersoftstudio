@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.preferences.bindings;
 
@@ -177,39 +185,23 @@ public class BindingsPreferencePersistence {
 	}
 	
 	/**
-	 * Check if the keys associated to a specific binding id are pressed or not. It will does
-	 * a perfect match to be sure the key of the binding are all pressed
-	 * 
-	 * @param a not null binding id
-	 * @return true if the keys associated with the binding id are pressed, false otherwise
-	 */
-	public static boolean isPressed(String bindingID){
-		return isPressed(bindingID, true);
-	}
-	
-	/**
 	 * Check if the keys associated to a specific binding id are pressed or not
 	 * 
 	 * @param a not null binding id
 	 * @return true if the keys associated with the binding id are pressed, false otherwise
 	 */
-	public static boolean isPressed(String bindingID, boolean perfectMatch){
+	public static boolean isPressed(String bindingID){
 		JSSKeySequence keySequence = getBinding(bindingID);
 		if (keySequence == null) return false;
 		//the sequence start as matched if there is at least an element.
 		//so in the case the sequence is empty the cycle will and and false
 		//will be returned
 		boolean sequenceMatched = (keySequence.getSize() > 0);
-		if (perfectMatch) {
-			sequenceMatched = keySequence.getSize() == JasperReportsPlugin.getPressedKeysNumber();
-		}
-		if (sequenceMatched) {
-			for(JSSKeyStroke keyStroke : keySequence.getKeyStrokes()){
-				int key = Character.toLowerCase(keyStroke.getNaturalKey());
-				if (key != JSSKeyStroke.NO_KEY && !JasperReportsPlugin.isPressed(key)){
-					sequenceMatched = false;
-					break;
-				}
+		for(JSSKeyStroke keyStroke : keySequence.getKeyStrokes()){
+			int key = Character.toLowerCase(keyStroke.getNaturalKey());
+			if (key != JSSKeyStroke.NO_KEY && !JasperReportsPlugin.isPressed(key)){
+				sequenceMatched = false;
+				break;
 			}
 		}
 		return sequenceMatched;

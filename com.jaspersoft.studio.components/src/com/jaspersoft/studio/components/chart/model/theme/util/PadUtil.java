@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.model.theme.util;
 
@@ -10,17 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.jfree.chart.block.BlockFrame;
-import org.jfree.ui.RectangleInsets;
-
-import com.jaspersoft.studio.messages.Messages;
-import com.jaspersoft.studio.model.DefaultValue;
-import com.jaspersoft.studio.property.section.AbstractSection;
-
 import net.sf.jasperreports.chartthemes.simple.BlockBorderProvider;
 import net.sf.jasperreports.chartthemes.simple.BlockFrameProvider;
 import net.sf.jasperreports.chartthemes.simple.ChartSettings;
@@ -28,6 +25,19 @@ import net.sf.jasperreports.chartthemes.simple.ColorProvider;
 import net.sf.jasperreports.chartthemes.simple.LegendSettings;
 import net.sf.jasperreports.chartthemes.simple.LineBorderProvider;
 import net.sf.jasperreports.chartthemes.simple.PaintProvider;
+
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jfree.chart.block.BlockFrame;
+import org.jfree.ui.RectangleInsets;
+
+import com.jaspersoft.studio.components.chart.model.theme.paintprovider.PaintProviderPropertyDescriptor;
+import com.jaspersoft.studio.messages.Messages;
+import com.jaspersoft.studio.property.descriptor.checkbox.CheckBoxPropertyDescriptor;
+import com.jaspersoft.studio.property.descriptors.DoublePropertyDescriptor;
+import com.jaspersoft.studio.property.section.AbstractSection;
 
 public class PadUtil {
 
@@ -43,55 +53,41 @@ public class PadUtil {
 	/**
 	 * Map of the default values for the frame provider
 	 */
-	public static final Map<String, DefaultValue> frameDefaultValues = new HashMap<String, DefaultValue>();
+	public static final Map<String, Object> frameDefaultValues = new HashMap<String, Object>();
 	
-	static{
-		String preID = LegendSettings.PROPERTY_frame;
-		frameDefaultValues.put(preID + PadUtil.FRAME_STROKE, new DefaultValue(1.0d,false));
-		frameDefaultValues.put(preID + PadUtil.FRAME_FILL, new DefaultValue(true, false));
-		frameDefaultValues.put(preID + FRAME_COLOR, new DefaultValue(new ColorProvider(new Color(0, 0, 0)), false));
-		frameDefaultValues.put(preID + PadUtil.PADDING_TOP, new DefaultValue(0.0d, false));
-		frameDefaultValues.put(preID + PadUtil.PADDING_BOTTOM, new DefaultValue(0.0d, false));
-		frameDefaultValues.put(preID + PadUtil.PADDING_LEFT, new DefaultValue(0.0d, false));
-		frameDefaultValues.put(preID + PadUtil.PADDING_RIGHT, new DefaultValue(0.0d, false));
-	}
-	
-	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
-		createPropertyDescriptors(desc, Messages.common_padding);
+	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap) {
+		createPropertyDescriptors(desc, defaultsMap, Messages.common_padding);
 	}
 
-	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc, String prefix) {
-		createPropertyDescriptors(desc, "", prefix);//$NON-NLS-1$
+	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap, String prefix) {
+		createPropertyDescriptors(desc, defaultsMap, "", prefix);//$NON-NLS-1$
 	}
 
-	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc, String preID, String category) {
-		PropertyDescriptor pd = new FrameDoublePropertyDescriptor(preID + PadUtil.PADDING_TOP, Messages.common_top);
+	public static void createPropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap, String preID, String category) {
+		PropertyDescriptor pd = new DoublePropertyDescriptor(preID + PadUtil.PADDING_TOP, Messages.common_top);
 		pd.setDescription(Messages.common_top);
 		pd.setCategory(category);
 		desc.add(pd);
 
-		pd = new FrameDoublePropertyDescriptor(preID + PadUtil.PADDING_BOTTOM, Messages.common_bottom);
+		pd = new DoublePropertyDescriptor(preID + PadUtil.PADDING_BOTTOM, Messages.common_bottom);
 		pd.setDescription(Messages.common_bottom);
 		pd.setCategory(category);
 		desc.add(pd);
 
-		pd = new FrameDoublePropertyDescriptor(preID + PadUtil.PADDING_LEFT, Messages.common_left);
+		pd = new DoublePropertyDescriptor(preID + PadUtil.PADDING_LEFT, Messages.common_left);
 		pd.setDescription(Messages.common_left);
 		pd.setCategory(category);
 		desc.add(pd);
 
-		pd = new FrameDoublePropertyDescriptor(preID + PadUtil.PADDING_RIGHT, Messages.common_right);
+		pd = new DoublePropertyDescriptor(preID + PadUtil.PADDING_RIGHT, Messages.common_right);
 		pd.setDescription(Messages.common_right);
 		pd.setCategory(category);
 		desc.add(pd);
-	}
-	
-	public static void createDefaults(String preID, Map<String, DefaultValue> defaultsMap){
-		defaultsMap.put(preID + PadUtil.PADDING_TOP, new DefaultValue(0.0d, false));
-		defaultsMap.put(preID + PadUtil.PADDING_BOTTOM, new DefaultValue(0.0d, false));
-		defaultsMap.put(preID + PadUtil.PADDING_LEFT, new DefaultValue(0.0d, false));
-		defaultsMap.put(preID + PadUtil.PADDING_RIGHT, new DefaultValue(0.0d, false));
-		defaultsMap.putAll(frameDefaultValues);
+		
+		defaultsMap.put(preID + PadUtil.PADDING_TOP, 0.0d);
+		defaultsMap.put(preID + PadUtil.PADDING_BOTTOM, 0.0d);
+		defaultsMap.put(preID + PadUtil.PADDING_LEFT, 0.0d);
+		defaultsMap.put(preID + PadUtil.PADDING_RIGHT, 0.0d);
 	}
 	
 	/**
@@ -102,25 +98,32 @@ public class PadUtil {
 	 * @param defaultsMap map for the default values
 	 * @param category category where the widget will be grouped
 	 */
-	public static void createBlockFramePropertyDescriptors(List<IPropertyDescriptor> desc, String category) {
+	public static void createBlockFramePropertyDescriptors(List<IPropertyDescriptor> desc, Map<String, Object> defaultsMap, String category) {
 		String preID = LegendSettings.PROPERTY_frame;
-
-		createPropertyDescriptors(desc, preID, category);
+		frameDefaultValues.clear();
 		
-		PropertyDescriptor pd = new FrameDoublePropertyDescriptor(preID + PadUtil.FRAME_STROKE, Messages.MLinePen_line_width);
+		createPropertyDescriptors(desc, frameDefaultValues, preID, category);
+		
+		PropertyDescriptor pd = new DoublePropertyDescriptor(preID + PadUtil.FRAME_STROKE, Messages.MLinePen_line_width);
 		pd.setDescription(Messages.MLinePen_line_width);
 		pd.setCategory(category);
 		desc.add(pd);
 		
-		pd = new FrameCheckBoxPropertyDescriptor(preID + PadUtil.FRAME_FILL, Messages.common_fill);
+		pd = new CheckBoxPropertyDescriptor(preID + PadUtil.FRAME_FILL, Messages.common_fill);
 		pd.setDescription(Messages.common_fill);
 		pd.setCategory(category);
 		desc.add(pd);
 		
-		pd = new FramePaintProviderPropertyDescriptor(preID + FRAME_COLOR, Messages.common_line_color);
+		pd = new PaintProviderPropertyDescriptor(preID + FRAME_COLOR, Messages.common_line_color);
 		pd.setDescription(Messages.common_line_color);
 		pd.setCategory(category);
 		desc.add(pd);
+
+		frameDefaultValues.put(preID + PadUtil.FRAME_STROKE, 1.0d);
+		frameDefaultValues.put(preID + PadUtil.FRAME_FILL, true);
+		frameDefaultValues.put(preID + FRAME_COLOR, new ColorProvider(new Color(0, 0, 0)));
+		
+		defaultsMap.putAll(frameDefaultValues);
 	}
 	
 	/**

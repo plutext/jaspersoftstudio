@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.table.properties;
 
@@ -57,7 +65,6 @@ public class TableColumnSection extends AbstractSection {
 			HashSet<BaseColumn> fixedColumns = new HashSet<BaseColumn>();
 			for (APropertyNode n : getElements()) {
 				if (StandardBaseColumn.PROPERTY_WIDTH.equals(property) && n instanceof MColumn){
-					cc.setLayoutTableContent(true);
 					//Add the column to the fixed ones
 					fixedColumns.add(((MColumn)n).getValue());
 					if (isChanged(property, newValue, n)) {

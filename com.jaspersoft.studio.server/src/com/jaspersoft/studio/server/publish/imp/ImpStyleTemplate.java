@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.publish.imp;
 
@@ -33,18 +41,23 @@ public class ImpStyleTemplate extends AImpObject {
 
 	private IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-	public File publish(JasperDesign jd, JRReportTemplate img, MReportUnit mrunit, IProgressMonitor monitor,
-			Set<String> fileset, IFile file) throws Exception {
-		AFileResource fres = findFile(mrunit, monitor, jd, fileset, getExpression(img), file);
+	public File publish(JasperDesign jd, JRReportTemplate img,
+			MReportUnit mrunit, IProgressMonitor monitor, Set<String> fileset,
+			IFile file) throws Exception {
+		AFileResource fres = findFile(mrunit, monitor, jd, fileset,
+				getExpression(img), file);
 		if (fres != null) {
-			JRSimpleTemplate jrt = (JRSimpleTemplate) JRXmlTemplateLoader.load(fres.getFile());
+			JRSimpleTemplate jrt = (JRSimpleTemplate) JRXmlTemplateLoader
+					.load(fres.getFile());
 			for (JRTemplateReference r : jrt.getIncludedTemplatesList()) {
-				IFile[] fs = root.findFilesForLocationURI(fres.getFile().toURI());
+				IFile[] fs = root.findFilesForLocationURI(fres.getFile()
+						.toURI());
 				if (fs != null && fs.length > 0) {
 					File ftr = findFile(file, r.getLocation());
 					if (ftr != null && ftr.exists()) {
 						fileset.add(ftr.getAbsolutePath());
-						addResource(monitor, mrunit, fileset, ftr, createOptions(jrConfig, r.getLocation()));
+						addResource(monitor, mrunit, fileset, ftr,
+								createOptions(jrConfig, r.getLocation()));
 					}
 				}
 			}
@@ -59,12 +72,14 @@ public class ImpStyleTemplate extends AImpObject {
 	}
 
 	protected JRDesignExpression getExpression(JRReportTemplate img) {
-		return (JRDesignExpression) img.getSourceExpression();
+		return (JRDesignExpression) ((JRReportTemplate) img)
+				.getSourceExpression();
 	}
 
 	@Override
-	public AFileResource publish(JasperDesign jd, JRDesignElement img, MReportUnit mrunit, IProgressMonitor monitor,
-			Set<String> fileset, IFile file) throws Exception {
+	public AFileResource publish(JasperDesign jd, JRDesignElement img,
+			MReportUnit mrunit, IProgressMonitor monitor, Set<String> fileset,
+			IFile file) throws Exception {
 		return null;
 	}
 

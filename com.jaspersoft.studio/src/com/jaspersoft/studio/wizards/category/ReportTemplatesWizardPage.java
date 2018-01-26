@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.wizards.category;
 
@@ -121,12 +129,6 @@ public class ReportTemplatesWizardPage extends JSSWizardPage {
 	private TemplateBundle selectedTemplate = null;
 	
 	/**
-	 * Set used to keep track of the created template pages for each bundle. On this
-	 * pages can be called the method to notify the wizard closed when it happen
-	 */
-	private HashSet<TemplateBundle> createdBundles = new HashSet<TemplateBundle>();
-	
-	/**
 	 * Mouse wheel listener used to change the zoomfactor when the 
 	 * mouse wheel is used when the ctrl key is pressed
 	 */
@@ -238,9 +240,7 @@ public class ReportTemplatesWizardPage extends JSSWizardPage {
 		gal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseDoubleClick(MouseEvent e) {
-				if (validatePage()) {
-					getContainer().showPage(getNextPage());
-				}
+				getContainer().showPage(getNextPage());
 			}
 		});
 		return gal;
@@ -419,13 +419,7 @@ public class ReportTemplatesWizardPage extends JSSWizardPage {
 
 		categoryList = new ArrayList<TemplateCategory>();
 		for(String builtInCategory : BuiltInCategories.getCategoriesList()){
-			//Use a prefix since some category can have a really common name that overlap with 
-			//other localization keys
-			String key = BuiltInCategories.CATEGORY_PREFIX + builtInCategory;
-			String localizedName = builtInCategory;
-			if (MessagesByKeys.hasTranslation(key)){
-				localizedName = MessagesByKeys.getString(key);
-			}
+			String localizedName = MessagesByKeys.getString(builtInCategory);
 			categoryList.add(new TemplateCategory(builtInCategory, localizedName));
 		}
 		for (TemplateCategory cat : categoryList) {
@@ -636,24 +630,11 @@ public class ReportTemplatesWizardPage extends JSSWizardPage {
 		if (selection != null && selection.length > 0) {
 
 			selectedTemplate = (TemplateBundle) selection[0].getData(TEMPLATE_KEY); //$NON-NLS-1$
-			createdBundles.add(selectedTemplate);
 			getSettings().put(TEMPLATE_KEY, selectedTemplate);
 		} else {
 			getSettings().remove(TEMPLATE_KEY); 
 			selectedTemplate = null;
 		}
-	}
-	
-	/**
-	 * Notify to all created pages that the wizard ended
-	 */
-	public void doCancel(){
-		for(TemplateBundle bundle : createdBundles){
-			if (bundle instanceof WizardTemplateBundle){
-				((WizardTemplateBundle)bundle).wizardClosed();
-			}
-		}
-		createdBundles.clear();
 	}
 
 }

@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
@@ -15,8 +23,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -30,10 +36,9 @@ import com.jaspersoft.studio.server.utils.Pass;
 
 public abstract class ARestV2Connection implements IConnection {
 	public static final String SUFFIX = "rest_v2/";
-	public static final String FORMAT = "json";
+	public static final String FORMAT = "xml";
 	protected ServerProfile sp;
 	protected IConnection parent;
-	protected final Logger logger = java.util.logging.Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
 	@Override
 	public void setParent(IConnection parent) {
@@ -107,7 +112,7 @@ public abstract class ARestV2Connection implements IConnection {
 		if (obj instanceof Date)
 			return timestampFormat.format(obj);
 		if (obj instanceof Number)
-			return obj.toString();
+			return numberFormat.format(obj);
 		return obj.toString();
 	}
 
@@ -122,8 +127,10 @@ public abstract class ARestV2Connection implements IConnection {
 	public String getWebservicesUri() {
 		try {
 			return sp.getUrl();
-		} catch (MalformedURLException | URISyntaxException e) {
-			logger.log(Level.FINE, e.getMessage(), e);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

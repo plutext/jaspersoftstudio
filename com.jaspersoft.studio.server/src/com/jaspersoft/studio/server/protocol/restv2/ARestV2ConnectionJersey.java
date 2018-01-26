@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.server.protocol.restv2;
 
@@ -11,8 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
@@ -27,12 +35,11 @@ import net.sf.jasperreports.eclipse.util.FileUtils;
 public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 	protected WebTarget target;
 	protected JSSApacheConnectorFactory connector;
+	protected Logger logger;
 
 	public JSSApacheConnectorFactory getConnector() {
 		return connector;
 	}
-
-	protected Client client;
 
 	public <T> T toObj(Response res, Class<T> clazz, IProgressMonitor monitor) throws IOException {
 		T r = null;
@@ -47,7 +54,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -68,7 +77,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -84,8 +95,8 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				return (Class<T>) String.class;
 			if (type.equals("text/plain"))
 				return (Class<T>) String.class;
-			int sind = type.indexOf('.');
-			int eind = type.indexOf('+');
+			int sind = type.indexOf(".");
+			int eind = type.indexOf("+");
 			if (sind >= 0 && eind >= 0) {
 				type = type.substring(sind + 1, eind);
 				clazz = (Class<T>) WsTypes.INST().getType(type);
@@ -107,7 +118,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -135,7 +148,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -164,7 +179,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -198,7 +215,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -224,7 +243,6 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 	}
 
 	public ARestV2ConnectionJersey() {
-		super();
 		setParent(this);
 	}
 

@@ -27,11 +27,6 @@
 <extension-point id="fileSelectors" name="File Selectors" schema="schema/fileSelectors.exsd"/>
 <extension-point id="bindings" name="com.jaspersoft.studio.bindings" schema="schema/bindings.exsd"/>
 <extension-point id="resourceExporter" name="com.jaspersoft.studio.resourceExporter" schema="schema/resourceExporter.exsd"/>
-<extension-point id="dynamicWidgetDefinitions" name="Dynamic Widget Definitions" schema="schema/dynamicWidgetDefinitions.exsd"/>
-
-<extension-point id="daQueryUI" name="Data Adapter Query UI" schema="schema/daQueryUI.exsd"/>
-<extension-point id="parameterIC" name="Input Control Parameter Contributor" schema="schema/parameterIC.exsd"/>
-<extension-point id="postDelete" name="postDelete" schema="schema/postDelete.exsd"/>
    <extension
   
          id="xmlProblem"
@@ -378,12 +373,6 @@
             class="com.jaspersoft.studio.backward.JRVersionPreferencesPages"
             id="com.jaspersoft.studio.backward.JRVersionPreferencesPages"
             name="%jrversion">
-      </page>
-      <page
-            category="com.jaspersoft.studio.preferences.templates"
-            class="com.jaspersoft.studio.preferences.customadapters.CustomDataAdaptersPreferencePage"
-            id="com.jaspersoft.studio.preferences.customadapters.CustomDataAdaptersPreferencePage"
-            name="%dataAdapterDefinitionLocation">
       </page>
    </extension>
    <extension
@@ -1583,9 +1572,6 @@
        <decorator
              ClassFactory="com.jaspersoft.studio.editor.gef.decorator.json.JSONElementDecorator">
        </decorator>
-       <decorator
-             ClassFactory="com.jaspersoft.studio.editor.gef.decorator.spreadsheet.SpreadSheetElementDecorator">
-       </decorator>
     </extension>
     <extension
           point="com.jaspersoft.studio.postsetvalue">
@@ -1669,11 +1655,6 @@
          defaultHandler="com.jaspersoft.studio.background.commands.DeleteBackgroundHandler"
          id="com.jaspersoft.studio.background.commands.DeleteBackgroundHandler"
          name="%deleteBackground">
-   </command>
-   <command
-         defaultHandler="com.jaspersoft.studio.refactor.ResetUuidCommand"
-         id="com.jaspersoft.studio.refactor.uuid"
-         name="Reset UUIDs">
    </command>
 	</extension>
     <extension
@@ -1922,33 +1903,6 @@
            icon="icons/eclipseicons/save.gif"
            label="%ExportFiles"
            style="push">
-     </command>
-  </menuContribution>
-  <menuContribution
-        allPopups="false"
-        locationURI="popup:org.eclipse.ui.popup.any?before=import">
-     <menu
-           id="com.jaspersoft.studio.refactor"
-           label="Refactor">
-     </menu>
-  </menuContribution>
-  <menuContribution
-        allPopups="false"
-        locationURI="popup:com.jaspersoft.studio.refactor">
-     <command
-           commandId="com.jaspersoft.studio.refactor.uuid"
-           label="Reset UUIDs"
-           mode="FORCE_TEXT"
-           style="push">
-        <visibleWhen
-              checkEnabled="false">
-           <and>
-              <test
-                    forcePluginActivation="true"
-                    property="com.jaspersoft.studio.outline.action.compile.checkNature">
-              </test>
-           </and>
-        </visibleWhen>
      </command>
   </menuContribution>
 	</extension>
@@ -2227,34 +2181,6 @@
              name="%disableSnapName"
              sequence="ALT">
        </item>
-       <item
-             context="Elements Selected"
-             description="%groupSelectionDescription"
-             id="com.jaspersoft.studio.editor.groupselection"
-             name="%groupSelectionName"
-             sequence="G">
-       </item>
-       <item
-             context="Selecting"
-             description="%bringForwardDescription"
-             id="com.jaspersoft.studio.editor.action.order.BringForwardAction"
-             name="%bringForwardName"
-             sequence="CTRL ARROW_UP">
-       </item>
-       <item
-             context="Selecting"
-             description="%bringBackwardDescription"
-             id="com.jaspersoft.studio.editor.action.order.BringBackwardAction"
-             name="%bringBackwardName"
-             sequence="CTRL ARROW_DOWN">
-       </item>
-       <item
-             context="Dragging"
-             description="%forceParentKeepDescription"
-             id="com.jaspersoft.studio.editor.enforcekeepparent"
-             name="%forceParentKeepName"
-             sequence="SHIFT A">
-       </item>
     </extension>
     <extension
           point="com.jaspersoft.studio.resourceExporter">
@@ -2273,27 +2199,5 @@
        <resourceExporter
              exporterClass="com.jaspersoft.studio.preferences.editor.properties.ExportedStudioPropertiesHandler">
        </resourceExporter>
-       <resourceExporter
-             exporterClass="com.jaspersoft.studio.preferences.editor.properties.ExportedStudioTemplatesHandler">
-       </resourceExporter>
-    </extension>
-    <extension
-          point="com.jaspersoft.studio.daQueryUI">
-       <daQueryUI
-             DAQueryUIClass="com.jaspersoft.studio.property.dataset.da.HttpDataAdapterUI">
-       </daQueryUI>
-    </extension>
-    <extension
-          point="com.jaspersoft.studio.dynamicWidgetDefinitions">
-       <definition
-             id="com.jaspersoft.studio.widgets.framework.ui.JSSDataAdapterPropertyDescription"
-             widgetClass="com.jaspersoft.studio.widgets.framework.ui.JSSDataAdapterPropertyDescription"
-             widgetName="jssDataAdapter">
-       </definition>
-       <definition
-             id="com.jaspersoft.studio.widgets.framework.ui.JRDataAdapterPropertyDescription"
-             widgetClass="com.jaspersoft.studio.widgets.framework.ui.JRDataAdapterPropertyDescription"
-             widgetName="jrDataAdapter">
-       </definition>
     </extension>
 </plugin>

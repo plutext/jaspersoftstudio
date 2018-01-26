@@ -1,30 +1,37 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.field.command;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignField;
 
 import org.eclipse.gef.commands.Command;
 
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.field.MFields;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignField;
-
 /*/*
  * The Class ReorderFieldCommand.
  */
 public class ReorderFieldCommand extends Command {
-
+	
 	/** The new index. */
 	private int oldIndex, newIndex;
-
+	
 	/** The jr field. */
 	private JRDesignField jrField;
-
+	
 	/** The jr dataset. */
 	private JRDesignDataset jrDataset;
 
@@ -32,11 +39,11 @@ public class ReorderFieldCommand extends Command {
 	 * Instantiates a new reorder field command.
 	 * 
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 */
 	public ReorderFieldCommand(MField child, MFields parent, int newIndex) {
 		super(Messages.common_reorder_elements);
@@ -46,16 +53,7 @@ public class ReorderFieldCommand extends Command {
 		this.jrField = (JRDesignField) child.getValue();
 	}
 
-	public ReorderFieldCommand(JRDesignField child, JRDesignDataset jrDataset, int newIndex) {
-		super(Messages.common_reorder_elements);
-		this.newIndex = Math.max(0, newIndex);
-		this.jrDataset = jrDataset;
-		this.jrField = child;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see org.eclipse.gef.commands.Command#execute()
 	 */
 	@Override
@@ -72,9 +70,7 @@ public class ReorderFieldCommand extends Command {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see org.eclipse.gef.commands.Command#undo()
 	 */
 	@Override

@@ -10,7 +10,6 @@ import com.jaspersoft.studio.data.sql.Pivots;
 import com.jaspersoft.studio.data.sql.SqlPackage;
 import com.jaspersoft.studio.data.sql.TableFull;
 import com.jaspersoft.studio.data.sql.UsingCols;
-import com.jaspersoft.studio.data.sql.WithColumns;
 
 import java.util.Collection;
 
@@ -233,13 +232,6 @@ public class DbObjectNameImpl extends ColumnFullImpl implements DbObjectName
   @Override
   public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass)
   {
-    if (baseClass == WithColumns.class)
-    {
-      switch (derivedFeatureID)
-      {
-        default: return -1;
-      }
-    }
     if (baseClass == UsingCols.class)
     {
       switch (derivedFeatureID)
@@ -294,13 +286,6 @@ public class DbObjectNameImpl extends ColumnFullImpl implements DbObjectName
   @Override
   public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass)
   {
-    if (baseClass == WithColumns.class)
-    {
-      switch (baseFeatureID)
-      {
-        default: return -1;
-      }
-    }
     if (baseClass == UsingCols.class)
     {
       switch (baseFeatureID)

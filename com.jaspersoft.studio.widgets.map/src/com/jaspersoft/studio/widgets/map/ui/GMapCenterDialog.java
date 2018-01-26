@@ -1,9 +1,6 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.widgets.map.ui;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -13,10 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import com.jaspersoft.studio.widgets.map.core.LatLng;
 import com.jaspersoft.studio.widgets.map.core.MapType;
 
-import net.sf.jasperreports.eclipse.ui.util.PersistentLocationDialog;
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-
-public class GMapCenterDialog extends PersistentLocationDialog {
+public class GMapCenterDialog extends Dialog {
 
 	private GMapsCenterPanel mapPanel;
 
@@ -43,61 +37,58 @@ public class GMapCenterDialog extends PersistentLocationDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite container = (Composite) super.createDialogArea(parent);
-		try {
-			mapPanel = new GMapsCenterPanel(container, SWT.NONE) {
 
-				@Override
-				public void setMapCenter(LatLng mapCenter) {
-					super.setMapCenter(mapCenter);
-					GMapCenterDialog.this.mapCenter = mapCenter;
-				}
+		mapPanel = new GMapsCenterPanel(container, SWT.NONE) {
 
-				@Override
-				public void setZoomLevel(int zoomLevel) {
-					super.setZoomLevel(zoomLevel);
-					GMapCenterDialog.this.zoomLevel = zoomLevel;
-				}
+			@Override
+			public void setMapCenter(LatLng mapCenter) {
+				super.setMapCenter(mapCenter);
+				GMapCenterDialog.this.mapCenter = mapCenter;
+			}
 
-				@Override
-				public void setMapType(MapType mapType) {
-					super.setMapType(mapType);
-					GMapCenterDialog.this.mapType = mapType;
-				}
+			@Override
+			public void setZoomLevel(int zoomLevel) {
+				super.setZoomLevel(zoomLevel);
+				GMapCenterDialog.this.zoomLevel = zoomLevel;
+			}
 
-				@Override
-				public void setAddress(String address) {
-					super.setAddress(address);
-					GMapCenterDialog.this.address = address;
-				}
+			@Override
+			public void setMapType(MapType mapType) {
+				super.setMapType(mapType);
+				GMapCenterDialog.this.mapType = mapType;
+			}
 
-				@Override
-				protected void handleMapCenterChanged(LatLng position) {
-					super.handleMapCenterChanged(position);
-					setMapCenter(position);
-				}
+			@Override
+			public void setAddress(String address) {
+				super.setAddress(address);
+				GMapCenterDialog.this.address = address;
+			}
 
-				@Override
-				protected void handleMapZoomChanged(int newZoomLevel) {
-					setZoomLevel(newZoomLevel);
-				}
+			@Override
+			protected void handleMapCenterChanged(LatLng position) {
+				super.handleMapCenterChanged(position);
+				setMapCenter(position);
+			}
 
-				@Override
-				protected void handleAddressChanged(String address) {
-					setAddress(address);
-				}
+			@Override
+			protected void handleMapZoomChanged(int newZoomLevel) {
+				setZoomLevel(newZoomLevel);
+			}
 
-				@Override
-				protected void handleMapTypeChanged(MapType mapType) {
-					setMapType(mapType);
-				}
-			};
-			mapPanel.setAddress(address);
-			mapPanel.setMapCenter(mapCenter);
-			mapPanel.setMapType(mapType);
-			mapPanel.setZoomLevel(zoomLevel);
-		} catch (Throwable e) {
-			UIUtils.showError(e);
-		}
+			@Override
+			protected void handleAddressChanged(String address) {
+				setAddress(address);
+			}
+
+			@Override
+			protected void handleMapTypeChanged(MapType mapType) {
+				setMapType(mapType);
+			}
+		};
+		mapPanel.setAddress(address);
+		mapPanel.setMapCenter(mapCenter);
+		mapPanel.setMapType(mapType);
+		mapPanel.setZoomLevel(zoomLevel);
 		return container;
 	}
 

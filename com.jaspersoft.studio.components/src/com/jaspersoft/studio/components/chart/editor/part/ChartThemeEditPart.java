@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.chart.editor.part;
 
@@ -62,7 +70,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		rf.setLayoutManager(lm);
 
 		JRDesignChart jdc = MChart.createJRElement(
-				getModel().getJasperDesign(), JRDesignChart.CHART_TYPE_AREA, false);
+				getModel().getJasperDesign(), JRDesignChart.CHART_TYPE_AREA);
 		jdc.setTitleExpression(new JRDesignExpression("\"Area Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Areas\""));
@@ -76,7 +84,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_BAR, false);
+				JRDesignChart.CHART_TYPE_BAR);
 		jdc.setTitleExpression(new JRDesignExpression("\"Bar Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Bars\""));
@@ -90,7 +98,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_BAR3D, false);
+				JRDesignChart.CHART_TYPE_BAR3D);
 		jdc.setTitleExpression(new JRDesignExpression("\"Bar 3D Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying 3D Bars\""));
@@ -104,7 +112,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_BUBBLE, false);
+				JRDesignChart.CHART_TYPE_BUBBLE);
 		jdc.setTitleExpression(new JRDesignExpression("\"Bubble Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Bubbles\""));
@@ -117,7 +125,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_CANDLESTICK, false);
+				JRDesignChart.CHART_TYPE_CANDLESTICK);
 		jdc.setTitleExpression(new JRDesignExpression("\"Candlestick Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Candlesticks\""));
@@ -130,7 +138,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_HIGHLOW, false);
+				JRDesignChart.CHART_TYPE_HIGHLOW);
 		jdc.setTitleExpression(new JRDesignExpression("\"High Low Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying High Low Values\""));
@@ -143,7 +151,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_LINE, false);
+				JRDesignChart.CHART_TYPE_LINE);
 		jdc.setTitleExpression(new JRDesignExpression("\"Line Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Lines\""));
@@ -157,7 +165,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_METER, false);
+				JRDesignChart.CHART_TYPE_METER);
 		jdc.setTitleExpression(new JRDesignExpression("\"Meter Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying a Meter\""));
@@ -165,7 +173,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_PIE, false);
+				JRDesignChart.CHART_TYPE_PIE);
 		jdc.setTitleExpression(new JRDesignExpression("\"Pie Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying a Pie\""));
@@ -174,7 +182,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_PIE3D, false);
+				JRDesignChart.CHART_TYPE_PIE3D);
 		jdc.setTitleExpression(new JRDesignExpression("\"Pie 3D Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying a Pie 3D\""));
@@ -183,7 +191,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_SCATTER, false);
+				JRDesignChart.CHART_TYPE_SCATTER);
 		jdc.setTitleExpression(new JRDesignExpression("\"Scatter Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Scattered Dots\""));
@@ -196,7 +204,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_STACKEDAREA, false);
+				JRDesignChart.CHART_TYPE_STACKEDAREA);
 		jdc.setTitleExpression(new JRDesignExpression("\"Stacked Area Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Stacked Areas\""));
@@ -210,7 +218,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_STACKEDBAR, false);
+				JRDesignChart.CHART_TYPE_STACKEDBAR);
 		jdc.setTitleExpression(new JRDesignExpression("\"Stacked Bar Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Stacked Bars\""));
@@ -224,7 +232,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_STACKEDBAR3D, false);
+				JRDesignChart.CHART_TYPE_STACKEDBAR3D);
 		jdc.setTitleExpression(new JRDesignExpression(
 				"\"Stacked Bar 3D Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
@@ -239,7 +247,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_THERMOMETER, false);
+				JRDesignChart.CHART_TYPE_THERMOMETER);
 		jdc.setTitleExpression(new JRDesignExpression("\"Thermometer Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Thermometer\""));
@@ -247,7 +255,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_TIMESERIES, false);
+				JRDesignChart.CHART_TYPE_TIMESERIES);
 		jdc.setTitleExpression(new JRDesignExpression("\"Time Series Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying Time Series\""));
@@ -260,7 +268,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_XYAREA, false);
+				JRDesignChart.CHART_TYPE_XYAREA);
 		jdc.setTitleExpression(new JRDesignExpression("\"XY Area Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying XY Area\""));
@@ -274,7 +282,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_XYBAR, false);
+				JRDesignChart.CHART_TYPE_XYBAR);
 		jdc.setTitleExpression(new JRDesignExpression("\"XY Bar Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying XY Bars\""));
@@ -288,7 +296,7 @@ public class ChartThemeEditPart extends FigureEditPart {
 		addChart(rf, lm, jdc);
 
 		jdc = MChart.createJRElement(getModel().getJasperDesign(),
-				JRDesignChart.CHART_TYPE_XYLINE, false);
+				JRDesignChart.CHART_TYPE_XYLINE);
 		jdc.setTitleExpression(new JRDesignExpression("\"XY Line Chart\""));
 		jdc.setSubtitleExpression(new JRDesignExpression(
 				"\"Chart Displaying XY Lines\""));

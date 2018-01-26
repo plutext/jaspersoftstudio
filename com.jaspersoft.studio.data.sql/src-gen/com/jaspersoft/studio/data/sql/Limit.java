@@ -32,12 +32,12 @@ public interface Limit extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>L1</em>' attribute.
-   * @see #setL1(Long)
+   * @see #setL1(Integer)
    * @see com.jaspersoft.studio.data.sql.SqlPackage#getLimit_L1()
    * @model
    * @generated
    */
-  Long getL1();
+  Integer getL1();
 
   /**
    * Sets the value of the '{@link com.jaspersoft.studio.data.sql.Limit#getL1 <em>L1</em>}' attribute.
@@ -47,7 +47,7 @@ public interface Limit extends EObject
    * @see #getL1()
    * @generated
    */
-  void setL1(Long value);
+  void setL1(Integer value);
 
   /**
    * Returns the value of the '<em><b>L2</b></em>' attribute.
@@ -58,12 +58,12 @@ public interface Limit extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>L2</em>' attribute.
-   * @see #setL2(Long)
+   * @see #setL2(Integer)
    * @see com.jaspersoft.studio.data.sql.SqlPackage#getLimit_L2()
    * @model
    * @generated
    */
-  Long getL2();
+  Integer getL2();
 
   /**
    * Sets the value of the '{@link com.jaspersoft.studio.data.sql.Limit#getL2 <em>L2</em>}' attribute.
@@ -73,6 +73,6 @@ public interface Limit extends EObject
    * @see #getL2()
    * @generated
    */
-  void setL2(Long value);
+  void setL2(Integer value);
 
 } // Limit

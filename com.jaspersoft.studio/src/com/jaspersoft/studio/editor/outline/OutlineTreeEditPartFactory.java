@@ -1,25 +1,25 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.outline;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartFactory;
-import org.eclipse.gef.Request;
-import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.UnexecutableCommand;
-import org.eclipse.gef.requests.CreateRequest;
-import org.eclipse.jface.window.Window;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
@@ -28,16 +28,9 @@ import com.jaspersoft.studio.callout.command.CreateCalloutCommand;
 import com.jaspersoft.studio.callout.command.DeleteCalloutCommand;
 import com.jaspersoft.studio.callout.pin.MPin;
 import com.jaspersoft.studio.callout.pin.command.DeletePinCommand;
-import com.jaspersoft.studio.editor.expression.EditElementExpressionCommand;
-import com.jaspersoft.studio.editor.gef.parts.FigureEditPart;
-import com.jaspersoft.studio.editor.outline.actions.field.ShowFieldsTreeAction;
-import com.jaspersoft.studio.editor.outline.actions.field.SortFieldsAction;
 import com.jaspersoft.studio.editor.outline.part.ContainerTreeEditPart;
-import com.jaspersoft.studio.editor.outline.part.DatasetElementsTreeEditPart;
 import com.jaspersoft.studio.editor.outline.part.NotDragableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.outline.part.NotDragableTreeEditPart;
-import com.jaspersoft.studio.editor.outline.part.OpenableContainerTreeEditPart;
-import com.jaspersoft.studio.editor.outline.part.OpenableNotDraggableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.outline.part.TreeEditPart;
 import com.jaspersoft.studio.editor.tools.CompositeElementManager;
 import com.jaspersoft.studio.editor.tools.MCompositeElement;
@@ -66,7 +59,6 @@ import com.jaspersoft.studio.model.band.command.ReorderBandCommandByIndex;
 import com.jaspersoft.studio.model.command.CreateE4ObjectCommand;
 import com.jaspersoft.studio.model.command.CreateElementCommand;
 import com.jaspersoft.studio.model.command.CreateElementGroupCommand;
-import com.jaspersoft.studio.model.command.CreateFieldInEditorCommand;
 import com.jaspersoft.studio.model.command.DeleteElementCommand;
 import com.jaspersoft.studio.model.command.DeleteElementGroupCommand;
 import com.jaspersoft.studio.model.command.NoActionCommand;
@@ -79,12 +71,8 @@ import com.jaspersoft.studio.model.dataset.command.CreateDatasetCommand;
 import com.jaspersoft.studio.model.dataset.command.DeleteDatasetCommand;
 import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.field.MFields;
-import com.jaspersoft.studio.model.field.MFieldsContainer;
 import com.jaspersoft.studio.model.field.command.CreateFieldCommand;
-import com.jaspersoft.studio.model.field.command.CreateFieldsContainerCommand;
 import com.jaspersoft.studio.model.field.command.DeleteFieldCommand;
-import com.jaspersoft.studio.model.field.command.DeleteFieldsContainerCommand;
-import com.jaspersoft.studio.model.field.command.DoNothingCommand;
 import com.jaspersoft.studio.model.field.command.ReorderFieldCommand;
 import com.jaspersoft.studio.model.frame.MFrame;
 import com.jaspersoft.studio.model.group.MGroup;
@@ -129,7 +117,6 @@ import com.jaspersoft.studio.model.style.command.ReorderStyleCommand;
 import com.jaspersoft.studio.model.style.command.ReorderStyleTemplateCommand;
 import com.jaspersoft.studio.model.subreport.MSubreport;
 import com.jaspersoft.studio.model.subreport.command.CreateSubreportCommand;
-import com.jaspersoft.studio.model.text.MTextField;
 import com.jaspersoft.studio.model.textfield.MPageXofY;
 import com.jaspersoft.studio.model.textfield.MPercentage;
 import com.jaspersoft.studio.model.textfield.command.CreatePageXofYCommand;
@@ -152,7 +139,6 @@ import net.sf.jasperreports.engine.design.JRDesignElement;
 import net.sf.jasperreports.engine.design.JRDesignGroup;
 import net.sf.jasperreports.engine.design.JRDesignParameter;
 import net.sf.jasperreports.engine.design.JRDesignStyle;
-import net.sf.jasperreports.engine.design.JRDesignTextField;
 import net.sf.jasperreports.engine.design.JRDesignVariable;
 import net.sf.jasperreports.engine.type.BandTypeEnum;
 
@@ -164,42 +150,26 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
-	 * java.lang.Object)
+	 * @see org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart, java.lang.Object)
 	 */
 	public EditPart createEditPart(EditPart context, Object model) {
-		ExtensionManager m = JaspersoftStudioPlugin.getExtensionManager();
-		EditPart editPart = m.createTreeEditPart(context, model);
-		if (editPart == null) {
-			if (model instanceof MCallout || model instanceof MPin)
-				return null;
-			if (model instanceof IDragable) {
-				if (model instanceof IContainerEditPart) {
-					editPart = new ContainerTreeEditPart();
-				} else if (model instanceof MTextField) {
-					editPart = createTextFieldTreeEditPart();
-				} else if (model instanceof MSubreport) {
-					editPart = new OpenableContainerTreeEditPart();
-				} else if (model instanceof MImage) {
-					editPart = new OpenableContainerTreeEditPart();
-				} else if (model instanceof MGraphicElement) {
-					editPart = new ContainerTreeEditPart();
-				} else if (model instanceof MField || model instanceof MParameter || model instanceof MVariable) {
-					editPart = new DatasetElementsTreeEditPart();
-				} else {
-					editPart = new TreeEditPart();
-				}
-			} else {
-				if (model instanceof MStyleTemplate) {
-					editPart = new OpenableNotDraggableContainerTreeEditPart();
-				} else if (model instanceof IContainerEditPart) {
-					editPart = new NotDragableContainerTreeEditPart();
-				} else if (model instanceof MGraphicElement) {
-					editPart = new NotDragableContainerTreeEditPart();
-				} else {
-					editPart = new NotDragableTreeEditPart();
-				}
-			}
+		EditPart editPart = null;
+		if (model instanceof MCallout || model instanceof MPin)
+			return null;
+		if (model instanceof IDragable) {
+			if (model instanceof IContainerEditPart)
+				editPart = new ContainerTreeEditPart();
+			else if (model instanceof MGraphicElement)
+				editPart = new ContainerTreeEditPart();
+			else
+				editPart = new TreeEditPart();
+		} else {
+			if (model instanceof IContainerEditPart)
+				editPart = new NotDragableContainerTreeEditPart();
+			else if (model instanceof MGraphicElement)
+				editPart = new NotDragableContainerTreeEditPart();
+			else
+				editPart = new NotDragableTreeEditPart();
 		}
 		if (editPart != null)
 			editPart.setModel(model);
@@ -207,41 +177,12 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 	}
 
 	/**
-	 * Create the edit part for a text field element, allowing to open the
-	 * expression editor with a double click on the outline
-	 */
-	protected EditPart createTextFieldTreeEditPart() {
-		return new OpenableContainerTreeEditPart() {
-
-			@Override
-			public void performRequest(Request req) {
-				if (RequestConstants.REQ_OPEN.equals(req.getType())) {
-					Command cmd = null;
-					MTextField textfield = (MTextField) getModel();
-					cmd = new EditElementExpressionCommand(textfield, JRDesignTextField.PROPERTY_EXPRESSION) {
-						@Override
-						public boolean canExecute() {
-							return super.canExecute() && this.showDialog() == Window.OK;
-						}
-					};
-					getViewer().getEditDomain().getCommandStack().execute(cmd);
-				}
-			}
-
-			@Override
-			public boolean understandsRequest(Request req) {
-				return RequestConstants.REQ_OPEN.equals(req.getType());
-			}
-		};
-	}
-
-	/**
 	 * Gets the delete command.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @return the delete command
 	 */
 	public static Command getDeleteCommand(ANode parent, ANode child) {
@@ -267,35 +208,28 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 				return new DeleteStyleTemplateCommand((MStyles) parent, (MStyleTemplate) child);
 		} else if (child instanceof MStyle) {
 			if (parent instanceof MStyles)
-				return new DeleteStyleCommand((MStyles) parent, (JRDesignStyle) child.getValue());
+				return new DeleteStyleCommand((MStyles) parent, (JRDesignStyle)child.getValue());
 		} else if (child instanceof MParameter) {
 			JRDesignParameter p = (JRDesignParameter) child.getValue();
-			if (!p.isSystemDefined()) {
-				MParameter srcNode = (MParameter) child;
+			if (!p.isSystemDefined()){
+				MParameter srcNode = (MParameter) child; 
 				JasperReportsConfiguration jConfig = srcNode.getJasperConfiguration();
-				return new DeleteParameterCommand(jConfig, (JRDesignDataset) parent.getValue(), srcNode.getValue(),
-						false);
+				return new DeleteParameterCommand(jConfig, (JRDesignDataset)parent.getValue(), srcNode.getValue(), false);
 			}
 		} else if (child instanceof MField) {
-			MField srcNode = (MField) child;
+			MField srcNode = (MField) child; 
 			JasperReportsConfiguration jConfig = srcNode.getJasperConfiguration();
 			return new DeleteFieldCommand(jConfig, (JRDesignDataset) parent.getValue(), srcNode.getValue(), false);
-		} else if (child instanceof MFieldsContainer) {
-			MFieldsContainer srcNode = (MFieldsContainer) child;
-			JasperReportsConfiguration jConfig = srcNode.getJasperConfiguration();
-			return new DeleteFieldsContainerCommand(jConfig, (JRDesignDataset) parent.getValue(), srcNode.getKey(),
-					parent, DeleteFieldsContainerCommand.DELETE);
 		} else if (child instanceof MSortField) {
 			return new DeleteSortFieldCommand((MSortFields) parent, (MSortField) child);
 		} else if (child instanceof MGroup) {
 			return new DeleteGroupCommand((MGroups) parent, (MGroup) child);
 		} else if (child instanceof MVariable) {
 			JRDesignVariable p = (JRDesignVariable) child.getValue();
-			if (!p.isSystemDefined()) {
-				MVariable srcNode = (MVariable) child;
+			if (!p.isSystemDefined()){
+				MVariable srcNode = (MVariable) child; 
 				JasperReportsConfiguration jConfig = srcNode.getJasperConfiguration();
-				return new DeleteVariableCommand(jConfig, (JRDesignDataset) parent.getValue(), srcNode.getValue(),
-						false);
+				return new DeleteVariableCommand(jConfig, (JRDesignDataset) parent.getValue(), srcNode.getValue(), false);
 			}
 		} else if (child instanceof MScriptlet) {
 			return new DeleteScriptletCommand((MScriptlets) parent, (MScriptlet) child);
@@ -317,11 +251,11 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 	 * Gets the reorder command.
 	 * 
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param newIndex
-	 *            the new index
+	 *          the new index
 	 * @return the reorder command
 	 */
 	public static Command getReorderCommand(ANode child, ANode parent, int newIndex) {
@@ -347,7 +281,7 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 					}
 				}
 				if (newIndex >= minIndex && newIndex <= maxIndex)
-					return new ReorderBandCommandByIndex((MBandGroupFooter) child, newIndex - minIndex);
+					return new ReorderBandCommandByIndex((MBandGroupFooter) child,  newIndex - minIndex);
 			}
 			if (child instanceof MBandGroupHeader) {
 				JRDesignGroup g = ((MBandGroupHeader) child).getJrGroup();
@@ -410,22 +344,10 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 					return new ReorderParameterCommand((MParameter) child, (MParameters<?>) parent, newIndex);
 				}
 			}
-		} else if (child instanceof MFieldsContainer) {
-			if (parent instanceof MField)
-				parent = parent.getParent();
-			if (parent instanceof MFields && parent != child.getParent())
-				return new DoNothingCommand();
-			return null;
 		} else if (child instanceof MField) {
-			if (ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-				if (parent instanceof MField)
-					parent = parent.getParent();
-				if (parent instanceof MFields && parent != child.getParent())
-					return new DoNothingCommand();
-				return null;
-			}
-			if (parent instanceof MFields)
+			if (parent instanceof MFields) {
 				return new ReorderFieldCommand((MField) child, (MFields) parent, newIndex);
+			}
 		} else if (child instanceof MSortField) {
 			if (parent instanceof MSortFields) {
 				return new ReorderSortFieldCommand((MSortField) child, (MSortFields) parent, newIndex);
@@ -459,142 +381,55 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 		return null;
 	}
 
+	/**
+	 * Gets the creates the command.
+	 * 
+	 * @param parent
+	 *          the parent
+	 * @param child
+	 *          the child
+	 * @param location
+	 *          the location
+	 * @param newIndex
+	 *          the new index
+	 * @return the creates the command
+	 */
 	public static Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex) {
-		return getCreateCommand(parent, child, location, newIndex, null, false);
-	}
-
-	public static Command getCreateCommand(ANode parent, ANode child, Rectangle location, int newIndex, Request request,
-			boolean typeAdd) {
+		// System.out.println("create: " + parent + " - " + child);
 		ExtensionManager m = JaspersoftStudioPlugin.getExtensionManager();
 		Command c = m.getCreateCommand(parent, child, location, newIndex);
 		if (c != null)
 			return c;
 		if (child instanceof MCallout)
 			return new CreateCalloutCommand(parent, (MCallout) child, location, newIndex);
-		if (child instanceof MFieldsContainer) {
-			if (typeAdd && ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-				if (parent instanceof MField)
-					parent = parent.getParent();
-				if (parent instanceof MFields) {
-					List<ANode> lst = new ArrayList<ANode>();
-					lst.add((MFields) child);
-					return new CreateFieldsContainerCommand((MFields) parent, lst, typeAdd);
-				}
-			} else {
-				if (parent instanceof MField) {
-					List<ANode> lst = new ArrayList<ANode>();
-					lst.add((MField) parent);
-					return new CreateFieldsContainerCommand(lst);
-				}
-				if (parent instanceof MFieldsContainer) {
-					List<ANode> lst = new ArrayList<ANode>();
-					lst.add((MFieldsContainer) parent);
-					return new CreateFieldsContainerCommand(lst);
-				}
-			}
-			if (child.getValue() != null && (parent instanceof MGraphicElement || parent instanceof MReport
-					|| parent instanceof MBand || parent instanceof MFrame)) {
-				return new CreateE4ObjectCommand(child, parent, location, newIndex);
-			}
-			return null;
-		} else if (child instanceof MField) {
-			if (typeAdd && ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-				if (parent instanceof MField)
-					parent = parent.getParent();
-				if (parent instanceof MFields) {
-					List<ANode> lst = new ArrayList<ANode>();
-					lst.add((MField) child);
-					return new CreateFieldsContainerCommand((MFields) parent, lst, typeAdd);
-				}
-			}
-			if (parent instanceof MFields) {
-				if (SortFieldsAction.areFieldsSorted(parent.getJasperConfiguration())
-						|| ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-					return null;
-				}
+
+		if (child instanceof MField) {
+			if (parent instanceof MFields)
 				return new CreateFieldCommand((MFields) parent, (MField) child, newIndex);
-			} else if (parent instanceof MField) {
-				if (SortFieldsAction.areFieldsSorted(parent.getJasperConfiguration())
-						|| ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-					return null;
-				}
-				if (parent.getParent() != null) {
-					newIndex = parent.getParent().getChildren().indexOf(parent);
-					return new CreateFieldCommand((MFields) parent.getParent(), (MField) child, newIndex);
-				}
-			} else if (child.getValue() != null) {
-				ANode targetNode = null;
-				if (parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame) {
-					targetNode = parent;
-				} else if (parent instanceof MGraphicElement) {
-					targetNode = parent.getParent();
-				}
-				if (targetNode != null) {
-					int index = newIndex;
-					int createdElements = 1;
-					if (request instanceof CreateRequest) {
-						CreateRequest cRequest = (CreateRequest) request;
-						// System.out.println(cRequest.getLocation());
-						Object newObject = cRequest.getNewObject();
-						createdElements = 0;
-						if (newObject instanceof Collection<?>) {
-							for (Object createdElement : ((Collection<?>) newObject)) {
-								if (createdElement instanceof MField) {
-									createdElements++;
-								}
-							}
-						}
-						EditPart targetEditPart = targetNode.getFigureEditPart();
-						if (targetEditPart instanceof FigureEditPart) {
-							IFigure hostFigure2 = ((FigureEditPart) targetEditPart).getFigure();
-							Point location2 = cRequest.getLocation().getCopy();
-							hostFigure2.translateToRelative(location2);
-							Dimension newLocation = location2.getDifference(hostFigure2.getBounds().getTopLeft());
-							index = ModelUtils.getBetweenIndex(targetNode,
-									new Point(newLocation.width, newLocation.height));
-						}
-					}
-					CreateFieldInEditorCommand cmd = new CreateFieldInEditorCommand((MField) child, targetNode,
-							location, index);
-					cmd.setCreatedFields(createdElements);
-					return cmd;
-				}
+			else if (child.getValue() != null
+					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
+				return new CreateE4ObjectCommand(child, parent, location, newIndex);
 			}
 		} else if (child instanceof MParameterSystem) {
 			if (child instanceof MParameter) {
 				if (parent instanceof MParameters) {
 					JRDesignParameter p = (JRDesignParameter) child.getValue();
-					if (p == null || !p.isSystemDefined()) {
-						return new CreateParameterCommand((MParameters<?>) parent, (MParameter) child, newIndex);
-					}
-				} else if (parent instanceof MParameter) {
-					JRDesignParameter p = (JRDesignParameter) child.getValue();
-					if ((p == null || !p.isSystemDefined()) && parent.getParent() != null) {
-						newIndex = parent.getParent().getChildren().indexOf(parent);
-						return new CreateParameterCommand((MParameters<?>) parent.getParent(), (MParameter) child,
-								newIndex);
-					}
+					if (p == null || !p.isSystemDefined())
+						return new CreateParameterCommand((MParameters) parent, (MParameter) child, newIndex);
 				}
 			}
-			if (child.getValue() != null && (parent instanceof MGraphicElement || parent instanceof MReport
-					|| parent instanceof MBand || parent instanceof MFrame)) {
+			if (child.getValue() != null
+					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
 				return new CreateE4ObjectCommand(child, parent, location, newIndex);
 			}
 		} else if (child instanceof MVariableSystem) {
 			if (parent instanceof MVariables) {
 				JRDesignVariable p = (JRDesignVariable) child.getValue();
-				if (p == null || !p.isSystemDefined()) {
+				if (p == null || !p.isSystemDefined())
 					return new CreateVariableCommand((MVariables) parent, (MVariable) child, newIndex);
-				}
-			} else if (parent instanceof MVariable) {
-				JRDesignVariable p = (JRDesignVariable) child.getValue();
-				if ((p == null || !p.isSystemDefined()) && parent.getParent() != null) {
-					newIndex = parent.getParent().getChildren().indexOf(parent);
-					return new CreateVariableCommand((MVariables) parent.getParent(), (MVariable) child, newIndex);
-				}
 			}
-			if (child.getValue() != null && (parent instanceof MGraphicElement || parent instanceof MReport
-					|| parent instanceof MBand || parent instanceof MFrame)) {
+			if (child.getValue() != null
+					&& (parent instanceof MGraphicElement || parent instanceof MReport || parent instanceof MBand || parent instanceof MFrame)) {
 				return new CreateE4ObjectCommand(child, parent, location, newIndex);
 			}
 		} else {
@@ -613,9 +448,8 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 					cmd.setPropertyValue(style.getName());
 					return cmd;
 				}
-				if (parent instanceof MStylesTemplate && ((MStylesTemplate) parent).isEditable()) {
-					return new com.jaspersoft.studio.editor.style.command.CreateStyleCommand((MStylesTemplate) parent,
-							(MStyle) child, -1);
+				if (parent instanceof MStylesTemplate && ((MStylesTemplate)parent).isEditable()){
+					return new com.jaspersoft.studio.editor.style.command.CreateStyleCommand((MStylesTemplate)parent, (MStyle)child, -1);
 				}
 				if (parent instanceof MReport && location != null) {
 					MGraphicElement element = ModelUtils.getElement4Point(parent, new Point(location.x, location.y));
@@ -630,9 +464,9 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 				}
 			}
 		}
-		// If it is a custom tool require the command to the toolmanger
-		if (child instanceof MCompositeElement) {
-			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement) child, location, newIndex);
+		//If it is a custom tool require the command to the toolmanger
+		if (child instanceof MCompositeElement){
+			return CompositeElementManager.INSTANCE.getCommand(parent, (MCompositeElement)child, location, newIndex);
 		} else if (child instanceof MPageXofY) {
 			if (parent instanceof MElementGroup)
 				return new CreatePageXofYCommand((MElementGroup) parent, (MPageXofY) child, location, newIndex);
@@ -736,9 +570,9 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 	 * Gets the orphan command.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 * @param child
-	 *            the child
+	 *          the child
 	 * @return the orphan command
 	 */
 	public static Command getOrphanCommand(ANode parent, ANode child) {
@@ -747,25 +581,14 @@ public class OutlineTreeEditPartFactory implements EditPartFactory {
 		if (c != null)
 			return c;
 
-		if (child instanceof MField) {
-			if (ShowFieldsTreeAction.isFieldsTree(parent.getJasperConfiguration())) {
-				if (parent instanceof MField)
-					parent = parent.getParent();
-				if (parent instanceof MFields)
-					return new DoNothingCommand();
-				return null;
-			}
+		if (child instanceof MField)
 			return new NoActionCommand();
-		} else if (child instanceof MFieldsContainer)
-			return new DoNothingCommand();
 		if (child instanceof MParameterSystem)
 			return new NoActionCommand();
-		// return new OrphanParameterCommand(parent, (MParameter) child);
 		if (child instanceof MVariableSystem)
 			return new NoActionCommand();
-		// This condition must be placed before the MStyle check, since
-		// MConditionalStyle is also
-		// an mstyle and so it will be catched in the mstyle branch
+		//This condition must be placed before the MStyle check, since MConditionalStyle is also
+		//an mstyle and so it will be catched in the mstyle branch
 		if (child instanceof MConditionalStyle)
 			if (parent instanceof MStyle)
 				return new OrphanConditionalStyleCommand((MStyle) parent, (MConditionalStyle) child);

@@ -1,7 +1,3 @@
-/*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
- ******************************************************************************/
 package com.jaspersoft.studio.book.model;
 
 import java.util.ArrayList;
@@ -63,11 +59,6 @@ public class PartComponentFactory implements IComponentFactory {
 	@Override
 	public EditPart createEditPart(EditPart context, Object model) {
 		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
 		return null;
 	}
 

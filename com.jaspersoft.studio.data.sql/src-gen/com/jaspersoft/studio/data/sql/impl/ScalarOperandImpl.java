@@ -32,7 +32,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *
  * @generated
  */
-public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
+public class ScalarOperandImpl extends OperandListImpl implements ScalarOperand
 {
   /**
    * The default value of the '{@link #getSostr() <em>Sostr</em>}' attribute.
@@ -142,7 +142,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * @generated
    * @ordered
    */
-  protected static final Long SO_UINT_EDEFAULT = null;
+  protected static final Integer SO_UINT_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSoUInt() <em>So UInt</em>}' attribute.
@@ -152,7 +152,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * @generated
    * @ordered
    */
-  protected Long soUInt = SO_UINT_EDEFAULT;
+  protected Integer soUInt = SO_UINT_EDEFAULT;
 
   /**
    * The default value of the '{@link #getSoint() <em>Soint</em>}' attribute.
@@ -162,7 +162,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * @generated
    * @ordered
    */
-  protected static final Long SOINT_EDEFAULT = null;
+  protected static final Integer SOINT_EDEFAULT = null;
 
   /**
    * The cached value of the '{@link #getSoint() <em>Soint</em>}' attribute.
@@ -172,7 +172,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * @generated
    * @ordered
    */
-  protected Long soint = SOINT_EDEFAULT;
+  protected Integer soint = SOINT_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -315,7 +315,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * <!-- end-user-doc -->
    * @generated
    */
-  public Long getSoUInt()
+  public Integer getSoUInt()
   {
     return soUInt;
   }
@@ -325,9 +325,9 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSoUInt(Long newSoUInt)
+  public void setSoUInt(Integer newSoUInt)
   {
-    Long oldSoUInt = soUInt;
+    Integer oldSoUInt = soUInt;
     soUInt = newSoUInt;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, SqlPackage.SCALAR_OPERAND__SO_UINT, oldSoUInt, soUInt));
@@ -338,7 +338,7 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * <!-- end-user-doc -->
    * @generated
    */
-  public Long getSoint()
+  public Integer getSoint()
   {
     return soint;
   }
@@ -348,9 +348,9 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setSoint(Long newSoint)
+  public void setSoint(Integer newSoint)
   {
-    Long oldSoint = soint;
+    Integer oldSoint = soint;
     soint = newSoint;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, SqlPackage.SCALAR_OPERAND__SOINT, oldSoint, soint));
@@ -410,10 +410,10 @@ public class ScalarOperandImpl extends RowValueImpl implements ScalarOperand
         setSodt((String)newValue);
         return;
       case SqlPackage.SCALAR_OPERAND__SO_UINT:
-        setSoUInt((Long)newValue);
+        setSoUInt((Integer)newValue);
         return;
       case SqlPackage.SCALAR_OPERAND__SOINT:
-        setSoint((Long)newValue);
+        setSoint((Integer)newValue);
         return;
     }
     super.eSet(featureID, newValue);

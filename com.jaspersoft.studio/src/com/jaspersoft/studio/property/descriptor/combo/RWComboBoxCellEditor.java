@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.combo;
 
@@ -90,33 +94,21 @@ public class RWComboBoxCellEditor extends EditableComboBoxCellEditor {
 	 */
 	@Override
 	protected void doSetValue(Object value) {
-		if (comboBox != null) {
-			if (value instanceof String) {
-				String[] items = getItems();
-				for (int i = 0; i < items.length; i++) {
-					if (items[i].equals((String) value)) {
-						super.doSetValue(new Integer(i));
-						return;
-					}
+		if (comboBox != null && value instanceof String) {
+			String[] items = getItems();
+			for (int i = 0; i < items.length; i++) {
+				if (items[i].equals((String) value)) {
+					super.doSetValue(new Integer(i));
+					return;
 				}
-				// No element found
-				String[] newListItems = new String[items.length + 1];
-				System.arraycopy(items, 0, newListItems, 0, items.length);
-	
-				newListItems[items.length] = (String) value;
-				setItems(newListItems);
-				super.doSetValue(items.length);
-			} else if (value == null) {
-				String[] items = getItems();
-				// No element found
-				String[] newListItems = new String[items.length + 1];
-				System.arraycopy(items, 0, newListItems, 0, items.length);
-	
-				newListItems[items.length] = "";
-				setItems(newListItems);
-				super.doSetValue(items.length);
-				setItems(items);
 			}
+			// No element found
+			String[] newListItems = new String[items.length + 1];
+			System.arraycopy(items, 0, newListItems, 0, items.length);
+
+			newListItems[items.length] = (String) value;
+			setItems(newListItems);
+			super.doSetValue(items.length);
 		}
 
 	}

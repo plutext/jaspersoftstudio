@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.action.order;
 
@@ -10,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
 
 import com.jaspersoft.studio.data.sql.SQLQueryDesigner;
 import com.jaspersoft.studio.data.sql.Util;
@@ -26,8 +35,7 @@ import com.jaspersoft.studio.data.sql.model.query.orderby.MOrderByColumn;
 import com.jaspersoft.studio.data.sql.model.query.orderby.MOrderByExpression;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.INode;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class CreateOrderByColumn extends AAction {
 	private CreateTable ct;
@@ -58,7 +66,7 @@ public class CreateOrderByColumn extends AAction {
 
 	@Override
 	public void run() {
-		FromTableColumnsDialog dialog = new FromTableColumnsDialog(treeViewer.getControl().getShell());
+		FromTableColumnsDialog dialog = new FromTableColumnsDialog(Display.getDefault().getActiveShell());
 		dialog.setSelection((ANode) selection[0]);
 		if (dialog.open() == Window.OK)
 			run(dialog.getColumns());

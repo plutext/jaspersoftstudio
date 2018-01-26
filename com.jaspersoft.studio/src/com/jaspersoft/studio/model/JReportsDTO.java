@@ -1,12 +1,19 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
 import java.util.List;
 
-import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRSubreportReturnValue;
 import net.sf.jasperreports.engine.design.JRDesignSubreport;
 
@@ -16,8 +23,7 @@ public class JReportsDTO {
 	private JasperReportsConfiguration jConfig;
 	private List<JRSubreportReturnValue> value;
 	private JRDesignSubreport subreport;
-	private JRDataset subreportDataset;
-	
+
 	public void setjConfig(JasperReportsConfiguration jConfig) {
 		this.jConfig = jConfig;
 	}
@@ -29,14 +35,9 @@ public class JReportsDTO {
 	public JRDesignSubreport getSubreport() {
 		return subreport;
 	}
-	
-	public JRDataset getDataset() {
-		return subreportDataset;
-	}
 
-	public void setSubreport(JRDesignSubreport subreport, JRDataset dataset) {
+	public void setSubreport(JRDesignSubreport subreport) {
 		this.subreport = subreport;
-		this.subreportDataset = dataset;
 	}
 
 	public List<JRSubreportReturnValue> getValue() {

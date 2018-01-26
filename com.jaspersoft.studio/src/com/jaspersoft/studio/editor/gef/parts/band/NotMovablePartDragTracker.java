@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.gef.parts.band;
 
@@ -38,13 +46,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Display;
 
-import com.jaspersoft.studio.editor.gef.parts.MainDesignerRootEditPart;
 import com.jaspersoft.studio.editor.java2d.J2DGraphics;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.MGraphicElement;
+import com.jaspersoft.studio.utils.Pair;
 import com.jaspersoft.studio.utils.compatibility.FigureUtilities;
-
-import net.sf.jasperreports.eclipse.util.Pair;
 
 /**
  * This class define a marquee selection tool to select the edit parts by simply dragging on the elements.
@@ -213,11 +219,8 @@ public class NotMovablePartDragTracker extends SelectEditPartTracker {
 			EditPart clickedPart = viewer.findObjectAt(new Point(me.x, me.y));
 			if (clickedPart instanceof BandEditPart) {
 				viewer.select(clickedPart);
-			} else if (clickedPart instanceof MainDesignerRootEditPart) {
-				//when the user click on the external of the page, since it has no properties
-				//show instead the page
-				viewer.select((EditPart)clickedPart.getChildren().get(0));
-			} else viewer.deselectAll();
+			} else
+				viewer.deselectAll();
 		} else
 			super.mouseUp(me, viewer);
 	};
@@ -536,10 +539,6 @@ public class NotMovablePartDragTracker extends SelectEditPartTracker {
 	protected boolean handleButtonDown(int button) {
 		if (!isViewerImportant(null))
 			return true;
-		
-		if ((button == 3 || button == 1) && isInState(STATE_INITIAL))
-			performConditionalSelection();
-		
 		if (button != 1) {
 			setState(STATE_INVALID);
 			handleInvalidInput();

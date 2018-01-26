@@ -31,12 +31,12 @@ public interface UnsignedValue extends EObject
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Integer</em>' attribute.
-   * @see #setInteger(Long)
+   * @see #setInteger(Integer)
    * @see com.jaspersoft.studio.data.sql.SqlPackage#getUnsignedValue_Integer()
    * @model
    * @generated
    */
-  Long getInteger();
+  Integer getInteger();
 
   /**
    * Sets the value of the '{@link com.jaspersoft.studio.data.sql.UnsignedValue#getInteger <em>Integer</em>}' attribute.
@@ -46,6 +46,6 @@ public interface UnsignedValue extends EObject
    * @see #getInteger()
    * @generated
    */
-  void setInteger(Long value);
+  void setInteger(Integer value);
 
 } // UnsignedValue

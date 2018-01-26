@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.components.crosstab.model.crosstab.command.wizard;
 
@@ -10,39 +18,22 @@ import net.sf.jasperreports.crosstabs.design.JRDesignCrosstabRowGroup;
 public class Wrapper {
 	private Object value;
 	private AgregationFunctionEnum calculation = AgregationFunctionEnum.UNIQUE;
-	
-	/**
-	 * The base object form where the group is created, typically is an expression referencing a 
-	 * field, a variable or a parameter. This could be in some cases be different from the bucket
-	 * expression, e.g. when using as base object something of type time/timestamp/date the object
-	 * can be enclosed into an aggregation function in the bucket expression
-	 */
-	private String baseObject;
-	
-	/**
-	 * The type of base object form where the group is created. This could be in some cases be different from the type of 
-	 * the bucket expression, e.g. when using as base object something of type time/timestamp/date the object
-	 * can be enclosed into an aggregation function in the bucket expression that can return a different
-	 * type eg an int for the number of the day
-	 */
-	private String baseObjectType;
+	private String oldExpText;
 
 	public Wrapper(Object value) {
 		super();
 		this.value = value;
 		if (value instanceof JRDesignCrosstabColumnGroup) {
 			JRDesignCrosstabColumnGroup cg = (JRDesignCrosstabColumnGroup) value;
-			baseObject = cg.getBucket().getExpression().getText();
-			baseObjectType = cg.getBucket().getValueClassName();
+			oldExpText = cg.getBucket().getExpression().getText();
 		} else if (value instanceof JRDesignCrosstabRowGroup) {
 			JRDesignCrosstabRowGroup rg = (JRDesignCrosstabRowGroup) value;
-			baseObject = rg.getBucket().getExpression().getText();
-			baseObjectType = rg.getBucket().getValueClassName();
+			oldExpText = rg.getBucket().getExpression().getText();
 		}
 	}
 
-	public String getBaseObjectExpression() {
-		return baseObject;
+	public String getOldExpText() {
+		return oldExpText;
 	}
 
 	public Object getValue() {
@@ -68,13 +59,6 @@ public class Wrapper {
 	public int hashCode() {
 		return value.hashCode();
 	}
-	
-	/**
-	 * Return the class of the dataset item used to build this wrapper
-	 */
-	public String getBaseObjectType() {
-		return baseObjectType;
-	}
 
 	/**
 	 * Return the name of the object without any special syntax like $ etc.. The
@@ -85,7 +69,7 @@ public class Wrapper {
 	 */
 	public String getLabel() {
 
-		String label = getBaseObjectExpression();
+		String label = getOldExpText();
 		if (label == null)
 			return ""; // this case should never be true.
 

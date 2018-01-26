@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.action.text;
 
@@ -10,7 +18,6 @@ import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JRGroup;
 import net.sf.jasperreports.engine.JRLineBox;
 import net.sf.jasperreports.engine.JRParagraph;
-import net.sf.jasperreports.engine.JRPropertyExpression;
 import net.sf.jasperreports.engine.JRStyle;
 import net.sf.jasperreports.engine.design.JRDesignStaticText;
 import net.sf.jasperreports.engine.design.JRDesignTextField;
@@ -62,8 +69,6 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 		 */
 		private MStaticText elementToCopy;
 		
-		private int oldIndex;
-		
 		/**
 		 * The parent of the converted node
 		 */
@@ -74,7 +79,6 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 			//Need to store some values because if the copied node is deleted
 			//its parent is no longer reachable
 			this.parent = elementToCopy.getParent();
-			this.oldIndex = ModelUtils.getChildrenPosition(elementToCopy);
 		}
 		
 		@Override
@@ -89,7 +93,7 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 			modelText.setValue(textObject);
 			Rectangle position = new Rectangle(labelObject.getX(),labelObject.getY(),labelObject.getWidth(),labelObject.getHeight());
 
-			
+			int oldIndex = ModelUtils.getChildrenPosition(elementToCopy);
 			cmd = new CreateElementCommand(parent, modelText, position, oldIndex);
 			cmd.setJasperDesign(parent.getJasperDesign());
 			cmd.execute();
@@ -233,15 +237,6 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 		textObject.setPrintWhenGroupChanges(originGroup != null ? (JRGroup)originGroup.clone() : null);
 		
 		textObject.setRemoveLineWhenBlank(labelObject.isRemoveLineWhenBlank());
-
-		//Transfer the properties map and expression from an element to the other
-		for(String propertyName : labelObject.getPropertiesMap().getPropertyNames()){
-			String propertyValue = labelObject.getPropertiesMap().getProperty(propertyName);
-			textObject.getPropertiesMap().setProperty(propertyName, propertyValue);
-		}
-		for(JRPropertyExpression propertyExpression : labelObject.getPropertyExpressionsList()){
-			textObject.addPropertyExpression((JRPropertyExpression)propertyExpression.clone());
-		}
 	}
 	
 	/**

@@ -1,6 +1,10 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved. http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased a commercial license agreement from Jaspersoft, the following license terms apply:
+ * 
+ * This program and the accompanying materials are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.editor.report;
 
@@ -13,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
@@ -56,8 +59,7 @@ import com.jaspersoft.studio.model.MRoot;
 import com.jaspersoft.studio.model.parameter.MParameter;
 import com.jaspersoft.studio.model.style.StyleTemplateFactory;
 import com.jaspersoft.studio.plugin.ExtensionManager;
-import com.jaspersoft.studio.properties.Activator;
-import com.jaspersoft.studio.properties.preferences.PropertiesPreferencePage;
+import com.jaspersoft.studio.preferences.DesignerPreferencePage;
 import com.jaspersoft.studio.properties.view.ITabbedPropertySheetPageContributor;
 import com.jaspersoft.studio.properties.view.TabbedPropertySheetPage;
 import com.jaspersoft.studio.property.descriptor.expression.dialog.JRExpressionEditor;
@@ -66,7 +68,6 @@ import com.jaspersoft.studio.utils.SelectionHelper;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.FileExtension;
 import net.sf.jasperreports.engine.JRConditionalStyle;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRSimpleTemplate;
@@ -86,34 +87,30 @@ import net.sf.jasperreports.repo.RepositoryUtil;
  * 
  * @author Chicu Veaceslav
  */
-public class ReportContainer extends MultiPageToolbarEditorPart
-		implements ITabbedPropertySheetPageContributor, IJROBjectEditor, CachedSelectionProvider {
+public class ReportContainer extends MultiPageToolbarEditorPart implements ITabbedPropertySheetPageContributor,
+		IJROBjectEditor, CachedSelectionProvider {
 
 	/**
-	 * Key used to save, retrieve the selection cache from the jasper reports
-	 * configuration
+	 * Key used to save, retrieve the selection cache from the jasper reprots configuration
 	 */
 	public static final String SELECTION_CACHE_KEY = "SELECTION_CACHE_PROVIDER";
 
 	/**
-	 * Property used by an element to ask to the container to check if for that
-	 * element there is an editor opened and in that case close it. The property
-	 * change event must have the source value set with the JRelement that it is
-	 * requesting the editor closing
+	 * Property used by an element to ask to the container to check if for that element there is an editor opened and in
+	 * that case close it. The property change event must have the source value set with the JRelement that it is requesting
+	 * the editor closing
 	 */
 	public static final String CLOSE_EDITOR_PROPERTY = "closeElementEditor";
-
+	
 	/**
-	 * Property used by an element to ask to the container to check if for that
-	 * element there is an editor opened and in that case refresh its name. The
-	 * property change event must have the source value set with the JRelement that
-	 * it is requesting the editor closing
+	 * Property used by an element to ask to the container to check if for that element there is an editor opened and in
+	 * that case refresh its name. The property change event must have the source value set with the JRelement that it is requesting
+	 * the editor closing
 	 */
 	public static final String RENAME_EDITOR_PROPERTY = "renamedElementEditor";
-
+	
 	/**
-	 * Flag used to know if in the current editor the background image is in edit
-	 * mode, if available
+	 * Flag used to know if in the current editor the background image is in edit mode, if available
 	 */
 	private boolean editBackgroundImage = false;
 
@@ -128,8 +125,8 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	private List<AbstractVisualEditor> editors = new ArrayList<AbstractVisualEditor>();
 
 	/**
-	 * Map of the subeditors opened, the key is the JRObject edited in the subeditor
-	 * the value it the subeditor used to edit it
+	 * Map of the subeditors opened, the key is the JRObject edited in the subeditor the value
+	 * it the subeditor used to edit it
 	 */
 	private Map<Object, AbstractVisualEditor> ccMap = new HashMap<Object, AbstractVisualEditor>();
 
@@ -137,11 +134,10 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	 * The extension manager
 	 */
 	private ExtensionManager m = JaspersoftStudioPlugin.getExtensionManager();
-
+	
 	/**
-	 * The selection cache used by all the editors in this container (report editor
-	 * and eventually its subeditors) The selection cache is passed to the
-	 * subeditors trough the jasper configuration. The cached is stored when this
+	 * The selection cache used by all the editors in this container (report editor and eventually its subeditors) The
+	 * selection cache is passed to the subeditors trough the jasper configuration. The cached is stored when this
 	 * container is created and can be retrieved with the SELECTION_CACHE_KEY
 	 */
 	private CommonSelectionCacheProvider selectionCache;
@@ -161,13 +157,12 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	 * Instantiates a new report container.
 	 * 
 	 * @param parent
-	 *            the parent
+	 *          the parent
 	 */
 	public ReportContainer(EditorPart parent, JasperReportsConfiguration jrContext) {
 		this.parent = parent;
 		this.jrContext = jrContext;
 		this.selectionCache = new CommonSelectionCacheProvider();
-		selectionCache.setAllowingDishomogeneousSelection(true);
 		// Store the selection cache
 		jrContext.put(SELECTION_CACHE_KEY, selectionCache);
 	}
@@ -201,23 +196,21 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 		}
 		getEditorSite().getActionBarContributor();
 	}
-
+	
 	/**
 	 * Create the editor used to edit visually the report
 	 * 
-	 * @param the
-	 *            current jasper reports configuration
+	 * @param the current jasper reports configuration
 	 * @return a not null report editor
 	 */
-	protected ReportEditor createReportEditor(JasperReportsConfiguration context) {
+	protected ReportEditor createReportEditor(JasperReportsConfiguration context){
 		return new ReportEditor(context);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-	 * IProgressMonitor)
+	 * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -257,10 +250,10 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 				AbstractVisualEditor obj = ccMap.get(evt.getSource());
 				if (obj != null)
 					removeEditorPage(evt, obj);
-			} else if (propertyName.equals(RENAME_EDITOR_PROPERTY)) {
+			} else if (propertyName.equals(RENAME_EDITOR_PROPERTY)){
 				AbstractVisualEditor obj = ccMap.get(evt.getSource());
-				if (obj != null && obj instanceof NamedSubeditor) {
-					((NamedSubeditor) obj).updateEditorName();
+				if (obj != null && obj instanceof NamedSubeditor){
+					((NamedSubeditor)obj).updateEditorName();
 				}
 			} else if (evt.getNewValue() != null && evt.getOldValue() == null) {
 				// createEditorPage(evt.getNewValue());
@@ -270,8 +263,8 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 					removeEditorPage(evt, obj);
 			}
 			getPropertyChangeSupport().firePropertyChange(evt);
-			if (!propertyName.equals(MGraphicElement.FORCE_GRAPHICAL_REFRESH)
-					&& !propertyName.equals(JSSCompoundCommand.REFRESH_UI_EVENT)) {
+			if(!propertyName.equals(MGraphicElement.FORCE_GRAPHICAL_REFRESH) &&
+					!propertyName.equals(JSSCompoundCommand.REFRESH_UI_EVENT)){
 				firePropertyChange(ISaveablePart.PROP_DIRTY);
 			}
 		}
@@ -282,7 +275,7 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	 * Sets the model.
 	 * 
 	 * @param model
-	 *            the new model
+	 *          the new model
 	 */
 	public void setModel(INode model) {
 		if (this.model != null && this.model.getChildren() != null && !this.model.getChildren().isEmpty())
@@ -309,8 +302,7 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 					ave = m.getEditor(obj, jrContext);
 					if (ave != null) {
 						ave.getEditDomain().setCommandStack(reportEditor.getEditDomain().getCommandStack());
-						// Necessary to create element with the drag and drop
-						// inside a subeditor
+						// Necessary to create element with the drag and drop inside a subeditor
 						ave.getEditDomain().setPaletteViewer(reportEditor.getEditDomain().getPaletteViewer());
 
 						final int index = addPage(ave, getEditorInput());
@@ -322,7 +314,7 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 						setPageImage(index, ave.getPartImage());
 
 						rep.getPropertyChangeSupport().addPropertyChangeListener(modelListener);
-
+						
 						ave.addPropertyListener(titleListener);
 					}
 				}
@@ -350,13 +342,13 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 		ave.setModel(null);
 		ave.removePropertyListener(titleListener);
 		int ind = editors.indexOf(ave);
-		// Check if the removed page is the current one
+		//Check if the removed page is the current one
 		boolean switchToMainPage = ind == getActivePage();
-		if (switchToMainPage) {
-			// If the removed page was the current one go back to the main page
+		if (switchToMainPage){
+			//If the removed page was the current one go back to the main page
 			switchEditorPage(0);
 		}
-		if (ind >= 0 && ind < getPageCount()) {
+		if (ind >= 0 && ind < getPageCount()){
 			removePage(ind);
 		}
 		editors.remove(ind);
@@ -459,17 +451,15 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.views.properties.tabbed.
-	 * ITabbedPropertySheetPageContributor#getContributorId()
+	 * @see org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor#getContributorId()
 	 */
 	public String getContributorId() {
 		return "com.jaspersoft.studio.editor.report.ReportContainer"; //$NON-NLS-1$
 	}
 
 	/**
-	 * Create a fake command to force the refresh of the editor and outline panels,
-	 * this override the disable refresh flag, so calling this the editor area is
-	 * always updated
+	 * Create a fake command to force the refresh of the editor and outline panels, this override the disable refresh
+	 * flag, so calling this the editor area is always updated
 	 */
 	protected void refreshVisuals(INode report) {
 		if (report != null) {
@@ -480,31 +470,26 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	}
 
 	/**
-	 * Get the object that is modified by a subeditor. It calculated searching the
-	 * last node of the mpage of the subeditor (since the first are the styles, the
-	 * dataset...)
+	 * Get the object that is modified by a subeditor. It calculated searching the last node of the mpage of the subeditor
+	 * (since the first are the styles, the dataset...)
 	 * 
 	 * @param searchNode
-	 *            the starting node
+	 *          the starting node
 	 * @return the node modified by the subeditor
 	 */
 	/*
-	 * private INode getInnerModel(INode searchNode){ INode actualNode = searchNode;
-	 * if (actualNode instanceof MRoot && actualNode.getChildren().size() >0){
-	 * return getInnerModel(actualNode.getChildren().get(0)); } else if (actualNode
+	 * private INode getInnerModel(INode searchNode){ INode actualNode = searchNode; if (actualNode instanceof MRoot &&
+	 * actualNode.getChildren().size() >0){ return getInnerModel(actualNode.getChildren().get(0)); } else if (actualNode
 	 * instanceof MPage && actualNode.getChildren().size()>0){ return
-	 * actualNode.getChildren().get(actualNode.getChildren().size()-1); } return
-	 * actualNode; }
+	 * actualNode.getChildren().get(actualNode.getChildren().size()-1); } return actualNode; }
 	 */
 
 	@Override
 	protected void postPageChange(int newPageIndex, int oldPageIndex) {
 		AbstractVisualEditor activeEditor = editors.get(newPageIndex);
-		// FIXME: This forced refresh should be not necessary since now every
-		// element has it's own full model and the event
+		// FIXME: This forced refresh should be not necessary since now every element has it's own full model and the event
 		// are handled natively
-		// request the rapaint of the element on the main editor node when
-		// switching between the subeditors, supposing they
+		// request the rapaint of the element on the main editor node when switching between the subeditors, supposing they
 		// were modified in the subeditor
 		// if (oldPageIndex > 0){
 		// AbstractVisualEditor oldEditor = editors.get(oldPageIndex);
@@ -532,47 +517,20 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 					if (s.getExpression() != null) {
 						String path = ExpressionUtil.cachedExpressionEvaluationString(s.getExpression(), jrContext);
 						if (path != null) {
-							String fpath = path.replaceAll("\\.jasper$", FileExtension.PointJRXML);
+							String fpath = path.replaceAll("\\.jasper$", ".jrxml");
 							try {
 								RepositoryUtil.getInstance(jrContext).getBytesFromLocation(fpath);
 							} catch (JRException e) {
-								if (e.getMessage().startsWith("Byte data not found at:")
-										&& s.getExpression().getText().trim().contains("$P{SUBREPORT_DIR}")) {
-									String p = ExpressionUtil.cachedExpressionEvaluationString(
-											new JRDesignExpression("$P{SUBREPORT_DIR}"), jrContext);
-									p = StringUtils.remove(path, p);
-									if (p != null) {
-										fpath = p.replaceAll("\\.jasper$", FileExtension.PointJRXML);
-										try {
-											RepositoryUtil.getInstance(jrContext).getBytesFromLocation(fpath);
-										} catch (JRException e1) {
-											e1.printStackTrace();
-											try {
-												RepositoryUtil.getInstance(jrContext).getBytesFromLocation(p);
-												if (!UIUtils.showConfirmation("Subreport File",
-														String.format(
-																"File %s does not exists, do you want to open %s?",
-																fpath, path)))
-													return;
-												fpath = p;
-											} catch (JRException e2) {
-												UIUtils.showError(e2);
-												return;
-											}
-										}
-									}
-								} else {
-									e.printStackTrace();
-									try {
-										RepositoryUtil.getInstance(jrContext).getBytesFromLocation(path);
-										if (!UIUtils.showConfirmation("Subreport File", String.format(
-												"File %s does not exists, do you want to open %s?", fpath, path)))
-											return;
-										fpath = path;
-									} catch (JRException e1) {
-										UIUtils.showError(e1);
+								e.printStackTrace();
+								try {
+									RepositoryUtil.getInstance(jrContext).getBytesFromLocation(path);
+									if (!UIUtils.showConfirmation("Subreport File",
+											String.format("File %s does not exists, do you want to open %s?", fpath, path)))
 										return;
-									}
+									fpath = path;
+								} catch (JRException e1) {
+									UIUtils.showError(e1);
+									return;
 								}
 							}
 							SelectionHelper.openEditor((FileEditorInput) getEditorInput(), fpath);
@@ -610,25 +568,18 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 		if (obj instanceof JasperDesign) {
 			setActivePage(0);
 		} else {
-			AbstractVisualEditor ave = ccMap.get(obj);
-			if (ave == null) {
-				// need to create the new subeditor
-				ave = createEditorPage(obj);
+			AbstractVisualEditor ave = createEditorPage(obj);
+			if (ave != null) {
 				/**
-				 * If was created another editor with inside an mpage the i save the parent of
-				 * the current node inside the page. Doing this it is always possible from a
-				 * node get its real parent and go back into the hierarchy. This information
-				 * need only to be saved here since when an element change parent all the open
-				 * editors for the element are closed
+				 * If was created another editor with inside an mpage the i save the parent of the current node inside the page.
+				 * Doing this it is always possible from a node get its real parent and go back into the hierarchy. This
+				 * information need only to be saved here since when an element change parent all the open editors for the
+				 * element are closed
 				 */
-				if (ave != null && ave.getModel().getChildren().size() > 0
-						&& ave.getModel().getChildren().get(0) instanceof MPage) {
+				if (ave.getModel().getChildren().size() > 0 && ave.getModel().getChildren().get(0) instanceof MPage) {
 					MPage pageElement = (MPage) ave.getModel().getChildren().get(0);
 					pageElement.setRealParent(node.getParent());
 				}
-			}
-
-			if (ave != null) {
 				if (getActiveEditor() != ave) {
 					int index = editors.indexOf(ave);
 					if (index > 0 && index <= editors.size() - 1) {
@@ -648,21 +599,19 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 		}
 		if (obj instanceof JRDesignParameter && node instanceof MParameter) {
 			MParameter param = (MParameter) node;
-			JRDesignExpression defaultValueExpression = (JRDesignExpression) param
-					.getPropertyValue(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION);
+			JRDesignExpression defaultValueExpression = (JRDesignExpression) param.getPropertyValue(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION);
 			ExpressionContext expContext = param.getExpressionContext();
-			if (expContext != null) {
+			if(expContext!=null){
 				expContext.setVisibilities(EnumSet.of(Visibility.SHOW_PARAMETERS));
 			}
-			if (!ExpressionEditorSupportUtil.isExpressionEditorDialogOpen()) {
+			if(!ExpressionEditorSupportUtil.isExpressionEditorDialogOpen()) {
 				JRExpressionEditor wizard = new JRExpressionEditor();
 				wizard.setValue(defaultValueExpression);
 				wizard.setExpressionContext(expContext);
-				WizardDialog dialog = ExpressionEditorSupportUtil.getExpressionEditorWizardDialog(UIUtils.getShell(),
-						wizard);
+				WizardDialog dialog = ExpressionEditorSupportUtil.getExpressionEditorWizardDialog(UIUtils.getShell(), wizard);
 				if (dialog.open() == Dialog.OK) {
 					JRDesignExpression value = wizard.getValue();
-					param.setPropertyValue(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION, value);
+					param.setPropertyValue(JRDesignParameter.PROPERTY_DEFAULT_VALUE_EXPRESSION,value);
 				}
 			}
 		}
@@ -678,43 +627,33 @@ public class ReportContainer extends MultiPageToolbarEditorPart
 	}
 
 	/**
-	 * Set in the current editor the edit mode for the background image. However it
-	 * will be shown only if there is a background image defined
+	 * Set in the current editor the edit mode for the background image. However it will be shown only if there is a
+	 * background image defined
 	 * 
 	 * @param value
-	 *            true if the background should be editable, false otherwise
+	 *          true if the background should be editable, false otherwise
 	 */
 	public void setBackgroundImageEditable(boolean value) {
 		editBackgroundImage = value;
 	}
 
 	/**
-	 * Return as default selected page in the properties view the first page or the
-	 * last page (advanced page) considering what is set in the preferences
+	 * Return as default selected page in the properties view the first page or the last
+	 * page (advanced page) considering what is set in the preferences
 	 */
 	@Override
 	public int getDefaultSelectedPageIndex() {
-		if (propertySheetPage != null && getModel() instanceof MRoot) {
-			if (getModel().getChildren().size() > 0) {
-				JasperReportsConfiguration jConfig = ((ANode) getModel().getChildren().get(0)).getJasperConfiguration();
-				if (jConfig != null) {
-					boolean defaultValue = Activator.getDefault().getPreferenceStore().getBoolean(PropertiesPreferencePage.P_DEFAULT_ADVANCED_TAB);
-					boolean advancedDefault = jConfig.getPropertyBoolean(PropertiesPreferencePage.P_DEFAULT_ADVANCED_TAB, defaultValue);
-					if (advancedDefault) {
-						return propertySheetPage.getCurrentTabs().size() - 1;
+		if (propertySheetPage != null && getModel() instanceof MRoot){
+			if (getModel().getChildren().size() > 0){
+				JasperReportsConfiguration jConfig = ((ANode)getModel().getChildren().get(0)).getJasperConfiguration();
+				if (jConfig != null){
+					boolean advancedDefault = jConfig.getPropertyBoolean(DesignerPreferencePage.P_DEFAULT_ADVANCED_TAB, Boolean.FALSE);
+					if (advancedDefault){
+						return propertySheetPage.getCurrentTabs().size()-1;
 					}
 				}
 			}
 		}
 		return 0;
-	}
-
-	/**
-	 * When the page change force a visual refresh of the content of the editor
-	 */
-	protected void pageChange(final int newPageIndex, final int oldPageIndex) {
-		super.pageChange(newPageIndex, oldPageIndex);
-		AbstractVisualEditor activeEditor = (AbstractVisualEditor) getActiveEditor();
-		JSSCompoundCommand.forceRefreshVisuals(JSSCompoundCommand.getMainNode(activeEditor.getModel()));
 	}
 }

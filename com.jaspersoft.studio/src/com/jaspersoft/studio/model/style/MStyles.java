@@ -1,6 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
- * All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2005 - 2014 TIBCO Software Inc. All rights reserved.
+ * http://www.jaspersoft.com.
+ * 
+ * Unless you have purchased  a commercial license agreement from Jaspersoft,
+ * the following license terms  apply:
+ * 
+ * This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package com.jaspersoft.studio.model.style;
 
@@ -206,12 +214,12 @@ public class MStyles extends ANode implements IPastable, IContainerEditPart {
 						n.setValue(evt.getNewValue());
 				}
 			}
+			super.propertyChange(evt);
 		} 
 		if (evt.getPropertyName().equals(JRDesignStyle.PROPERTY_DEFAULT) || evt.getPropertyName().equals(JasperDesign.PROPERTY_TEMPLATES) || evt.getPropertyName().equals(JasperDesign.PROPERTY_STYLES)){
 			//A style default flag has been changed or a external style has been added removed, need to update the default styles
 			updateDefaulStyle();
 		}
-		super.propertyChange(evt);
 	}
 
 }
