@@ -72,8 +72,8 @@ public class MBookReport extends MReport {
 			removeGroupListener(group);
 			List<ANode> dNodes = new ArrayList<ANode>();
 			for (INode node : getChildren()) {
-				if (node instanceof MGroupReportPartContainer) {
-					MGroupReportPartContainer band = (MGroupReportPartContainer) node;
+				if (node instanceof MReportPartContainer) {
+					MReportPartContainer band = (MReportPartContainer) node;
 					if (group.equals(band.getJrgroup()))
 						dNodes.add(band);
 				}
@@ -81,10 +81,11 @@ public class MBookReport extends MReport {
 			for (ANode n : dNodes) {
 				removeChild(n);
 			}
-		} else if (evt instanceof CollectionElementAddedEvent && evt.getNewValue() != null && evt.getOldValue() == null) {
+		} else if (evt instanceof CollectionElementAddedEvent && evt.getNewValue() != null
+				&& evt.getOldValue() == null) {
 			JRDesignGroup group = (JRDesignGroup) evt.getNewValue();
 			for (INode n : getChildren()) {
-				if (n instanceof MGroupReportPartContainer && ((MGroupReportPartContainer) n).getJrgroup() == group)
+				if (n instanceof MReportPartContainer && ((MReportPartContainer) n).getJrgroup() == group)
 					return;
 			}
 
@@ -109,11 +110,13 @@ public class MBookReport extends MReport {
 
 				int footerPosition = getChildren().size() - groupIndex + 1;
 
-				MGroupReportPartContainer mHeader = new MGroupReportPartContainer(this, group.getGroupHeaderSection(), headerPosition);
+				MReportPartContainer mHeader = new MReportPartContainer(this, group.getGroupHeaderSection(),
+						headerPosition);
 				mHeader.setJRGroup(group);
 				createParts(group.getGroupHeaderSection(), mHeader);
 
-				MGroupReportPartContainer mFooter = new MGroupReportPartContainer(this, group.getGroupFooterSection(), footerPosition);
+				MReportPartContainer mFooter = new MReportPartContainer(this, group.getGroupFooterSection(),
+						footerPosition);
 				mFooter.setJRGroup(group);
 				createParts(group.getGroupFooterSection(), mFooter);
 			}

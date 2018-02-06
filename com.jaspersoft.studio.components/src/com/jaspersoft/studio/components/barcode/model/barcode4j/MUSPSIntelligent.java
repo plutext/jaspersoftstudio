@@ -33,7 +33,7 @@ public class MUSPSIntelligent extends MFourStateBarcode {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		USPSIntelligentMailComponent component = new USPSIntelligentMailComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -43,9 +43,7 @@ public class MUSPSIntelligent extends MFourStateBarcode {
 		el.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", //$NON-NLS-1$
 				"USPSIntelligentMail"));
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}

@@ -474,12 +474,10 @@ public class MImage extends MGraphicElementLineBox {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applayDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignElement jrDesignElement = new JRDesignImage(jasperDesign);
 
-		if (applayDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
 
 		jrDesignElement.setWidth(getDefaultWidth());
 		jrDesignElement.setHeight(getDefaultHeight());

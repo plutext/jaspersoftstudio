@@ -275,14 +275,13 @@ public class ReportThumbnailsManager {
 			previewImage = getErrorImage();
 		} else {
 			ThumbnailCacheItem cachedItem = null;
-			//use name and size as cache key
-			String cacheKey = location + thumbnailSize;
+
 			// Check if we have a cached image, in that case we can get it ...
-			if (cachedItems.containsKey(cacheKey)) {
-				cachedItem = cachedItems.get(cacheKey);
+			if (cachedItems.containsKey(location)) {
+				cachedItem = cachedItems.get(location);
 				if (cachedItem != null && file.lastModified() > cachedItem.getTimestamp().getTime()) {
 					// This cache item is old, we can delete it...
-					cachedItems.remove(cacheKey);
+					cachedItems.remove(location);
 					cachedItem = null;
 				}
 			}
@@ -320,7 +319,7 @@ public class ReportThumbnailsManager {
 				// default error image...
 				if (previewImage == null) {
 
-					float previewZoom = (float) thumbnailSize
+					float previewZoom = (float) (THUMBNAIL_SIZE)
 							/ (Math.max(report.getPageHeight(), report.getPageWidth()));
 
 					int previewWidth = (int) (report.getPageWidth() * previewZoom);
@@ -370,7 +369,7 @@ public class ReportThumbnailsManager {
 
 						// Let's cache this result!
 						cachedItem = new ThumbnailCacheItem(file.toString(), previewImage, report);
-						cachedItems.put(cacheKey, cachedItem);
+						cachedItems.put(location, cachedItem);
 
 					} catch (Exception ex) {
 						// Error creating the thumbnail...

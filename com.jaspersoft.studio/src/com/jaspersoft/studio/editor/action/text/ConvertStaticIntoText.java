@@ -62,6 +62,9 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 		 */
 		private MStaticText elementToCopy;
 		
+		/**
+		 * The index of the converted node
+		 */
 		private int oldIndex;
 		
 		/**

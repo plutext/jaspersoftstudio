@@ -81,7 +81,6 @@ import net.sf.jasperreports.properties.StandardPropertyMetadata;
 
 public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
-	public static final String PROGRESSMONITOR = "monitor";
 	/** Property to save a default data adapter to select */
 	public static final String DEFAULT_DATAADAPTER = "com.jaspersoft.studio.data.defaultdataadapter"; //$NON-NLS-1$
 	public static final String FIELD_PATH = "com.jaspersoft.studio.field.tree.path";
@@ -517,9 +516,8 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 					.getInstance(new ParameterContributorContext(jConfig, newdataset, jConfig.getJRParameters()))
 					.getService(da.getDataAdapter());
 			try {
-				jConfig.getMap().put(PROGRESSMONITOR, monitor);
 				final List<JRDesignField> fields = ((IFieldsProvider) da).getFields(das, jConfig, newdataset);
-				if (fields != null && !monitor.isCanceled()) {
+				if (fields != null) {
 					monitor.setTaskName(Messages.DataQueryAdapters_9);
 					Display.getDefault().syncExec(new Runnable() {
 
@@ -530,13 +528,11 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 					monitor.setTaskName(Messages.DataQueryAdapters_10);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (e.getCause() != null)
 					qStatus.showError(e.getCause().getMessage(), e);
 				else
 					qStatus.showError(e);
 			} finally {
-				jConfig.getMap().remove(PROGRESSMONITOR);
 				Thread.currentThread().setContextClassLoader(oldClassloader);
 				das.dispose();
 				monitor.done();

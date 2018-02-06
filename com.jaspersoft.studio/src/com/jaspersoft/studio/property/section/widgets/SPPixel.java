@@ -7,21 +7,21 @@ package com.jaspersoft.studio.property.section.widgets;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
-import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -40,7 +40,6 @@ import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.IPropertiesHolder;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.MReport;
-import com.jaspersoft.studio.preferences.DesignerPreferencePage;
 import com.jaspersoft.studio.property.SetValueCommand;
 import com.jaspersoft.studio.property.descriptors.AbstractJSSCellEditorValidator;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
@@ -51,7 +50,6 @@ import com.jaspersoft.studio.property.section.report.util.Unit.PixelConversionEx
 import com.jaspersoft.studio.utils.UIUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
@@ -84,24 +82,17 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * Hash map the bind a measure unit, by its key, to a series of method to
 	 * convert and handle that measure
 	 */
-	public static final Map<String, MeasureUnit> unitsMap = new HashMap<>();
+	private static HashMap<String, MeasureUnit> unitsMap = null;
+
 	/**
 	 * Ordered list of measure units supported
 	 */
-	public static final MeasureUnit[] units = new MeasureUnit[] { new MeasureUnit(Unit.PX, "px", 0),
-			new MeasureUnit(Unit.INCH, "inch", 2), new MeasureUnit(Unit.CM, "cm", 3),
-			new MeasureUnit(Unit.MM, "mm", 2) };
-	static {
-		unitsMap.put(Unit.PX, units[0]);
-		unitsMap.put(Unit.INCH, units[1]);
-		unitsMap.put(Unit.CM, units[2]);
-		unitsMap.put(Unit.MM, units[3]);
-	}
+	private static MeasureUnit[] units;
 
 	/**
 	 * String added to the autocomplete
 	 */
-	public static final String[] autocompleteValues = new String[] { "centimeters", "millimeters", "inches", "pixels" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	private static String[] autocompleteValues;
 
 	/**
 	 * The text field
@@ -149,13 +140,15 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	@Override
 	protected void handleFocusLost() {
 		super.handleFocusLost();
-		if (UIUtil.isMacAndEclipse4() && !editHappened)
+		if (UIUtil.isMacAndEclipse4() && !editHappened) {
 			insertField.setText(Misc.nvl(lastSetValue));
+		}
 		// Focus lost, do the change only if the text is changed
 		if (lastSetValue == null || !lastSetValue.equals(insertField.getText()))
 			updateValue();
-		if (UIUtil.isMacAndEclipse4())
+		if (UIUtil.isMacAndEclipse4()) {
 			editHappened = false;
+		}
 	}
 
 	/**
@@ -165,14 +158,23 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * @author Orlandin Marco
 	 * 
 	 */
-	private class MouseClickListener extends MouseAdapter {
+	private class MouseClickListener implements MouseListener {
 
 		@Override
 		public void mouseDoubleClick(MouseEvent e) {
 			String measureUnitAlias = insertField.getSelectionText().trim().toLowerCase();
 			String measureUnitName = Unit.getKeyFromAlias(measureUnitAlias);
-			if (measureUnitName != null)
+			if (measureUnitName != null) {
 				openPopupMenu();
+			}
+		}
+
+		@Override
+		public void mouseDown(MouseEvent e) {
+		}
+
+		@Override
+		public void mouseUp(MouseEvent e) {
 		}
 
 	}
@@ -183,7 +185,7 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * @author Orlandin Marco
 	 * 
 	 */
-	private class MenuAction extends SelectionAdapter {
+	private class MenuAction implements SelectionListener {
 
 		/**
 		 * Key of the unit represented by this listener
@@ -205,6 +207,10 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 			setText(pixelValue);
 		}
 
+		@Override
+		public void widgetDefaultSelected(SelectionEvent e) {
+		}
+
 	}
 
 	/**
@@ -214,22 +220,22 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * 
 	 */
 	private class AutoCompleteMeasure extends TextContentAdapter {
-		@Override
 		public String getControlContents(Control control) {
 			String text = insertField.getText().trim().toLowerCase();
 			String measureUnit = getMeasureUnit(text);
 			if (insertField.getCaretPosition() == text.length() && measureUnit != null)
 				return measureUnit;
-			return ""; //$NON-NLS-1$
+			else
+				return ""; //$NON-NLS-1$
 		}
 
-		@Override
 		public void setControlContents(Control control, String text, int cursorPosition) {
 			String textField = insertField.getText().trim().toLowerCase();
 			String key = getMeasureUnit(textField);
 			String value = textField.substring(0, textField.indexOf(key));
 			((Text) control).setText(value.concat(text));
 			((Text) control).setSelection(cursorPosition, cursorPosition);
+
 		}
 	}
 
@@ -239,7 +245,7 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * @author Orlandin Marco
 	 * 
 	 */
-	public static class MeasureUnit {
+	public class MeasureUnit {
 		/**
 		 * Holds value of property unitName.
 		 */
@@ -324,9 +330,12 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 			 * the source we can simply return the input technically it is better to do the
 			 * conversion since the passed value as string can be too big to fit an int once
 			 * it is parsed. Instead the conversion check if the value fit an int and
-			 * eventually throw an exception
+			 * eventually throw an exception if
+			 * (this.getKeyName().equals(targetUnit.getKeyName())){ //no conversion
+			 * requested return value; }
 			 */
-			return String.valueOf((new Unit(parseDouble(value), keyName)).getValue(targetUnit.getKeyName()));
+			return String
+					.valueOf((new Unit(parseDouble(value), keyName, jConfig)).getValue(targetUnit.getKeyName()));
 		}
 	}
 
@@ -352,6 +361,28 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	}
 
 	/**
+	 * Add the default measure type to the map
+	 */
+	private void CreateDefaultUnits() {
+		unitsMap = new HashMap<String, MeasureUnit>();
+		units = new MeasureUnit[4];
+		// Adding the measure unit for pixel
+		units[0] = new MeasureUnit(Unit.PX, "px", 0); //$NON-NLS-1$
+		unitsMap.put(Unit.PX, units[0]);
+		// Adding the measure unit for inch
+		units[1] = new MeasureUnit(Unit.INCH, "inch", 2); //$NON-NLS-1$
+		unitsMap.put(Unit.INCH, units[1]);
+		// Adding the meausre unit for centimeter
+		units[2] = new MeasureUnit(Unit.CM, "cm", 3); //$NON-NLS-1$
+		unitsMap.put(Unit.CM, units[2]);
+		// Adding the measure unit for millimeters
+		units[3] = new MeasureUnit(Unit.MM, "mm", 2); //$NON-NLS-1$
+		unitsMap.put(Unit.MM, units[3]);
+
+		autocompleteValues = new String[] { "centimeters", "millimeters", "inches", "pixels" };// Unit.getAliasList(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
+
+	/**
 	 * Return the measure unit typed in the textfield
 	 * 
 	 * @param value
@@ -365,8 +396,9 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 		if (results.length == 0)
 			return null;
 		String measure = results[results.length - 1].trim();
-		if (measure.isEmpty())
+		if (measure.isEmpty()) {
 			return null;
+		}
 		return measure;
 	}
 
@@ -382,6 +414,16 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	private static String truncateDouble(double number, int numDigits) {
 		return String.format("%." + numDigits + "f",
 				new BigDecimal(number).setScale(numDigits, RoundingMode.CEILING).doubleValue());
+
+		// String arg = Double.toString(number);
+		// int idx = arg.indexOf('.');
+		// int offset = numDigits > 0 ? 1 : 0;
+		// if (idx != -1) {
+		// if (arg.length() > idx + numDigits) {
+		// arg = arg.substring(0, idx + numDigits + offset);
+		// }
+		// }
+		// return arg;
 	}
 
 	protected Command getChangePropertyCommand(Object property, Object newValue, APropertyNode n) {
@@ -404,7 +446,8 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 		String oldValue = pnode.getPropertyActualValue(property).toString();
 		Integer oldNumericValue = Integer.parseInt(oldValue);
 		Double newValueLong = (oldNumericValue.doubleValue() * percentage) / 100d;
-		return Math.round(newValueLong);
+		Long newValue = Math.round(newValueLong);
+		return newValue;
 	}
 
 	/**
@@ -415,40 +458,40 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 */
 	private void percentageResize() {
 		String text = insertField.getText().trim().toLowerCase();
-		int percPosition = text.indexOf('%'); // $NON-NLS-1$
+		int percPosition = text.indexOf("%"); //$NON-NLS-1$
 		if (percPosition > 0) {
 			try {
 				Double value = Double.parseDouble(text.substring(0, percPosition));
 				CommandStack cs = section.getEditDomain().getCommandStack();
 				JSSCompoundCommand cc = new JSSCompoundCommand("Set " + pDescriptor.getId(), null); //$NON-NLS-1$
-				for (APropertyNode item : section.getElements()) {
+				for (APropertyNode pnode : section.getElements()) {
 					try {
-						cc.setReferenceNodeIfNull(item);
+						cc.setReferenceNodeIfNull(pnode);
 						Long newValue = getNewValue(value, pnode, pDescriptor.getId().toString());
-						Command c = getChangePropertyCommand(pDescriptor.getId(), newValue.intValue(), item);
+						Command c = getChangePropertyCommand(pDescriptor.getId(), newValue.intValue(), pnode);
 						if (c != null)
 							cc.add(c);
 						if (pDescriptor.getId().equals(JRDesignElement.PROPERTY_HEIGHT)
 								&& section.getElements().size() > 1) {
-							newValue = getNewValue(value, item, JRDesignElement.PROPERTY_Y);
-							c = getChangePropertyCommand(JRDesignElement.PROPERTY_Y, newValue.intValue(), item);
+							newValue = getNewValue(value, pnode, JRDesignElement.PROPERTY_Y);
+							c = getChangePropertyCommand(JRDesignElement.PROPERTY_Y, newValue.intValue(), pnode);
 							if (c != null)
 								cc.add(c);
 						}
 						if (pDescriptor.getId().equals(JRDesignElement.PROPERTY_WIDTH)
 								&& section.getElements().size() > 1) {
-							newValue = getNewValue(value, item, JRDesignElement.PROPERTY_X);
-							c = getChangePropertyCommand(JRDesignElement.PROPERTY_X, newValue.intValue(), item);
+							newValue = getNewValue(value, pnode, JRDesignElement.PROPERTY_X);
+							c = getChangePropertyCommand(JRDesignElement.PROPERTY_X, newValue.intValue(), pnode);
 							if (c != null)
 								cc.add(c);
 						}
-					} catch (NumberFormatException ex) {// ignore exception
+					} catch (NumberFormatException ex) {
 					}
 				}
 				cs.execute(cc);
 				APropertyNode firstNode = section.getElements().get(0);
 				setData(firstNode, firstNode.getPropertyActualValue(pDescriptor.getId()));
-			} catch (NumberFormatException ex) {// ignore exception
+			} catch (NumberFormatException ex) {
 			}
 		}
 	}
@@ -491,8 +534,8 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 					// A validator is provided, so validate the property
 					Integer newValue = getIntegerValue(convertedValue);
 					String errorMessage = null;
-					for (APropertyNode item : section.getElements()) {
-						validator.setTargetNode(item);
+					for (APropertyNode pnode : section.getElements()) {
+						validator.setTargetNode(pnode);
 						errorMessage = validator.isValid(newValue);
 						if (errorMessage != null) {
 							// there is an error message , break the cycle
@@ -547,22 +590,19 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 				// Convert the value into pixel, internally JR work always with pixels
 				String convertedValue = unit.doConversionFromThis(unitsMap.get(Unit.PX), value);
 				// Generate the command to update the measure unit in the preferences
-				if (jConfig != null
-						&& Misc.nvl(jConfig.getPropertyBoolean(DesignerPreferencePage.JSS_UNIT_KEEP_UNIT), false))
-					for (APropertyNode item : section.getElements()) {
-						APropertyNode pholder = getPropertiesHolder(item);
-						if (pholder != null) {
-							JRPropertiesMap pmap = (JRPropertiesMap) pholder
-									.getPropertyValue(MGraphicElement.PROPERTY_MAP);
-							if (pmap != null && setLocalValue(pmap, unit.getUnitName())) {
-								SetValueCommand cmd = new SetValueCommand();
-								cmd.setTarget(pholder);
-								cmd.setPropertyId(MGraphicElement.PROPERTY_MAP);
-								cmd.setPropertyValue(pmap);
-								commands.add(cmd);
-							}
+				for (APropertyNode pnode : section.getElements()) {
+					APropertyNode pholder = getPropertiesHolder(pnode);
+					if (pholder != null) {
+						JRPropertiesMap pmap = (JRPropertiesMap) pholder.getPropertyValue(MGraphicElement.PROPERTY_MAP);
+						if (pmap != null && setLocalValue(pmap, unit.getUnitName())) {
+							SetValueCommand cmd = new SetValueCommand();
+							cmd.setTarget(pholder);
+							cmd.setPropertyId(MGraphicElement.PROPERTY_MAP);
+							cmd.setPropertyValue(pmap);
+							commands.add(cmd);
 						}
 					}
+				}
 
 				// check if the resize must be done
 				AbstractJSSCellEditorValidator validator = pDescriptor.getValidator();
@@ -570,16 +610,17 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 					// A validator is provided, so validate the property
 					Integer newValue = getIntegerValue(convertedValue);
 					String errorMessage = null;
-					for (APropertyNode item : section.getElements()) {
-						validator.setTargetNode(item);
+					for (APropertyNode pnode : section.getElements()) {
+						validator.setTargetNode(pnode);
 						errorMessage = validator.isValid(newValue);
 						if (errorMessage != null) {
 							// there is an error message , break the cycle
 							break;
 						}
-						Command changeCommand = section.getChangePropertyCommand(pDescriptor.getId(), newValue, item);
-						if (changeCommand != null)
+						Command changeCommand = section.getChangePropertyCommand(pDescriptor.getId(), newValue, pnode);
+						if (changeCommand != null) {
 							commands.add(changeCommand);
+						}
 					}
 					// Restore the main element inside the validator
 					validator.setTargetNode(section.getElement());
@@ -667,8 +708,9 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * @return the value as integer or null
 	 */
 	private Integer getIntegerValue(String valueText) {
-		if (valueText != null && !valueText.trim().isEmpty())
+		if (valueText != null && !valueText.trim().isEmpty()) {
 			return (int) Math.round(Double.parseDouble(valueText)) - getPixelOffset();
+		}
 		return null;
 	}
 
@@ -691,9 +733,9 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 */
 	protected MeasureUnit getDefaultMeasure() {
 		MeasureUnit mu = null;
-		if (localValue != null && unitsMap.containsKey(localValue))
+		if (localValue != null && unitsMap.containsKey(localValue)) {
 			mu = unitsMap.get(localValue);
-		else
+		} else
 			mu = unitsMap.get(Unit.getKeyFromAlias(defaultValue));
 		if (mu == null)
 			mu = units[0];
@@ -712,11 +754,8 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 		setUUnit(value, Unit.PX);
 		double dValue = uunit.getValue(defaultMeasure.getKeyName());
 		insertField.setBackground(null);
-		if (jConfig != null && Misc.nvl(jConfig.getPropertyBoolean(DesignerPreferencePage.JSS_UNIT_KEEP_UNIT), false))
-			insertField.setText(truncateDouble(dValue, defaultMeasure.getPrecision())
-					.concat(" ".concat(defaultMeasure.getUnitName()))); //$NON-NLS-1$
-		else
-			insertField.setText(value.concat(" px")); //$NON-NLS-1$
+		insertField.setText(
+				truncateDouble(dValue, defaultMeasure.getPrecision()).concat(" ".concat(defaultMeasure.getUnitName()))); //$NON-NLS-1$
 		lastSetValue = insertField.getText();
 	}
 
@@ -744,7 +783,7 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 
 	private void setUUnit(String value, String u) {
 		if (uunit == null)
-			uunit = new Unit(parseDouble(value), u);
+			uunit = new Unit(parseDouble(value), u, jConfig);
 		else
 			uunit.setValue(parseDouble(value), u);
 	}
@@ -772,6 +811,7 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 			RowData rd = new RowData();
 			rd.width = w;
 			insertField.setLayoutData(rd);
+
 		} else if (parent.getLayout() instanceof GridLayout) {
 			GridData rd = new GridData();
 			rd.widthHint = w;
@@ -785,16 +825,14 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	 * @param menuManager
 	 */
 	protected void openPopupMenu() {
-		if (jConfig != null && Misc.nvl(jConfig.getPropertyBoolean(DesignerPreferencePage.JSS_UNIT_KEEP_UNIT), false)) {
-			if (popUpMenu == null)
-				createPopupMenu();
-			if (!popUpMenu.isDisposed()) {
-				if (popUpMenu.isVisible())
-					popUpMenu.setVisible(false);
-				else {
-					locatePopupMenu();
-					popUpMenu.setVisible(true);
-				}
+		if (popUpMenu == null)
+			createPopupMenu();
+		if (!popUpMenu.isDisposed()) {
+			if (popUpMenu.isVisible()) {
+				popUpMenu.setVisible(false);
+			} else {
+				locatePopupMenu();
+				popUpMenu.setVisible(true);
 			}
 		}
 	}
@@ -890,13 +928,22 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 
 	@Override
 	protected void createComponent(Composite parent) {
-		int tstyle = SWT.BORDER;
-		if (pDescriptor instanceof PixelPropertyDescriptor && pDescriptor.isReadOnly())
-			tstyle = tstyle | SWT.READ_ONLY;
-		insertField = section.getWidgetFactory().createText(parent, "", tstyle); //$NON-NLS-1$
-		if (UIUtil.isMacAndEclipse4())
-			insertField.addModifyListener(e -> editHappened = true);
-		insertField.addKeyListener(new KeyAdapter() {
+		if (unitsMap == null) {
+			CreateDefaultUnits();
+		}
+		int style = SWT.NONE;
+		if (pDescriptor instanceof PixelPropertyDescriptor && ((PixelPropertyDescriptor) pDescriptor).isReadOnly())
+			style = style | SWT.READ_ONLY;
+		insertField = section.getWidgetFactory().createText(parent, "", style); //$NON-NLS-1$
+		if (UIUtil.isMacAndEclipse4()) {
+			insertField.addModifyListener(new ModifyListener() {
+				@Override
+				public void modifyText(ModifyEvent e) {
+					editHappened = true;
+				}
+			});
+		}
+		insertField.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -904,20 +951,16 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 					updateValue();
 			}
 
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+			}
+
 		});
 		insertField.addMouseListener(new MouseClickListener());
 		insertField.setToolTipText(getTooltip());
 		new AutoCompleteField(insertField, new AutoCompleteMeasure(), autocompleteValues);
 		setWidth(parent, 10);
-
-		UIUtils.getDisplay().asyncExec(() -> {
-			IPropertyChangeListener listener = event -> {
-				if (event.getProperty().equals(DesignerPreferencePage.JSS_UNIT_KEEP_UNIT))
-					refresh();
-			};
-			jConfig.getPrefStore().addPropertyChangeListener(listener);
-			insertField.addDisposeListener(e -> jConfig.getPrefStore().removePropertyChangeListener(listener));
-		});
 	}
 
 	/**
@@ -943,14 +986,12 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 		this.pnode = pnode;
 		createContextualMenu(pnode);
 		insertField.setEnabled(pnode.isEditable());
-		if (jConfig != null && Misc.nvl(jConfig.getPropertyBoolean(DesignerPreferencePage.JSS_UNIT_KEEP_UNIT), false)) {
-			defaultValue = MReport.getMeasureUnit(jConfig, jConfig.getJasperDesign());
-			APropertyNode pholder = getPropertiesHolder(pnode);
-			if (pholder != null)
-				localValue = PHolderUtil.getUnit((JRPropertiesHolder) pholder.getValue(),
-						pDescriptor.getId().toString(), defaultValue);
-		} else
-			defaultValue = "px";
+		defaultValue = MReport.getMeasureUnit(jConfig, jConfig.getJasperDesign());
+		APropertyNode pholder = getPropertiesHolder(pnode);
+		if (pholder != null) {
+			localValue = PHolderUtil.getUnit((JRPropertiesHolder) pholder.getValue(), pDescriptor.getId().toString(),
+					defaultValue);
+		}
 
 		Number n = value != null ? Integer.parseInt(value.toString()) + getPixelOffset() : null;
 		setDataNumber(n);
@@ -965,10 +1006,11 @@ public class SPPixel extends ASPropertyWidget<PixelPropertyDescriptor> {
 	public void setData(APropertyNode pnode, Object resolvedValue, Object elementValue) {
 		setData(pnode, resolvedValue);
 		if (insertField != null && !insertField.isDisposed()) {
-			if (elementValue != null)
+			if (elementValue != null) {
 				insertField.setForeground(ColorConstants.black);
-			else
+			} else {
 				insertField.setForeground(ColorConstants.gray);
+			}
 		}
 	}
 

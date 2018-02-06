@@ -245,22 +245,16 @@ public class MGraphicElement extends APropertyNode
 		return defaultValue != null ? (Integer) defaultValue : 100;
 	}
 
-
-	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.jaspersoft.studio.model.IGraphicElement#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignGenericElement jrDesignGenericElement = new JRDesignGenericElement(jasperDesign);
 		return jrDesignGenericElement;
 	}
 
-	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
-		return createJRElement(jasperDesign, true);
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -572,7 +572,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement designMap = new JRDesignComponentElement(jasperDesign);
 		StandardMapComponent component = new StandardMapComponent();
 		JRDesignExpression exp1 = new JRDesignExpression();
@@ -588,9 +588,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 		designMap.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "c", //$NON-NLS-1$ //$NON-NLS-2$
 				"map")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), designMap);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), designMap);
 
 		return designMap;
 	}

@@ -8,12 +8,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.charts.design.JRDesignTimeSeriesDataset;
-import net.sf.jasperreports.charts.type.TimePeriodEnum;
-import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.design.events.CollectionElementAddedEvent;
-
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.jaspersoft.studio.components.chart.messages.Messages;
@@ -23,6 +17,12 @@ import com.jaspersoft.studio.model.INode;
 import com.jaspersoft.studio.model.util.ReportFactory;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
+
+import net.sf.jasperreports.charts.design.JRDesignTimeSeriesDataset;
+import net.sf.jasperreports.charts.type.TimePeriodEnum;
+import net.sf.jasperreports.engine.JRConstants;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.design.events.CollectionElementAddedEvent;
 
 public class MChartTimeSeriesDataset extends MChartDataset {
 	
@@ -85,7 +85,7 @@ public class MChartTimeSeriesDataset extends MChartDataset {
 	@Override
 	public Object getPropertyValue(Object id) {
 		JRDesignTimeSeriesDataset jrElement = (JRDesignTimeSeriesDataset) getValue();
-		if (jrElement != null) {
+		if (jrElement != null)
 			if (id.equals(JRDesignTimeSeriesDataset.PROPERTY_TIME_PERIOD)) {
 				return NamedEnumPropertyDescriptor.getIntValue(TimePeriodEnum.DAY, NullEnum.NULL, TimePeriodEnum.getByValue(jrElement.getTimePeriod()));
 
@@ -104,7 +104,6 @@ public class MChartTimeSeriesDataset extends MChartDataset {
 				// return null;
 			}
 
-		}
 		return super.getPropertyValue(id);
 	}
 

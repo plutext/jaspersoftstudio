@@ -719,7 +719,7 @@ public class MSpiderChart extends MGraphicElement implements IDatasetContainer {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement jrcomponent = new JRDesignComponentElement(jasperDesign);
 		jrcomponent.setWidth(getDefaultWidth());
 		jrcomponent.setHeight(getDefaultHeight());
@@ -736,9 +736,7 @@ public class MSpiderChart extends MGraphicElement implements IDatasetContainer {
 				.setComponentKey(new ComponentKey(
 						"http://jasperreports.sourceforge.net/jasperreports/components", "sc", "spiderChart")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrcomponent);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrcomponent);
 
 		return jrcomponent;
 	}

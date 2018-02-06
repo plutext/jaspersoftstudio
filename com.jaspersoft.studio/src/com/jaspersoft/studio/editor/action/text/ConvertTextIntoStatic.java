@@ -66,6 +66,9 @@ public class ConvertTextIntoStatic extends ACachedSelectionAction {
 		 */
 		private MTextField elementToCopy;
 		
+		/**
+		 * Index of the converted node
+		 */
 		private int oldIndex;
 		
 		public LazyCreateStaticTextCommand(MTextField elementToCopy){

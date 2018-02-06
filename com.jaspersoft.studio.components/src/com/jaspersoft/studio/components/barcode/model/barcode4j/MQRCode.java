@@ -98,7 +98,7 @@ public class MQRCode extends MBarcode {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		QRCodeComponent component = new QRCodeComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -108,9 +108,7 @@ public class MQRCode extends MBarcode {
 		el.setComponentKey(
 				new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", "QRCode")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}

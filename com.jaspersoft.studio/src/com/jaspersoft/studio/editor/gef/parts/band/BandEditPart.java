@@ -236,10 +236,7 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 			 * for each child being added. Once the constraint is calculated,
 			 * {@link #createAddCommand(EditPart,Object)} is called. It will also enable
 			 * the restore of the selection so when an element is added inside a frame its
-			 * selection will be preserved.
-			 * Add command differ from the create command since it is typically used a drag and drop 
-			 * operation or maybe a paste, but the base idea is it adds something existing to a container
-			 * instead the create is used to create something new
+			 * selection will be preserved
 			 */
 			protected Command getAddCommand(Request generic) {
 				ChangeBoundsRequest request = (ChangeBoundsRequest) generic;
@@ -287,9 +284,7 @@ public class BandEditPart extends APrefFigureEditPart implements PropertyChangeL
 						//Return a CompoundCommand, because the JSSCompoundCommand will be created by the getAddCommand method
 						CompoundCommand c = new CompoundCommand();
 						c.add(OutlineTreeEditPartFactory.getOrphanCommand(cmodel.getParent(), cmodel));
-						CreateElementCommand createCommand = new CreateElementCommand(mband, cmodel, CreateElementCommand.fixLocation(rect, mband,cmodel.getValue()), -1);
-						createCommand.setApplyDefault(false);
-						c.add(createCommand);
+						c.add(new CreateElementCommand(mband, cmodel, CreateElementCommand.fixLocation(rect, mband,cmodel.getValue()), -1));
 						return c;
 					}
 				} else if (child instanceof CalloutEditPart) {

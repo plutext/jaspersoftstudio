@@ -356,15 +356,13 @@ public class MCrosstab extends MGraphicElementLineBox implements IContainer,
 	}
 
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignCrosstab jrDesignElement = new JRDesignCrosstab(jasperDesign);
 		JRDesignCrosstabDataset dataset = new JRDesignCrosstabDataset();
 		dataset.setDatasetRun(new JRDesignDatasetRun());
 		jrDesignElement.setDataset(dataset);
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
 		jrDesignElement.getPropertiesMap().setProperty(ILayout.KEY,
 				VerticalRowLayout.class.getName());
 		return jrDesignElement;

@@ -245,13 +245,11 @@ public class MGenericElement extends MGraphicElement {
 	}
 
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignGenericElement el = new JRDesignGenericElement(jasperDesign);
 		el.setGenericType(new JRGenericElementType("namespace", "name"));
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}
