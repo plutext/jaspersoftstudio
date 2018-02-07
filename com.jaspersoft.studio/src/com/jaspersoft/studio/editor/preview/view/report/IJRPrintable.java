@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.report;
 
@@ -12,6 +13,4 @@ public interface IJRPrintable extends FillListener {
 	public void setJRPRint(Statistics stats, JasperPrint jrprint) throws Exception;
 
 	public void setJRPRint(Statistics stats, JasperPrint jrprint, boolean refresh) throws Exception;
-
-	public JasperPrint getJrPrint();
 }

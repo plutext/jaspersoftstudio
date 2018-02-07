@@ -14,7 +14,6 @@ public abstract class ModelVisitor<T> {
 		try {
 			iterate(model);
 		} catch (StopException e) {
-			// nothing to do here, is just a way to stop the visitor
 		}
 	}
 

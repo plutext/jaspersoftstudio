@@ -7,21 +7,18 @@ package com.jaspersoft.studio.widgets.framework.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.ResourceManager;
 
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.manager.DoubleControlComposite;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * Property Description to show a checkbox and store the true and false value for the 
@@ -57,11 +54,11 @@ public class CheckboxItemPropertyDescription extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		final Button simpleControl = new Button(cmp.getSecondContainer(), SWT.CHECK);
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		
 		simpleControl.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -81,17 +78,10 @@ public class CheckboxItemPropertyDescription extends AbstractExpressionPropertyD
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		boolean isFallback = false;
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text txt = (Text) cmp.getFirstContainer().getData();
 			super.update(txt, wip);
 			cmp.switchToFirstContainer();
 		} else {
-			//the checkbox has a lot of free space and in some case we need to refresh the background
-			if (cmp.getParent().getBackground() != null) {
-				RGB rgb = cmp.getParent().getBackground().getRGB();
-				cmp.getSecondContainer().setBackground(ResourceManager.getColor(rgb));
-			}
-			
 			Button button = (Button) cmp.getSecondContainer().getData();
 			String v = wip.getStaticValue();
 			if (v == null && wip.getFallbackValue() != null){

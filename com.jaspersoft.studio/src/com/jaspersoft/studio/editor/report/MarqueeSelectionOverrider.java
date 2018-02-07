@@ -53,7 +53,7 @@ public class MarqueeSelectionOverrider implements ISelectionOverrider {
 	 *         the current marquee selection.
 	 */
 	@SuppressWarnings("unchecked")
-	protected Collection<EditPart> calculatePrimaryMarqueeSelectedEditParts(GraphicalViewer viewer, Rectangle selectionRectangle, boolean allowNotFullyClipped) {
+	protected Collection<EditPart> calculatePrimaryMarqueeSelectedEditParts(GraphicalViewer viewer, Rectangle selectionRectangle) {
 		
 		Collection<EditPart> editPartsToProcess = new HashSet<EditPart>();
 		editPartsToProcess.addAll(EditPartUtilities.getAllChildren((GraphicalEditPart) viewer.getRootEditPart()));
@@ -63,7 +63,7 @@ public class MarqueeSelectionOverrider implements ISelectionOverrider {
 			GraphicalEditPart editPart = (GraphicalEditPart) iterator.next();
 			//The page and the bands are not valid selectable items, so the isMarqueeSelectable retrun false for every element that it isn't an
 			//MGraphical element
-			if (isMarqueeSelectable(editPart, allowNotFullyClipped) && isPrimaryMarqueeSelectedEditPart(editPart, selectionRectangle)) {
+			if (isMarqueeSelectable(editPart) && isPrimaryMarqueeSelectedEditPart(editPart, selectionRectangle)) {
 				marqueeSelectedEditParts.add(editPart);
 			}
 		}
@@ -75,16 +75,11 @@ public class MarqueeSelectionOverrider implements ISelectionOverrider {
 	 * 
 	 * @param editPart
 	 *          the {@link EditPart} of interest
-	 * @param allowNotFullyClipped true allow the selection even of the part not currently visible if they are inside the marquee area
 	 * @return <code>true</code> if the given edit part may be included into the marquee selection, <code>false</code>
 	 *         otherwise
 	 */
-	protected boolean isMarqueeSelectable(GraphicalEditPart editPart, boolean allowNotFullyClipped) {
-		if (editPart.isSelectable() && editPart.getModel() instanceof MGraphicElement){
-			if (allowNotFullyClipped) return true;
-			else return FigureUtilities.isNotFullyClipped(editPart.getFigure());
-		}
-		return false;
+	protected boolean isMarqueeSelectable(GraphicalEditPart editPart) {
+		return editPart.isSelectable() && FigureUtilities.isNotFullyClipped(editPart.getFigure()) && editPart.getModel() instanceof MGraphicElement;
 	}
 
 	/**
@@ -159,8 +154,7 @@ public class MarqueeSelectionOverrider implements ISelectionOverrider {
 							containerRectangle.height += delta;
 						}
 					}
-					//Select the part in the container even if not fully clipped
-					Collection<EditPart> partsToSelect = calculatePrimaryMarqueeSelectedEditParts(currentViewer, containerRectangle, true);
+					Collection<EditPart> partsToSelect = calculatePrimaryMarqueeSelectedEditParts(currentViewer, containerRectangle);
 					currentViewer.setSelection(new StructuredSelection(new ArrayList<EditPart>(partsToSelect)));
 					return true;
 				}

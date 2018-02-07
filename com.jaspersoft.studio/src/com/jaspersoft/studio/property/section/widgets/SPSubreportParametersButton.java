@@ -81,6 +81,7 @@ public class SPSubreportParametersButton<T extends IPropertyDescriptor> extends 
 				SubreportParameterEditor wizard = new SubreportParameterEditor(msubreport);
 				wizard.setValue(GenericJSSParameter.convertFrom(dto));
 				WizardDialog dialog = new WizardDialog(UIUtils.getShell(), wizard);
+				dialog.create();
 				if (dialog.open() == Dialog.OK){
 					JRSubreportParameter[] values = GenericJSSParameter.convertToSubreport(wizard.getValue());
 					section.changeProperty(pDescriptor.getId(), values);

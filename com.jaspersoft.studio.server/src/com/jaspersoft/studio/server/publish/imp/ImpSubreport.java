@@ -5,19 +5,11 @@
 package com.jaspersoft.studio.server.publish.imp;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-
-import org.eclipse.core.resources.IFile;
-
-import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.studio.server.model.MJrxml;
-import com.jaspersoft.studio.server.model.MReportUnit;
-import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.util.FileExtension;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignElement;
@@ -25,6 +17,14 @@ import net.sf.jasperreports.engine.design.JRDesignExpression;
 import net.sf.jasperreports.engine.design.JRDesignSubreport;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
+
+import org.eclipse.core.resources.IFile;
+
+import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
+import com.jaspersoft.studio.server.model.MJrxml;
+import com.jaspersoft.studio.server.model.MReportUnit;
+import com.jaspersoft.studio.utils.Misc;
+import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 public class ImpSubreport extends AImpObject {
 
@@ -40,14 +40,19 @@ public class ImpSubreport extends AImpObject {
 			if (f != null) {
 				try {
 					Object obj = JRLoader.loadObject(jrConfig, f);
-					if (obj instanceof JasperReport) {
+					if (obj != null && obj instanceof JasperReport) {
+						JasperReport jrReport = (JasperReport) obj;
 						f = FileUtils.getTmpFile(str);
-						try (FileOutputStream fos = new FileOutputStream(f);) {
-							JRXmlWriter.writeReport((JasperReport) obj, fos, "UTF-8");
+						FileOutputStream fos = null;
+						try {
+							fos = new FileOutputStream(f);
+							JRXmlWriter.writeReport(jrReport, fos, "UTF-8");
 							return f;
-						} catch (IOException e) {
+						} catch (FileNotFoundException e) {
+							FileUtils.closeStream(fos);
 							e.printStackTrace();
 						}
+
 					}
 				} catch (JRException e) {
 					e.printStackTrace();
@@ -59,7 +64,7 @@ public class ImpSubreport extends AImpObject {
 
 	@Override
 	protected String doPath(String path) {
-		return FileExtension.getJRXMLFileName(path);
+		return path.replaceAll(FileExtension.PointJASPER, FileExtension.PointJRXML);
 	}
 
 	protected ResourceDescriptor createResource(MReportUnit mrunit) {
@@ -69,7 +74,7 @@ public class ImpSubreport extends AImpObject {
 	protected JRDesignExpression getExpression(JRDesignElement img) {
 		JRDesignExpression exp = (JRDesignExpression) ((JRDesignSubreport) img).getExpression();
 		if (exp != null && !Misc.isNullOrEmpty(exp.getText())) {
-			exp.setText(FileExtension.getJRXMLFileName(exp.getText()));
+			exp.setText(exp.getText().replaceAll(FileExtension.PointJASPER, FileExtension.PointJRXML));
 			return exp;
 		}
 		return (JRDesignExpression) ((JRDesignSubreport) img).getExpression();

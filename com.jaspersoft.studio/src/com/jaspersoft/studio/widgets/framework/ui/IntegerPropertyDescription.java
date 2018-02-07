@@ -16,30 +16,29 @@ import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-import com.jaspersoft.studio.widgets.framework.ui.widget.FallbackNumericText;
 
 public class IntegerPropertyDescription extends NumberPropertyDescription<Integer> {
 	
 	public IntegerPropertyDescription() {
 	}
 
-	public IntegerPropertyDescription(String name, String label, String description, boolean mandatory,  Integer defaultValue, Integer min, Integer max) {
+	public IntegerPropertyDescription(String name, String label, String description, boolean mandatory,  Integer defaultValue, Number min, Number max) {
 		super(name, label, description, mandatory, defaultValue, min, max);
 	}
 	
-	public IntegerPropertyDescription(String name, String label, String description, boolean mandatory, Integer min, Integer max) {
+	public IntegerPropertyDescription(String name, String label, String description, boolean mandatory, Number min, Number max) {
 		super(name, label, description, mandatory, min, max);
 	}
 	
 	@Override
-	public Class<? extends Number> getType() {
+	public Class<?> getType() {
 		if (defaultValue != null)
 			return defaultValue.getClass();
 		return Integer.class;
 	}
 	
 	@Override
-	public IntegerPropertyDescription clone(){
+	public ItemPropertyDescription<Integer> clone(){
 		IntegerPropertyDescription result = new IntegerPropertyDescription();
 		result.defaultValue = defaultValue;
 		result.description = description;
@@ -55,7 +54,7 @@ public class IntegerPropertyDescription extends NumberPropertyDescription<Intege
 	}
 	
 	@Override
-	public IntegerPropertyDescription getInstance(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig) {
+	public ItemPropertyDescription<?> getInstance(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig) {
 		Integer min = null;
 		Integer max = null;
 		Integer def = null;
@@ -91,11 +90,11 @@ public class IntegerPropertyDescription extends NumberPropertyDescription<Intege
 	}
 	
 	@Override
-	protected FallbackNumericText createSimpleEditor(Composite parent) {
-		FallbackNumericText text = new FallbackNumericText(parent, SWT.BORDER, 0, 0);
+	protected NumericText createSimpleEditor(Composite parent) {
+		NumericText text = new NumericText(parent, SWT.BORDER, 0, 0);
 		text.setRemoveTrailZeroes(true);
-		Integer max = getMax() != null ? getMax() : Integer.MAX_VALUE;
-		Integer min = getMin() != null ? getMin() : Integer.MIN_VALUE;
+		Number max = getMax() != null ? getMax() : Integer.MAX_VALUE;
+		Number min = getMin() != null ? getMin() : Integer.MIN_VALUE;
 		text.setMaximum(max.doubleValue());
 		text.setMinimum(min.doubleValue());
 		return text;
@@ -116,13 +115,8 @@ public class IntegerPropertyDescription extends NumberPropertyDescription<Intege
 	}
 
 	@Override
-	protected Integer convertValue(String v) throws NumberFormatException {
+	protected Number convertValue(String v) {
 		if (v == null || v.isEmpty()) return null;
-		Integer parsedInt =  IntegerValidator.getInstance().validate(v, Locale.getDefault());
-		if (parsedInt == null) {
-			throw new NumberFormatException();
-		} else {
-			return parsedInt;
-		}
+		return IntegerValidator.getInstance().validate(v, Locale.getDefault());
 	}
 }

@@ -28,8 +28,7 @@ import com.jaspersoft.studio.plugin.ExtensionManager;
 import com.jaspersoft.studio.plugin.IPaletteContributor;
 import com.jaspersoft.studio.plugin.PaletteGroup;
 import com.jaspersoft.studio.preferences.util.FieldEditorOverlayPage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * 

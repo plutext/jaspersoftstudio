@@ -7,6 +7,8 @@ package com.jaspersoft.studio.data.sql.ui;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.sf.jasperreports.engine.JRParameter;
+
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.gef.dnd.TemplateTransfer;
 import org.eclipse.jface.text.BadLocationException;
@@ -46,10 +48,7 @@ import com.jaspersoft.studio.data.sql.SQLQueryDesigner;
 import com.jaspersoft.studio.data.sql.model.AMSQLObject;
 import com.jaspersoft.studio.data.sql.model.metadata.MSqlTable;
 import com.jaspersoft.studio.dnd.NodeTransfer;
-import com.jaspersoft.studio.preferences.fonts.utils.FontUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.engine.JRParameter;
 
 public class SQLQuerySource {
 	private static final Color SRC_MARGINS_COLOR = SWTResourceManager.getColor(
@@ -271,6 +270,6 @@ public class SQLQuerySource {
 	}
 
 	public void setupFont(JasperReportsConfiguration jConfig) {
-		 viewer.getTextWidget().setFont(FontUtils.getEditorsFont(jConfig));
+		// viewer.getTextWidget().setFont(FontUtils.getEditorsFont(jConfig));
 	}
 }

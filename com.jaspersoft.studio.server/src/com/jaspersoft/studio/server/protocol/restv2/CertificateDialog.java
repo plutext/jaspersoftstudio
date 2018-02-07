@@ -6,7 +6,6 @@ package com.jaspersoft.studio.server.protocol.restv2;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.Key;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,11 +39,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
 import com.jaspersoft.studio.server.messages.Messages;
+import com.jaspersoft.studio.utils.Misc;
 
 import jersey.repackaged.com.google.common.collect.Lists;
 import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 public class CertificateDialog extends ATitledDialog {
 	private X509Certificate client;
@@ -132,13 +131,7 @@ public class CertificateDialog extends ATitledDialog {
 
 		@Override
 		public String getText(Object element) {
-			if (element instanceof X509Certificate)
-				return ((X509Certificate) element).getSubjectDN().getName();
-			else if (element instanceof Key)
-				return "Key";
-			else if (element != null)
-				return element.toString();
-			return "NULL";
+			return ((X509Certificate) element).getSubjectDN().getName();
 		}
 
 	}

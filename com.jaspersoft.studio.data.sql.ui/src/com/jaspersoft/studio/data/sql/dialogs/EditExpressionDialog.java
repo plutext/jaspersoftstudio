@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
 import com.jaspersoft.studio.data.sql.messages.Messages;
 import com.jaspersoft.studio.data.sql.model.enums.Operator;
 import com.jaspersoft.studio.data.sql.model.query.AMKeyword;
@@ -40,11 +39,9 @@ import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 
 public class EditExpressionDialog extends ATitledDialog {
 	private MExpression value;
-	private AQueryDesigner designer;
 
-	public EditExpressionDialog(Shell parentShell, AQueryDesigner designer) {
+	public EditExpressionDialog(Shell parentShell) {
 		super(parentShell);
-		this.designer = designer;
 		setTitle(Messages.EditExpressionDialog_0);
 		setDescription(
 				Messages.EditExpressionDialog_1 + Messages.EditExpressionDialog_2 + Messages.EditExpressionDialog_3);
@@ -112,7 +109,7 @@ public class EditExpressionDialog extends ATitledDialog {
 			new Label(cmp, SWT.NONE).setLayoutData(gd);
 		}
 
-		Control w = Factory.createWidget(cmp, operands, 0, value, designer);
+		Control w = Factory.createWidget(cmp, operands, 0, value);
 		GridData gd = new GridData(
 				GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_END);
 		gd.widthHint = 250;
@@ -167,7 +164,7 @@ public class EditExpressionDialog extends ATitledDialog {
 				layout.marginWidth = 0;
 				cmp.setLayout(layout);
 
-				Control w = Factory.createWidget(cmp, operands, 1, value, designer);
+				Control w = Factory.createWidget(cmp, operands, 1, value);
 				GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
@@ -178,14 +175,14 @@ public class EditExpressionDialog extends ATitledDialog {
 				layout.marginWidth = 0;
 				cmp.setLayout(layout);
 
-				Control w = Factory.createWidget(cmp, operands, 1, value, designer);
+				Control w = Factory.createWidget(cmp, operands, 1, value);
 				GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
 
 				new Label(cmp, SWT.NONE).setText(Messages.EditExpressionDialog_6);
 
-				w = Factory.createWidget(cmp, operands, 2, value, designer);
+				w = Factory.createWidget(cmp, operands, 2, value);
 				gd = new GridData(GridData.FILL_HORIZONTAL | GridData.HORIZONTAL_ALIGN_CENTER);
 				gd.widthHint = 250;
 				w.setLayoutData(gd);
@@ -282,7 +279,7 @@ public class EditExpressionDialog extends ATitledDialog {
 
 	private void handleAddInList(List inlist) {
 		int index = Math.max(0, inlist.getSelectionIndex());
-		OperandDialog dialog = new OperandDialog(getShell(), designer);
+		OperandDialog dialog = new OperandDialog(getShell());
 		ArrayList<AOperand> ops = new ArrayList<AOperand>(operands);
 		if (index < ops.size())
 			ops.add(index, Factory.getDefaultOperand(value));
@@ -302,7 +299,7 @@ public class EditExpressionDialog extends ATitledDialog {
 	private void handleEditInList(List inlist) {
 		int index = inlist.getSelectionIndex() + 1;
 		if (index >= 0 && index < operands.size()) {
-			OperandDialog dialog = new OperandDialog(getShell(), designer);
+			OperandDialog dialog = new OperandDialog(getShell());
 			dialog.setValues(value, new ArrayList<AOperand>(operands), index);
 			if (dialog.open() == Dialog.OK) {
 				operands.set(index, dialog.getOperand());

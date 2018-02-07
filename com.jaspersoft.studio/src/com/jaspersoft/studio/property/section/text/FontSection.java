@@ -49,11 +49,12 @@ public class FontSection extends AbstractRealValueSection {
 		
 		GridData fontNameData = new GridData(GridData.FILL_HORIZONTAL);
 		fontNameData.minimumWidth = 150;
+		fontNameData.minimumWidth = 150;
 		createWidget4Property(firstLineContainer, JRBaseStyle.PROPERTY_FONT_NAME, false).getControl().setLayoutData(fontNameData);
 		
 		GridData fontSizeData = new GridData();
-		fontSizeData.minimumWidth = 60;
-		fontSizeData.widthHint = 60;
+		fontSizeData.minimumWidth = 65;
+		fontSizeData.widthHint = 65;
 		createWidget4Property(firstLineContainer, JRBaseStyle.PROPERTY_FONT_SIZE, false).getControl().setLayoutData(fontSizeData);
 
 		createWidget4Property(firstLineContainer, MFont.FONT_INCREMENT, false);

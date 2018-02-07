@@ -87,7 +87,7 @@ public class MBarcodeBarbecue extends MBarcode implements IRotatable {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement(jasperDesign);
 		StandardBarbecueComponent component = new StandardBarbecueComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -97,9 +97,7 @@ public class MBarcodeBarbecue extends MBarcode implements IRotatable {
 		el.setComponentKey(
 				new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", "barbecue")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}

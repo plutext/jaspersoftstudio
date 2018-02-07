@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -45,9 +46,9 @@ import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
 import com.jaspersoft.studio.utils.AlfaRGB;
 import com.jaspersoft.studio.utils.Colors;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDataset;
@@ -245,22 +246,16 @@ public class MGraphicElement extends APropertyNode
 		return defaultValue != null ? (Integer) defaultValue : 100;
 	}
 
-
-	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see com.jaspersoft.studio.model.IGraphicElement#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignGenericElement jrDesignGenericElement = new JRDesignGenericElement(jasperDesign);
 		return jrDesignGenericElement;
 	}
 
-	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
-		return createJRElement(jasperDesign, true);
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -604,8 +599,7 @@ public class MGraphicElement extends APropertyNode
 			JRPropertyExpression[] propertyExpressions = jrElement.getPropertyExpressions();
 			if (propertyExpressions != null)
 				propertyExpressions = propertyExpressions.clone();
-			return new PropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrElement), getValue(),
-					ModelUtils.getExpressionContext(this));
+			return new PropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrElement), this);
 		}
 		if (id.equals(PROPERTY_MAP))
 			return getPropertiesMapClone(jrElement);
@@ -668,7 +662,7 @@ public class MGraphicElement extends APropertyNode
 			return Colors.getSWTRGB4AWTGBColor(forecolor);
 		}
 		if (id.equals(JRBaseStyle.PROPERTY_MODE)) {
-			return ModeEnum.TRANSPARENT.equals(resolver.getMode(jrElement, ModeEnum.TRANSPARENT));
+			return ModeEnum.TRANSPARENT.equals(resolver.getMode(jrElement, ModeEnum.OPAQUE));
 		}
 		return super.getPropertyActualValue(id);
 	}
@@ -867,58 +861,28 @@ public class MGraphicElement extends APropertyNode
 	 */
 	@Override
 	public void setStyleChangedProperty() {
-		setChangedProperty(true, new RefreshPropertyEvent(this));
-	}
-	
-	/**
-	 * Set the actual state of the property change flag
-	 * 
-	 * @param value true if the element should be redesigned, false otherwise
-	 */
-	@Override
-	public void setChangedProperty(boolean value) {
-		setChangedProperty(value, new RefreshPropertyEvent(this));
+		setChangedProperty(true);
 	}
 
 	/**
-	 * Set the actual state of the property change flag. It also receive an event that is
-	 * the one who triggered the refresh. This is used to know if this is a refresh requested
-	 * on this node or a refresh on another node that as side effect need to refresh this.
-	 * In the second case the type of the event will be a {@link RefreshPropertyEvent}. When
-	 * this is a refresh of the second type the event is also used to check if this node already
-	 * triggered other refresh. This is done because in some case with a very complex hierarchy there 
-	 * could be cases of deadlock if this is not checked, because the nodes continue to refresh other
-	 * nodes that refresh the starting ones, in a circular refresh. So in the event is stored which 
-	 * {@link JRChangeEventsSupport} are used to refresh the nodes to avoid to recall another refresh
-	 * on the same nodes
-	 * 
-	 * @param value true if the element should be redesigned, false otherwise
+	 * Set the actual state of the property change flag
 	 */
-	public void setChangedProperty(boolean value, PropertyChangeEvent event) {
+	@Override
+	public void setChangedProperty(boolean value) {
 		synchronized (this) {
- 			visualPropertyChanged = value;
+			visualPropertyChanged = value;
 		}
 		if (value) {
-			RefreshPropertyEvent refreshEvent = null;
-			if (event == null || !RefreshPropertyEvent.class.equals(event.getClass())){
-				refreshEvent = new RefreshPropertyEvent(event.getSource());
-			} else {
-				refreshEvent = (RefreshPropertyEvent)event;
-			}
-		
 			ANode parent = getParent();
-			while (parent != null) {;
+			while (parent != null) {
 				if (parent.getValue() != null && parent.getValue() instanceof JRChangeEventsSupport) {
 					// We can't set the property on the element directly because even if it follow the hierarchy
 					// there will be problem with elements inside the subeditors. Firing an event on the jr object
 					// instead will end to propagate the update to every model binded to the jr object
 					JRChangeEventsSupport parentEvents = (JRChangeEventsSupport) parent.getValue();
-					if (!refreshEvent.hasElementTriggeredEvent(parentEvents)){
-						refreshEvent.setElementTriggeredEvent(parentEvents);
-						parentEvents.getEventSupport().firePropertyChange(refreshEvent);
-						// We can exit the cycle since the setChangedProperty on the parent will propagate the
-						// refresh on the upper levels
-					}
+					parentEvents.getEventSupport().firePropertyChange(MGraphicElement.FORCE_GRAPHICAL_REFRESH, null, null);
+					// We can exit the cycle since the setChangedProperty on the parent will propagate the
+					// refresh on the upper levels
 					break;
 				} else {
 					parent = parent.getParent();
@@ -940,7 +904,7 @@ public class MGraphicElement extends APropertyNode
 		if (!visualPropertyChanged) {
 			HashSet<String> graphicalProperties = getGraphicalProperties();
 			if (graphicalProperties.contains(evt.getPropertyName())) {
-				setChangedProperty(true, evt);
+				setChangedProperty(true);
 			}
 		}
 		super.propertyChange(evt);
@@ -1142,5 +1106,4 @@ public class MGraphicElement extends APropertyNode
 	public boolean isCuttable(ISelection currentSelection) {
 		return true;
 	}
-
 }

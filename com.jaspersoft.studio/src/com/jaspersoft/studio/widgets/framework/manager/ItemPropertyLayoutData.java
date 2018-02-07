@@ -69,17 +69,8 @@ public class ItemPropertyLayoutData {
 	 */
 	protected Point labelSize = new Point(24, 24);
 	
-	/**
-	 * Margin before the start of the first control
-	 */
-	public int leftMargin = 5;
-	
 	public void setButtonSize(Point size){
 		this.buttonSize = size;
-	}
-	
-	public Point getButtonSize(){
-		return this.buttonSize;
 	}
 	
 	public void setLabelSize(Point size){

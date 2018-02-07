@@ -148,12 +148,10 @@ public class MEllipse extends MGraphicElementLinePen {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignEllipse jrDesignEllipse = new JRDesignEllipse(jasperDesign);
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignEllipse);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignEllipse);
 
 		jrDesignEllipse.setWidth(getDefaultWidth());
 		jrDesignEllipse.setWidth(getDefaultHeight());

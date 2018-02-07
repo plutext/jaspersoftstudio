@@ -65,11 +65,6 @@ public class PartComponentFactory implements IComponentFactory {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		return null;
-	}
 
 	@Override
 	public Command getStretchToContent(ANode node) {

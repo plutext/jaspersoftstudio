@@ -10,11 +10,21 @@ import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
+import net.sf.jasperreports.eclipse.util.FileExtension;
+import net.sf.jasperreports.eclipse.util.FileUtils;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.xml.JRXmlWriter;
+import net.sf.jasperreports.parts.subreport.StandardSubreportPartComponent;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.server.ResourceFactory;
 import com.jaspersoft.studio.server.model.AFileResource;
 import com.jaspersoft.studio.server.model.MJrxml;
@@ -23,19 +33,6 @@ import com.jaspersoft.studio.server.publish.PublishOptions;
 import com.jaspersoft.studio.server.publish.PublishUtil;
 import com.jaspersoft.studio.utils.ExpressionUtil;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
-import net.sf.jasperreports.eclipse.util.FileExtension;
-import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.util.StringUtils;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlWriter;
-import net.sf.jasperreports.parts.subreport.StandardSubreportPartComponent;
 
 public class ImpJRXML {
 	private JasperReportsConfiguration jrConfig;
@@ -65,8 +62,7 @@ public class ImpJRXML {
 	// }
 
 	protected File findFile(IFile file, String str) {
-		File f = FileUtils.findFile(file,
-				StringUtils.replaceAllIns(str, FileExtension.PointJASPER + "$", FileExtension.PointJRXML));
+		File f = FileUtils.findFile(file, str.replaceAll(FileExtension.PointJASPER, FileExtension.PointJRXML));
 		if (f == null) {
 			f = FileUtils.findFile(file, str);
 			if (f != null) {
@@ -117,11 +113,7 @@ public class ImpJRXML {
 				popt.setExpression("\"repo:" + IDStringValidator.safeChar(f.getName()) + "\"");
 			fileset.add(str);
 
-			AFileResource res = addResource(monitor, mrunit, fileset, f, popt);
-			String desc = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-			if (!Misc.isNullOrEmpty(desc))
-				res.getValue().setDescription(desc);
-			return res;
+			return addResource(monitor, mrunit, fileset, f, popt);
 		}
 		return null;
 	}
@@ -163,6 +155,6 @@ public class ImpJRXML {
 	}
 
 	protected JRDesignExpression getExpression(StandardSubreportPartComponent img) {
-		return (JRDesignExpression) img.getExpression();
+		return (JRDesignExpression) ((StandardSubreportPartComponent) img).getExpression();
 	}
 }

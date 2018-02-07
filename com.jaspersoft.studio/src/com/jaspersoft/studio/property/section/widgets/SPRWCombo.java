@@ -20,9 +20,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.property.descriptor.combo.RWComboBoxPropertyDescriptor;
 import com.jaspersoft.studio.property.section.AbstractSection;
-import com.jaspersoft.studio.utils.ModelUtils;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SPRWCombo<T extends IPropertyDescriptor> extends ASPropertyWidget<T> {
 
@@ -95,10 +93,9 @@ public class SPRWCombo<T extends IPropertyDescriptor> extends ASPropertyWidget<T
 				break;
 			}
 		}
-		if (selection != -1){
+		if (selection != -1)
 			combo.select(selection);
-			combo.setText(items[selection]);
-		}else
+		else
 			combo.setText(Misc.nvl(str));
 		String t = combo.getText();
 		// if (oldSel.x != oldSel.y) {
@@ -124,12 +121,9 @@ public class SPRWCombo<T extends IPropertyDescriptor> extends ASPropertyWidget<T
 	public void setNewItems(final RWComboBoxPropertyDescriptor pd) {
 		// Block the update and reset the previously selected item
 		refresh = true;
-		String[] newItems = pd.getItems();
-		if (!ModelUtils.safeEquals(newItems, combo.getItems())) {
-			String oldSelection = combo.getText();
-			combo.setItems(newItems);
-			setComboSelection(oldSelection, pd.isCaseSensitive());
-		}	
+		String oldSelection = combo.getText();
+		combo.setItems(pd.getItems());
+		setComboSelection(oldSelection, pd.isCaseSensitive());
 		refresh = false;
 	}
 }

@@ -101,7 +101,11 @@ public abstract class AImpObject {
 	}
 
 	public static boolean isRemoteResource(String path) {
-		return path != null && path.startsWith("\\w+?://") && !path.startsWith("file://");
+		if (path == null)
+			return false;
+		if (path.startsWith("\\w+?://") && !path.startsWith("file://"))
+			return true;
+		return false;
 	}
 
 	protected String getPath(Set<String> fileset, JRDesignExpression exp) {

@@ -310,7 +310,7 @@ public class TableTemplateEngine extends DefaultTemplateEngine {
 				groupCell.addElement(copyElement);
 			}
 		} else {
-			JRDesignTextField sText = new MTextField().createJRElement(jd, true);
+			JRDesignTextField sText = new MTextField().createJRElement(jd);
 			sText.setWidth(newGroupWidth);
 			sText.setHeight(groupCell.getHeight());
 			sText.setX(0);
@@ -682,7 +682,7 @@ public class TableTemplateEngine extends DefaultTemplateEngine {
 			detailContent = new ArrayList<JRDesignElement>();
 			tableGroupField = new ArrayList<List<JRDesignElement>>();
 			List<JRDesignElement> fakeGroupPlaceHolder = new ArrayList<JRDesignElement>();
-			JRDesignTextField groupElement = new MTextField().createJRElement(jd, true);
+			JRDesignTextField groupElement = new MTextField().createJRElement(jd);
 			groupElement.setExpression(ExprUtil.setValues(new JRDesignExpression(), "$F{Group1}", "java.Lang.Object"));
 			fakeGroupPlaceHolder.add(groupElement);
 			tableGroupField.add(fakeGroupPlaceHolder);

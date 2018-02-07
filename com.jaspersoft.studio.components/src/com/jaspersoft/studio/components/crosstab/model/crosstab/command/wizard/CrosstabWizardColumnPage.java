@@ -5,7 +5,7 @@
 package com.jaspersoft.studio.components.crosstab.model.crosstab.command.wizard;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +15,6 @@ import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -32,7 +31,6 @@ import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.parameter.MParameter;
 import com.jaspersoft.studio.model.variable.MVariable;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
-import com.jaspersoft.studio.property.descriptor.combo.EditableComboBoxCellEditor;
 import com.jaspersoft.studio.utils.EnumHelper;
 import com.jaspersoft.studio.wizards.JSSWizard;
 import com.jaspersoft.studio.wizards.fields.StaticWizardFieldsPage;
@@ -59,7 +57,7 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			Wrapper w = (Wrapper) element;
-			String oldExpText = w.getBaseObjectExpression();
+			String oldExpText = w.getOldExpText();
 			switch (columnIndex) {
 			case 0:
 				if (oldExpText.startsWith("$F{")) //$NON-NLS-1$
@@ -85,7 +83,7 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 			case 2:
 				return m.getTotalPositionValue().getName();
 			case 3:
-				return w.getCalculation() != null ? w.getCalculation().getName() : "";
+				return w.getCalculation().getName();
 			}
 			return ""; //$NON-NLS-1$
 		}
@@ -136,17 +134,6 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 		}
 		return null;
 	}
-	
-	public List<Wrapper> getSelectedFieldWrappers() {
-		List<Object> wlist = super.getSelectedFields();
-		if (wlist != null) {
-			List<Wrapper> out = new ArrayList<Wrapper>(wlist.size());
-			for (Object w : wlist)
-				out.add((Wrapper) w);
-			return out;
-		}
-		return null;
-	}
 
 	@Override
 	protected void setLabelProvider(TableViewer tableViewer) {
@@ -189,7 +176,10 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 				if (property.equals(F_TOTALPOSITION)) // $NON-NLS-1$
 					return true;
 				if (property.equals(F_CALCULATION)) { // $NON-NLS-1$
-					return AgregationFunctionEnum.isEditable(((Wrapper)element).getBaseObjectType());
+					Wrapper w = (Wrapper) element;
+					JRDesignCrosstabColumnGroup rg = (JRDesignCrosstabColumnGroup) w.getValue();
+					if (Date.class.isAssignableFrom(rg.getBucket().getValueClass()))
+						return true;
 				}
 				return false;
 			}
@@ -208,7 +198,7 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 							prop.getTotalPositionValue());
 				}
 				if (F_CALCULATION.equals(property)) // $NON-NLS-1$
-					return w.getCalculation() != null ? w.getCalculation() : "";
+					return w.getCalculation().getValue();
 
 				return ""; //$NON-NLS-1$
 			}
@@ -225,47 +215,21 @@ public class CrosstabWizardColumnPage extends StaticWizardFieldsPage {
 				} else if (F_TOTALPOSITION.equals(property)) { // $NON-NLS-1$
 					data.setTotalPosition(EnumHelper.getEnumByObjectValue(CrosstabTotalPositionEnum.values(), value));
 				} else if (F_CALCULATION.equals(property)) { // $NON-NLS-1$
-					AgregationFunctionEnum function = (AgregationFunctionEnum)value;
+					AgregationFunctionEnum function = AgregationFunctionEnum.getByValue((Integer) value);
 					w.setCalculation(function);
-					CrosstabWizard.setBucketExpression(bucket, w.getBaseObjectExpression(), function);
+					CrosstabWizard.setBucketExpression(bucket, w.getOldExpText(), function);
 				}
 				viewer.update(element, new String[] { property });
 				viewer.refresh();
 			}
 		});
-		
-		//create the cell editors
-		TextCellEditor nameEditor = new TextCellEditor(parent);
-		ComboBoxCellEditor sortEditor = new ComboBoxCellEditor(parent, EnumHelper.getEnumNames(SortOrderEnum.values(), NullEnum.NOTNULL), SWT.READ_ONLY);
-		ComboBoxCellEditor totalEditor = new ComboBoxCellEditor(parent, EnumHelper.getEnumNames(CrosstabTotalPositionEnum.values(), NullEnum.NOTNULL), SWT.READ_ONLY);
-		EditableComboBoxCellEditor aggregationEditor = new EditableComboBoxCellEditor(parent, new String[]{}, SWT.READ_ONLY) {
-			
-			protected void doSetValue(Object value) {
-				StructuredSelection sel = (StructuredSelection)rightTView.getSelection();
-				if (!sel.isEmpty()) {
-					Wrapper selected = (Wrapper)sel.getFirstElement();
-					String className = selected.getBaseObjectType();
-					AgregationFunctionEnum[] values = AgregationFunctionEnum.getStringValues(className);
-					String[] names = AgregationFunctionEnum.getValuesNames(values);
-					comboBox.setItems(names);
-					comboBox.setData(values);
-				}
-				AgregationFunctionEnum[] values = (AgregationFunctionEnum[])comboBox.getData();
-				int index = Arrays.asList(values).indexOf(value);
-				if (index >= 0 && index < comboBox.getItemCount()) super.doSetValue(index);
-				else doSetValue(0);
-			};
-			
-			@Override
-			protected Object doGetValue() {
-				int index = (Integer)super.doGetValue();
-				AgregationFunctionEnum[] values = (AgregationFunctionEnum[]) comboBox.getData();
-				return values[index];
-			}
-			
-		};
-		
-		viewer.setCellEditors(new CellEditor[] { nameEditor, sortEditor, totalEditor, aggregationEditor });
+
+		viewer.setCellEditors(new CellEditor[] { new TextCellEditor(parent),
+				new ComboBoxCellEditor(parent, EnumHelper.getEnumNames(SortOrderEnum.values(), NullEnum.NOTNULL),
+						SWT.READ_ONLY),
+				new ComboBoxCellEditor(parent,
+						EnumHelper.getEnumNames(CrosstabTotalPositionEnum.values(), NullEnum.NOTNULL), SWT.READ_ONLY),
+				new ComboBoxCellEditor(parent, AgregationFunctionEnum.getStringValues(), SWT.READ_ONLY) });
 		viewer.setColumnProperties(new String[] { F_NAME, F_ORDER, F_TOTALPOSITION, F_CALCULATION });
 	}
 

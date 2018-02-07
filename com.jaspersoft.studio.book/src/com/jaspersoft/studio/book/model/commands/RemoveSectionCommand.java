@@ -4,23 +4,23 @@
  ******************************************************************************/
 package com.jaspersoft.studio.book.model.commands;
 
-import org.eclipse.gef.commands.Command;
-
-import com.jaspersoft.studio.book.model.MBookReport;
-import com.jaspersoft.studio.book.model.MGroupReportPartContainer;
-
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 
+import org.eclipse.gef.commands.Command;
+
+import com.jaspersoft.studio.book.model.MBookReport;
+import com.jaspersoft.studio.book.model.MReportPartContainer;
+
 public class RemoveSectionCommand extends Command {
 	
-	private MGroupReportPartContainer sectionToRemove = null;
+	private MReportPartContainer sectionToRemove = null;
 	
 	private MBookReport parent;
 	
 	private int oldIndex = -1;
 	
-	public RemoveSectionCommand(MGroupReportPartContainer sectionToRemove){
+	public RemoveSectionCommand(MReportPartContainer sectionToRemove){
 		this.sectionToRemove = sectionToRemove;
 		this.parent = (MBookReport)sectionToRemove.getParent();
 	}

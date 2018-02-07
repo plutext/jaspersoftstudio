@@ -42,12 +42,12 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.swt.widgets.table.DeleteButton;
 import com.jaspersoft.studio.swt.widgets.table.EditButton;
 import com.jaspersoft.studio.swt.widgets.table.IEditElement;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.eclipse.builder.CompatibilityManager;
 import net.sf.jasperreports.eclipse.builder.JRDefinition;
 import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class JRRuntimeDialog extends ATitledDialog {
@@ -173,7 +173,7 @@ public class JRRuntimeDialog extends ATitledDialog {
 				super.setEnabled(enable);
 			};
 
-			protected void afterElementModified(JRDefinition element, java.util.List<JRDefinition> inlist, int ind) {
+			protected void afterElementModified(Object element, java.util.List<JRDefinition> inlist, int ind) {
 				save();
 			}
 		};
@@ -228,8 +228,7 @@ public class JRRuntimeDialog extends ATitledDialog {
 
 	private void fill() {
 		List<JRDefinition> values = new ArrayList<JRDefinition>();
-		values.add(
-				new JRDefinition(Messages.JRVersionPage_5, JasperDesign.class.getPackage().getImplementationVersion()));
+		values.add(new JRDefinition(Messages.JRVersionPage_5, JasperDesign.class.getPackage().getImplementationVersion()));
 		values.addAll(getJRDefinitions());
 		viewer.setInput(values);
 	}

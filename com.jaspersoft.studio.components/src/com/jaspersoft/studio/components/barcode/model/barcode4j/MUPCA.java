@@ -37,7 +37,7 @@ public class MUPCA extends MBarcode4j {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		UPCAComponent component = new UPCAComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -46,9 +46,7 @@ public class MUPCA extends MBarcode4j {
 		el.setComponent(component);
 		el.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", "UPCA")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 		
 		return el;
 	}

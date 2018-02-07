@@ -59,12 +59,12 @@ public class ShapePointsDescription extends AbstractExpressionPropertyDescriptio
 		DoubleControlComposite cmp = new DoubleControlComposite(parent, SWT.NONE);
 		cmp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		lazyCreateExpressionControl(wiProp, cmp);
+		Control expressionControl = super.createControl(wiProp, cmp.getFirstContainer());
+		cmp.getFirstContainer().setData(expressionControl);
 
 		cmp.getSecondContainer().setLayout(WidgetFactory.getNoPadLayout(2));
 		final Text simpleControl = new Text(cmp.getSecondContainer(), SWT.BORDER);
 		cmp.getSecondContainer().setData(simpleControl);
-		cmp.setSimpleControlToHighlight(simpleControl);
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.verticalAlignment = SWT.CENTER;
 		textData.grabExcessVerticalSpace = true;
@@ -124,7 +124,6 @@ public class ShapePointsDescription extends AbstractExpressionPropertyDescriptio
 	public void update(Control c, IWItemProperty wip) {
 		DoubleControlComposite cmp = (DoubleControlComposite) wip.getControl();
 		if (wip.isExpressionMode()) {
-			lazyCreateExpressionControl(wip, cmp);
 			Text expressionControl = (Text) cmp.getFirstContainer().getData();
 			super.update(expressionControl, wip);
 			cmp.switchToFirstContainer();

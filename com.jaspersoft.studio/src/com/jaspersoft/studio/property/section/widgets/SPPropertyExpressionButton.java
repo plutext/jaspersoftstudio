@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.section.widgets;
 
@@ -65,6 +66,7 @@ public class SPPropertyExpressionButton extends ASPropertyWidget<JPropertyExpres
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+
 				JRPropertyExpressionEditor wizard = new JRPropertyExpressionEditor();
 				// clone the object to avoid side effect
 				PropertyExpressionsDTO dto = (PropertyExpressionsDTO) model

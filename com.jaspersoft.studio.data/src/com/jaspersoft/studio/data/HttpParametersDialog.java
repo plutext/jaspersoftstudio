@@ -39,8 +39,8 @@ import com.jaspersoft.studio.swt.widgets.table.EditButton;
 import com.jaspersoft.studio.swt.widgets.table.IEditElement;
 import com.jaspersoft.studio.swt.widgets.table.INewElement;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
-import com.jaspersoft.studio.swt.widgets.table.ListOrderButtons;
 import com.jaspersoft.studio.swt.widgets.table.NewButton;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.UIUtil;
 
 import net.sf.jasperreports.data.http.HttpLocationParameter;
@@ -48,7 +48,6 @@ import net.sf.jasperreports.data.http.RequestMethod;
 import net.sf.jasperreports.data.http.StandardHttpDataLocation;
 import net.sf.jasperreports.eclipse.ui.ATitledDialog;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 
 /**
  * @author Veaceslav Chicu (schicu@users.sourceforge.net)
@@ -109,7 +108,7 @@ public class HttpParametersDialog extends ATitledDialog {
 		new Label(cmp, SWT.NONE).setText(Messages.HttpParametersDialog_4);
 
 		final Combo cmb = new Combo(cmp, SWT.READ_ONLY);
-		cmb.setItems(RequestMethod.GET.name(), RequestMethod.POST.name(), RequestMethod.PUT.name());
+		cmb.setItems(new String[] { RequestMethod.GET.name(), RequestMethod.POST.name(), RequestMethod.PUT.name() });
 		if (dataFile.getMethod() == RequestMethod.POST)
 			cmb.select(1);
 		else if (dataFile.getMethod() == RequestMethod.PUT)
@@ -343,7 +342,7 @@ public class HttpParametersDialog extends ATitledDialog {
 
 		});
 
-		final EditButton<HttpLocationParameter> bEditPrm = new EditButton<>();
+		final EditButton<HttpLocationParameter> bEditPrm = new EditButton<HttpLocationParameter>();
 		bEditPrm.createEditButtons(bGroup, tviewer, new IEditElement<HttpLocationParameter>() {
 
 			@Override
@@ -363,12 +362,8 @@ public class HttpParametersDialog extends ATitledDialog {
 				bEditPrm.push();
 			}
 		});
-
 		final DeleteButton delb = new DeleteButton();
 		delb.createDeleteButton(bGroup, tviewer);
-
-		new ListOrderButtons().createOrderButtons(bGroup, tviewer);
-
 		return tviewer;
 	}
 

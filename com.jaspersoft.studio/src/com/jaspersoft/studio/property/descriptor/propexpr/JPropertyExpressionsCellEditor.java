@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.descriptor.propexpr;
 
@@ -12,24 +13,18 @@ import com.jaspersoft.studio.property.descriptor.EditableDialogCellEditor;
 import com.jaspersoft.studio.property.descriptor.propexpr.dialog.JRPropertyExpressionEditor;
 
 public class JPropertyExpressionsCellEditor extends EditableDialogCellEditor {
-	private boolean showExpression = true;
 
 	public JPropertyExpressionsCellEditor(Composite parent) {
-		this(parent, true);
-	}
-
-	public JPropertyExpressionsCellEditor(Composite parent, boolean showExpression) {
 		super(parent);
-		this.showExpression = showExpression;
 	}
 
 	@Override
 	protected Object openDialogBox(Control cellEditorWindow) {
 		JRPropertyExpressionEditor wizard = new JRPropertyExpressionEditor();
-		wizard.setShowExpression(showExpression);
-		// clone the object to avoid side effect
+		//clone the object to avoid side effect
 		wizard.setValue(((PropertyExpressionsDTO) getValue()).clone());
 		WizardDialog dialog = new WizardDialog(cellEditorWindow.getShell(), wizard);
+		dialog.create();
 		if (dialog.open() == Dialog.OK)
 			return wizard.getValue();
 		return null;

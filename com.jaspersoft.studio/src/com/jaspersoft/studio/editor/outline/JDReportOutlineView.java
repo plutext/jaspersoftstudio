@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.jasperreports.engine.type.BandTypeEnum;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.LightweightSystem;
@@ -41,10 +43,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.PageBook;
@@ -59,11 +60,10 @@ import org.eclipse.ui.part.ResourceTransfer;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.IGraphicalEditor;
-import com.jaspersoft.studio.editor.action.order.BringBackwardAction;
-import com.jaspersoft.studio.editor.action.order.BringForwardAction;
 import com.jaspersoft.studio.editor.dnd.ImageResourceDropTargetListener;
 import com.jaspersoft.studio.editor.dnd.ImageURLTransfer;
 import com.jaspersoft.studio.editor.dnd.JSSTemplateTransferDropTargetListener;
+import com.jaspersoft.studio.editor.gef.parts.EditableFigureEditPart;
 import com.jaspersoft.studio.editor.gef.parts.MainDesignerRootEditPart;
 import com.jaspersoft.studio.editor.java2d.J2DLightweightSystem;
 import com.jaspersoft.studio.editor.java2d.JSSScrollingGraphicalViewer;
@@ -81,10 +81,7 @@ import com.jaspersoft.studio.model.parameter.MParameters;
 import com.jaspersoft.studio.model.util.EditPartVisitor;
 import com.jaspersoft.studio.model.variable.MVariables;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-import com.jaspersoft.studio.preferences.bindings.BindingsPreferencePersistence;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.type.BandTypeEnum;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * The Class JDReportOutlineView.
@@ -357,7 +354,14 @@ public class JDReportOutlineView extends ContentOutlinePage implements IAdaptabl
 				}
 			});
 
-			tree.addMouseListener(new MouseAdapter() {
+			tree.addMouseListener(new MouseListener() {
+
+				public void mouseUp(MouseEvent e) {
+				}
+
+				public void mouseDown(MouseEvent e) {
+
+				}
 
 				public void mouseDoubleClick(MouseEvent e) {
 					if (e.getSource() instanceof Tree) {
@@ -365,47 +369,28 @@ public class JDReportOutlineView extends ContentOutlinePage implements IAdaptabl
 						TreeItem[] ti = t.getSelection();
 						if (ti != null && ti.length > 0) {
 							Object obj = ti[0].getData();
-							if (obj instanceof EditPart) {
-								//if the part is openable and understand the open request then perform the request
-								EditPart part = (EditPart) obj;
+							if (obj instanceof TreeEditPart && editor instanceof AbstractVisualEditor) {
+
+								EditPart part = (EditPart) ((AbstractVisualEditor) editor).getGraphicalViewer().getEditPartRegistry()
+										.get(((TreeEditPart) obj).getModel());
 								SelectionRequest request = new SelectionRequest();
 								request.setType(RequestConstants.REQ_OPEN);
-								if (part.understandsRequest(request)) {
+								if (part != null) {
 									part.performRequest(request);
-									return;
+								} else {
+									TreeEditPart atep = (TreeEditPart) obj;
+									// If the part can understand the request perform it on the edit part
+									// otherwise use a general open editor method
+									if (atep.understandsRequest(request)) {
+										atep.performRequest(request);
+									} else if (atep.getModel() instanceof ANode) {
+										EditableFigureEditPart.openEditor(((ANode) atep.getModel()).getValue(), (IEditorPart) editor,
+												(ANode) atep.getModel());
+									}
 								}
 							}
-							if(ti.length==1 && ti[0].getItemCount()>0){
-								 ti[0].setExpanded(!ti[0].getExpanded());
-							}
 						}
 					}
-				}
-			});
-			
-			//listener to move the selected elements up and down on keypress
-			tree.addKeyListener(new KeyAdapter() {
-				
-				private static final String ACTION_UP_BINDING = "com.jaspersoft.studio.editor.action.order.BringForwardAction" ;
-				
-				private static final String ACTION_DOWN_BINDING = "com.jaspersoft.studio.editor.action.order.BringBackwardAction" ;
-				
-				@Override
-				public void keyPressed(KeyEvent e) {
-					if (BindingsPreferencePersistence.isPressed(ACTION_DOWN_BINDING)) {
-						BringForwardAction action = new BringForwardAction((AbstractVisualEditor)getEditor());
-						action.setLazyEnablementCalculation(true);
-						if (action.isEnabled()) {
-							action.run();
-						}
-					} else if (BindingsPreferencePersistence.isPressed(ACTION_UP_BINDING)) {
-						BringBackwardAction action = new BringBackwardAction((AbstractVisualEditor)getEditor());
-						action.setLazyEnablementCalculation(true);
-						if (action.isEnabled()) {
-							action.run();
-						}
-					}
-					
 				}
 			});
 

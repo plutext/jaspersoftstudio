@@ -4,6 +4,8 @@
  ******************************************************************************/
 package com.jaspersoft.studio.data.designer;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -17,9 +19,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class QueryStatus extends AQueryStatus {
 	private ToolItem msgItem;

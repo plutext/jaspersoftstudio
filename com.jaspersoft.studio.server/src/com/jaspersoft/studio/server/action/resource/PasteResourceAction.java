@@ -162,8 +162,7 @@ public class PasteResourceAction extends Action {
 					try {
 						INode root = parent.getRoot();
 						final String puri = parent instanceof AMResource
-								? ((AMResource) parent).getValue().getUriString()
-								: ""; //$NON-NLS-1$
+								? ((AMResource) parent).getValue().getUriString() : ""; //$NON-NLS-1$
 						doWork(monitor, parent, list);
 						ANode p = parent;
 						if (parent instanceof AMResource)
@@ -362,8 +361,6 @@ public class PasteResourceAction extends Action {
 								origin.setIsReference(true);
 						}
 						saveToReportUnit(monitor, (AMResource) parent, ws, origin);
-						if (parent instanceof MReportUnit)
-							parent.setValue(ws.get(monitor, ((AMResource) parent).getValue(), null));
 					}
 				}
 				deleteIfCut(monitor, m);
@@ -503,12 +500,6 @@ public class PasteResourceAction extends Action {
 
 	protected void saveToReportUnit(IProgressMonitor monitor, AMResource parent, IConnection ws,
 			ResourceDescriptor origin) throws IOException, Exception {
-		ResourceDescriptor prd = putIntoReportUnit(monitor, parent, ws, origin);
-		ws.addOrModifyResource(monitor, prd, null);
-	}
-
-	public static ResourceDescriptor putIntoReportUnit(IProgressMonitor monitor, AMResource parent, IConnection ws,
-			ResourceDescriptor origin) throws IOException, Exception {
 		ResourceDescriptor prd = parent.getValue();
 		ResourceDescriptor rd = null;
 		File file = null;
@@ -540,7 +531,7 @@ public class PasteResourceAction extends Action {
 			}
 		}
 		prd.getChildren().add(rd);
-		return prd;
+		ws.addOrModifyResource(monitor, prd, null);
 	}
 
 	public static boolean isSameServer(ANode parent, AMResource m) {
@@ -562,7 +553,7 @@ public class PasteResourceAction extends Action {
 		return true;
 	}
 
-	protected static ResourceDescriptor doPasteIntoReportUnit(ResourceDescriptor prd, ResourceDescriptor origin) {
+	protected ResourceDescriptor doPasteIntoReportUnit(ResourceDescriptor prd, ResourceDescriptor origin) {
 		String ruuri = prd.getUriString();
 		origin.setParentFolder(ruuri + "_files"); //$NON-NLS-1$
 		origin.setIsNew(true);
@@ -580,7 +571,7 @@ public class PasteResourceAction extends Action {
 		return origin;
 	}
 
-	private static String getRName(String name, List<?> children) {
+	private String getRName(String name, List<?> children) {
 		String n = name;
 		int j = 0;
 		for (int i = 0; i < children.size(); i++) {

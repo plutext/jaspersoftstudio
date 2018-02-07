@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -27,6 +28,7 @@ import net.sf.jasperreports.eclipse.util.FileUtils;
 public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 	protected WebTarget target;
 	protected JSSApacheConnectorFactory connector;
+	protected Logger logger;
 
 	public JSSApacheConnectorFactory getConnector() {
 		return connector;
@@ -47,7 +49,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -68,7 +72,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -84,8 +90,8 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				return (Class<T>) String.class;
 			if (type.equals("text/plain"))
 				return (Class<T>) String.class;
-			int sind = type.indexOf('.');
-			int eind = type.indexOf('+');
+			int sind = type.indexOf(".");
+			int eind = type.indexOf("+");
 			if (sind >= 0 && eind >= 0) {
 				type = type.substring(sind + 1, eind);
 				clazz = (Class<T>) WsTypes.INST().getType(type);
@@ -107,7 +113,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -135,7 +143,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -164,7 +174,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -198,7 +210,9 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 				eh.handleException(res, monitor);
 			}
 		} catch (IOException e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
+			if (logger != null)
+				logger.log(Level.WARNING, e.getMessage(), e);
+			e.printStackTrace();
 			throw e;
 		} finally {
 			res.close();
@@ -224,7 +238,6 @@ public abstract class ARestV2ConnectionJersey extends ARestV2Connection {
 	}
 
 	public ARestV2ConnectionJersey() {
-		super();
 		setParent(this);
 	}
 

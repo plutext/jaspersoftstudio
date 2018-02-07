@@ -149,15 +149,13 @@ public class MBreak extends MGraphicElement {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignBreak brk = new JRDesignBreak(jasperDesign);
 		brk.setWidth(getDefaultWidth());
 		brk.setHeight(getDefaultHeight());
-		
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), brk);
-		}
-			
+
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), brk);
+
 		return brk;
 	}
 

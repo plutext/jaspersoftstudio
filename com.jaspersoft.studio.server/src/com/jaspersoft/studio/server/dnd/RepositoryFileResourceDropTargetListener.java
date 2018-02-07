@@ -11,11 +11,10 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MFolder;
 import com.jaspersoft.studio.server.model.MReportUnit;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.server.model.AMResource;
+import com.jaspersoft.studio.utils.Misc;
 
 /**
  * A target drop listener that creates a generic file resource element when something

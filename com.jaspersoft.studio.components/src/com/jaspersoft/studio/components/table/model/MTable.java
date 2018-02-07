@@ -17,7 +17,6 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.jaspersoft.studio.callout.pin.IPinContainer;
 import com.jaspersoft.studio.components.section.name.NameSection;
-import com.jaspersoft.studio.components.table.DSListener;
 import com.jaspersoft.studio.components.table.TableComponentFactory;
 import com.jaspersoft.studio.components.table.TableDatasetRunProperyDescriptor;
 import com.jaspersoft.studio.components.table.TableManager;
@@ -50,6 +49,7 @@ import com.jaspersoft.studio.model.util.IIconDescriptor;
 import com.jaspersoft.studio.property.ISetValueCommandProvider;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.components.table.BaseColumn;
 import net.sf.jasperreports.components.table.ColumnGroup;
@@ -58,7 +58,6 @@ import net.sf.jasperreports.components.table.StandardBaseColumn;
 import net.sf.jasperreports.components.table.StandardColumn;
 import net.sf.jasperreports.components.table.StandardTable;
 import net.sf.jasperreports.components.table.WhenNoDataTypeTableEnum;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDatasetRun;
 import net.sf.jasperreports.engine.JRElementGroup;
@@ -146,8 +145,8 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 					deleteGroup(jrGroup.getName());
 				}
 				// Run an event on the table to force a grapghical refresh of
-				// the columns
-				setChangedProperty(true, evt);
+				// the columnss
+				setChangedProperty(true);
 				MTable.this.propertyChange(new PropertyChangeEvent(getValue(),
 						StandardTable.PROPERTY_COLUMNS, null, null));
 			}
@@ -393,7 +392,7 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 	}
 
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement jrElement = new JRDesignComponentElement(jasperDesign);
 		StandardTable component = new StandardTable();
 
@@ -404,10 +403,7 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 		JRDesignDatasetRun datasetRun = new JRDesignDatasetRun();
 		component.setDatasetRun(datasetRun);
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrElement);
-		}
-		
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrElement);
 		jrElement.getPropertiesMap().setProperty(ILayout.KEY,
 				VerticalRowLayout.class.getName());
 
@@ -452,9 +448,8 @@ public class MTable extends MGraphicElement implements IContainer, IContainerEdi
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals(JRDesignDatasetRun.PROPERTY_DATASET_NAME)) {
-			getStandardTable().getEventSupport().firePropertyChange(new PropertyChangeEvent(evt.getSource(), DSListener.REFRESH_DATASET, evt.getOldValue(), evt.getNewValue()));
-		} else if (evt.getPropertyName().equals(StandardTable.PROPERTY_DATASET_RUN)) {
+		
+		if (evt.getPropertyName().equals(StandardTable.PROPERTY_DATASET_RUN)) {
 			addDatasetGroupListener();
 		} else if (evt.getPropertyName().equals(MGraphicElement.FORCE_GRAPHICAL_REFRESH)) {
 			ANode parent = getParent();

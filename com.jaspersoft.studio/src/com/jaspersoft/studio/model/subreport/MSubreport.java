@@ -24,7 +24,6 @@ import com.jaspersoft.studio.property.descriptor.expression.JRExpressionProperty
 import com.jaspersoft.studio.property.descriptor.returnvalue.RVPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptor.subreport.parameter.SubreportPropertiesPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
-import com.jaspersoft.studio.utils.ModelUtils;
 
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRElement;
@@ -197,7 +196,7 @@ public class MSubreport extends MGraphicElement {
 			if (returnValuesDTO == null) {
 				returnValuesDTO = new JReportsDTO();
 				returnValuesDTO.setjConfig(getJasperConfiguration());
-				returnValuesDTO.setSubreport(jrElement, ModelUtils.getFirstDatasetInHierarchy(this));
+				returnValuesDTO.setSubreport(jrElement);
 			}
 			returnValuesDTO.setValue(JRCloneUtils.cloneList(jrElement.getReturnValuesList()));
 			return returnValuesDTO;
@@ -276,13 +275,11 @@ public class MSubreport extends MGraphicElement {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applayDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignSubreport subreport = new JRDesignSubreport(jasperDesign);
 
-		if (applayDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), subreport);
-		}
-			
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), subreport);
+
 		return subreport;
 	}
 

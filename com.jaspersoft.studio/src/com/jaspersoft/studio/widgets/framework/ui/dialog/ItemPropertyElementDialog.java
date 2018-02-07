@@ -4,8 +4,6 @@
  ******************************************************************************/
 package com.jaspersoft.studio.widgets.framework.ui.dialog;
 
-import java.util.HashMap;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osgi.util.NLS;
@@ -20,7 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
 import com.jaspersoft.studio.editor.expression.ExpressionEditorSupportUtil;
 import com.jaspersoft.studio.messages.Messages;
@@ -46,7 +43,7 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 	/**
 	 * The {@link ItemPropertyDescription} that define the widget created inside
 	 */
-	protected ItemPropertyDescription<?> ipDesc;
+	private ItemPropertyDescription<?> ipDesc;
 	
 	/**
 	 * The current static value
@@ -71,20 +68,7 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 	/**
 	 * Flag updated with the value of the checkbox, to force if it is an expression or not
 	 */
-	private boolean isExpressionMode = false;
-	
-	/**
-	 * Flag used when the dialog is forced in expression mode. When this is set the dialog show only the expression field and not
-	 * the simple editor
-	 */
-	private boolean forceExpressionMode = false;
-	
-	/**
-	 * Hashmap used to store properties temporary properties that are not related to the edited property
-	 * This is used since widgets can access directly to the {@link IPropertyEditor} and so the single
-	 * widget inside this dialog can change many properties, but in the end only one is returned
-	 */
-	protected HashMap<String, String> customPropertiesMap = new HashMap<String, String>();
+	protected boolean isExpressionMode = false;
 	
 	/**
 	 * Editor used to store the value from the widget inside the field of this dialog
@@ -95,14 +79,10 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 			//Avoid to set both the fields so switching back from expression to value will keep 
 			//the value of the other one; this happen only inside the dialog, when it is closed
 			//only one of the two value is keep (the selected one)
-			if (propertyName.equals(itemProperty.getPropertyName())){
-				if (isExpressionMode()){
-					expressionValue = valueExpression;
-				} else {
-					staticValue = value;
-				}
+			if (isExpressionMode){
+				expressionValue = valueExpression;
 			} else {
-				customPropertiesMap.put(propertyName, value);
+				staticValue = value;
 			}
 		};
 		
@@ -113,9 +93,6 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 		
 		@Override
 		public String getPropertyValue(String propertyName) {
-			if (!propertyName.equals(itemProperty.getPropertyName())){
-				return customPropertiesMap.get(propertyName);
-			}
 			return getStaticValue();
 		}
 	};
@@ -165,30 +142,6 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 	}
 	
 	/**
-	 * Set the flag used when the dialog is forced in expression mode. When this is set the dialog show only the expression field and not
-	 * the simple editor. This must be called before the dialog is shown with the open method, otherwise this will not have
-	 * effect
-	 * 
-	 * @param value true to show only the expression area, false otherwise
-	 */
-	public void setForceExpressionMode(boolean value){
-		if (dialogArea == null){
-			forceExpressionMode = value;
-		} else {
-			JaspersoftStudioPlugin.getInstance().logWarning( "The enforce expression method must be called before the dialog is opened");
-		}
-	}
-	
-	/**
-	 * Return if the dialog is in expression mode or not
-	 * 
-	 * @return true if it is in expression mode, false otherwise
-	 */
-	public boolean isExpressionMode(){
-		return forceExpressionMode ? true : isExpressionMode;
-	}
-	
-	/**
 	 * Set the title of the dialog
 	 */
 	@Override
@@ -211,7 +164,7 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 		return new WItemProperty(parent, SWT.NONE, ipDesc, editor){
 			@Override
 			public boolean isExpressionMode() {
-				return ItemPropertyElementDialog.this.isExpressionMode();
+				return isExpressionMode;
 			}
 			
 			/**
@@ -233,23 +186,6 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 		};
 	}
 	
-	/**
-	 * Created the area with the checkbox to seitch between expression and simple mode
-	 */
-	protected void createExpressionCheckbox(Composite dialogArea){
-		Button useExpressionCheckbox = new Button(dialogArea, SWT.CHECK);
-		useExpressionCheckbox.setText(Messages.ItemPropertyElementDialog_2);
-		useExpressionCheckbox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		useExpressionCheckbox.setSelection(isExpressionMode());
-		useExpressionCheckbox.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				isExpressionMode = ((Button)e.widget).getSelection();
-				itemProperty.updateWidget();
-			}
-		});
-	}
-	
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		setTitle(NLS.bind(Messages.ItemPropertyElementDialog_0, ipDesc.getName() != null ? ipDesc.getName() : "")); // $NON-NLS-2$ //$NON-NLS-1$
@@ -257,9 +193,18 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 		Composite dialogArea = new Composite(parent, SWT.NONE);
 		dialogArea.setLayoutData(new GridData(GridData.FILL_BOTH));
 		dialogArea.setLayout(new GridLayout(1, false));
-		createMessageArea(dialogArea);
-		
-		if (!forceExpressionMode) createExpressionCheckbox(dialogArea);
+
+		Button useExpressionCheckbox = new Button(dialogArea, SWT.CHECK);
+		useExpressionCheckbox.setText(Messages.ItemPropertyElementDialog_2);
+		useExpressionCheckbox.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		useExpressionCheckbox.setSelection(isExpressionMode);
+		useExpressionCheckbox.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				isExpressionMode = ((Button)e.widget).getSelection();
+				itemProperty.updateWidget();
+			}
+		});
 
 		itemProperty = createProperty(dialogArea, ipDesc, dialogPropertyEditor);
 		itemProperty.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -271,24 +216,14 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 		
 		//Use as default width a static value, compute the height of the main control basing
 		//assuming as its width the same of the dialog and use the result to calculate the height
-		//to he control height is added a padding of 250 because the dialog has also the title and
+		//to he control height is added a padding of 200 because the dialog has also the title and
 		//buttons area that require space
-		Point controlSize = itemProperty.computeSize(450, SWT.DEFAULT);
-		setDefaultSize(450, Math.max(controlSize.y + 250, 300));
+		Point controlSize = itemProperty.computeSize(500, SWT.DEFAULT);
+		setDefaultSize(500, Math.max(controlSize.y + 200, 300));
 	
 		itemProperty.updateWidget();
 		
 		return dialogArea;
-	}
-
-	/**
-	 * Create an additional message area before the normal composite used for editing 
-	 * the property value with the widget or the expression.
-	 * 
-	 * @param parent the parent composite
-	 */
-	protected void createMessageArea(Composite parent) {
-		
 	}
 	
 	/**
@@ -315,7 +250,7 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 	 */
 	@Override
 	public boolean close() {
-		if (isExpressionMode()){
+		if (isExpressionMode){
 			staticValue = null;
 			//if the user deosn't set an expression create it anyway
 			if (expressionValue == null){
@@ -325,10 +260,5 @@ public class ItemPropertyElementDialog extends PersistentLocationTitleAreaDialog
 			expressionValue = null;
 		}
 		return super.close();
-	}
-	
-	@Override
-	protected boolean isResizable() {
-		return true;
 	}
 }

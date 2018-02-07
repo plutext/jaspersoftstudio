@@ -36,6 +36,7 @@ import com.jaspersoft.studio.property.descriptor.text.NTextPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
 import com.jaspersoft.studio.utils.EnumHelper;
 import com.jaspersoft.studio.utils.ExpressionInterpreter;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 
 import net.sf.jasperreports.components.items.ItemData;
@@ -45,7 +46,6 @@ import net.sf.jasperreports.components.map.type.MapImageTypeEnum;
 import net.sf.jasperreports.components.map.type.MapScaleEnum;
 import net.sf.jasperreports.components.map.type.MapTypeEnum;
 import net.sf.jasperreports.eclipse.util.BasicMapInfoData;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRConstants;
 import net.sf.jasperreports.engine.JRDatasetRun;
 import net.sf.jasperreports.engine.JRElement;
@@ -241,7 +241,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 		mapClientSignatureD.setDescription(Messages.MMap_SignatureDescription);
 		desc.add(mapClientSignatureD);
 
-		NTextPropertyDescriptor mapVersionD = new NTextPropertyDescriptor(MapComponent.PROPERTY_GOOGLE_VERSION,
+		NTextPropertyDescriptor mapVersionD = new NTextPropertyDescriptor(MapComponent.PROPERTY_VERSION,
 				Messages.MMap_VersionText);
 		mapVersionD.setDescription(Messages.MMap_VersionDescription);
 		desc.add(mapVersionD);
@@ -332,10 +332,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 		} else if (id.equals(MapComponent.PROPERTY_SIGNATURE)) {
 			return getJasperDesign().getProperty(MapComponent.PROPERTY_SIGNATURE);
 		} else if (id.equals(MapComponent.PROPERTY_VERSION)) {
-			// FIXME - This will be soon removed
 			return getJasperDesign().getProperty(MapComponent.PROPERTY_VERSION);
-		} else if (id.equals(MapComponent.PROPERTY_GOOGLE_VERSION)){
-			return getJasperDesign().getProperty(MapComponent.PROPERTY_GOOGLE_VERSION);
 		}
 
 		if (id.equals(StandardMapComponent.PROPERTY_MARKER_DATA_LIST)) {
@@ -392,36 +389,29 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 		else if (id.equals(StandardMapComponent.PROPERTY_ON_ERROR_TYPE)) {
 			component.setOnErrorType(onErrorTypeD.getEnumValue(value));
 		} else if (id.equals(MapComponent.PROPERTY_KEY)) {
-			if (value instanceof String && !Misc.isNullOrEmptyString(value)) {
+			if (value instanceof String) {
 				getJasperDesign().setProperty(MapComponent.PROPERTY_KEY, (String) value);
 			} else {
 				getJasperDesign().removeProperty(MapComponent.PROPERTY_KEY);
 			}
 		} else if (id.equals(MapComponent.PROPERTY_CLIENT_ID)) {
-			if (value instanceof String && !Misc.isNullOrEmptyString(value)) {
+			if (value instanceof String) {
 				getJasperDesign().setProperty(MapComponent.PROPERTY_CLIENT_ID, (String) value);
 			} else {
 				getJasperDesign().removeProperty(MapComponent.PROPERTY_CLIENT_ID);
 			}
 		} else if (id.equals(MapComponent.PROPERTY_SIGNATURE)) {
-			if (value instanceof String && !Misc.isNullOrEmptyString(value)) {
+			if (value instanceof String) {
 				getJasperDesign().setProperty(MapComponent.PROPERTY_SIGNATURE, (String) value);
 			} else {
 				getJasperDesign().removeProperty(MapComponent.PROPERTY_SIGNATURE);
 			}
 		} else if (id.equals(MapComponent.PROPERTY_VERSION)) {
-			// FIXME - This will be soon removed 
-			if (value instanceof String && !Misc.isNullOrEmptyString(value)) {
+			if (value instanceof String) {
 				getJasperDesign().setProperty(MapComponent.PROPERTY_VERSION, (String) value);
 			} else {
 				getJasperDesign().removeProperty(MapComponent.PROPERTY_VERSION);
 			}
-		} else if (id.equals(MapComponent.PROPERTY_GOOGLE_VERSION)) {
-			if (value instanceof String && !Misc.isNullOrEmptyString(value)) {
-				getJasperDesign().setProperty(MapComponent.PROPERTY_GOOGLE_VERSION, (String) value);
-			} else {
-				getJasperDesign().removeProperty(MapComponent.PROPERTY_GOOGLE_VERSION);
-			}			
 		} else if (id.equals(StandardMapComponent.PROPERTY_MARKER_DATA_LIST)) {
 			if (value instanceof List<?>) {
 				@SuppressWarnings("unchecked")
@@ -572,7 +562,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement designMap = new JRDesignComponentElement(jasperDesign);
 		StandardMapComponent component = new StandardMapComponent();
 		JRDesignExpression exp1 = new JRDesignExpression();
@@ -588,9 +578,7 @@ public class MMap extends MGraphicElement implements IDatasetContainer {
 		designMap.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "c", //$NON-NLS-1$ //$NON-NLS-2$
 				"map")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), designMap);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), designMap);
 
 		return designMap;
 	}

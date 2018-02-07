@@ -30,17 +30,18 @@ public class BookReportSection extends AbstractSection {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.grabExcessHorizontalSpace = true;
 		Composite firstSection = getWidgetFactory().createComposite(parent);
-		firstSection.setLayout(new GridLayout(2, false));
+		firstSection.setLayout(new GridLayout(3, false));
 		firstSection.setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.horizontalSpan = 2;
 		createWidget4Property(firstSection, JasperDesign.PROPERTY_NAME).getControl().setLayoutData(gd);
 
 		gd = new GridData();
+		gd.horizontalSpan = 2;
 		createWidget4Property(firstSection, JasperDesign.PROPERTY_LANGUAGE).getControl().setLayoutData(gd);
 
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(firstSection, JasperDesign.PROPERTY_IMPORTS).getControl().setLayoutData(gd);
+		createWidget4Property(firstSection, JasperDesign.PROPERTY_IMPORTS);
 
 		//FIXME: commented until the version of > 6.2.1, because 6.2.1 has a bug and this is not used
 		/*gd = new GridData();

@@ -37,7 +37,7 @@ public class MDataMatrix extends MBarcode4j {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		DataMatrixComponent component = new DataMatrixComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -47,9 +47,7 @@ public class MDataMatrix extends MBarcode4j {
 		el.setComponentKey(
 				new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", "DataMatrix")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}

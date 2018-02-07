@@ -8,6 +8,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRConstants;
+import net.sf.jasperreports.engine.JRDataset;
+import net.sf.jasperreports.engine.JRElement;
+import net.sf.jasperreports.engine.JRHyperlinkParameter;
+import net.sf.jasperreports.engine.base.JRBaseImage;
+import net.sf.jasperreports.engine.base.JRBaseStyle;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignElementDataset;
+import net.sf.jasperreports.engine.design.JRDesignHyperlink;
+import net.sf.jasperreports.engine.design.JRDesignImage;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
+import net.sf.jasperreports.engine.type.FillEnum;
+import net.sf.jasperreports.engine.type.OnErrorTypeEnum;
+import net.sf.jasperreports.engine.type.ScaleImageEnum;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
@@ -27,7 +45,6 @@ import com.jaspersoft.studio.property.descriptor.checkbox.CheckBoxPropertyDescri
 import com.jaspersoft.studio.property.descriptor.combo.RWComboBoxPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptor.expression.ExprUtil;
 import com.jaspersoft.studio.property.descriptor.expression.JRExpressionPropertyDescriptor;
-import com.jaspersoft.studio.property.descriptor.expression.JRImageExpressionPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.ImageHAlignPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.ImageVAlignPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
@@ -35,33 +52,10 @@ import com.jaspersoft.studio.property.descriptors.SpinnerPropertyDescriptor;
 import com.jaspersoft.studio.utils.EnumHelper;
 import com.jaspersoft.studio.utils.ModelUtils;
 
-import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRElement;
-import net.sf.jasperreports.engine.JRHyperlinkParameter;
-import net.sf.jasperreports.engine.base.JRBaseImage;
-import net.sf.jasperreports.engine.base.JRBaseStyle;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignElementDataset;
-import net.sf.jasperreports.engine.design.JRDesignHyperlink;
-import net.sf.jasperreports.engine.design.JRDesignImage;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.type.EvaluationTimeEnum;
-import net.sf.jasperreports.engine.type.FillEnum;
-import net.sf.jasperreports.engine.type.OnErrorTypeEnum;
-import net.sf.jasperreports.engine.type.ScaleImageEnum;
-
 /*
  * The Class MImage.
  */
 public class MImage extends MGraphicElementLineBox {
-	
-	/**
-	 * Annotation used on the image expression to override the original expression in studio
-	 */
-	public static final String PATH_ANNOTATION = "@path"; 
 	
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 	
@@ -185,7 +179,7 @@ public class MImage extends MGraphicElementLineBox {
 	public void createPropertyDescriptors(List<IPropertyDescriptor> desc) {
 		super.createPropertyDescriptors(desc);
 
-		JRImageExpressionPropertyDescriptor expressionD = new JRImageExpressionPropertyDescriptor(JRDesignImage.PROPERTY_EXPRESSION,
+		JRExpressionPropertyDescriptor expressionD = new JRExpressionPropertyDescriptor(JRDesignImage.PROPERTY_EXPRESSION,
 				Messages.common_expression);
 		expressionD.setDescription(Messages.MImage_expression_description);
 		desc.add(expressionD);
@@ -474,12 +468,10 @@ public class MImage extends MGraphicElementLineBox {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applayDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignElement jrDesignElement = new JRDesignImage(jasperDesign);
 
-		if (applayDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignElement);
 
 		jrDesignElement.setWidth(getDefaultWidth());
 		jrDesignElement.setHeight(getDefaultHeight());

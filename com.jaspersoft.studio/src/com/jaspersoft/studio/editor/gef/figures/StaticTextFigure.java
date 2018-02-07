@@ -6,7 +6,6 @@ package com.jaspersoft.studio.editor.gef.figures;
 
 import java.awt.Graphics2D;
 
-import com.jaspersoft.studio.editor.java2d.StackGraphics2D;
 import com.jaspersoft.studio.jasper.JSSDrawVisitor;
 import com.jaspersoft.studio.model.text.MStaticText;
 
@@ -33,9 +32,9 @@ public class StaticTextFigure extends FrameFigure {
 	@Override
 	protected void draw(JSSDrawVisitor drawVisitor, JRElement jrElement) {
 		if (model != null && allowsFigureDrawCache()) {
-			Graphics2D oldGraphics = drawVisitor.getGraphics2d();
-			if (needRefresh(oldGraphics)) {
+			if (cachedGraphics == null || model.hasChangedProperty()) {
 				model.setChangedProperty(false);
+				Graphics2D oldGraphics = drawVisitor.getGraphics2d();
 				cachedGraphics = getCachedGraphics(oldGraphics);
 				drawVisitor.setGraphics2D(cachedGraphics);
 				drawVisitor.visitStaticText((JRStaticText) jrElement);
@@ -46,10 +45,5 @@ public class StaticTextFigure extends FrameFigure {
 		} else {
 			drawVisitor.visitStaticText((JRStaticText) jrElement);
 		}	
-	}
-	
-	@Override
-	protected ACachedGraphics getCachedGraphics(Graphics2D originalGraphics) {
-		return new StackGraphics2D(originalGraphics);
 	}
 }

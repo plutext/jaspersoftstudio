@@ -108,9 +108,9 @@ public class DatasourceSelectionPage extends JSSHelpWizardPage implements Dataso
 			sQuery.setResource(resource.getParent(), resource);
 			try {
 				ResourceDescriptor oldru = ((MReportUnit) resource).getValue();
-				if (SelectorDatasource.getDatasource(oldru, resource) == null) {
+				if (SelectorDatasource.getDatasource(oldru) == null) {
 					ResourceDescriptor ru = WSClientHelper.getResource(new NullProgressMonitor(), resource, oldru);
-					oldru.getChildren().add(SelectorDatasource.getDatasource(ru, resource));
+					oldru.getChildren().add(SelectorDatasource.getDatasource(ru));
 				}
 			} catch (Exception e) {
 				// e.printStackTrace();

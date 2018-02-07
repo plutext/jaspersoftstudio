@@ -14,30 +14,29 @@ import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 import com.jaspersoft.studio.widgets.framework.IWItemProperty;
 import com.jaspersoft.studio.widgets.framework.model.WidgetPropertyDescriptor;
 import com.jaspersoft.studio.widgets.framework.model.WidgetsDescriptor;
-import com.jaspersoft.studio.widgets.framework.ui.widget.FallbackNumericText;
 
 public class FloatPropertyDescription extends NumberPropertyDescription<Float> {
 	
 	public FloatPropertyDescription() {
 	}
 	
-	public FloatPropertyDescription(String name, String label, String description, boolean mandatory,  Float defaultValue, Float min, Float max) {
+	public FloatPropertyDescription(String name, String label, String description, boolean mandatory,  Float defaultValue, Number min, Number max) {
 		super(name, label, description, mandatory, defaultValue, min, max);
 	}
 	
-	public FloatPropertyDescription(String name, String label, String description, boolean mandatory, Float min, Float max) {
+	public FloatPropertyDescription(String name, String label, String description, boolean mandatory, Number min, Number max) {
 		super(name, label, description, mandatory, min, max);
 	}
 	
 	@Override
-	public Class<? extends Number> getType() {
+	public Class<?> getType() {
 		if (defaultValue != null)
 			return defaultValue.getClass();
 		return Float.class;
 	}
 	
 	@Override
-	public FloatPropertyDescription clone(){
+	public ItemPropertyDescription<Float> clone(){
 		FloatPropertyDescription result = new FloatPropertyDescription();
 		result.defaultValue = defaultValue;
 		result.description = description;
@@ -53,7 +52,7 @@ public class FloatPropertyDescription extends NumberPropertyDescription<Float> {
 	}
 	
 	@Override
-	public FloatPropertyDescription getInstance(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig) {
+	public ItemPropertyDescription<?> getInstance(WidgetsDescriptor cd, WidgetPropertyDescriptor cpd, JasperReportsConfiguration jConfig) {
 		Float min = null;
 		Float max = null;
 		Float def = null;
@@ -89,11 +88,11 @@ public class FloatPropertyDescription extends NumberPropertyDescription<Float> {
 	}
 	
 	@Override
-	protected FallbackNumericText createSimpleEditor(Composite parent) {
-		FallbackNumericText text = new FallbackNumericText(parent, SWT.BORDER, 4, 6);
+	protected NumericText createSimpleEditor(Composite parent) {
+		NumericText text = new NumericText(parent, SWT.BORDER, 4, 6);
 		text.setRemoveTrailZeroes(true);
-		Float max = getMax() != null ? getMax() : Float.MAX_VALUE;
-		Float min = getMin() != null ? getMin() : Float.MIN_VALUE;
+		Number max = getMax() != null ? getMax() : Float.MAX_VALUE;
+		Number min = getMin() != null ? getMin() : Float.MIN_VALUE;
 		text.setMaximum(max.doubleValue());
 		text.setMinimum(min.doubleValue());
 		return text;
@@ -114,7 +113,7 @@ public class FloatPropertyDescription extends NumberPropertyDescription<Float> {
 	}
 
 	@Override
-	protected Number convertValue(String v) throws NumberFormatException {
+	protected Number convertValue(String v) {
 		if (v == null || v.isEmpty()) return null;
 		char separator = ValidatedDecimalFormat.DECIMAL_SEPARATOR;
 		//externally convert the current separator to the locale separator

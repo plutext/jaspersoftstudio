@@ -14,7 +14,6 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.RectangleFigure;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.DragTracker;
@@ -25,7 +24,6 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.editpolicies.ResizableEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.tools.DragEditPartsTracker;
@@ -121,12 +119,7 @@ public class BackgroundImageEditPart extends AbstractGraphicalEditPart  implemen
 			@Override
 			protected Command getMoveCommand(ChangeBoundsRequest request) {
 				MBackgrounImage model = (MBackgrounImage)getModel();
-				Rectangle oldBounds = model.getBounds();
-				ZoomManager zoomMgr = (ZoomManager) getViewer().getProperty(ZoomManager.class.toString());
-				Point delta = request.getMoveDelta().getScaled(1/zoomMgr.getZoom());
-				Rectangle newBounds = new Rectangle(oldBounds.x + delta.x, 
-													oldBounds.y + delta.y, 
-													oldBounds.width, oldBounds.height);
+				Rectangle newBounds = getFeedbackSize(request);
 				CompoundCommand cc = new CompoundCommand();
 				SetValueCommand setCommand = new SetValueCommand();
 				setCommand.setTarget(model);
@@ -157,7 +150,7 @@ public class BackgroundImageEditPart extends AbstractGraphicalEditPart  implemen
 			protected void showChangeBoundsFeedback(ChangeBoundsRequest request) {
 				if (!isImageEditable()) return;
 				IFigure feedback = getDragSourceFeedbackFigure();
-				MBackgrounImage model = (MBackgrounImage)getModel();
+
 				PrecisionRectangle rect = new PrecisionRectangle(getInitialFeedbackBounds().getCopy());
 				getHostFigure().translateToAbsolute(rect);
 				rect.translate(request.getMoveDelta());
@@ -168,10 +161,7 @@ public class BackgroundImageEditPart extends AbstractGraphicalEditPart  implemen
 				int scaleH = 0;
 				int scaleW = 0;
 				Rectangle oldBounds = getFeedbackSize(request);
-				ZoomManager zoomMgr = (ZoomManager) getViewer().getProperty(ZoomManager.class.toString());
-				Point delta = request.getMoveDelta().getScaled(1/zoomMgr.getZoom());
-				Rectangle currentBounds = model.getBounds();
-				s += (currentBounds.x + delta.x) + ", " + (model.getBounds().y + delta.y) + ", " + oldBounds.width + ", " + oldBounds.height;
+				s += oldBounds.x + ", " + oldBounds.y + ", " + oldBounds.width + ", " + oldBounds.height;
 				if (oldBounds.width != 0)
 					scaleW = rect.width / oldBounds.width - 1;
 				if (oldBounds.height != 0)
@@ -239,11 +229,6 @@ public class BackgroundImageEditPart extends AbstractGraphicalEditPart  implemen
 					currentPart = currentPart.getParent();
 				}
 				return currentPart;
-			}
-			
-			@Override
-			protected void performSelection() {
-				if (isSelectable()) super.performSelection();
 			}
 		};
 	}

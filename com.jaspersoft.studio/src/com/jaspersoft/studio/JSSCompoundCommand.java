@@ -15,7 +15,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.ui.IEditorPart;
 
 import com.jaspersoft.studio.editor.AbstractJRXMLEditor;
-import com.jaspersoft.studio.editor.gef.selection.SelectElementCommand;
+import com.jaspersoft.studio.editor.action.copy.SelectElementCommand;
 import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.INode;
@@ -23,8 +23,6 @@ import com.jaspersoft.studio.model.MLockableRefresh;
 import com.jaspersoft.studio.model.MRoot;
 import com.jaspersoft.studio.utils.SelectionHelper;
 
-import net.sf.jasperreports.engine.JRChild;
-import net.sf.jasperreports.engine.design.JRDesignBand;
 import net.sf.jasperreports.engine.design.JRDesignElement;
 
 /**
@@ -290,13 +288,13 @@ public class JSSCompoundCommand extends CompoundCommand {
 					GraphicalViewer viewer = visaulEditor.getGraphicalViewer();
 					if (viewer != null){
 						List<?> selectedParts = viewer.getSelectedEditParts();
-						ArrayList<JRChild> oldSelection = new ArrayList<JRChild>();
+						ArrayList<JRDesignElement> oldSelection = new ArrayList<JRDesignElement>();
 						for(Object obj : selectedParts){
 							EditPart part = (EditPart)obj;
 							if (part.getModel() instanceof ANode){
 								ANode model = (ANode)part.getModel();
-								if (model.getValue() instanceof JRDesignElement || model.getValue() instanceof JRDesignBand){
-									oldSelection.add((JRChild)model.getValue());
+								if (model.getValue() instanceof JRDesignElement){
+									oldSelection.add((JRDesignElement)model.getValue());
 								}
 							}
 						}

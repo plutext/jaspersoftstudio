@@ -36,8 +36,7 @@ import org.eclipse.ui.IWorkbench;
 import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.util.FieldEditorOverlayPage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 /*
  * 

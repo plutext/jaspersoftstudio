@@ -9,7 +9,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.draw2d.Figure;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
@@ -30,15 +31,12 @@ public class BookReportEditPart extends AbstractGraphicalEditPart {
 		@Override
 		public void propertyChange(PropertyChangeEvent arg0) {
 			//need to refresh when a group is changed
+			if (arg0.getPropertyName().equals(JRDesignDataset.PROPERTY_GROUPS)) {
+				figure.updateBounds();
+			}
 			refresh();
 		}
 	};
-	
-	@Override
-	protected void refreshVisuals() {
-		super.refreshVisuals();
-		((Figure)getFigure()).repaint();
-	}
 	
 	@Override
 	public void setModel(Object model) {
@@ -83,6 +81,10 @@ public class BookReportEditPart extends AbstractGraphicalEditPart {
 	
 	protected MReport getBookModel(){
 		return (MReport)getModel();
+	}
+	
+	public void updateBounds(){
+		figure.updateBounds();
 	}
 	
 	@Override

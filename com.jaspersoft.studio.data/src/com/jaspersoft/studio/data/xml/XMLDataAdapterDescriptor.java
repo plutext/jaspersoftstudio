@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.xerces.util.DOMUtil;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -26,14 +25,11 @@ import com.jaspersoft.studio.data.AWizardDataEditorComposite;
 import com.jaspersoft.studio.data.Activator;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.DataAdapterEditor;
-import com.jaspersoft.studio.data.FieldTypeGuesser;
 import com.jaspersoft.studio.data.IWizardDataEditorProvider;
 import com.jaspersoft.studio.data.fields.IFieldsProvider;
-import com.jaspersoft.studio.property.dataset.dialog.DataQueryAdapters;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.XMLUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-import com.jaspersoft.studio.utils.parameter.ParameterUtil;
 
 import net.sf.jasperreports.data.DataAdapterService;
 import net.sf.jasperreports.data.DataFile;
@@ -42,14 +38,11 @@ import net.sf.jasperreports.data.DataFileUtils;
 import net.sf.jasperreports.data.xml.XmlDataAdapterImpl;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.query.JRXPathQueryExecuter;
-import net.sf.jasperreports.engine.query.JRXPathQueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRXmlUtils;
 import net.sf.jasperreports.engine.util.xml.JRXPathExecuter;
 import net.sf.jasperreports.engine.util.xml.JRXPathExecuterFactory;
@@ -94,24 +87,15 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 	@Override
 	public List<JRDesignField> getFields(DataAdapterService con, JasperReportsConfiguration jConfig, JRDataset jDataset)
 			throws JRException, UnsupportedOperationException {
-		IProgressMonitor monitor = (IProgressMonitor) jConfig.getMap().get(DataQueryAdapters.PROGRESSMONITOR);
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("REPORT_PARAMETERS_MAP", new HashMap<String, Object>());
-		con.contributeParameters(parameters);
-		ParameterUtil.setParameters(jConfig, jDataset, parameters);
-		parameters.put(JRParameter.REPORT_MAX_COUNT, FieldTypeGuesser.SAMPLESIZE);
-
-		if (monitor != null && monitor.isCanceled())
-			return null;
-
 		setRecursiveRetrieval(jConfig);
 		setConsiderEmptyNodes(jConfig);
-		ArrayList<JRDesignField> fields = new ArrayList<>();
+		ArrayList<JRDesignField> fields = new ArrayList<JRDesignField>();
 		XmlDataAdapterImpl d = getDataAdapter();
 		DataFile df = d.getDataFile();
 		Document doc = null;
 		DataFileStream ins = null;
 		try {
+			Map<String, Object> parameters = new HashMap<String, Object>();
 			// FIXME - We need to proper populate the map!!!
 			ins = DataFileUtils.instance(new ParameterContributorContext(jConfig, null, null)).getDataStream(df,
 					parameters);
@@ -123,19 +107,12 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 		}
 		if (doc != null)
 			fields.addAll(getFieldsFromDocument(doc, jConfig, jDataset));
-
-		JRDataSource ds = (JRDataSource) parameters.get(JRParameter.REPORT_DATA_SOURCE);
-		if (ds == null)
-			ds = new JRXPathQueryExecuterFactory()
-					.createQueryExecuter(jConfig, jDataset, ParameterUtil.convertMap(parameters, jDataset))
-					.createDatasource();
-
-		FieldTypeGuesser.guessTypes(ds, fields, ds.next(), monitor);
 		return fields;
 	}
 
 	/**
-	 * Returns the list of fields provided by an XML document and the related query.
+	 * Returns the list of fields provided by an XML document and the related
+	 * query.
 	 * 
 	 * @param doc
 	 *            the W3C XML document
@@ -151,7 +128,7 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 		JRXPathExecuterFactory xPathExecuterFactory = JRXPathExecuterUtils.getXPathExecuterFactory(jConfig);
 		JRXPathExecuter xPathExecuter = xPathExecuterFactory.getXPathExecuter();
 		NodeList nodes = xPathExecuter.selectNodeList(doc, jDataset.getQuery().getText());
-		LinkedHashMap<String, JRDesignField> fieldsMap = new LinkedHashMap<>();
+		LinkedHashMap<String, JRDesignField> fieldsMap = new LinkedHashMap<String, JRDesignField>();
 		for (int nIdx = 0; nIdx < nodes.getLength(); nIdx++) {
 			Node currNode = nodes.item(nIdx);
 			if (considerEmptyNodes || StringUtils.isNotBlank(DOMUtil.getChildText(currNode))) {
@@ -163,7 +140,7 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 				findChildFields(childNodes, fieldsMap, "");
 			}
 		}
-		return new ArrayList<>(fieldsMap.values());
+		return new ArrayList<JRDesignField>(fieldsMap.values());
 	}
 
 	/*
@@ -187,12 +164,12 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 	 */
 	private void findChildFields(NodeList nodes, LinkedHashMap<String, JRDesignField> fieldsMap, String prefix) {
 		if (nodes != null) {
-			List<String> childrenNames = new ArrayList<>(); // temp list
-															// to avoid
-															// duplicates
-															// at the
-															// same
-															// level
+			List<String> childrenNames = new ArrayList<String>(); // temp list
+																	// to avoid
+																	// duplicates
+																	// at the
+																	// same
+																	// level
 			for (int i = 0; i < nodes.getLength(); i++) {
 				Node item = nodes.item(i);
 				String nodeName = item.getNodeName();
@@ -213,8 +190,8 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 	}
 
 	/**
-	 * Verifies if the recursive retrieval of fields is expected and sets the proper
-	 * flag for it.
+	 * Verifies if the recursive retrieval of fields is expected and sets the
+	 * proper flag for it.
 	 * 
 	 * @param jconfig
 	 *            the JasperReports context
@@ -235,8 +212,8 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 	}
 
 	/*
-	 * Adds a new JRDesignField to the current map. A proper name is generated if
-	 * the node one can not be used.
+	 * Adds a new JRDesignField to the current map. A proper name is generated
+	 * if the node one can not be used.
 	 */
 	private void addNewField(String nodeName, LinkedHashMap<String, JRDesignField> fieldsMap, Node item,
 			String prefix) {
@@ -251,7 +228,6 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 			description = prefix + item.getNodeName();
 			f.setDescription(description);
 		}
-		f.getPropertiesMap().setProperty("net.sf.jasperreports.xpath.field.expression", description);
 		// Let's consider the description indicating the XPath query
 		// as unique and therefore as map key.
 		fieldsMap.put(description, f);
@@ -265,7 +241,6 @@ public class XMLDataAdapterDescriptor extends DataAdapterDescriptor
 		f.setName(ModelUtils.getNameForField(new ArrayList<JRDesignField>(fieldsMap.values()), item.getNodeName()));
 		f.setValueClass(String.class);
 		f.setDescription(".");
-		f.getPropertiesMap().setProperty("net.sf.jasperreports.xpath.field.expression", ".");
 		fieldsMap.put(".", f);
 	}
 

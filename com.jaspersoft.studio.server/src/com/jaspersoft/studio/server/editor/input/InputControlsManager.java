@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -23,9 +25,7 @@ import com.jaspersoft.studio.editor.preview.input.IDataInput;
 import com.jaspersoft.studio.server.editor.input.lov.ListOfValuesInput;
 import com.jaspersoft.studio.server.editor.input.query.QueryInput;
 import com.jaspersoft.studio.server.protocol.IConnection;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class InputControlsManager {
 	private List<ResourceDescriptor> inputcontrols;

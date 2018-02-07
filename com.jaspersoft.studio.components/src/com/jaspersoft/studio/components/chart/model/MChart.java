@@ -20,7 +20,7 @@ import com.jaspersoft.studio.components.chart.model.plot.PlotFactory;
 import com.jaspersoft.studio.components.chart.property.descriptor.CustomizerPropertyDescriptor;
 import com.jaspersoft.studio.components.chart.property.descriptor.CustomizerPropertyExpressionsDTO;
 import com.jaspersoft.studio.components.chart.property.descriptor.PlotPropertyDescriptor;
-import com.jaspersoft.studio.components.chart.property.widget.ChartThemeComboBoxPropertyDescriptor;
+import com.jaspersoft.studio.components.chart.util.ChartHelper;
 import com.jaspersoft.studio.components.chart.wizard.fragments.data.series.CategorySerie;
 import com.jaspersoft.studio.components.chart.wizard.fragments.data.series.GanttSeries;
 import com.jaspersoft.studio.components.chart.wizard.fragments.data.series.PieSerie;
@@ -62,6 +62,7 @@ import com.jaspersoft.studio.property.descriptors.SpinnerPropertyDescriptor;
 import com.jaspersoft.studio.utils.AlfaRGB;
 import com.jaspersoft.studio.utils.Colors;
 import com.jaspersoft.studio.utils.EnumHelper;
+import com.jaspersoft.studio.utils.Misc;
 
 import net.sf.jasperreports.charts.JRCategorySeries;
 import net.sf.jasperreports.charts.design.JRDesignBar3DPlot;
@@ -92,7 +93,6 @@ import net.sf.jasperreports.charts.design.JRDesignXyzSeries;
 import net.sf.jasperreports.charts.type.EdgeEnum;
 import net.sf.jasperreports.charts.type.TimePeriodEnum;
 import net.sf.jasperreports.charts.type.ValueLocationEnum;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRChart;
 import net.sf.jasperreports.engine.JRChartPlot;
 import net.sf.jasperreports.engine.JRConstants;
@@ -241,7 +241,8 @@ public class MChart extends MGraphicElementLineBox
 		rendererTypeD.setDescription(Messages.MChart_renderer_type_description);
 		desc.add(rendererTypeD);
 
-		ChartThemeComboBoxPropertyDescriptor themeD = new ChartThemeComboBoxPropertyDescriptor(JRBaseChart.PROPERTY_THEME, Messages.MChart_theme, NullEnum.NULL);
+		RWComboBoxPropertyDescriptor themeD = new RWComboBoxPropertyDescriptor(JRBaseChart.PROPERTY_THEME,
+				Messages.MChart_theme, ChartHelper.getChartThemesNull(), NullEnum.NULL);
 		themeD.setDescription(Messages.MChart_theme_description);
 		desc.add(themeD);
 
@@ -439,7 +440,7 @@ public class MChart extends MGraphicElementLineBox
 		if (id.equals(CHART_PROPERTY_CUSTOMIZER)) {
 			PropertyExpressionsDTO dto = (PropertyExpressionsDTO) super.getPropertyValue(
 					JRDesignElement.PROPERTY_PROPERTY_EXPRESSIONS);
-			return new CustomizerPropertyExpressionsDTO(dto, this);
+			return new CustomizerPropertyExpressionsDTO(dto);
 		}
 		if (id.equals(JRBaseChart.PROPERTY_TITLE_POSITION))
 			return titlePositionD.getIntValue(jrElement.getTitlePositionValue());
@@ -635,13 +636,11 @@ public class MChart extends MGraphicElementLineBox
 		return defaultValue != null ? (Integer) defaultValue : 200;
 	}
 
-	public static JRDesignChart createJRElement(JasperDesign jasperDesign, byte chartType, boolean applyDefault) {
+	public static JRDesignChart createJRElement(JasperDesign jasperDesign, byte chartType) {
 		JRDesignChart jrChart = new JRDesignChart(jasperDesign, chartType);
 		setupChart(jrChart);
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(MChart.class, jrChart);
-		}
+		DefaultManager.INSTANCE.applyDefault(MChart.class, jrChart);
 
 		return jrChart;
 	}

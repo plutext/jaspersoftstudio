@@ -4,7 +4,6 @@
  ******************************************************************************/
 package com.jaspersoft.studio.server.dnd;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,6 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.TreeItem;
 
-import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.studio.dnd.NodeTransfer;
 import com.jaspersoft.studio.dnd.NodeTreeDropAdapter;
 import com.jaspersoft.studio.model.ANode;
@@ -27,10 +25,8 @@ import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.action.resource.PasteResourceAction;
 import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MFolder;
-import com.jaspersoft.studio.server.model.MReference;
 import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
-import com.jaspersoft.studio.server.protocol.IConnection;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 
@@ -69,11 +65,6 @@ public class ResourceDropTargetListener extends NodeTreeDropAdapter implements T
 					Object target = getCurrentTarget();
 					if (target instanceof ANode) {
 						List<INode> toRefresh = new ArrayList<INode>();
-						if (((ANode) target).getParent() instanceof MReportUnit
-								|| ((ANode) target).getParent() instanceof MFolder
-								|| ((ANode) target).getParent() instanceof MServerProfile)
-							target = ((ANode) target).getParent();
-
 						if (target instanceof MFolder) {
 							MFolder f = (MFolder) target;
 							for (AMResource amr : droppedObjects) {
@@ -95,25 +86,7 @@ public class ResourceDropTargetListener extends NodeTreeDropAdapter implements T
 								}
 							}
 						} else if (target instanceof MReportUnit) {
-							IConnection c = ((MReportUnit) target).getWsClient();
-							ResourceDescriptor prd = ((MReportUnit) target).getValue();
-							for (AMResource amr : droppedObjects) {
-								toRefresh.add(amr.getParent());
 
-								try {
-									PasteResourceAction.putIntoReportUnit(monitor, (MReportUnit) target, c,
-											amr.getValue());
-								} catch (IOException e) {
-									UIUtils.showError(e);
-								} catch (Exception e) {
-									UIUtils.showError(e);
-								}
-							}
-							try {
-								c.addOrModifyResource(monitor, prd, null);
-							} catch (Exception e) {
-								UIUtils.showError(e);
-							}
 						}
 						for (INode n : toRefresh)
 							try {
@@ -123,8 +96,6 @@ public class ResourceDropTargetListener extends NodeTreeDropAdapter implements T
 								UIUtils.showError(e);
 							}
 						try {
-							if (target instanceof MReference)
-								target = ((ANode) target).getParent();
 							WSClientHelper.refreshResource((AMResource) target, monitor);
 						} catch (Exception e) {
 							UIUtils.showError(e);

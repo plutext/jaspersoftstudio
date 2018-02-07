@@ -4,142 +4,78 @@
  ******************************************************************************/
 package com.jaspersoft.studio.data.sql.widgets;
 
-import org.eclipse.jface.dialogs.Dialog;
+import java.util.List;
+
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignParameter;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 
-import com.jaspersoft.studio.data.designer.AQueryDesigner;
-import com.jaspersoft.studio.data.designer.SelectParameterDialog;
-import com.jaspersoft.studio.data.jdbc.JDBCFieldsProvider;
-import com.jaspersoft.studio.data.sql.model.query.operand.AOperand;
-import com.jaspersoft.studio.data.sql.model.query.operand.FieldOperand;
 import com.jaspersoft.studio.data.sql.model.query.operand.ParameterPOperand;
-import com.jaspersoft.studio.data.sql.model.query.operand.ScalarOperand;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.design.JRDesignParameter;
-import net.sf.jasperreports.engine.util.JRClassLoader;
 
 public class ParameterWidget extends AOperandWidget<ParameterPOperand> {
+	private Combo params;
 
-	private Text txt;
-
-	public ParameterWidget(Composite parent, ParameterPOperand operand, AQueryDesigner designer) {
-		super(parent, SWT.BORDER, operand, designer);
+	public ParameterWidget(Composite parent, ParameterPOperand operand) {
+		super(parent, SWT.NONE, operand);
 	}
 
 	@Override
-	protected void createWidget(final Composite parent) {
+	protected void createWidget(Composite parent) {
 		GridLayout layout = new GridLayout(2, false);
-		layout.marginHeight = 0;
+		layout.marginHeight = 2;
 		layout.marginWidth = 0;
 		layout.horizontalSpacing = 0;
 		layout.verticalSpacing = 0;
 		setLayout(layout);
 
-		txt = new Text(this, SWT.READ_ONLY);
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		gd.widthHint = 100;
-		txt.setLayoutData(gd);
+		params = new Combo(this, SWT.READ_ONLY | SWT.SINGLE);
+		params.setItems(getParameterNames());
+		params.setToolTipText(getValue().toSQLString());
+		params.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		params.select(getParametrNameIndex());
+		doSelection();
 
-		ToolBar buttons = new ToolBar(this, SWT.FLAT);
-
-		ToolItem button = new ToolItem(buttons, SWT.PUSH);
-		button.setText("..."); //$NON-NLS-1$
-		button.addListener(SWT.Selection, new Listener() {
-
+		params.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void handleEvent(Event event) {
-				SelectParameterDialog d = new SelectSQLParameterDialog(parent.getShell(), designer);
-				if (d.open() == Dialog.OK)
-					fillValue();
+			public void widgetSelected(SelectionEvent e) {
+				doSelection();
 			}
 
 		});
-		button.setToolTipText(com.jaspersoft.studio.data.sql.messages.Messages.FieldWidget_0);
-		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-
-		fillValue();
 	}
 
-	class SelectSQLParameterDialog extends SelectParameterDialog {
-		public SelectSQLParameterDialog(Shell parentShell, AQueryDesigner designer) {
-			super(parentShell, designer);
-			if (getValue().getJrParameter() != null)
-				pname = getValue().getJrParameter().getName();
-		}
+	protected void doSelection() {
+		JRDesignDataset jd = getValue().getJrDataset();
+		JRParameter p = jd.getParametersMap().get(params.getItem(params.getSelectionIndex()));
+		getValue().setJrParameter((JRDesignParameter) p, jd);
+	}
 
-		@Override
-		protected void commitValues() {
-			super.commitValues();
-			getValue().setJrParameter(prm);
-			fillValue();
-		}
-
-		@Override
-		protected void cancelPressed() {
-			if (getValue().getJrParameter() == null)
-				commitValues();
-			super.cancelPressed();
-		}
-
-		@Override
-		protected boolean isParameterCompatible(JRParameter p) {
-			for (AOperand aop : getValue().getExpression().getOperands()) {
-				if (aop instanceof FieldOperand) {
-					if (((FieldOperand) aop).getMColumn() == null)
-						return true;
-					String t = ((FieldOperand) aop).getMColumn().getUnformattedTypeName();
-					try {
-						if (JRClassLoader.loadClassForName(JDBCFieldsProvider.getJavaType4SQL(t))
-								.isAssignableFrom(p.getValueClass()))
-							return false;
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
-						return false;
-					}
-				} else if (aop instanceof ScalarOperand<?>)
-					if (!((ScalarOperand<?>) aop).getType().isAssignableFrom(p.getValueClass()))
-						return false;
-			}
-			return true;
-		}
-
-		@Override
-		protected String getDefaultParameterType() {
-			if (prm != null && isParameterCompatible(prm))
-				return prm.getValueClassName();
-			for (AOperand aop : getValue().getExpression().getOperands()) {
-				if (aop instanceof FieldOperand) {
-					String t = ((FieldOperand) aop).getMColumn().getUnformattedTypeName();
-					return JDBCFieldsProvider.getJavaType4SQL(t);
-				} else if (aop instanceof ScalarOperand<?>)
-					return ((ScalarOperand<?>) aop).getType().getCanonicalName();
-			}
-			return Object.class.getName();
-		}
-	};
-
-	private void fillValue() {
+	private int getParametrNameIndex() {
+		List<JRParameter> parametersList = getValue().getJrDataset().getParametersList();
 		JRDesignParameter p = getValue().getJrParameter();
-		if (p != null) {
-			txt.setText(Misc.nvl(p.getName()));
-			txt.setToolTipText(Misc.nvl(p.getName()));
-		} else {
-			SelectParameterDialog d = new SelectSQLParameterDialog(UIUtils.getShell(), designer);
-			if (d.open() == Dialog.OK)
-				fillValue();
+		if (p != null)
+			return parametersList.indexOf(p);
+		return 0;
+	}
+
+	private String[] getParameterNames() {
+		ParameterPOperand v = getValue();
+		if (v != null) {
+			List<JRParameter> parametersList = v.getJrDataset().getParametersList();
+			String[] res = new String[parametersList.size()];
+			for (int i = 0; i < parametersList.size(); i++)
+				res[i] = parametersList.get(i).getName();
+			return res;
 		}
+		return new String[0];
 	}
 
 }

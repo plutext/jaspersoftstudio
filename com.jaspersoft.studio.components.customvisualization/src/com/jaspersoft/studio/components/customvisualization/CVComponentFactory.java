@@ -86,11 +86,6 @@ public class CVComponentFactory implements IComponentFactory {
 	}
 
 	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		return null;
-	}
-	
-	@Override
 	public Command getStretchToContent(ANode node) {
 		return null;
 	}

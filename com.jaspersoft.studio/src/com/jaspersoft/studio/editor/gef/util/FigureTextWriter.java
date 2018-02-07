@@ -14,7 +14,7 @@ import java.awt.font.LineMetrics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.utils.Misc;
 
 public class FigureTextWriter {
 	private String text;

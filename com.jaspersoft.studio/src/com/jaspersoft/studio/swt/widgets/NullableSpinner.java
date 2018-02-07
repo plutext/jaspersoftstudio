@@ -423,7 +423,7 @@ public class NullableSpinner extends Composite {
 	 * @param value the new increment (must be greater than zero)
 	 * 
 	 */
-	public void setIncrement(float value) {
+	public void setIncrement(int value) {
 		this.checkWidget();
 		text.setIncrementStep(value);
 	}

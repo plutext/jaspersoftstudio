@@ -6,12 +6,9 @@ package com.jaspersoft.studio.editor.gef.parts;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
@@ -25,7 +22,6 @@ import org.eclipse.gef.SnapToGuides;
 import org.eclipse.gef.SnapToHelper;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
@@ -44,10 +40,8 @@ import com.jaspersoft.studio.model.IContainer;
 import com.jaspersoft.studio.model.MGraphicElement;
 import com.jaspersoft.studio.model.MPage;
 import com.jaspersoft.studio.model.command.CreateElementCommand;
-import com.jaspersoft.studio.model.field.MField;
 import com.jaspersoft.studio.model.frame.MFrame;
 import com.jaspersoft.studio.preferences.RulersGridPreferencePage;
-import com.jaspersoft.studio.utils.ModelUtils;
 
 import net.sf.jasperreports.engine.design.JRDesignElement;
 
@@ -90,14 +84,14 @@ public class FrameFigureEditPart extends FigureEditPart implements IContainer {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new PageLayoutEditPolicy() {
 
 			@Override
-			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index, Request request) {
+			protected Command getCreateCommand(ANode parent, Object obj, Rectangle constraint, int index) {
 				if (parent instanceof MPage)
 					parent = getModel();
 				Rectangle b = getModel().getBounds();
 				int x = constraint.x - b.x - ReportPageFigure.PAGE_BORDER.left;
 				int y = constraint.y - b.y - ReportPageFigure.PAGE_BORDER.top;
 				constraint = new Rectangle(x, y, constraint.width, constraint.height);
-				return super.getCreateCommand(parent, obj, constraint, index, request);
+				return super.getCreateCommand(parent, obj, constraint, index);
 			}
 			
 			/**
@@ -151,9 +145,7 @@ public class FrameFigureEditPart extends FigureEditPart implements IContainer {
 						// Without this an element it's one point up when placed into a frame
 						rect.y++;
 						c.add(OutlineTreeEditPartFactory.getOrphanCommand(cmodel.getParent(), cmodel));
-						CreateElementCommand createCommand = new CreateElementCommand(getModel(), cmodel, rect, -1);
-						createCommand.setApplyDefault(false);
-						c.add(createCommand);
+						c.add(new CreateElementCommand(getModel(), cmodel, rect, -1));
 						return c;
 					}
 				} else {
@@ -212,42 +204,19 @@ public class FrameFigureEditPart extends FigureEditPart implements IContainer {
 			 */
 			protected IFigure getLayoutTargetFeedback(Request request) {
 				if (targetFeedback == null) {
-					Point mouseLocation = null;
 					List<Object> nodes = new ArrayList<Object>();
 					if (request.getType().equals(RequestConstants.REQ_CREATE) && request instanceof CreateRequest) {
 						CreateRequest cbr = (CreateRequest) request;
-						mouseLocation = cbr.getLocation();
-						if (cbr.getNewObject() instanceof Collection<?>) {
-							Collection<?> c = (Collection<?>) cbr.getNewObject();
-							if (!c.isEmpty()) {
-								for(Object obj : c){
-									if (obj instanceof MField){
-										nodes.add((MField)obj);
-									}
-								}
-							}
-						} else {
-							nodes.add(cbr.getNewObject());
-						}
+						nodes.add(cbr.getNewObject());
 					} else if (request instanceof ChangeBoundsRequest) {
 						ChangeBoundsRequest cbr = (ChangeBoundsRequest) request;
-						mouseLocation = cbr.getLocation();
 						@SuppressWarnings("unchecked")
 						List<EditPart> lst = cbr.getEditParts();
 						for (EditPart ep : lst) {
 							nodes.add(ep.getModel());
 						}
 					}
-					//get the drop position to generate the correct feedback
-					int index = -1;
-					if (mouseLocation != null){
-						IFigure bandFigure = getFigure();
-				        Point location = mouseLocation.getCopy();
-				        bandFigure.translateToRelative(location);
-				        Dimension newLocation = location.getDifference(bandFigure.getBounds().getTopLeft());
-				        index = ModelUtils.getBetweenIndex(getModel(), new Point(newLocation.width, newLocation.height));
-					}
-					targetFeedback = new ColoredLayoutPositionRectangle(FrameFigureEditPart.this, FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes, index);
+					targetFeedback = new ColoredLayoutPositionRectangle(FrameFigureEditPart.addElementColor, 2.0f, getModel(), nodes);
 					targetFeedback.setFill(false);
 
 					IFigure hostFigure = getHostFigure();
@@ -255,12 +224,9 @@ public class FrameFigureEditPart extends FigureEditPart implements IContainer {
 					if (hostFigure instanceof HandleBounds)
 						bounds = ((HandleBounds) hostFigure).getHandleBounds();
 					Rectangle rect = new PrecisionRectangle(bounds);
-					double zoom = 1.0d;
-					ZoomManager zoomMgr = (ZoomManager) getViewer().getProperty(ZoomManager.class.toString());
-					if (zoomMgr != null) {
-						zoom = zoomMgr.getZoom();
-					}
-					rect.scale(zoom);
+					getHostFigure().translateToAbsolute(rect);
+					getFeedbackLayer().translateToRelative(rect);
+
 					targetFeedback.setBounds(rect);
 					addFeedback(targetFeedback);
 				}

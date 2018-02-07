@@ -1,8 +1,14 @@
+/*******************************************************************************
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
+ ******************************************************************************/
 /**
  */
 package com.jaspersoft.studio.data.sql;
 
 import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -20,7 +26,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface UsingCols extends WithColumns
+public interface UsingCols extends EObject
 {
   /**
    * Returns the value of the '<em><b>Entries</b></em>' containment reference list.

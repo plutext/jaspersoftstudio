@@ -160,12 +160,10 @@ public class MRectangle extends MGraphicElementLinePen {
 	 * @see com.jaspersoft.studio.model.MGeneric#createJRElement(net.sf.jasperreports.engine.design.JasperDesign)
 	 */
 	@Override
-	public JRDesignElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignRectangle jrDesignRectangle = new JRDesignRectangle(jasperDesign);
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignRectangle);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrDesignRectangle);
 
 		jrDesignRectangle.setWidth(getDefaultWidth());
 		jrDesignRectangle.setHeight(getDefaultHeight());

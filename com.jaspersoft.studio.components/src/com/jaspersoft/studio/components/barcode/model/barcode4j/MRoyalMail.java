@@ -147,7 +147,7 @@ public class MRoyalMail extends MBarcode4j {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement el = new JRDesignComponentElement();
 		RoyalMailCustomerComponent component = new RoyalMailCustomerComponent();
 		JRDesignExpression exp = new JRDesignExpression();
@@ -157,9 +157,7 @@ public class MRoyalMail extends MBarcode4j {
 		el.setComponentKey(new ComponentKey("http://jasperreports.sourceforge.net/jasperreports/components", "jr", //$NON-NLS-1$
 				"RoyalMailCustomer"));
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), el);
 
 		return el;
 	}

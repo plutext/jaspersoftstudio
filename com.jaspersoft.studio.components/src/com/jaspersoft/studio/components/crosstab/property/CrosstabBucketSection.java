@@ -27,22 +27,29 @@ public class CrosstabBucketSection extends AbstractSection {
 			TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 
-		parent = getWidgetFactory().createSection(parent, "Bucket", false, 2);
+		parent = getWidgetFactory().createSection(parent, "Bucket", false, 3);
 
 		GridData gd = new GridData();
-		createWidget4Property(parent, JRDesignCrosstabBucket.PROPERTY_ORDER).getControl().setLayoutData(gd);
-		
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent, JRDesignCrosstabBucket.PROPERTY_ORDER)
+				.getControl().setLayoutData(gd);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent,JRDesignCrosstabBucket.PROPERTY_ORDER_BY_EXPRESSION).getControl().setLayoutData(gd);
-		
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabBucket.PROPERTY_ORDER_BY_EXPRESSION)
+				.getControl().setLayoutData(gd);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent,JRDesignCrosstabBucket.PROPERTY_COMPARATOR_EXPRESSION).getControl().setLayoutData(gd);
-		
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabBucket.PROPERTY_COMPARATOR_EXPRESSION)
+				.getControl().setLayoutData(gd);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent, JRDesignCrosstabBucket.PROPERTY_EXPRESSION).getControl().setLayoutData(gd);
-		
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		createWidget4Property(parent, JRDesignCrosstabBucket.PROPERTY_VALUE_CLASS).getControl().setLayoutData(gd);
+		gd.horizontalSpan = 2;
+		createWidget4Property(parent,
+				JRDesignCrosstabBucket.PROPERTY_EXPRESSION).getControl()
+				.setLayoutData(gd);
+		createWidget4Property(parent,
+				JRDesignCrosstabBucket.PROPERTY_VALUE_CLASS);
 	}
 	
 	@Override

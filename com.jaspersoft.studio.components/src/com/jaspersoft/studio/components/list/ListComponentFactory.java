@@ -7,12 +7,21 @@ package com.jaspersoft.studio.components.list;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.jasperreports.components.list.DesignListContents;
+import net.sf.jasperreports.components.list.StandardListComponent;
+import net.sf.jasperreports.engine.JRStyle;
+import net.sf.jasperreports.engine.component.Component;
+import net.sf.jasperreports.engine.design.JRDesignComponentElement;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.UnexecutableCommand;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -27,11 +36,6 @@ import com.jaspersoft.studio.components.list.model.command.CreateListCommand;
 import com.jaspersoft.studio.components.list.part.ListEditPart;
 import com.jaspersoft.studio.components.list.part.ListPageEditPart;
 import com.jaspersoft.studio.editor.expression.ExpressionContext;
-import com.jaspersoft.studio.editor.layout.FreeLayout;
-import com.jaspersoft.studio.editor.layout.ILayout;
-import com.jaspersoft.studio.editor.layout.LayoutManager;
-import com.jaspersoft.studio.editor.outline.OutlineTreeEditPartFactory;
-import com.jaspersoft.studio.editor.outline.part.OpenableContainerTreeEditPart;
 import com.jaspersoft.studio.editor.report.AbstractVisualEditor;
 import com.jaspersoft.studio.editor.tools.CompositeElementManager;
 import com.jaspersoft.studio.editor.tools.MCompositeElement;
@@ -64,16 +68,6 @@ import com.jaspersoft.studio.plugin.PaletteContributor;
 import com.jaspersoft.studio.property.SetValueCommand;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.components.list.DesignListContents;
-import net.sf.jasperreports.components.list.StandardListComponent;
-import net.sf.jasperreports.engine.JRStyle;
-import net.sf.jasperreports.engine.component.Component;
-import net.sf.jasperreports.engine.design.JRDesignComponentElement;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignDatasetRun;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class ListComponentFactory implements IComponentFactory {
 
@@ -165,17 +159,6 @@ public class ListComponentFactory implements IComponentFactory {
 				}
 			}
 		}
-		
-		//Avoid to generate create command in the main editor
-		if (parent instanceof MList && !(parent.getParent() instanceof MPage)){
-			ANode ancestor = parent.getParent();
-			Class<? extends ILayout> ancestorLayout = LayoutManager.getContainerLayout(ancestor);
-			if (!(ancestor instanceof MList) && !(FreeLayout.class.equals(ancestorLayout))) {
-				return OutlineTreeEditPartFactory.getCreateCommand(ancestor, child, location, newIndex);
-			}
-			return UnexecutableCommand.INSTANCE;
-		}
-		
 		if (child instanceof MStyle && (child.getValue() != null && parent instanceof MList)) {
 			SetValueCommand cmd = new SetValueCommand();
 			cmd.setTarget((MList) parent);
@@ -273,13 +256,6 @@ public class ListComponentFactory implements IComponentFactory {
 		}
 		if (model instanceof MList)
 			return new ListEditPart();
-		return null;
-	}
-	
-	@Override
-	public EditPart createTreeEditPart(EditPart context, Object model) {
-		if (model instanceof MList)
-			return new OpenableContainerTreeEditPart();
 		return null;
 	}
 

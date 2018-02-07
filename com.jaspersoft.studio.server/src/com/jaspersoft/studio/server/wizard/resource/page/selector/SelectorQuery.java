@@ -7,10 +7,9 @@ package com.jaspersoft.studio.server.wizard.resource.page.selector;
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
 import com.jaspersoft.jasperserver.dto.resources.ResourceMediaType;
 import com.jaspersoft.studio.server.messages.Messages;
-import com.jaspersoft.studio.server.model.AMResource;
 import com.jaspersoft.studio.server.model.MRQuery;
-
-import net.sf.jasperreports.eclipse.util.Misc;
+import com.jaspersoft.studio.server.model.AMResource;
+import com.jaspersoft.studio.utils.Misc;
 
 public class SelectorQuery extends ASelector {
 
@@ -27,19 +26,14 @@ public class SelectorQuery extends ASelector {
 		return r instanceof MRQuery;
 	}
 
-	private ResourceDescriptor getQuery(ResourceDescriptor ru) {
+	private static ResourceDescriptor getQuery(ResourceDescriptor ru) {
 		if (ru != null)
 			for (Object obj : ru.getChildren()) {
 				ResourceDescriptor r = (ResourceDescriptor) obj;
 				if (r == null)
 					continue;
-				ResourceDescriptor tmp = checkReference(r);
-				if (tmp != null)
-					r = tmp;
-				if (r.getIsReference() && r.getReferenceType() != null
-						&& r.getReferenceType().equals(ResourceDescriptor.TYPE_QUERY))
-					return r;
-				if (r.getWsType().equals(ResourceDescriptor.TYPE_QUERY))
+				String t = r.getWsType();
+				if (t.equals(ResourceDescriptor.TYPE_QUERY))
 					return r;
 			}
 		return null;

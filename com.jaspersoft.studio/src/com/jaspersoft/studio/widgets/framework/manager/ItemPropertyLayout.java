@@ -27,7 +27,7 @@ public class ItemPropertyLayout extends Layout {
 	
 	private Label titleLabel;
 	
-	private LazyExpressionLabel expressionLabel;
+	private Label expressionLabel;
 	
 	private Control mainControl;
 	
@@ -45,7 +45,12 @@ public class ItemPropertyLayout extends Layout {
 	 */
 	public int horizontalSpacing = 5;
 	
-	public ItemPropertyLayout(WItemProperty wItemProperty, Label titleLabel, LazyExpressionLabel expressionLabel, Control mainControl, Button dialogButton) {
+	/**
+	 * Margin before the start of the first control
+	 */
+	public int leftMargin = 5;
+	
+	public ItemPropertyLayout(WItemProperty wItemProperty, Label titleLabel, Label expressionLabel, Control mainControl, Button dialogButton) {
 		this.wItemProperty = wItemProperty;
 		this.mainControl = mainControl;
 		this.expressionLabel = expressionLabel;
@@ -61,7 +66,6 @@ public class ItemPropertyLayout extends Layout {
 			boolean isExpressionMode = wItemProperty.isExpressionMode();
 			//Get informations from the layout data
 			ItemPropertyLayoutData data = wItemProperty.getContentLayoutData();
-			int leftMargin = data.leftMargin;
 			Point labelSize = data.labelSize;
 			Point buttonSize = getButtonSize(hHint, data, isExpressionMode);
 			
@@ -91,7 +95,6 @@ public class ItemPropertyLayout extends Layout {
 			}
 			Point controlSize = mainControl.computeSize (wHint, heightHint, flushCache);
 			width += controlSize.x;
-
 			
 			//Update the height with the one from the control
 			height = Math.max(controlSize.y, height);
@@ -153,10 +156,7 @@ public class ItemPropertyLayout extends Layout {
 			if (titleLabel != null){
 				titleLabel.setBounds(0, 0, 0, 0);
 			}
-			if (expressionLabel.isInitialized()) {
-				//since this hide the label avoid to execute if it s not initialized
-				expressionLabel.setBounds(0, 0, 0, 0);
-			}
+			expressionLabel.setBounds(0, 0, 0, 0);
 			mainControl.setBounds(0, 0, 0, 0);
 			dialogButton.setBounds(0, 0, 0, 0);
 		} else {	
@@ -184,8 +184,8 @@ public class ItemPropertyLayout extends Layout {
 				heightHint = isExpressionMode ? data.expressionHeightHint : data.widgetHeightHint;
 			}
 			
-			int availableWidth = compositeSize.width - data.leftMargin;
-			int startEditorX = data.leftMargin;
+			int availableWidth = compositeSize.width - leftMargin;
+			int startEditorX = leftMargin;
 			
 			//set the size of the label if present. The label is always centered vertically 
 			//and horizontally is on the left and can never take more then half the available space
@@ -205,8 +205,7 @@ public class ItemPropertyLayout extends Layout {
 				//Created the label, update the available space and start of the editor
 				availableWidth -= labelSize.x + horizontalSpacing;
 				startEditorX += labelSize.x + horizontalSpacing;
-			} else if (expressionLabel.isInitialized()) {
-				//since this hide the label avoid to execute if it s not initialized
+			} else {
 				expressionLabel.setVisible(false);
 				expressionLabel.setBounds(new Rectangle(0, 0, 0, 0));	
 			}

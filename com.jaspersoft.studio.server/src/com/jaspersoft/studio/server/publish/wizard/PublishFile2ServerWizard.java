@@ -67,7 +67,7 @@ public class PublishFile2ServerWizard extends Wizard implements IExportWizard {
 				file = (IFile) obj;
 		}
 		if (jrConfig == null)
-			jrConfig = JasperReportsConfiguration.getDefaultJRConfig(file);
+			JasperReportsConfiguration.getDefaultJRConfig(file);
 	}
 
 	@Override

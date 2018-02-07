@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 
 import com.jaspersoft.jasperserver.api.metadata.xml.domain.impl.ResourceDescriptor;
-import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.server.Activator;
 import com.jaspersoft.studio.server.WSClientHelper;
 import com.jaspersoft.studio.server.export.AExporter;
@@ -29,11 +28,11 @@ import com.jaspersoft.studio.server.model.MReportUnit;
 import com.jaspersoft.studio.server.model.server.MServerProfile;
 import com.jaspersoft.studio.server.model.server.ServerProfile;
 import com.jaspersoft.studio.server.utils.RDUtil;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.validator.IDStringValidator;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class PublishUtil {
@@ -51,39 +50,36 @@ public class PublishUtil {
 	public static ResourceDescriptor getMainReport(IProgressMonitor monitor, MReportUnit mrunit, JasperDesign jd) {
 		String jrxmln = jd.getProperty(AExporter.PROP_REPORTRESOURCE);
 		String unit = mrunit.getValue().getUriString();
-		if (jrxmln != null && unit != null && jrxmln.startsWith(unit) && jrxmln.length() > unit.length()
-				&& jrxmln.substring((unit + WSClientHelper._FILES).length()).indexOf('/') < 0) {
-			MServerProfile sp = (MServerProfile) mrunit.getRoot();
-			if (sp != null) {
-				ResourceDescriptor rd = new ResourceDescriptor();
-				rd.setName(jrxmln.substring((unit + WSClientHelper._FILES).length()));
-				rd.setLabel(IDStringValidator.safeChar(rd.getName()));
-				String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-				if (!Misc.isNullOrEmpty(d))
-					rd.setDescription(d);
-				rd.setUriString(jrxmln);
-				rd.setParentFolder(unit + "_files");
-				rd.setUriString(rd.getParentFolder() + "/" + rd.getName());
-				rd.setIsNew(true);
-				rd.setWsType(ResourceDescriptor.TYPE_JRXML);
-				rd.setIsReference(false);
-				rd.setHasData(true);
-				try {
-					rd = sp.getWsClient(monitor).get(monitor, rd, null);
+		if (jrxmln != null) {
+			if (unit != null && jrxmln.startsWith(unit) && jrxmln.length() > unit.length()
+					&& jrxmln.substring((unit + WSClientHelper._FILES).length()).indexOf('/') < 0) {
+				MServerProfile sp = (MServerProfile) mrunit.getRoot();
+				if (sp != null) {
+					ResourceDescriptor rd = new ResourceDescriptor();
+					rd.setName(jrxmln.substring((unit + WSClientHelper._FILES).length()));
+					rd.setLabel(IDStringValidator.safeChar(rd.getName()));
+					rd.setUriString(jrxmln);
+					rd.setParentFolder(unit + "_files");
+					rd.setUriString(rd.getParentFolder() + "/" + rd.getName());
+					rd.setIsNew(true);
+					rd.setWsType(ResourceDescriptor.TYPE_JRXML);
+					rd.setIsReference(false);
 					rd.setHasData(true);
-					return rd;
-				} catch (Exception e) {
-					rd.setMainReport(true);
-					return rd;
+					try {
+						rd = sp.getWsClient(monitor).get(monitor, rd, null);
+						rd.setHasData(true);
+						if (rd != null)
+							return rd;
+					} catch (Exception e) {
+						rd.setMainReport(true);
+						return rd;
+					}
 				}
 			}
 		}
 		ResourceDescriptor mainr = new ResourceDescriptor();
 		mainr.setName(Messages.JrxmlPublishAction_defaultresourcename);
 		mainr.setLabel(Messages.JrxmlPublishAction_defaultresourcelabel);
-		String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-		if (!Misc.isNullOrEmpty(d))
-			mainr.setDescription(d);
 		mainr.setWsType(ResourceDescriptor.TYPE_JRXML);
 		mainr.setIsNew(true);
 		mainr.setMainReport(true);
@@ -99,16 +95,6 @@ public class PublishUtil {
 			return;
 		String name = getRUnitNAme(jd, jConf);
 		initResourceName(name, runit.getValue());
-		if (Misc.isNullOrEmpty(runit.getValue().getDescription())) {
-			String d = jd.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
-			if (!Misc.isNullOrEmpty(d))
-				runit.getValue().setDescription(d);
-			if (runit instanceof MReportUnit) {
-				d = jd.getProperty(AExporter.COM_JASPERSOFT_STUDIO_REPORT_UNIT_DESCRIPTION);
-				if (!Misc.isNullOrEmpty(d))
-					runit.getValue().setDescription(d);
-			}
-		}
 	}
 
 	public static String getRUnitNAme(JasperDesign jd, JasperReportsConfiguration jConf) {
@@ -167,23 +153,18 @@ public class PublishUtil {
 			if (ovw == null)
 				ovw = OverwriteEnum.IGNORE;
 			else if (ovw.equals(OverwriteEnum.IGNORE))
-				;// ovw = OverwriteEnum.OVERWRITE;
+				ovw = OverwriteEnum.OVERWRITE;
 			else if (ovw.equals(OverwriteEnum.OVERWRITE))
 				ovw = OverwriteEnum.IGNORE;
-
 			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".overwrite"), ovw.getValue());
-			if (ovw.equals(OverwriteEnum.ONLY_EXPRESSION)) {
-				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".expression"),
-						popt.getExpression());
-			} else {
-				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"),
-						popt.getPublishMethod().toString());
-				if (popt.getReferencedResource() != null)
-					ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"),
-							popt.getReferencedResource().getUriString());
-				else
-					ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"), null);
-			}
+
+			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"),
+					popt.getPublishMethod().toString());
+			if (popt.getReferencedResource() != null)
+				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"),
+						popt.getReferencedResource().getUriString());
+			else
+				ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"), null);
 		}
 	}
 
@@ -212,30 +193,21 @@ public class PublishUtil {
 			if (ovw != null) {
 				exists = true;
 				popt.setOverwrite(OverwriteEnum.getByValue(ovw));
-
-				if (ovw.equals(OverwriteEnum.ONLY_EXPRESSION.getValue())) {
-					String exp = ifile
-							.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".expression"));
-					if (exp != null)
-						popt.setExpression(exp);
-				} else {
-					String ref = ifile
-							.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"));
-					if (ref != null) {
-						popt.setPublishMethod(ResourcePublishMethod.valueOf(ref));
-						String path = ifile
-								.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"));
-						if (path != null) {
-							ResourceDescriptor rd = new ResourceDescriptor();
-							rd.setParentFolder(RDUtil.getParentFolder(path));
-							rd.setUriString(path);
-							rd.setWsType(f.getValue().getWsType());
-							popt.setReferencedResource(
-									WSClientHelper.getResource(monitor, f, rd, FileUtils.createTempFile("tmp", "")));
-						} else
-							popt.setPublishMethod(ResourcePublishMethod.LOCAL);
-					}
-				}
+			}
+			String ref = ifile.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".reference"));
+			if (ref != null) {
+				exists = true;
+				popt.setPublishMethod(ResourcePublishMethod.valueOf(ref));
+				String path = ifile.getPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, prefix + ".refPATH"));
+				if (path != null) {
+					ResourceDescriptor rd = new ResourceDescriptor();
+					rd.setParentFolder(RDUtil.getParentFolder(path));
+					rd.setUriString(path);
+					rd.setWsType(f.getValue().getWsType());
+					popt.setReferencedResource(
+							WSClientHelper.getResource(monitor, f, rd, FileUtils.createTempFile("tmp", "")));
+				} else
+					popt.setPublishMethod(ResourcePublishMethod.LOCAL);
 			}
 		} catch (Exception e) {
 			popt.setPublishMethod(ResourcePublishMethod.LOCAL);
@@ -245,15 +217,15 @@ public class PublishUtil {
 	}
 
 	public static List<String[]> loadPath(IProgressMonitor monitor, IFile ifile) throws CoreException {
-		List<String[]> paths = new ArrayList<>();
+		List<String[]> paths = new ArrayList<String[]>();
 		Map<QualifiedName, String> pmap = ifile.getPersistentProperties();
 		int substr = "JRSPATH.".length();
-		for (Map.Entry<QualifiedName, String> entry : pmap.entrySet()) {
-			String lname = entry.getKey().getLocalName();
-			if (entry.getKey().getQualifier().equals(Activator.PLUGIN_ID) && lname.startsWith("JRSPATH."))
-				paths.add(new String[] { lname.substring(substr), entry.getValue() });
-			if (entry.getKey().getQualifier().equals(Activator.PLUGIN_ID) && lname.startsWith("JRSUSER."))
-				paths.add(new String[] { lname, entry.getValue() });
+		for (QualifiedName key : pmap.keySet()) {
+			String lname = key.getLocalName();
+			if (key.getQualifier().equals(Activator.PLUGIN_ID) && lname.startsWith("JRSPATH."))
+				paths.add(new String[] { lname.substring(substr), pmap.get(key) });
+			if (key.getQualifier().equals(Activator.PLUGIN_ID) && lname.startsWith("JRSUSER."))
+				paths.add(new String[] { lname, pmap.get(key) });
 		}
 		return paths;
 	}
@@ -269,8 +241,11 @@ public class PublishUtil {
 			String uri = mres.getValue().getUriString();
 			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, "JRSPATH." + jrs), uri);
 			ifile.setPersistentProperty(new QualifiedName(Activator.PLUGIN_ID, "JRSUSER." + user), user);
-		} catch (MalformedURLException | URISyntaxException e) {
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+
 	}
 }

@@ -62,8 +62,6 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 		 */
 		private MStaticText elementToCopy;
 		
-		private int oldIndex;
-		
 		/**
 		 * The parent of the converted node
 		 */
@@ -74,7 +72,6 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 			//Need to store some values because if the copied node is deleted
 			//its parent is no longer reachable
 			this.parent = elementToCopy.getParent();
-			this.oldIndex = ModelUtils.getChildrenPosition(elementToCopy);
 		}
 		
 		@Override
@@ -89,7 +86,7 @@ public class ConvertStaticIntoText extends ACachedSelectionAction {
 			modelText.setValue(textObject);
 			Rectangle position = new Rectangle(labelObject.getX(),labelObject.getY(),labelObject.getWidth(),labelObject.getHeight());
 
-			
+			int oldIndex = ModelUtils.getChildrenPosition(elementToCopy);
 			cmd = new CreateElementCommand(parent, modelText, position, oldIndex);
 			cmd.setJasperDesign(parent.getJasperDesign());
 			cmd.execute();

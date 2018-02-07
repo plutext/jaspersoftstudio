@@ -9,6 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.engine.ExpressionReturnValue;
+import net.sf.jasperreports.engine.JRVariable;
+import net.sf.jasperreports.engine.design.DesignExpressionReturnValue;
+import net.sf.jasperreports.engine.design.JRDesignVariable;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -32,15 +38,9 @@ import com.jaspersoft.studio.swt.widgets.table.INewElement;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
 import com.jaspersoft.studio.swt.widgets.table.ListOrderButtons;
 import com.jaspersoft.studio.swt.widgets.table.NewButton;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.ExpressionReturnValue;
-import net.sf.jasperreports.engine.JRVariable;
-import net.sf.jasperreports.engine.design.DesignExpressionReturnValue;
-import net.sf.jasperreports.engine.design.JRDesignVariable;
 
 /**
  * Return values configuration page for a element
@@ -96,11 +96,10 @@ public class ReturnValuesPropertyPage extends JSSHelpWizardPage {
 	}
 
 	/**
-	 * Set the current dto and initialize the table showing the return values with
-	 * the one read from the dto
+	 * Set the current dto and initialize the table showing the return values with the one read from the dto
 	 * 
 	 * @param dto
-	 *            a not null dto
+	 *          a not null dto
 	 */
 	public void setDto(JRBandDTO dto) {
 		this.dto = dto;
@@ -170,8 +169,8 @@ public class ReturnValuesPropertyPage extends JSSHelpWizardPage {
 
 	private void attachCellEditors(final TableViewer viewer, Composite parent) {
 
-		viewer.setColumnProperties(
-				new String[] { "EXPRESSION", "TOVARIABLE", "CALCULATIONTYPE", "INCREMENTERFACTORYCLASS" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		viewer
+				.setColumnProperties(new String[] { "EXPRESSION", "TOVARIABLE", "CALCULATIONTYPE", "INCREMENTERFACTORYCLASS" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 	}
 
 	private void createButtons(Composite bGroup) {
@@ -198,8 +197,7 @@ public class ReturnValuesPropertyPage extends JSSHelpWizardPage {
 
 		EditButton<ExpressionReturnValue> editButton = new EditButton<ExpressionReturnValue>() {
 			@Override
-			protected void afterElementModified(ExpressionReturnValue element, List<ExpressionReturnValue> inlist,
-					int ind) {
+			protected void afterElementModified(Object element, List<ExpressionReturnValue> inlist, int ind) {
 				super.afterElementModified(element, inlist, ind);
 				isValid();
 			}
@@ -236,7 +234,7 @@ public class ReturnValuesPropertyPage extends JSSHelpWizardPage {
 			}
 			names.add(erv.getToVariable());
 		}
-		if (dto.getjConfig().getJasperDesign().getMainDataset().getVariables().length == 0) {
+		if(dto.getjConfig().getJasperDesign().getMainDataset().getVariables().length ==0){
 			setErrorMessage(Messages.ReturnValuesPropertyPage_0);
 			setPageComplete(false);
 			return;

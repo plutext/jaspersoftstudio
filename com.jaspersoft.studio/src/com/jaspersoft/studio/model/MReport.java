@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.model;
 
@@ -50,11 +51,11 @@ import com.jaspersoft.studio.property.section.report.PageFormatUtils;
 import com.jaspersoft.studio.property.section.report.util.PHolderUtil;
 import com.jaspersoft.studio.property.section.widgets.ASPropertyWidget;
 import com.jaspersoft.studio.property.section.widgets.SPToolBarEnum;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.data.DataAdapterParameterContributorFactory;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.DatasetPropertyExpression;
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRConstants;
@@ -214,12 +215,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		nameD.setDescription(Messages.MReport_report_name_description);
 		nameD.setCategory(Messages.common_report);
 		desc.add(nameD);
-
-		JSSTextPropertyDescriptor descD = new JSSTextPropertyDescriptor(
-				PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION, Messages.common_description);
-		nameD.setCategory(Messages.common_report);
-		descD.setDescription(Messages.common_description);
-		desc.add(descD);
 
 		NClassTypePropertyDescriptor formatFactoryClassD = new NClassTypePropertyDescriptor(
 				JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS, Messages.MReport_format_factory_class);
@@ -422,8 +417,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		JasperDesign jrDesign = (JasperDesign) getValue();
 		if (id.equals(JasperDesign.PROPERTY_NAME))
 			return jrDesign.getName();
-		if (id.equals(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION))
-			return jrDesign.getProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION);
 		if (id.equals(JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS))
 			return jrDesign.getFormatFactoryClass();
 		if (id.equals(JasperDesign.PROPERTY_IMPORTS)) {
@@ -431,15 +424,17 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			String[] imports = jrDesign.getImports();
 			if (imports != null) {
 				int lenght = imports.length;
-				for (int i = 0; i < lenght; i++)
+				for (int i = 0; i < lenght; i++) {
 					res += imports[i] + ";"; //$NON-NLS-1$
+				}
 			}
 			return res;
 		}
 
 		if (id.equals(JasperDesign.PROPERTY_MAIN_DATASET)) {
-			if (mDataset == null)
+			if (mDataset == null) {
 				createDataset(jrDesign);
+			}
 			return mDataset;
 		}
 
@@ -490,8 +485,7 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			JRPropertyExpression[] propertyExpressions = jrDesign.getPropertyExpressions();
 			if (propertyExpressions != null)
 				propertyExpressions = propertyExpressions.clone();
-			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDesign), getValue(),
-					ModelUtils.getExpressionContext(this));
+			return new DatasetPropertyExpressionsDTO(propertyExpressions, getPropertiesMapClone(jrDesign), this);
 		}
 		if (id.equals(PROPERTY_MAP))
 			return getPropertiesMapClone(jrDesign);
@@ -499,7 +493,8 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 			String value = jrDesign.getPropertiesMap().getProperty(JR_CREATE_BOOKMARKS);
 			if (value == null)
 				return false;
-			return Boolean.parseBoolean(value);
+			else
+				return Boolean.parseBoolean(value);
 		}
 		if (id.equals(DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION)) {
 			JRDataset dataset = jrDesign.getMainDataset();
@@ -526,8 +521,6 @@ public class MReport extends MLockableRefresh implements IGraphicElement, IConta
 		JasperDesign jrDesign = (JasperDesign) getValue();
 		if (id.equals(JasperDesign.PROPERTY_NAME))
 			jrDesign.setName((String) value);
-		else if (id.equals(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION))
-			jrDesign.setProperty(PHolderUtil.COM_JASPERSOFT_STUDIO_REPORT_DESCRIPTION, (String) value);
 		else if (id.equals(JasperDesign.PROPERTY_FORMAT_FACTORY_CLASS)) {
 			if (value instanceof String && ((String) value).trim().isEmpty())
 				value = null;

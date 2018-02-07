@@ -251,7 +251,7 @@ public abstract class GenericTemplateBundle implements IconedTemplateBundle, Val
 				if (el instanceof JRSubreport) {
 					JRSubreport sr = (JRSubreport) el;
 					String res = evalResourceName(sr.getExpression());
-					if (res != null && res.endsWith(".jasper")) { //$NON-NLS-1$
+					if (res.endsWith(".jasper")) { //$NON-NLS-1$
 						res = res.substring(0, res.length() - ".jasper".length()) + ".jrxml"; //$NON-NLS-1$ //$NON-NLS-2$
 						resourceNames.add(res);
 					}
@@ -323,14 +323,13 @@ public abstract class GenericTemplateBundle implements IconedTemplateBundle, Val
 	/**
 	 * Load the jasperdesign from the JRXML file and save it
 	 */
-	protected void loadJasperDesign() throws TemplateLoadingException {
+	protected void loadJasperDesign() {
 		InputStream is = null;
 		try {
 			is = templateURL.openStream();
 			this.jasperDesign = JRXmlLoader.load(jrContext, is);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new TemplateLoadingException("Unble to load the template " + templateURL.toExternalForm(), e, templateURL);
 		} finally {
 			FileUtils.closeStream(is);
 		}

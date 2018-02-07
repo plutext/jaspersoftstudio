@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import net.sf.jasperreports.engine.JRDataset;
+import net.sf.jasperreports.engine.JRVariable;
+import net.sf.jasperreports.engine.design.JRDesignVariable;
+import net.sf.jasperreports.engine.design.JasperDesign;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -38,14 +43,9 @@ import com.jaspersoft.studio.swt.events.ChangeEvent;
 import com.jaspersoft.studio.swt.events.ChangeListener;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
 import com.jaspersoft.studio.swt.widgets.table.ListOrderButtons;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.wizards.ContextHelpIDs;
 import com.jaspersoft.studio.wizards.JSSHelpWizardPage;
-
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRVariable;
-import net.sf.jasperreports.engine.design.JRDesignVariable;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 /**
  * Wizard page to show the return values of a component and to interact with them
@@ -368,7 +368,7 @@ public abstract class RVPropertyPage extends JSSHelpWizardPage {
 	 * 
 	 * @return not null hashset of variables already used as a to variable
 	 */
-	protected HashSet<String> getAlreadyUsedToVariables() {
+	private HashSet<String> getAlreadyUsedToVariables() {
 		HashSet<String> result = new HashSet<String>();
 		for (ReturnValueContainer value : values) {
 			result.add(value.getToVariable());

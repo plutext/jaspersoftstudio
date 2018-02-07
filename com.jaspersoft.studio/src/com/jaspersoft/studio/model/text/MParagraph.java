@@ -17,7 +17,6 @@ import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.model.ANode;
 import com.jaspersoft.studio.model.APropertyNode;
 import com.jaspersoft.studio.model.DefaultValue;
-import com.jaspersoft.studio.model.IPropertiesHolder;
 import com.jaspersoft.studio.property.JSSStyleResolver;
 import com.jaspersoft.studio.property.descriptor.NullEnum;
 import com.jaspersoft.studio.property.descriptor.tabstops.TabStopsPropertyDescriptor;
@@ -26,53 +25,35 @@ import com.jaspersoft.studio.property.descriptors.NamedEnumPropertyDescriptor;
 import com.jaspersoft.studio.property.descriptors.PixelPropertyDescriptor;
 
 import net.sf.jasperreports.engine.JRConstants;
-import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.TabStop;
 import net.sf.jasperreports.engine.base.JRBaseParagraph;
 import net.sf.jasperreports.engine.type.LineSpacingEnum;
 
-public class MParagraph extends APropertyNode implements IPropertiesHolder {
+public class MParagraph extends APropertyNode {
 
 	public static final long serialVersionUID = JRConstants.SERIAL_VERSION_UID;
 
 	private static IPropertyDescriptor[] descriptors;
 
 	private static NamedEnumPropertyDescriptor<LineSpacingEnum> lineSpacingD;
-	private APropertyNode pHolder;
 
 	public MParagraph(ANode parent, JRBaseParagraph bParagraph) {
 		super();
-		if (parent.getValue() instanceof JRPropertiesHolder && parent instanceof APropertyNode)
-			this.pHolder = (APropertyNode) parent;
 		setJasperConfiguration(parent.getJasperConfiguration());
 		setValue(bParagraph);
 	}
 
-	public APropertyNode getPropertiesHolder() {
-		return pHolder;
-	}
-
 	/*
-	 * @Override public HashMap<String,Object> getStylesDescriptors() {
-	 * HashMap<String, Object> result = new HashMap<String, Object>(); if
-	 * (getValue() == null) return result; JRBaseParagraph jrElement =
-	 * (JRBaseParagraph) getValue();
-	 * result.put(JRBaseParagraph.PROPERTY_SPACING_BEFORE,
-	 * jrElement.getOwnSpacingBefore());
-	 * result.put(JRBaseParagraph.PROPERTY_SPACING_AFTER,
-	 * jrElement.getOwnSpacingAfter());
-	 * result.put(JRBaseParagraph.PROPERTY_FIRST_LINE_INDENT,
-	 * jrElement.getOwnFirstLineIndent());
-	 * result.put(JRBaseParagraph.PROPERTY_LEFT_INDENT,
-	 * jrElement.getOwnLeftIndent());
-	 * //result.put(JRBaseParagraph.PROPERTY_LINE_SPACING,
-	 * jrElement.getOwnLineSpacing());
-	 * result.put(JRBaseParagraph.PROPERTY_LINE_SPACING_SIZE,
-	 * jrElement.getOwnLineSpacingSize());
-	 * result.put(JRBaseParagraph.PROPERTY_RIGHT_INDENT,
-	 * jrElement.getOwnRightIndent());
-	 * result.put(JRBaseParagraph.PROPERTY_TAB_STOP_WIDTH,
-	 * jrElement.getOwnTabStopWidth()); return result; }
+	 * @Override public HashMap<String,Object> getStylesDescriptors() { HashMap<String, Object> result = new
+	 * HashMap<String, Object>(); if (getValue() == null) return result; JRBaseParagraph jrElement = (JRBaseParagraph)
+	 * getValue(); result.put(JRBaseParagraph.PROPERTY_SPACING_BEFORE, jrElement.getOwnSpacingBefore());
+	 * result.put(JRBaseParagraph.PROPERTY_SPACING_AFTER, jrElement.getOwnSpacingAfter());
+	 * result.put(JRBaseParagraph.PROPERTY_FIRST_LINE_INDENT, jrElement.getOwnFirstLineIndent());
+	 * result.put(JRBaseParagraph.PROPERTY_LEFT_INDENT, jrElement.getOwnLeftIndent());
+	 * //result.put(JRBaseParagraph.PROPERTY_LINE_SPACING, jrElement.getOwnLineSpacing());
+	 * result.put(JRBaseParagraph.PROPERTY_LINE_SPACING_SIZE, jrElement.getOwnLineSpacingSize());
+	 * result.put(JRBaseParagraph.PROPERTY_RIGHT_INDENT, jrElement.getOwnRightIndent());
+	 * result.put(JRBaseParagraph.PROPERTY_TAB_STOP_WIDTH, jrElement.getOwnTabStopWidth()); return result; }
 	 */
 
 	@Override
@@ -82,8 +63,8 @@ public class MParagraph extends APropertyNode implements IPropertiesHolder {
 		lineSpacingD.setDescription(Messages.MTextElement_line_spacing_description);
 		desc.add(lineSpacingD);
 
-		FloatPropertyDescriptor lineSpacingSize = new FloatPropertyDescriptor(
-				JRBaseParagraph.PROPERTY_LINE_SPACING_SIZE, Messages.MParagraph_lineSpacingSizeTitle);
+		FloatPropertyDescriptor lineSpacingSize = new FloatPropertyDescriptor(JRBaseParagraph.PROPERTY_LINE_SPACING_SIZE,
+				Messages.MParagraph_lineSpacingSizeTitle);
 		lineSpacingSize.setDescription(Messages.MParagraph_lineSpacingSizeDescription);
 		desc.add(lineSpacingSize);
 
@@ -177,9 +158,7 @@ public class MParagraph extends APropertyNode implements IPropertiesHolder {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.
-	 * Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
 	 */
 	public Object getPropertyValue(Object id) {
 		JRBaseParagraph jrElement = (JRBaseParagraph) getValue();
@@ -216,9 +195,7 @@ public class MParagraph extends APropertyNode implements IPropertiesHolder {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.
-	 * Object, java.lang.Object)
+	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	public void setPropertyValue(Object id, Object value) {
 		JRBaseParagraph jrElement = (JRBaseParagraph) getValue();

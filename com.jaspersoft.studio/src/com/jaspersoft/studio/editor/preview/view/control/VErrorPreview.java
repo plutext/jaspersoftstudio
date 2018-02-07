@@ -1,5 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview.view.control;
 
@@ -9,6 +10,19 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import net.sf.jasperreports.eclipse.ui.util.UIUtils;
+import net.sf.jasperreports.eclipse.util.xml.SourceLocation;
+import net.sf.jasperreports.engine.JRChild;
+import net.sf.jasperreports.engine.JRDataset;
+import net.sf.jasperreports.engine.JRElementGroup;
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.JRExpressionCollector;
+import net.sf.jasperreports.engine.JRStyle;
+import net.sf.jasperreports.engine.design.JRDesignDataset;
+import net.sf.jasperreports.engine.design.JRDesignElement;
+import net.sf.jasperreports.engine.design.JRDesignExpression;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jdt.core.compiler.IProblem;
@@ -58,22 +72,9 @@ import com.jaspersoft.studio.property.SetExpressionValueCommand;
 import com.jaspersoft.studio.property.descriptor.expression.dialog.JRExpressionEditor;
 import com.jaspersoft.studio.swt.widgets.table.ListContentProvider;
 import com.jaspersoft.studio.utils.ErrorUtil;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.SelectionHelper;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
-
-import net.sf.jasperreports.eclipse.ui.util.UIUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
-import net.sf.jasperreports.eclipse.util.xml.SourceLocation;
-import net.sf.jasperreports.engine.JRChild;
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRElementGroup;
-import net.sf.jasperreports.engine.JRExpression;
-import net.sf.jasperreports.engine.JRExpressionCollector;
-import net.sf.jasperreports.engine.JRStyle;
-import net.sf.jasperreports.engine.design.JRDesignDataset;
-import net.sf.jasperreports.engine.design.JRDesignElement;
-import net.sf.jasperreports.engine.design.JRDesignExpression;
-import net.sf.jasperreports.engine.design.JasperDesign;
 
 public class VErrorPreview extends APreview {
 
@@ -424,13 +425,6 @@ public class VErrorPreview extends APreview {
 		gd.horizontalSpan = 2;
 		snapshot.setLayoutData(gd);
 
-		new Label(statComposite, SWT.NONE).setText("Data Snapshot File");
-
-		snapshotFile = new Label(statComposite, SWT.BOLD);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 2;
-		snapshotFile.setLayoutData(gd);
-
 		setStats(null);
 	}
 
@@ -439,17 +433,16 @@ public class VErrorPreview extends APreview {
 			return;
 		if (stats != null) {
 			// compilSubTime.setText(format(stats.getDuration(ReportControler.ST_COMPILATIONTIMESUBREPORT)));
-			compilationTime.setText(format(stats.getDuration(ReportController.ST_COMPILATIONTIME)));
-			fillingTime.setText(format(stats.getDuration(ReportController.ST_FILLINGTIME)));
-			exportTime.setText(format(stats.getDuration(ReportController.ST_EXPORTTIME)));
-			execTime.setText(format(stats.getDuration(ReportController.ST_REPORTEXECUTIONTIME)));
+			compilationTime.setText(format(stats.getDuration(ReportControler.ST_COMPILATIONTIME)));
+			fillingTime.setText(format(stats.getDuration(ReportControler.ST_FILLINGTIME)));
+			exportTime.setText(format(stats.getDuration(ReportControler.ST_EXPORTTIME)));
+			execTime.setText(format(stats.getDuration(ReportControler.ST_REPORTEXECUTIONTIME)));
 
-			totalPages.setText(Misc.nvl(stats.getValue(ReportController.ST_PAGECOUNT), "0")); //$NON-NLS-1$
-			recordCount.setText(Misc.nvl(stats.getValue(ReportController.ST_RECORDCOUNTER), "-")); //$NON-NLS-1$
-			fillSize.setText(Misc.nvl(stats.getValue(ReportController.ST_REPORTSIZE), "0")); //$NON-NLS-1$
-			runTime.setText(Misc.nvl(stats.getValue(ReportController.ST_RUNTIMESTAMP), ""));
-			snapshot.setText(Misc.nvl(stats.getValue(ReportController.ST_SNAPSHOT), "No"));
-			snapshotFile.setText(Misc.nvl(stats.getValue(ReportController.ST_SNAPSHOT_FILE), ""));
+			totalPages.setText(Misc.nvl(stats.getValue(ReportControler.ST_PAGECOUNT), "0")); //$NON-NLS-1$
+			recordCount.setText(Misc.nvl(stats.getValue(ReportControler.ST_RECORDCOUNTER), "-")); //$NON-NLS-1$
+			fillSize.setText(Misc.nvl(stats.getValue(ReportControler.ST_REPORTSIZE), "0")); //$NON-NLS-1$
+			runTime.setText(Misc.nvl(stats.getValue(ReportControler.ST_RUNTIMESTAMP), ""));
+			snapshot.setText(Misc.nvl(stats.getValue(ReportControler.ST_SNAPSHOT), "No"));
 			statAction.run();
 		} else {
 			// compilSubTime.setText("-"); //$NON-NLS-1$
@@ -462,7 +455,6 @@ public class VErrorPreview extends APreview {
 			fillSize.setText("-"); //$NON-NLS-1$
 			runTime.setText("");
 			snapshot.setText("");
-			snapshotFile.setText("");
 		}
 		statComposite.layout();
 	}
@@ -572,7 +564,6 @@ public class VErrorPreview extends APreview {
 	private List<Object> auxil = new ArrayList<Object>();
 	private Label runTime;
 	private Label snapshot;
-	private Label snapshotFile;
 
 	private void addError2List(Object err, String message, Object aux) {
 		errors.add(err);

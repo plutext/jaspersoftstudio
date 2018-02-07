@@ -1,20 +1,15 @@
 /*******************************************************************************
- * Copyright (C) 2010 - 2016. TIBCO Software Inc. All Rights Reserved. Confidential & Proprietary.
+ * Copyright (C) 2010 - 2016. TIBCO Software Inc. 
+ * All Rights Reserved. Confidential & Proprietary.
  ******************************************************************************/
 package com.jaspersoft.studio.property.dataset.dialog;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableContext;
@@ -26,7 +21,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
@@ -35,16 +31,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
+import com.jaspersoft.studio.JaspersoftStudioPlugin;
 import com.jaspersoft.studio.data.DataAdapterDescriptor;
 import com.jaspersoft.studio.data.DataAdapterManager;
 import com.jaspersoft.studio.data.IFieldSetter;
@@ -54,38 +46,28 @@ import com.jaspersoft.studio.data.designer.AQueryDesignerContainer;
 import com.jaspersoft.studio.data.fields.IFieldsProvider;
 import com.jaspersoft.studio.data.widget.DataAdapterAction;
 import com.jaspersoft.studio.data.widget.IDataAdapterRunnable;
-import com.jaspersoft.studio.editor.preview.datasnapshot.DataSnapshotManager;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.preferences.DesignerPreferencePage;
-import com.jaspersoft.studio.property.dataset.da.DataAdapterUI;
-import com.jaspersoft.studio.property.metadata.PropertyMetadataRegistry;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.ModelUtils;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
-import net.sf.jasperreports.annotations.properties.PropertyScope;
-import net.sf.jasperreports.data.DataAdapterParameterContributorFactory;
 import net.sf.jasperreports.data.DataAdapterService;
 import net.sf.jasperreports.data.DataAdapterServiceUtil;
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.engine.JRQuery;
-import net.sf.jasperreports.engine.ParameterContributorContext;
 import net.sf.jasperreports.engine.design.JRDesignDataset;
 import net.sf.jasperreports.engine.design.JRDesignField;
 import net.sf.jasperreports.engine.design.JRDesignQuery;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.query.JRJdbcQueryExecuterFactory;
-import net.sf.jasperreports.properties.PropertyMetadata;
-import net.sf.jasperreports.properties.StandardPropertyMetadata;
 
 public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
-	public static final String PROGRESSMONITOR = "monitor";
 	/** Property to save a default data adapter to select */
 	public static final String DEFAULT_DATAADAPTER = "com.jaspersoft.studio.data.defaultdataadapter"; //$NON-NLS-1$
-	public static final String FIELD_PATH = "com.jaspersoft.studio.field.tree.path";
-	public static final String FIELD_LABEL = "com.jaspersoft.studio.field.label";
+
 	private JRDesignDataset newdataset;
 
 	private JasperDesign jDesign;
@@ -93,56 +75,6 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 	private Color background;
 
 	private IFile file;
-
-	public static void initMetadata() {
-		List<PropertyMetadata> pm = new ArrayList<>();
-
-		StandardPropertyMetadata spm = new StandardPropertyMetadata();
-		spm.setName(DEFAULT_DATAADAPTER);
-		spm.setLabel(Messages.DataQueryAdapters_0);
-		spm.setDescription(Messages.DataQueryAdapters_1);
-		spm.setValueType("jssDA"); //$NON-NLS-1$
-		List<PropertyScope> scopes = new ArrayList<>();
-		scopes.add(PropertyScope.DATASET);
-		spm.setScopes(scopes);
-		spm.setCategory("net.sf.jasperreports.metadata.property.category:data.source"); //$NON-NLS-1$
-		pm.add(spm);
-
-		spm = new StandardPropertyMetadata();
-		spm.setName(DataSnapshotManager.SAVE_SNAPSHOT);
-		spm.setLabel(Messages.DataQueryAdapters_4);
-		spm.setDescription(Messages.DataQueryAdapters_5);
-		spm.setValueType("java.io.File"); //$NON-NLS-1$
-		scopes = new ArrayList<>();
-		scopes.add(PropertyScope.REPORT);
-		spm.setScopes(scopes);
-		spm.setCategory("net.sf.jasperreports.metadata.property.category:data.snapshot"); //$NON-NLS-1$
-		pm.add(spm);
-
-		spm = new StandardPropertyMetadata();
-		spm.setName(FIELD_PATH);
-		spm.setLabel("Field Path");
-		spm.setDescription("Field path used to show fields as a tree.");
-		spm.setValueType(String.class.getName());
-		scopes = new ArrayList<>();
-		scopes.add(PropertyScope.FIELD);
-		spm.setScopes(scopes);
-		spm.setCategory("net.sf.jasperreports.metadata.property.category:field"); //$NON-NLS-1$
-		pm.add(spm);
-
-		spm = new StandardPropertyMetadata();
-		spm.setName(FIELD_LABEL);
-		spm.setLabel("Field Label");
-		spm.setDescription("Field label, can be used as column label.");
-		spm.setValueType(String.class.getName());
-		scopes = new ArrayList<>();
-		scopes.add(PropertyScope.FIELD);
-		spm.setScopes(scopes);
-		spm.setCategory("net.sf.jasperreports.metadata.property.category:field"); //$NON-NLS-1$
-		pm.add(spm);
-
-		PropertyMetadataRegistry.addMetadata(pm);
-	}
 
 	public DataQueryAdapters(Composite parent, JasperReportsConfiguration jConfig, JRDesignDataset newdataset,
 			Color background, IRunnableContext runner) {
@@ -201,28 +133,9 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
 		createQuery(tabFolder);
 		createMappingTools(tabFolder, fsetter);
-		createDataAdapterTab(tabFolder);
 
 		tabFolder.setSelection(0);
 		return tabFolder;
-	}
-
-	private DataAdapterUI daUI;
-
-	private void createDataAdapterTab(final CTabFolder tabFolder) {
-		daUI = new DataAdapterUI();
-		daUI.refreshDaUI(tabFolder, background, jDesign, newdataset, jConfig);
-		newdataset.getPropertiesMap().getEventSupport().addPropertyChangeListener(new PropertyChangeListener() {
-
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				String pname = evt.getPropertyName();
-				if (pname.equals(DataQueryAdapters.DEFAULT_DATAADAPTER)
-						|| pname.equals(DataAdapterParameterContributorFactory.PROPERTY_DATA_ADAPTER_LOCATION)) {
-					daUI.refreshDaUI(tabFolder, background, jDesign, newdataset, jConfig);
-				}
-			}
-		});
 	}
 
 	private void createMappingTools(CTabFolder tabFolder, IFieldSetter fsetter) {
@@ -260,8 +173,6 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 		langCombo.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
-				if (isRefresh)
-					return;
 				String lang = langCombo.getText();
 				int index = Misc.indexOf(languages, lang);
 				if (index < 0) {
@@ -312,7 +223,7 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 		if (!isRefresh) {
 			qStatus.showInfo(""); //$NON-NLS-1$
 			String lang = langCombo.getText();
-			if (Misc.isNullOrEmpty(lang) && newdataset.getQuery() != null) {
+			if (Misc.isNullOrEmpty(lang)) {
 				lang = "SQL"; //$NON-NLS-1$
 				langCombo.setText("SQL"); //$NON-NLS-1$
 			}
@@ -339,7 +250,7 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 
 	protected void refreshDsCombo() {
 		String filter = jConfig.getProperty(DesignerPreferencePage.P_DAFILTER);
-		if (filter != null && filter.equals("da")) //$NON-NLS-1$
+		if (filter != null && filter.equals("da"))
 			dscombo.setLanguage(langCombo.getText());
 		else
 			dscombo.setLanguage(null);
@@ -356,28 +267,24 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 		comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		comp.setBackgroundMode(SWT.INHERIT_FORCE);
 
-		// final Label lbl = new Label(comp, SWT.NONE);
-		// lbl.setImage(JaspersoftStudioPlugin.getInstance().getImage(MDataAdapters.getIconDescriptor().getIcon16()));
-		// lbl.addMouseListener(new MouseAdapter() {
-		// @Override
-		// public void mouseUp(MouseEvent e) {
-		// IFile f = (IFile) jConfig.get(FileUtils.KEY_FILE);
-		// if (f != null) {
-		// PreferenceDialog pref =
-		// PreferencesUtil.createPropertyDialogOn(UIUtils.getShell(), f.getProject(),
-		// DesignerPreferencePage.PAGE_ID, null, null);
-		// if (pref != null && pref.open() == Dialog.OK)
-		// refreshDsCombo();
-		// }
-		// }
-		// });
+		final Label lbl = new Label(comp, SWT.NONE);
+		lbl.setImage(JaspersoftStudioPlugin.getInstance().getImage(MDataAdapters.getIconDescriptor().getIcon16()));
+		lbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				IFile f = (IFile) jConfig.get(FileUtils.KEY_FILE);
+				if (f != null) {
+					PreferenceDialog pref = PreferencesUtil.createPropertyDialogOn(UIUtils.getShell(), f.getProject(),
+							DesignerPreferencePage.PAGE_ID, null, null);
+					if (pref != null && pref.open() == Dialog.OK)
+						refreshDsCombo();
+				}
+			}
+		});
 
 		tb = new ToolBar(comp, SWT.FLAT | SWT.RIGHT);
 		tb.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		final ToolBarManager manager = new ToolBarManager(tb);
-
-		manager.add(new IconAction());
-
 		IDataAdapterRunnable adapterRunReport = new IDataAdapterRunnable() {
 
 			public void runReport(DataAdapterDescriptor da) {
@@ -389,7 +296,23 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 				currentDesigner.setDataAdapter(da);
 				qStatus.showInfo(""); //$NON-NLS-1$
 
-				refreshLangCombo(da);
+				String filter = jConfig.getProperty(DesignerPreferencePage.P_DAFILTER);
+				if (filter != null && filter.equals("lang")) {
+					String[] langs = da.getLanguages();
+					langCombo.removeAll();
+					if (Misc.isNullOrEmpty(langs) || ArrayUtils.contains(langs, "*")) {
+						langCombo.setItems(languages);
+						return;
+					}
+					String lang = langCombo.getText();
+					for (String l : langs) {
+						langCombo.add(l);
+						if (l.equals(lang))
+							return;
+					}
+					langCombo.setText(langs[0]);
+					changeLanguage();
+				}
 				dscombo.getMenu(tb);
 			}
 
@@ -513,13 +436,10 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 			ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
 			Thread.currentThread().setContextClassLoader(jConfig.getClassLoader());
 
-			DataAdapterService das = DataAdapterServiceUtil
-					.getInstance(new ParameterContributorContext(jConfig, newdataset, jConfig.getJRParameters()))
-					.getService(da.getDataAdapter());
+			DataAdapterService das = DataAdapterServiceUtil.getInstance(jConfig).getService(da.getDataAdapter());
 			try {
-				jConfig.getMap().put(PROGRESSMONITOR, monitor);
 				final List<JRDesignField> fields = ((IFieldsProvider) da).getFields(das, jConfig, newdataset);
-				if (fields != null && !monitor.isCanceled()) {
+				if (fields != null) {
 					monitor.setTaskName(Messages.DataQueryAdapters_9);
 					Display.getDefault().syncExec(new Runnable() {
 
@@ -530,13 +450,11 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 					monitor.setTaskName(Messages.DataQueryAdapters_10);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
 				if (e.getCause() != null)
 					qStatus.showError(e.getCause().getMessage(), e);
 				else
 					qStatus.showError(e);
 			} finally {
-				jConfig.getMap().remove(PROGRESSMONITOR);
 				Thread.currentThread().setContextClassLoader(oldClassloader);
 				das.dispose();
 				monitor.done();
@@ -544,177 +462,4 @@ public abstract class DataQueryAdapters extends AQueryDesignerContainer {
 		}
 	}
 
-	protected void refreshLangCombo(DataAdapterDescriptor da) {
-		isRefresh = true;
-		try {
-			String filter = jConfig.getProperty(DesignerPreferencePage.P_DAFILTER);
-
-			String[] langs = null;
-			if (filter != null && filter.equals("lang")) //$NON-NLS-1$
-				langs = da.getLanguages();
-			else
-				langs = languages;
-			if (!setupLanguagesCombo(langs))
-				return;
-			isRefresh = false;
-			changeLanguage();
-		} finally {
-			isRefresh = false;
-		}
-	}
-
-	protected boolean setupLanguagesCombo(String[] langs) {
-		boolean changeLang = true;
-		String lang = langCombo.getText();
-		langCombo.removeAll();
-		if (Misc.isNullOrEmpty(langs) || ArrayUtils.contains(langs, "*")) { //$NON-NLS-1$
-			langCombo.setItems(languages);
-			return false;
-		}
-		for (String l : langs) {
-			langCombo.add(l);
-			if (l.equals(lang))
-				changeLang = false;
-		}
-		if (!changeLang)
-			langCombo.setText(lang);
-		else
-			langCombo.setText(langs[0]);
-		return changeLang;
-	}
-
-	class IconAction extends Action implements IMenuCreator {
-		public IconAction() {
-			super();
-			setId("iconAction"); //$NON-NLS-1$
-			setEnabled(true);
-			setImageDescriptor(MDataAdapters.getIconDescriptor().getIcon16());
-			setDisabledImageDescriptor(MDataAdapters.getIconDescriptor().getIcon16());
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return true;
-		}
-
-		@Override
-		public void runWithEvent(Event event) {
-			Point point = ((ToolItem) event.widget).getParent().toDisplay(new Point(event.x, event.y));
-			menu = getMenu(((ToolItem) event.widget).getParent());
-			menu.setLocation(point.x, point.y);
-			menu.setVisible(true);
-		}
-
-		private Menu menu;
-		private MenuItem itemFilterAll;
-		private MenuItem itemFilterDA;
-		private MenuItem itemFilterLang;
-		private MenuItem itemFilter;
-
-		@Override
-		public void dispose() {
-			if (menu != null)
-				menu.dispose();
-		}
-
-		@Override
-		public Menu getMenu(final Control parent) {
-			if (menu == null) {
-				menu = new Menu(parent);
-
-				new MenuItem(menu, SWT.SEPARATOR);
-
-				itemFilterAll = new MenuItem(menu, SWT.CHECK);
-				itemFilterAll.setText(Messages.DataQueryAdapters_13);
-				itemFilterAll.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						try {
-							if (itemFilterAll.getSelection()) {
-								jConfig.getPrefStore().setDefault(DesignerPreferencePage.P_DAFILTER, "");
-								jConfig.getPrefStore().setValue(DesignerPreferencePage.P_DAFILTER, "all"); //$NON-NLS-1$
-								jConfig.getPrefStore().save();
-								refreshLangCombo(dscombo.getSelected());
-								refreshDsCombo();
-							}
-						} catch (IOException e1) {
-							UIUtils.showError(e1);
-						}
-					}
-				});
-
-				itemFilterDA = new MenuItem(menu, SWT.CHECK);
-				itemFilterDA.setText(Messages.DesignerPreferencePage_6);
-				itemFilterDA.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						try {
-							if (itemFilterDA.getSelection()) {
-								jConfig.getPrefStore().setValue(DesignerPreferencePage.P_DAFILTER, "lang"); //$NON-NLS-1$
-								jConfig.getPrefStore().save();
-								refreshLangCombo(dscombo.getSelected());
-								refreshDsCombo();
-							}
-						} catch (IOException e1) {
-							UIUtils.showError(e1);
-						}
-					}
-				});
-
-				itemFilterLang = new MenuItem(menu, SWT.CHECK);
-				itemFilterLang.setText(Messages.DesignerPreferencePage_8);
-				itemFilterLang.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						try {
-							if (itemFilterLang.getSelection()) {
-								jConfig.getPrefStore().setValue(DesignerPreferencePage.P_DAFILTER, "da"); //$NON-NLS-1$
-								jConfig.getPrefStore().save();
-								refreshLangCombo(dscombo.getSelected());
-								refreshDsCombo();
-							}
-						} catch (IOException e1) {
-							UIUtils.showError(e1);
-						}
-					}
-				});
-
-				new MenuItem(menu, SWT.SEPARATOR);
-
-				itemFilter = new MenuItem(menu, SWT.PUSH);
-				itemFilter.setText(Messages.DataQueryAdapters_17);
-				itemFilter.addSelectionListener(new SelectionAdapter() {
-
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						IFile f = (IFile) jConfig.get(FileUtils.KEY_FILE);
-						if (f != null) {
-							PreferenceDialog pref = PreferencesUtil.createPreferenceDialogOn(UIUtils.getShell(),
-									DesignerPreferencePage.PAGEID, null, null);
-							if (pref != null && pref.open() == Dialog.OK) {
-								refreshLangCombo(dscombo.getSelected());
-								refreshDsCombo();
-							}
-						}
-					}
-				});
-
-			}
-			String daFilter = Misc.nvl(jConfig.getPrefStore().getString(DesignerPreferencePage.P_DAFILTER), "all");
-			itemFilterAll.setSelection(daFilter != null && daFilter.equals("all")); //$NON-NLS-1$
-			itemFilterDA.setSelection(daFilter != null && daFilter.equals("lang")); //$NON-NLS-1$
-			itemFilterLang.setSelection(daFilter != null && daFilter.equals("da")); //$NON-NLS-1$
-
-			return menu;
-		}
-
-		@Override
-		public Menu getMenu(Menu parent) {
-			return null;
-		}
-
-	}
 }

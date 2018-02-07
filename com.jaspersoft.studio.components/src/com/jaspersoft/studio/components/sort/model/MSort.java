@@ -104,7 +104,7 @@ public class MSort extends MGraphicElement {
 	}
 
 	@Override
-	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign, boolean applyDefault) {
+	public JRDesignComponentElement createJRElement(JasperDesign jasperDesign) {
 		JRDesignComponentElement jrcomponent = new JRDesignComponentElement();
 		SortComponent component = new SortComponent();
 		component.setSortFieldType(SortFieldTypeEnum.FIELD);
@@ -113,9 +113,7 @@ public class MSort extends MGraphicElement {
 				.setComponentKey(new ComponentKey(
 						"http://jasperreports.sourceforge.net/jasperreports/components", "c", "sort")); //$NON-NLS-1$
 
-		if (applyDefault) {
-			DefaultManager.INSTANCE.applyDefault(this.getClass(), jrcomponent);
-		}
+		DefaultManager.INSTANCE.applyDefault(this.getClass(), jrcomponent);
 
 		return jrcomponent;
 	}

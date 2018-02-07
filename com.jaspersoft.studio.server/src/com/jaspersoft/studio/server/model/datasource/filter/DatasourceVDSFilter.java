@@ -24,8 +24,6 @@ public class DatasourceVDSFilter implements IDatasourceFilter {
 
 	@Override
 	public boolean isDatasource(ResourceDescriptor r) {
-		if (r.getIsReference() && r.getReferenceType() != null)
-			return types.contains(r.getReferenceType());
 		return types.contains(r.getWsType().toLowerCase());
 	}
 

@@ -39,13 +39,15 @@ public class MainDatasetSection extends AbstractSection {
 		super.createControls(parent, tabbedPropertySheetPage);
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		Composite group = getWidgetFactory().createSection(parent, Messages.ReportSection_Dataset_Label, true, 2);
+		gd.horizontalSpan = 2;
+		Composite group = getWidgetFactory().createSection(parent, Messages.ReportSection_Dataset_Label, true, 3);
 		section = (ExpandableComposite)group.getParent();
 		group.setLayoutData(gd);
 
-		group.setLayout(new GridLayout(2, false));
+		group.setLayout(new GridLayout(3, false));
 
 		gd = new GridData();
+		gd.horizontalSpan = 2;
 		createWidget4Property(group, JRDesignDataset.PROPERTY_WHEN_RESOURCE_MISSING_TYPE).getControl().setLayoutData(gd);
 
 		gd = new GridData(GridData.FILL_HORIZONTAL);

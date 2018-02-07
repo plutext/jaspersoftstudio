@@ -4,6 +4,7 @@
  ******************************************************************************/
 package com.jaspersoft.studio.editor.preview;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +23,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -52,7 +54,7 @@ import com.jaspersoft.studio.editor.preview.toolbar.LeftToolBarManager;
 import com.jaspersoft.studio.editor.preview.toolbar.PreviewTopToolBarManager;
 import com.jaspersoft.studio.editor.preview.toolbar.TopToolBarManagerJRPrint;
 import com.jaspersoft.studio.editor.preview.view.APreview;
-import com.jaspersoft.studio.editor.preview.view.control.ReportController;
+import com.jaspersoft.studio.editor.preview.view.control.ReportControler;
 import com.jaspersoft.studio.editor.preview.view.report.html.ABrowserViewer;
 import com.jaspersoft.studio.messages.Messages;
 import com.jaspersoft.studio.messages.MessagesByKeys;
@@ -62,11 +64,11 @@ import com.jaspersoft.studio.statistics.UsageStatisticsIDs;
 import com.jaspersoft.studio.swt.toolbar.ToolItemContribution;
 import com.jaspersoft.studio.swt.widgets.CSashForm;
 import com.jaspersoft.studio.utils.JRXMLUtils;
+import com.jaspersoft.studio.utils.Misc;
 import com.jaspersoft.studio.utils.jasper.JasperReportsConfiguration;
 
 import net.sf.jasperreports.eclipse.ui.util.UIUtils;
 import net.sf.jasperreports.eclipse.util.FileUtils;
-import net.sf.jasperreports.eclipse.util.Misc;
 import net.sf.jasperreports.eclipse.viewer.action.AReportAction;
 import net.sf.jasperreports.eclipse.viewer.action.ZoomActualSizeAction;
 import net.sf.jasperreports.eclipse.viewer.action.ZoomInAction;
@@ -100,23 +102,22 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	private DataAdapterDescriptor dataAdapterDesc;
 
 	/**
-	 * Flag used to enable or disable the run of the report when the JasperDesign is
-	 * set
+	 * Flag used to enable or disable the run of the report when the JasperDesign is set
 	 */
 	private boolean runWhenInitilizing = true;
 
-	private ReportController reportControler;
-
+	private ReportControler reportControler;
+	
 	protected boolean isParameterDirty = true;
-
+	
 	protected boolean isRunDirty = true;
-
+	
 	private MultiPageContainer leftContainer;
-
+	
 	private CSashForm sashform;
 
 	private LeftToolBarManager leftToolbar;
-
+	
 	public PreviewContainer() {
 		super(true);
 	}
@@ -132,8 +133,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	}
 
 	/**
-	 * Retrieve the action from the contribution items. If the action were already
-	 * retrieved it dosen't do nothing
+	 * Retrieve the action from the contribution items. If the action were already retrieved it dosen't do nothing
 	 */
 	private void setActions() {
 		for (IContributionItem item : actionToolBarManager.getContributions()) {
@@ -200,9 +200,9 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 				@Override
 				public void switchView(Statistics stats, APreview view) {
 					super.switchView(stats, view);
-					for (Map.Entry<String, APreview> entry : pmap.entrySet()) {
-						if (entry.getValue() == view) {
-							leftToolbar.setLabelText(MessagesByKeys.getString(entry.getKey()));
+					for (String key : pmap.keySet()) {
+						if (pmap.get(key) == view) {
+							leftToolbar.setLabelText(MessagesByKeys.getString(key));
 							break;
 						}
 					}
@@ -216,8 +216,6 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	 */
 	@Override
 	public void dispose() {
-		if (dataDapterToolBarManager instanceof PreviewTopToolBarManager)
-			((PreviewTopToolBarManager) dataDapterToolBarManager).dispose();
 		super.dispose();
 	}
 
@@ -243,18 +241,15 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 				sashform.upRestore();
 			}
 		});
-
-		// The toolbar container uses a custom layout to have always the data adapter
-		// toolbar at full size on
-		// the start, the parameter button on the end and to give the remaining space to
-		// the action toolbar,
-		// that eventually will be able to resize and go down. The action toolbar will
-		// be always 100 at least
+		
+		//The toolbar container uses a custom layout to have always the data adapter toolbar at full size on 
+		//the start, the parameter button on the end and to give the remaining space to the action toolbar, 
+		//that eventually will be able to resize and go down. The action toolbar will be always 100 at least
 		toolbarContainer.setLayout(new Layout() {
-
+			
 			@Override
 			protected void layout(Composite composite, boolean flushCache) {
-				Control[] children = composite.getChildren();
+				Control children[] = composite.getChildren();
 				int spacing = 5;
 				Point daToolbarSize = children[0].computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
 				Point buttonSize = children[2].computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
@@ -267,15 +262,15 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 				children[1].setBounds(offestX, 0, actionToolbarWidth, actionToolbarSize.y);
 				int buttonStart = parentSize.width - buttonSize.x;
 				int remainingSpace = parentSize.width - (actionToolbarWidth + offestX);
-				if (remainingSpace < buttonSize.x) {
+				if (remainingSpace < buttonSize.x){
 					buttonStart = actionToolbarWidth + offestX + spacing;
 				}
 				children[2].setBounds(buttonStart, 0, buttonSize.x, buttonSize.y);
 			}
-
+			
 			@Override
 			protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
-				Control[] children = composite.getChildren();
+				Control children[] = composite.getChildren();
 				Point daToolbarSize = children[0].computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
 				Point buttonSize = children[2].computeSize(SWT.DEFAULT, SWT.DEFAULT, flushCache);
 				Rectangle parentSize = composite.getClientArea();
@@ -309,22 +304,19 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 			if (jrContext != null) {
 				project = (IProject) jrContext.get(FileUtils.KEY_IPROJECT);
 			}
-			dataDapterToolBarManager = new PreviewTopToolBarManager(this, container,
-					DataAdapterManager.getDataAdapter(file, project, jrContext));
+			dataDapterToolBarManager = new PreviewTopToolBarManager(this, container, DataAdapterManager.getDataAdapter(file, project, jrContext));
 		}
 		return (PreviewTopToolBarManager) dataDapterToolBarManager;
 	}
 
-	@Override
 	protected TopToolBarManagerJRPrint getActionToolBarManager(Composite container) {
-		if (actionToolBarManager == null) {
+		if (actionToolBarManager == null){
 			actionToolBarManager = new TopToolBarManagerJRPrint(this, container) {
-				@Override
 				protected void fillToolbar(IToolBarManager tbManager) {
 					if (runMode.equals(RunStopAction.MODERUN_LOCAL)) {
 						if (pvModeAction == null)
-							pvModeAction = new SwitchViewsAction(container.getRightContainer(),
-									Messages.PreviewContainer_javatitle, true, getViewFactory());
+							pvModeAction = new SwitchViewsAction(container.getRightContainer(), Messages.PreviewContainer_javatitle,
+									true, getViewFactory());
 						tbManager.add(pvModeAction);
 					}
 					tbManager.add(new Separator());
@@ -338,9 +330,9 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	 * Set the current preview type
 	 * 
 	 * @param viewerKey
-	 *            key of the type to show
+	 *          key of the type to show
 	 * @param refresh
-	 *            flag to set if the preview should also be refreshed
+	 *          flag to set if the preview should also be refreshed
 	 */
 	@Override
 	public void setCurrentViewer(String viewerKey, boolean refresh) {
@@ -377,18 +369,21 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 		ToolItem toolItem = tireset.getToolItem();
 		toolItem.setText(Messages.PreviewContainer_resetactiontitle);
 		toolItem.setToolTipText(Messages.PreviewContainer_resetactiontooltip);
-		toolItem.addSelectionListener(new SelectionAdapter() {
+		toolItem.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				reportControler.resetParametersToDefault();
 			}
 
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
 		tbm.update(true);
 
 		getLeftContainer().populate(cleftcompo, getReportControler().createControls(cleftcompo));
-		getLeftContainer().switchView(null, ReportController.FORM_PARAMETERS);
+		getLeftContainer().switchView(null, ReportControler.FORM_PARAMETERS);
 	}
 
 	private ABrowserViewer jiveViewer;
@@ -400,8 +395,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	}
 
 	/**
-	 * Log the report language and preview type (different from java) when the
-	 * report is executed
+	 * Log the report language and preview type (different from java) when the report is executed
 	 */
 	protected void auditPreview() {
 		// Log the preview if not Java
@@ -436,7 +430,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 			dataDapterToolBarManager.setEnabled(false);
 			leftToolbar.setEnabled(false);
 			getLeftContainer().setEnabled(false);
-			getLeftContainer().switchView(null, ReportController.FORM_PARAMETERS);
+			getLeftContainer().switchView(null, ReportControler.FORM_PARAMETERS);
 
 			// Cache the DataAdapter used for this report only if it is not null.
 			if (myDataAdapter != null) {
@@ -444,8 +438,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 				dataAdapterDesc = myDataAdapter;
 				setParameterDirty(prmDirty);
 			} else {
-				DataAdapterAction daWidget = ((PreviewTopToolBarManager) dataDapterToolBarManager)
-						.getDataSourceWidget();
+				DataAdapterAction daWidget = ((PreviewTopToolBarManager) dataDapterToolBarManager).getDataSourceWidget();
 				dataAdapterDesc = daWidget.isDefaultDASelected() ? null : daWidget.getSelected();
 			}
 
@@ -478,10 +471,14 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	}
 
 	protected void refreshToolbars(final APreview view) {
-		Display.getDefault().syncExec(() -> {
-			if (actionToolBarManager != null)
-				actionToolBarManager.contributeItems(view);
-			actionToolBarManager.getTopToolBar().getParent().layout(true, true);
+		Display.getDefault().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				if (actionToolBarManager != null)
+					actionToolBarManager.contributeItems(view);
+					actionToolBarManager.getTopToolBar().getParent().layout(true, true);
+				}
 		});
 	}
 
@@ -501,9 +498,9 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 			sashform.upHide();
 	}
 
-	public ReportController getReportControler() {
+	public ReportControler getReportControler() {
 		if (reportControler == null)
-			reportControler = new ReportController(this, jrContext);
+			reportControler = new ReportControler(this, jrContext);
 		return reportControler;
 	}
 
@@ -523,44 +520,47 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	private PropertyChangeListener propChangeListener;
 
 	public void setJasperDesign(final JasperReportsConfiguration jConfig) {
-		UIUtils.getDisplay().asyncExec(() -> {
-			ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
-			try {
-				Thread.currentThread().setContextClassLoader(jrContext.getClassLoader());
-				getReportControler().setJrContext(jConfig);
-				setupDataAdapter();
+		UIUtils.getDisplay().asyncExec(new Runnable() {
 
-				if ((isRunDirty || getJasperPrint() == null) && runWhenInitilizing)
-					runReport(dataAdapterDesc);
-				if (propChangeListener == null)
-					propChangeListener = evt -> {
-						String pname = evt.getPropertyName();
-						if (pname.equals(JRDesignDataset.PROPERTY_PARAMETERS)) {
-							if (evt instanceof CollectionElementAddedEvent)
-								((JRDesignParameter) ((CollectionElementAddedEvent) evt).getAddedValue())
-										.getEventSupport().addPropertyChangeListener(propChangeListener);
-							else if (evt instanceof CollectionElementRemovedEvent)
-								((JRDesignParameter) ((CollectionElementRemovedEvent) evt).getRemovedValue())
-										.getEventSupport().removePropertyChangeListener(propChangeListener);
+			@Override
+			public void run() {
+				ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
+				try {
+					Thread.currentThread().setContextClassLoader(jrContext.getClassLoader());
+					getReportControler().setJrContext(jConfig);
+					setupDataAdapter();
+
+					if ((isRunDirty || getJasperPrint() == null) && runWhenInitilizing) {
+						runReport(dataAdapterDesc);
+					}
+					propChangeListener = new PropertyChangeListener() {
+
+						@Override
+						public void propertyChange(PropertyChangeEvent evt) {
+							String pname = evt.getPropertyName();
+							if (pname.equals(JRDesignDataset.PROPERTY_PARAMETERS)) {
+								if (evt instanceof CollectionElementAddedEvent)
+									((JRDesignParameter) ((CollectionElementAddedEvent) evt).getAddedValue()).getEventSupport()
+											.addPropertyChangeListener(propChangeListener);
+								else if (evt instanceof CollectionElementRemovedEvent)
+									((JRDesignParameter) ((CollectionElementRemovedEvent) evt).getRemovedValue()).getEventSupport()
+											.removePropertyChangeListener(propChangeListener);
+							}
+							if (evt.getSource() instanceof JRParameter)
+								isParameterDirty = true;
+							else if (pname.equals(JRDesignDataset.PROPERTY_PARAMETERS)
+									|| pname.equals(JRDesignDataset.PROPERTY_SCRIPTLETS))
+								isParameterDirty = true;
 						}
-						if (evt.getSource() instanceof JRParameter)
-							jConfig.getJRParameters().remove(((JRParameter) evt.getSource()).getName());
-						if (isParameterDirty)
-							return;
-						if (evt.getSource() instanceof JRParameter || pname.equals(JRDesignDataset.PROPERTY_PARAMETERS)
-								|| pname.equals(JRDesignDataset.PROPERTY_SCRIPTLETS))
-							isParameterDirty = true;
 					};
-				JRDesignDataset mds = jrContext.getJasperDesign().getMainDesignDataset();
-				mds.getEventSupport().removePropertyChangeListener(propChangeListener);
-				mds.getEventSupport().addPropertyChangeListener(propChangeListener);
+					JRDesignDataset mds = jrContext.getJasperDesign().getMainDesignDataset();
+					mds.getEventSupport().addPropertyChangeListener(propChangeListener);
 
-				for (JRParameter p : mds.getParametersList()) {
-					((JRDesignParameter) p).getEventSupport().removePropertyChangeListener(propChangeListener);
-					((JRDesignParameter) p).getEventSupport().addPropertyChangeListener(propChangeListener);
+					for (JRParameter p : mds.getParametersList())
+						((JRDesignParameter) p).getEventSupport().addPropertyChangeListener(propChangeListener);
+				} finally {
+					Thread.currentThread().setContextClassLoader(oldCL);
 				}
-			} finally {
-				Thread.currentThread().setContextClassLoader(oldCL);
 			}
 		});
 	}
@@ -577,8 +577,7 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 				pt.setDataAdapters(strda);
 				dataAdapterDesc = daWidget.isDefaultDASelected() ? null : daWidget.getSelected();
 			} else {
-				// If there is not a default JSS Da but it is defined a JR default da then
-				// select it on the preview
+				// If there is not a default JSS Da but it is defined a JR default da then select it on the preview
 				JRDefaultDataAdapterStorage defaultStorage = DataAdapterManager.getJRDefaultStorage(getConfiguration());
 				DataAdapterDescriptor defaultDA = defaultStorage.getDefaultJRDataAdapter(jd.getMainDesignDataset());
 				if (defaultDA != null) {
@@ -644,12 +643,11 @@ public class PreviewContainer extends PreviewJRPrint implements IDataAdapterRunn
 	}
 
 	/**
-	 * Flag used to enable or disable the run of the report when the JasperDesign is
-	 * set trough setJasperDesign(final JasperReportsConfiguration jConfig)
+	 * Flag used to enable or disable the run of the report when the JasperDesign is set trough setJasperDesign(final
+	 * JasperReportsConfiguration jConfig)
 	 * 
 	 * @param value
-	 *            true if the report should be run when the JasperDesign is set,
-	 *            false otherwise
+	 *          true if the report should be run when the JasperDesign is set, false otherwise
 	 */
 	public void setRunWhenInitilizing(boolean value) {
 		runWhenInitilizing = value;
