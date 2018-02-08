@@ -191,12 +191,18 @@ public class MCell extends MColumn implements IGraphicElement,
 				return lineBox;
 			}
 			if (id.equals(MGraphicElement.PROPERTY_MAP)) {
-				// to avoid duplication I remove it first
-				JRPropertiesMap pmap = cell.getPropertiesMap();
-				return pmap;
+				//return a copy of the map
+				return getPropertiesMapClone();
 			}
 		}
 		return super.getPropertyValue(id);
+	}
+	
+	protected JRPropertiesMap getPropertiesMapClone() {
+		JRPropertiesMap propertiesMap = cell.getPropertiesMap();
+		if (propertiesMap != null)
+			propertiesMap = propertiesMap.cloneProperties();
+		return propertiesMap;
 	}
 
 	/*
@@ -260,17 +266,22 @@ public class MCell extends MColumn implements IGraphicElement,
 				}
 				return;
 			} else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
+				JRPropertiesMap originalMap = cell.getPropertiesMap().cloneProperties();
 				JRPropertiesMap v = (JRPropertiesMap) value;
 				String[] names = cell.getPropertiesMap().getPropertyNames();
+				//clear the old map
 				for (int i = 0; i < names.length; i++) {
 					cell.getPropertiesMap().removeProperty(names[i]);
 				}
+				//set the new properties
 				names = v.getPropertyNames();
-				for (int i = 0; i < names.length; i++)
-					cell.getPropertiesMap().setProperty(names[i],
-							v.getProperty(names[i]));
-				this.getPropertyChangeSupport().firePropertyChange(
-						MGraphicElement.PROPERTY_MAP, false, true);
+				for (int i = 0; i < names.length; i++) {
+					cell.getPropertiesMap().setProperty(names[i], v.getProperty(names[i]));
+				}
+				// really important to trigger the property with source the JR object and not the node
+				// using the node could cause problem with the refresh of the advanced properties view
+				this.getPropertyChangeSupport().firePropertyChange(new PropertyChangeEvent(cell, PROPERTY_MAP, originalMap, cell.getPropertiesMap()));
+				
 				return; // Attention! MColumn has his own property map, here we
 						// work with cell
 			}

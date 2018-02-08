@@ -286,13 +286,20 @@ public class MCell extends APropertyNode implements IGraphicElement, IPastable, 
 				return lineBox;
 			}
 			if (id.equals(MGraphicElement.PROPERTY_MAP)) {
-				// to avoid duplication I remove it first
-				return jrElement.getPropertiesMap().cloneProperties();
+				//return a copy of the map
+				return getPropertiesMapClone(jrElement);
 			}
 		}
 		return null;
 	}
 
+	protected JRPropertiesMap getPropertiesMapClone(JRDesignCellContents element) {
+		JRPropertiesMap propertiesMap = element.getPropertiesMap();
+		if (propertiesMap != null)
+			propertiesMap = propertiesMap.cloneProperties();
+		return propertiesMap;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -337,15 +344,21 @@ public class MCell extends APropertyNode implements IGraphicElement, IPastable, 
 							new PropertyChangeEvent(this, JRDesignCrosstabCell.PROPERTY_HEIGHT, null, value));
 				}
 			} else if (id.equals(MGraphicElement.PROPERTY_MAP)) {
+				JRPropertiesMap originalMap = jrElement.getPropertiesMap().cloneProperties();
 				JRPropertiesMap v = (JRPropertiesMap) value;
 				String[] names = jrElement.getPropertiesMap().getPropertyNames();
+				//clear the old map
 				for (int i = 0; i < names.length; i++) {
 					jrElement.getPropertiesMap().removeProperty(names[i]);
 				}
+				//set the new properties
 				names = v.getPropertyNames();
-				for (int i = 0; i < names.length; i++)
+				for (int i = 0; i < names.length; i++) {
 					jrElement.getPropertiesMap().setProperty(names[i], v.getProperty(names[i]));
-				this.getPropertyChangeSupport().firePropertyChange(MGraphicElement.PROPERTY_MAP, false, true);
+				}
+				// really important to trigger the property with source the JR object and not the node
+				// using the node could cause problem with the refresh of the advanced properties view
+				this.getPropertyChangeSupport().firePropertyChange(new PropertyChangeEvent(jrElement, PROPERTY_MAP, originalMap, jrElement.getPropertiesMap()));
 			}
 
 		}
